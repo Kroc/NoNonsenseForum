@@ -1,0 +1,35 @@
+RewriteEngine	on
+
+DirectoryIndex index.php
+
+# this ‘feature’ (MultiViews) drove me absolutely insane!
+# without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
+# <webmasterworld.com/apache/3808792.htm>
+Options -MultiViews +Indexes
+
+# force the latest IE version and use ChromeFrame if it's installed
+# (from <github.com/paulirish/html5-boilerplate/blob/master/.htaccess>)
+<IfModule mod_setenvif.c>
+	<IfModule mod_headers.c>
+		BrowserMatch MSIE ie
+		Header set X-UA-Compatible "IE=Edge,chrome=1" env=ie
+	</IfModule>
+</IfModule>
+
+AddType application/rss+xml	.rss
+
+AddType font/ttf		.ttf
+AddType font/otf		.otf
+AddType font/x-woff		.woff
+
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript text/javascript application/javascript application/json text/xml application/xml application/rss+xml
+	
+	<FilesMatch "\.(ttf|otf|svg)$">
+		SetOutputFilter DEFLATE
+	</FilesMatch>
+</IfModule>
+
+RewriteCond %{REQUEST_URI} ^[^.]+(?!/)$
+RewriteCond %{DOCUMENT_ROOT}%1.xml !-f
+RewriteRule ^[^.]+(?!/)$ /thread.php?file=$0.xml [QSA,L]
