@@ -25,12 +25,13 @@ header, hgroup, nav, footer, section, aside, article
 ::-moz-selection		{background-color: #7C70DA; color: #fff; text-shadow: none;}
 ::selection 			{background-color: #7C70DA; color: #fff; text-shadow: none;}
 
+/* C64 font provided by <style64.org/c64-truetype> */
 @font-face 			{font-family: "C64 Pro";
-				 src: url("C64_TrueType_v1.0-STYLE/fonts/C64_Pro_v1.0-STYLE.woff") format("woff"),
-				      url("C64_TrueType_v1.0-STYLE/fonts/C64_Pro_v1.0-STYLE.ttf") format("truetype");}
+				 src: url("C64_Pro_v1.0-STYLE.woff") format("woff"),
+				      url("C64_Pro_v1.0-STYLE.ttf") format("truetype");}
 @font-face 			{font-family: "C64 Pro Mono";
-				 src: url("C64_TrueType_v1.0-STYLE/fonts/C64_Pro_Mono_v1.0-STYLE.woff") format("woff"),
-				      url("C64_TrueType_v1.0-STYLE/fonts/C64_Pro_Mono_v1.0-STYLE.ttf") format("truetype");}
+				 src: url("C64_Pro_Mono_v1.0-STYLE.woff") format("woff"),
+				      url("C64_Pro_Mono_v1.0-STYLE.ttf") format("truetype");}
 
 html				{font: normal 100%/1em "C64 Pro Mono", monospace;
 				 -webkit-font-smoothing: none;
@@ -52,9 +53,11 @@ header>nav>a:before		{content: '\0ee5a  '; color: #7ABFC7;}
 header>nav>a[href$=".xml"]:before,
  header>nav>a[href$=".rss"]:before
 				{content: '\0efdf  '; color: #905F25;}
-header>nav>ol			{margin: 0; padding: 0;}
+header>nav ol			{margin: 0; padding: 0; color: #68A941;}
 header>nav>ol li		{margin: 0; padding: 0; list-style-type: none;}
 header>nav>ol>li>a:before	{content: '\0ee1f  '; color: #7ABFC7;}
+
+header>nav>ol>li>ol>li:before	{content: '\0ee6d  '; margin-left: 2em; color: #7ABFC7;}
 
 /* ====================================================================================================================== */
 
@@ -69,10 +72,12 @@ a:hover				{color: #fff;}
 body>dl				{margin: 0; padding: 0 0 0 1em;}
 body>dl>dt			{padding: 0 1em 0 2em; font-family: "C64 Pro";}
 body>dl>dt>a:before		{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}
+body>dl>dt>a.sticky:before	{content: '\0ee53'; color: #894036;}
 body>dl>dd			{margin: 0; padding: 0 0 0 2em; color: #808080;}
 body>dl
  >dd:not(:last-child):after	{display: block; margin-left: -3em; color: #68A941;
 				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}
+body>dl>dt+dt			{margin-top: 1em;}
 
 body>h2, nav.pages		{margin: .7em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
 nav.pages			{text-align: right;}

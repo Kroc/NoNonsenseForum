@@ -12,6 +12,12 @@ define ('APP_POSTS',   25);				//number of posts per page on the index
 //<uk3.php.net/manual/en/function.is-dir.php#70005>
 chdir (APP_ROOT);
 
+//stop browsers caching, so you don’t have to refresh every time to see changes
+//(this needs to be better placed and tested)
+header("Cache-Control: no-cache");
+header("Expires: -1");
+
+
 //replace a marker (“&__TAG__;”) in the template with some other text
 function template_tag ($s_template, $s_tag, $s_content) {
 	return str_replace ("&__${s_tag}__;", $s_content , $s_template);
@@ -36,7 +42,7 @@ function pageLinks ($page, $pages) {
 	$link = '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>';
 	
 	//always include the first page
-	$html[] = $page == 1 ? "1" : template_tag ($link, 'PAGE', 1);
+	$html[] = $page == 1 ? "<span class=\"cyan\">1</span>" : template_tag ($link, 'PAGE', 1);
 	//more than one page?
 	if ($pages > 1) {
 		//if previous page is not the same as 2, include ellipses
@@ -45,7 +51,7 @@ function pageLinks ($page, $pages) {
 		//the page before the current page
 		if ($page-1 > 1) $html[] = template_tag ($link, 'PAGE', $page-1);
 		//the current page
-		if ($page != 1) $html[] = $page;
+		if ($page != 1) $html[] = "<span class=\"cyan\">$page</span>";
 		//the page after the current page (if not at end)
 		if ($page+1 < $pages) $html[] = template_tag ($link, 'PAGE', $page+1);
 		//if there’s a gap between page+1 and the last page
@@ -103,7 +109,7 @@ XML
 </channel>
 </rss>
 HTML
-	);
+	, LOCK_EX);
 }
 
 function formatText ($text) {

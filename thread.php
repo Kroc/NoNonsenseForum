@@ -5,8 +5,10 @@ include "shared.php";
 /* ====================================================================================================================== */
 
 //thread to show. todo: error page / 404
-$file = (preg_match ('/^[-a-z0-9_\/]+\.xml$/', @$_GET['file']) ? $_GET['file'] : false) or die ("Malformed request");
-$xml = simplexml_load_file ($file, 'my_node');
+$file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
+if ($path = @$_[1]) chdir ($path);
+
+$xml = simplexml_load_file ("$file.xml", 'my_node');
 
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
@@ -17,14 +19,16 @@ $TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 if ($SUBMIT = @$_POST['submit']) if (
 	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TEXT
 ) {
-	$user = "users/".md5 ("C64:$NAME").".txt";
+	$user = APP_ROOT."users/".md5 ("C64:$NAME").".txt";
 	//create the user, if new
 	if (!file_exists ($user)) file_put_contents ($user, md5 ("C64:$PASS"));
 	//does password match?
 	if (file_get_contents ($user) == md5 ("C64:$PASS")) {
 		//where to?
 		$page = ceil ((count ($xml->channel->xpath ('item'))) / APP_POSTS);
-		$url = pathinfo ($file, PATHINFO_FILENAME)."?page=$page#".(count ($xml->channel->xpath ('item')) +1);
+		$url = ($path ? rawurlencode ($path)."/" : "")."$file?page=$page#".
+			(count ($xml->channel->xpath ('item')) +1)
+		;
 		
 		//add the comment to the thread
 		$item = $xml->channel->prependChild ("item");
@@ -35,11 +39,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 		$item->addChild ("description", htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
 		
 		//save
-		file_put_contents ($file, $xml->asXML ());
+		file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
 		
 		//todo: rebuild folder RSS feed
 		
-		header ("Location: /$url", 303);
+		header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
 	}
 }
 
@@ -59,20 +63,29 @@ echo template_tags (<<<HTML
 		<a href="#reply">Reply</a>
 		<a href="/&__URL__;">RSS</a>
 
-		<ol>
-			<li>
-				<a href="/">Forum Index</a>
-			</li>
-		</ol>
+&__PATH__;
 	</nav>
 </header>
 
 <h1>&__TITLE__;</h1>
 HTML
 , array (
-	'URL'		=> $file,
+	'URL'		=> "$file.xml",
 	'TITLE'		=> $xml->channel->title,
-	'HOST'		=> APP_HOST
+	'HOST'		=> APP_HOST,
+	'PATH'		=> $path ? <<<HTML
+		<ol>
+			<li>
+				<a href="/">Forum Index</a>
+				<ol><li><a href="/$path/">$path</a></li></ol>
+			</li>
+		</ol>
+HTML
+			: <<<HTML
+		<ol>
+			<li><a href="/">Forum Index</a></li>
+		</ol>
+HTML
 ));
 
 $thread = $xml->channel->xpath ('item');
@@ -116,7 +129,7 @@ if (count ($thread)) {
 HTML
 	, 'PAGES', pageLinks ($page, $pages));
 
-	$c=2;
+	$c=2 + (($page-1) * APP_POSTS);
 	foreach ($thread as &$post) {
 		echo template_tags (<<<HTML
 <article id="&__ID__;">
@@ -196,3 +209,9 @@ HTML
 }
 
 ?></fieldset></form>
+
+<footer><p>
+	&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;
+</p><p>
+	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
+</p></footer>

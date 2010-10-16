@@ -1,30 +1,43 @@
-<?php
+<?php //display the index of threads in a folder
 
 include "shared.php";
 
 /* ====================================================================================================================== */
 
+//which folder to show, not present for forum index
+if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : "") chdir (APP_ROOT.$path);
+
+//page number, obviously. for folders full of threads, it’s divided into pages
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
+//submitted info for making a new thread
 $NAME	= mb_substr (stripslashes (@$_POST['username']), 0, 18,    'UTF-8');
 $PASS	= mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
 $TITLE	= mb_substr (stripslashes (@$_POST['title']),    0, 80,    'UTF-8');
 $TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 
+//has the user the submitted a new thread?
 if ($SUBMIT = @$_POST['submit']) if (
+	//`APP_ENABLED` (in 'shared.php') can be toggled to disable posting
+	//the email check is a fake, hidden field in the form to try and fool spam bots
 	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TITLE && $TEXT
 ) {
-	$user = "users/".md5 ("C64:$NAME").".txt";
+	//users are stored as text files based on the hash of the given name
+	$user = APP_ROOT."users/".md5 ("C64:$NAME").".txt";
 	//create the user, if new
 	if (!file_exists ($user)) file_put_contents ($user, md5 ("C64:$PASS"));
 	//does password match?
 	if (file_get_contents ($user) == md5 ("C64:$PASS")) {
 		//generate the file name for the RSS thread
-		$url = flattenTitle ($TITLE);
+		$file = flattenTitle ($TITLE);
+		$url  = ($path ? rawurlencode ($path)."/" : "").$file;
 		//if this file already exists (double-submission from back button?), redirect to it
-		if (file_exists ("$url.xml")) header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
+		if (file_exists ("$file.xml")) header (
+			"Location: http://".$_SERVER['HTTP_HOST']."/$url", 303
+		);
 		
-		file_put_contents ("$url.xml", template_tags (<<<XML
+		//write out the new thread as an RSS file
+		file_put_contents ("$file.xml", template_tags (<<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
@@ -50,7 +63,7 @@ XML
 			'TEXT'		=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
 		)));
 		
-		//create rss thread for this folder
+		//create RSS thread for this folder (a list of new threads)
 		createRSSIndex ();
 		
 		//redirect to newley created thread
@@ -73,63 +86,129 @@ XML
 	<nav>
 		<a href="#new">Add Thread</a>
 		<a href="index.rss">RSS</a>
+<?php
+
+if ($path) {
+	echo <<<HTML
+		<ol>
+			<li>
+				<a href="/">Forum Index</a>
+				<ol><li>$path:</li></ol>
+			</li>
+		</ol>
+
+HTML;
+	
+} else {
+	echo <<<HTML
+		<ol>
+			<li>• Forum Index:</li>
+		</ol>
+
+HTML;
+}
+
+?>
 	</nav>
 </header>
 
-<h2 id="list">Threads</h2>
-<?
+<?php
+
+//get a list of folders
+if ($folders = array_filter (
+	//include only directories, but ignore directories starting with ‘.’ and the users / theme folders
+	preg_grep ('/^(\.|users$|theme$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+)) {	
+	echo <<<HTML
+<h2 id="folders">Folders</h2>
+<dl>
+HTML;
+
+	foreach ($folders as $folder) {
+		echo template_tags (<<<HTML
+	<dt><a href="/&__URL__;/">&__FOLDER__;</a></dt>
+
+HTML
+		, array (
+			'URL'	=> rawurlencode ($folder),
+			'FOLDER'=> $folder
+		));
+	}
+	
+	echo <<<HTML
+</dl>
+HTML;
+
+};
 
 //get list of threads
 $threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
 foreach ($threads as $file => &$date) $date = filemtime ($file);
 arsort ($threads, SORT_NUMERIC);
 
-//paging
-$pages = ceil (count ($threads) / APP_THREADS);
-$threads = array_slice ($threads, ($page-1) * APP_THREADS, APP_THREADS);
-
-?>
+if ($threads) {
+	echo <<<HTML
+<h2 id="list">Threads</h2>
 <dl>
-<?php
-foreach ($threads as $file => $date) {
+
+HTML;
 	
-	$xml = simplexml_load_file ($file);
-	$items = $xml->channel->xpath ('item');
-	$last = reset ($items);
+	//does this folder have a sticky list?
+	$stickies = array ();
+	if (file_exists ("sticky.txt")) {
+		$stickies = array_fill_keys (file ("sticky.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
+		foreach ($stickies as $sticky => &$date) $date = filemtime ($sticky);
+		arsort ($stickies, SORT_NUMERIC);
+		
+		//remove the stickies from the thread list, then add them to the top of the list
+		$threads = $stickies + array_diff_key ($threads, $stickies);
+	}
 	
-	echo template_tags (<<<HTML
-	<dt><a href="/&__URL__;?page=&__PAGE__;">&__TITLE__;</a> (&__COUNT__;)</dt>
+	//paging (stickies are not included in the count as they appear on all pages)
+	$pages = ceil ((count ($threads) - count ($stickies)) / APP_THREADS);
+	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($page-1) * APP_THREADS, APP_THREADS);
+
+	foreach ($threads as $file => $date) {
+	
+		$xml = simplexml_load_file ($file);
+		$items = $xml->channel->xpath ('item');
+		$last = reset ($items);
+		
+		echo template_tags (<<<HTML
+	<dt><a href="&__URL__;?page=&__PAGE__;"&__STICKY__;>&__TITLE__;</a> (&__COUNT__;)</dt>
 	<dd>
 		<span class="ltgrey">+</span><time datetime="&__DATE__;">&__TIME__;</time> <span class="ltgrey">&#x0ee1f;</span>&__NAME__;
 	</dd>
 
 HTML
-	, array (
-		'URL'	=> flattenTitle ($xml->channel->title),
-		'PAGE'	=> ceil ((count ($items) -1) / APP_POSTS),
-		'TITLE' => $xml->channel->title,
-		'COUNT' => count ($items),
-		'TIME'  => strtoupper (date ('d-M\'y h:i', strtotime ($last->pubDate))),
-		'DATE'	=> date ('c', strtotime ($last->pubDate)),
-		'NAME'  => $last->author
-	));
-}
-
-?>
+		, array (
+			'URL'	=> flattenTitle ($xml->channel->title),
+			'PAGE'	=> count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
+			'STICKY'=> array_key_exists ($file, $stickies) ? ' class="sticky"' : '',  
+			'TITLE' => $xml->channel->title,
+			'COUNT' => count ($items),
+			'TIME'  => strtoupper (date ('d-M\'y h:i', strtotime ($last->pubDate))),
+			'DATE'	=> date ('c', strtotime ($last->pubDate)),
+			'NAME'  => $last->author
+		));
+	}
+	
+	echo <<<HTML
 </dl>
-<?php
 
-echo template_tag (<<<HTML
+HTML;
+
+	echo template_tag (<<<HTML
 <nav class="pages">
-Page &__PAGES__;
+	Page &__PAGES__;
 </nav>
 HTML
-, 'PAGES', pageLinks ($page, $pages));
-
+	, 'PAGES', pageLinks ($page, $pages));
+}
 ?>
 
 <form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
-	<legend>New Thread</legend>
+	<legend>Add Thread</legend>
 <?php
 if (!APP_ENABLED) {
 	echo <<<HTML
@@ -184,6 +263,8 @@ HTML
 
 ?></fieldset></form>
 
-<footer>
+<footer><p>
+	&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;
+</p><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
-</footer>
+</p></footer>
