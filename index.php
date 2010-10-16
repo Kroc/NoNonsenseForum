@@ -71,7 +71,7 @@ XML
 	}
 }
 
-?>
+?><!doctype html>
 <meta charset="utf-8" />
 <title>camen design forums</title>
 <link rel="stylesheet" href="/theme/c64.css" />

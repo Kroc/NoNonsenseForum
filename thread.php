@@ -48,6 +48,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 }
 
 echo template_tags (<<<HTML
+<!doctype html>
 <meta charset="utf-8" />
 <title>camen design forums</title>
 <link rel="stylesheet" href="/theme/c64.css" />
