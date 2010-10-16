@@ -13,3 +13,6 @@
 
 •	Move to a fully templated theme, like camendesign?
 	(will allow people to theme directly, without having to modify PHP)
+
+•	Post editing
+•	Post deleting (problem with IDs reshuffling, need to create permalink IDs)

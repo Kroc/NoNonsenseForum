@@ -86,11 +86,10 @@ h2+.pages			{margin-top: -3em;}
 
 article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
 				 word-wrap: break-word; font-family: "C64 Pro", monospace;}
-header>dl,
-header>dl>dt,
- header>dl>dd			{display: inline; margin: 0; padding: 0;}
-header>dl>dt			{color: #ABABAB;}
-header>dl>dd			{color: #808080;}
+
+article>header			{color: #808080;}
+article>header>time		{float: right;}
+b				{font-weight: normal; color: white;}
 
 h2~article:not(:last-of-type):after
 				{position: absolute; display: block; margin: 0 0 0 -1em; color: #68A941;
