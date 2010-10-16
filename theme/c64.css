@@ -116,11 +116,14 @@ input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, te
 				{background: #fff;}
 
 input[type=text], input[type=password]
-				{width: 28em; padding: 0 1em;}
+				{width: 26em; padding: 0 1em;}
 input[type=number]		{width: 4em; padding: 0 1em;}
 
 textarea			{width: 100%; height: 23em; margin: 1em 0 0 0; padding: 1em; border: 0; resize: none;
 				 font: 1em/100% "C64 Pro", monospace; color: #555555;
+				 -webkit-box-sizing: border-box;
+				    -moz-box-sizing: border-box;
+				         box-sizing: border-box;
 				 background: #ABABAB;}
 
 fieldset>p:nth-child(4)		{display: none;}
