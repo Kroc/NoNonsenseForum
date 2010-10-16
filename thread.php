@@ -107,7 +107,7 @@ echo template_tags (<<<HTML
 HTML
 , array (
 	'AUTHOR'	=> $post->author,
-	'PUBDATE'	=> strtoupper (date ('d-M\'y h:i', strtotime ($post->pubDate))),
+	'PUBDATE'	=> strtoupper (date ('d-M\'y g:i', strtotime ($post->pubDate))),
 	'DESCRIPTION'	=> $post->description
 ));
 
@@ -149,7 +149,7 @@ HTML
 		, array (
 			'ID'		=> $c,
 			'AUTHOR'	=> $post->author,
-			'PUBDATE'	=> strtoupper (date ('d-M\'y h:i', strtotime ($post->pubDate))),
+			'PUBDATE'	=> strtoupper (date ('d-M\'y g:i', strtotime ($post->pubDate))),
 			'DESCRIPTION'	=> $post->description
 		));
 		$c++;
