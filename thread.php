@@ -135,10 +135,11 @@ HTML
 	foreach ($thread as &$post) {
 		echo template_tags (<<<HTML
 <article id="&__ID__;">
-<header><a href="#&__ID__;">#&__ID__;.</a> <dl>
-	<dt>At</dt>	<dd><time pubdate>&__PUBDATE__;</time></dd>
-	<dt>by</dt>	<dd>&__AUTHOR__;</dd>
-</dl></header>
+<header>
+	<time pubdate>&__PUBDATE__;</time>
+	<a href="#&__ID__;">#&__ID__l.</a>
+	<b>&__AUTHOR__;</b>
+</header>
 <p>
 &__DESCRIPTION__;
 </p>
