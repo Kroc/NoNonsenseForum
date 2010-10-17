@@ -61,6 +61,7 @@ $post = array_pop ($thread);
 echo template_tags (TEMPLATE_THREAD_FIRST, array (
 	'TITLE'		=> $xml->channel->title,
 	'AUTHOR'	=> $post->author,
+	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
 	'DESCRIPTION'	=> $post->description
 ));
@@ -82,6 +83,7 @@ if (count ($thread)) {
 		@$html .= template_tags (TEMPLATE_THREAD_POST, array (
 			'ID'		=> $c,
 			'AUTHOR'	=> $post->author,
+			'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 			'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
 			'DESCRIPTION'	=> $post->description
 		));

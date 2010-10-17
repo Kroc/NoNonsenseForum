@@ -173,7 +173,7 @@ define ("TEMPLATE_THREAD_FIRST", <<<HTML
 
 <article id="1">
 	<header>
-		<time pubdate>&__PUBDATE__;</time> <a href="#1">#1.</a> <b>&__AUTHOR__;</b>
+		<time datetime="&__DATETIME__;" pubdate>&__PUBDATE__;</time> <a href="#1">#1.</a> <b>&__AUTHOR__;</b>
 	</header>
 	
 	&__DESCRIPTION__;
@@ -203,7 +203,7 @@ HTML
 define ("TEMPLATE_THREAD_POST", <<<HTML
 <article id="&__ID__;">
 	<header>
-		<time pubdate>&__PUBDATE__;</time>
+		<time datetime="&__DATETIME__;" pubdate>&__PUBDATE__;</time>
 		<a href="#&__ID__;">#&__ID__;.</a>
 		<b>&__AUTHOR__;</b>
 	</header>
