@@ -37,70 +37,29 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//save
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
 	
-	//todo: rebuild folder RSS feed
-	
 	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
 }
 
-echo template_tags (<<<HTML
-<!doctype html>
-<meta charset="utf-8" />
-<title>&__TITLE__;</title>
-<link rel="stylesheet" href="/theme/c64.css" />
-<header>
-	<hgroup>
-		<h1>**** camen design forums v2 ****</h1>
-		<h2>Copyright (CC-BY) 1984-2010 Kroc Camen</h2>
-	</hgroup>
-	<p>
-		READY.
-	</p>
-	<nav>
-		<a href="#reply">Reply</a>
-		<a href="/&__URL__;">RSS</a>
+/* ====================================================================================================================== */
 
-&__PATH__;
-	</nav>
-</header>
-
-<h1>&__TITLE__;</h1>
-HTML
-, array (
+echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
-	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
+	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8').
+			   ($page > 1 ? " · Page $page" : ""),
 	'HOST'		=> APP_HOST,
-	'PATH'		=> $path ? <<<HTML
-		<ol>
-			<li>
-				<a href="/">Forum Index</a>
-				<ol><li><a href="/$path/">$path</a></li></ol>
-			</li>
-		</ol>
-HTML
-			: <<<HTML
-		<ol>
-			<li><a href="/">Forum Index</a></li>
-		</ol>
-HTML
+	'MENU'		=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
+	'PATH'		=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
+				'URL' => rawurlencode ($path), 'PATH' => htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
+			)) : TEMPLATE_THREAD_PATH
 ));
+
+/* ====================================================================================================================== */
 
 $thread = $xml->channel->xpath ('item');
 
 $post = array_pop ($thread);
-echo template_tags (<<<HTML
-<article id="1">
-<header>
-	<time pubdate>&__PUBDATE__;</time>
-	<a href="#1">#1.</a>
-	<b>&__AUTHOR__;</b>
-</header>
-<p>
-&__DESCRIPTION__;
-</p>
-</article>
-
-HTML
-, array (
+echo template_tags (TEMPLATE_THREAD_FIRST, array (
+	'TITLE'		=> $xml->channel->title,
 	'AUTHOR'	=> $post->author,
 	'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
 	'DESCRIPTION'	=> $post->description
@@ -118,30 +77,9 @@ if (count ($thread)) {
 	$pages = ceil (count ($thread) / APP_POSTS);
 	$thread = array_slice ($thread, ($page-1) * APP_POSTS, APP_POSTS);
 	
-	echo template_tag (<<<HTML
-<h2 id="list">Replies</h2>
-<nav class="pages">
-	Page &__PAGES__;
-</nav>
-HTML
-	, 'PAGES', pageLinks ($page, $pages));
-
 	$c=2 + (($page-1) * APP_POSTS);
 	foreach ($thread as &$post) {
-		echo template_tags (<<<HTML
-<article id="&__ID__;">
-<header>
-	<time pubdate>&__PUBDATE__;</time>
-	<a href="#&__ID__;">#&__ID__;.</a>
-	<b>&__AUTHOR__;</b>
-</header>
-<p>
-&__DESCRIPTION__;
-</p>
-</article>
-
-HTML
-		, array (
+		@$html .= template_tags (TEMPLATE_THREAD_POST, array (
 			'ID'		=> $c,
 			'AUTHOR'	=> $post->author,
 			'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
@@ -150,66 +88,28 @@ HTML
 		$c++;
 	}
 	
-	echo template_tag (<<<HTML
-<nav class="pages">
-	Page &__PAGES__;
-</nav>
-HTML
-	, 'PAGES', pageLinks ($page, $pages));
-}
-?>
-<form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
-	<legend>Reply</legend>
-<?php
-if (!APP_ENABLED) {
-	echo <<<HTML
-	<p class="red">Sorry, posting is currently disabled.</p>
-HTML;
-} else {
-	echo template_tags (<<<HTML
-	<p><!--
-		--><label for="name">Name:</label><!--
-		--><input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
-		          value="&__NAME__;" /><!--
-	--></p><p><!--
-		--><label for="password">Password:</label><!--
-		--><input id="password" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
-		          value="&__PASS__;"/><!--
-	--></p><p><!--
-		--><label for="email">Email:</label><!--
-		--><input id="email" name="email" type="text" value="example@abc.com" required automcomplete="on" /><!--
-		-->Leave this as-is, it’s a trap!<!--
-	--></p><p>
-		&__ERROR__;
-	   </p><p><!--
-		--><label for="text">Message:</label><br /><!--
-		--><textarea id="text" name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off">&__TEXT__;</textarea><!--
-	--></p><p id="rules">
-		<input id="submit" name="submit" type="submit" value="Reply" />
-
-		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
-	</p>
-
-HTML
-	, array (
-		'NAME'	=> htmlspecialchars ($NAME,  ENT_COMPAT, 'UTF-8'),
-		'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
-		'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
-		'ERROR'	=> !$SUBMIT
-			   ? "There is no need to \"register\", just enter the name + password you want."
-			   : "<span class=\"red\">".
-			     (!$NAME  ? "Enter a name. You’ll need to use this with the password each time."
-			   : (!$PASS  ? "Enter a password. It’s so you can re-use your name each time."
-			   : (!$TEXT  ? "Well, write a message!"
-			   : "That name is taken. Provide the password for it, or choose another name. (password typo?)"
-			   )))."</span>"
+	echo template_tags (TEMPLATE_THREAD_POSTS, array (
+		'POSTS' => $html,
+		'PAGES' => pageLinks ($page, $pages)
 	));
 }
 
-?></fieldset></form>
+//the reply form
+echo APP_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
+	'NAME'	=> htmlspecialchars ($NAME,  ENT_COMPAT, 'UTF-8'),
+	'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
+	'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
+	'ERROR'	=> !$SUBMIT
+		   ? "There is no need to \"register\", just enter the name + password you want."
+		   : "<span class=\"red\">".
+		     (!$NAME  ? "Enter a name. You’ll need to use this with the password each time."
+		   : (!$PASS  ? "Enter a password. It’s so you can re-use your name each time."
+		   : (!$TEXT  ? "Well, write a message!"
+		   : "That name is taken. Provide the password for it, or choose another name. (password typo?)"
+		   )))."</span>"
+)) : TEMPLATE_THREAD_FORM_DISABLED;
 
-<footer><p>
-	&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;
-</p><p>
-	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
-</p></footer>
+//bon voyage, HTML!
+echo TEMPLATE_FOOTER;
+
+?>

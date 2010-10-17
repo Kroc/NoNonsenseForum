@@ -13,6 +13,11 @@ define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when
 //<uk3.php.net/manual/en/function.is-dir.php#70005>
 chdir (APP_ROOT);
 
+//include the HTML skin
+require_once "theme/template.php";
+
+/* ====================================================================================================================== */
+
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)
 header("Cache-Control: no-cache");
@@ -40,28 +45,26 @@ function flattenTitle ($s_title) {
 }
 
 function pageLinks ($page, $pages) {
-	$link = '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>';
-	
 	//always include the first page
-	$html[] = $page == 1 ? "<span class=\"ltgreen\">1</span>" : template_tag ($link, 'PAGE', 1);
+	$html[] = template_tag ($page == 1 ? TEMPLATE_PAGES_CURRENT : TEMPLATE_PAGES_PAGE, 'PAGE', 1);
 	//more than one page?
 	if ($pages > 1) {
 		//if previous page is not the same as 2, include ellipses
 		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-		if ($page-1 > 2) $html[] = "…";
+		if ($page-1 > 2) $html[] = TEMPLATE_PAGES_GAP;
 		//the page before the current page
-		if ($page-1 > 1) $html[] = template_tag ($link, 'PAGE', $page-1);
+		if ($page-1 > 1) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page-1);
 		//the current page
-		if ($page != 1) $html[] = "<span class=\"ltgreen\">$page</span>";
+		if ($page != 1) $html[] = template_tag (TEMPLATE_PAGES_CURRENT, 'PAGE', $page);
 		//the page after the current page (if not at end)
-		if ($page+1 < $pages) $html[] = template_tag ($link, 'PAGE', $page+1);
+		if ($page+1 < $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page+1);
 		//if there’s a gap between page+1 and the last page
-		if ($page+1 < $pages-1) $html[] = "…";
+		if ($page+1 < $pages-1) $html[] = TEMPLATE_PAGES_GAP;
 		//last page
-		if ($page != $pages) $html[] = template_tag ($link, 'PAGE', $pages);
+		if ($page != $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $pages);
 	}
 	
-	return implode (",", $html);
+	return implode (TEMPLATE_PAGES_SEPARATOR, $html);
 }
 
 function checkName ($name, $pass) {
@@ -85,16 +88,7 @@ function createRSSIndex () {
 		$items = $xml->channel->xpath ('item');
 		$item = end ($items);
 		
-		@$rss .= template_tags (<<<XML
-<item>
-<title>&__TITLE__;</title>
-<link>http://&__APP_HOST__;/&__URL__;</link>
-<author>&__NAME__;</author>
-<pubDate>&__DATE__;</pubDate>
-<description>&__TEXT__;</description>
-</item>
-XML
-		, array (
+		@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
 			'APP_HOST'	=> APP_HOST,
 			'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME),
@@ -104,22 +98,11 @@ XML
 		));
 	}
 	
-	file_put_contents ("index.rss", template_tags (<<<XML
-<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-<atom:link href="http://&__APP_HOST__;/index.rss" rel="self" type="application/rss+xml" />
-<title>&__TITLE__;</title>
-<link>http://&__APP_HOST__;/</link>
-XML
-	, array (
-		'APP_HOST'	=> APP_HOST,
-		'TITLE'		=> $xml->channel->title
-	)).$rss.<<<HTML
-</channel>
-</rss>
-HTML
-	, LOCK_EX);
+	file_put_contents ("index.rss", template_tags (TEMPLATE_RSS_INDEX, array (
+		'APP_HOST' => APP_HOST,
+		'TITLE'    => $xml->channel->title,
+		'ITEMS'    => $rss
+	)), LOCK_EX);
 }
 
 function formatText ($text) {
