@@ -109,18 +109,18 @@ function formatText ($text) {
 	$text = htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
 	
 	$text = preg_replace ('/
-		((?:http|ftp)s?:\/\/)?					# $1 = protocol
+		((?:http|ftp)s?:\/\/)					# $1 = protocol
 		(?:www\.)?						# ignore www
 		(							# $2 = friendly URL (no protocol)
 			([a-z0-9._%+-]+@[a-z0-9.-]+)?			# $3 = email address
-			[a-z0-9.-]{2,}(?:\.[a-z]{2,4})+			# domain name (mandatory if protocol given)
+			[a-z0-9.-]{2,}(?:\.[a-z]{2,4})+			# domain name
 		)(							# $4 = folders and filename, relative URL
 			\/						# slash required after full domain
 			[\/a-z0-9_!~*\'().;?:@&=+$,%-]*			# folders and filename
 			(?:\x23[^\s"]+)?				# bookmark
 		)?			
 		/exi',
-		'"<a href=\"".("$1"?"$1":"http://")."$2$4"."\">&lt;$2".("$4"?"/…":"")."&gt;</a>"',
+		'"<a href=\"".("$1"?"$1":"http://")."$2$4"."\">$2".("$4"?"/…":"")."</a>"',
 	$text);
 	
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
