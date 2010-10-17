@@ -18,39 +18,34 @@ $TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 
 if ($SUBMIT = @$_POST['submit']) if (
 	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TEXT
+	&& checkName ($NAME, $PASS)
 ) {
-	$user = APP_ROOT."users/".md5 ("C64:$NAME").".txt";
-	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 ("C64:$PASS"));
-	//does password match?
-	if (file_get_contents ($user) == md5 ("C64:$PASS")) {
-		//where to?
-		$page = ceil ((count ($xml->channel->xpath ('item'))) / APP_POSTS);
-		$url = ($path ? rawurlencode ($path)."/" : "")."$file?page=$page#".
-			(count ($xml->channel->xpath ('item')) +1)
-		;
-		
-		//add the comment to the thread
-		$item = $xml->channel->prependChild ("item");
-		$item->addChild ("title", htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
-		$item->addChild ("link", "http://".APP_HOST."/$url");
-		$item->addChild ("author", htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
-		$item->addChild ("pubDate", gmdate ('r'));
-		$item->addChild ("description", htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
-		
-		//save
-		file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
-		
-		//todo: rebuild folder RSS feed
-		
-		header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
-	}
+	//where to?
+	$page = ceil ((count ($xml->channel->xpath ('item'))) / APP_POSTS);
+	$url = ($path ? rawurlencode ($path)."/" : "")."$file?page=$page#".
+		(count ($xml->channel->xpath ('item')) +1)
+	;
+	
+	//add the comment to the thread
+	$item = $xml->channel->prependChild ("item");
+	$item->addChild ("title", htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("link", "http://".APP_HOST."/$url");
+	$item->addChild ("author", htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("pubDate", gmdate ('r'));
+	$item->addChild ("description", htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
+	
+	//save
+	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
+	
+	//todo: rebuild folder RSS feed
+	
+	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
 }
 
 echo template_tags (<<<HTML
 <!doctype html>
 <meta charset="utf-8" />
-<title>camen design forums</title>
+<title>&__TITLE__;</title>
 <link rel="stylesheet" href="/theme/c64.css" />
 <header>
 	<hgroup>
@@ -72,7 +67,7 @@ echo template_tags (<<<HTML
 HTML
 , array (
 	'URL'		=> "$file.xml",
-	'TITLE'		=> $xml->channel->title,
+	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
 	'HOST'		=> APP_HOST,
 	'PATH'		=> $path ? <<<HTML
 		<ol>

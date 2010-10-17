@@ -8,6 +8,7 @@ define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute refere
 define ('APP_ENABLED', true);				//if posting is allowed
 define ('APP_THREADS', 50);				//number of threads per page on the index
 define ('APP_POSTS',   25);				//number of posts per page on the index
+define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when hashing
 
 //<uk3.php.net/manual/en/function.is-dir.php#70005>
 chdir (APP_ROOT);
@@ -42,7 +43,7 @@ function pageLinks ($page, $pages) {
 	$link = '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>';
 	
 	//always include the first page
-	$html[] = $page == 1 ? "<span class=\"cyan\">1</span>" : template_tag ($link, 'PAGE', 1);
+	$html[] = $page == 1 ? "<span class=\"ltgreen\">1</span>" : template_tag ($link, 'PAGE', 1);
 	//more than one page?
 	if ($pages > 1) {
 		//if previous page is not the same as 2, include ellipses
@@ -51,7 +52,7 @@ function pageLinks ($page, $pages) {
 		//the page before the current page
 		if ($page-1 > 1) $html[] = template_tag ($link, 'PAGE', $page-1);
 		//the current page
-		if ($page != 1) $html[] = "<span class=\"cyan\">$page</span>";
+		if ($page != 1) $html[] = "<span class=\"ltgreen\">$page</span>";
 		//the page after the current page (if not at end)
 		if ($page+1 < $pages) $html[] = template_tag ($link, 'PAGE', $page+1);
 		//if there’s a gap between page+1 and the last page
@@ -61,6 +62,15 @@ function pageLinks ($page, $pages) {
 	}
 	
 	return implode (",", $html);
+}
+
+function checkName ($name, $pass) {
+	//users are stored as text files based on the hash of the given name
+	$user = APP_ROOT."users/".md5 (APP_SALT.$name).".txt";
+	//create the user, if new
+	if (!file_exists ($user)) file_put_contents ($user, md5 (APP_SALT.$pass));
+	//does password match?
+	return (file_get_contents ($user) == md5 (APP_SALT.$pass));
 }
 
 function createRSSIndex () {

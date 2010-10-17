@@ -4,10 +4,11 @@ include "shared.php";
 
 /* ====================================================================================================================== */
 
-//which folder to show, not present for forum index
+//which folder to show, not present for forum index. we have to change directory for `is_dir` to work,
+//see <uk3.php.net/manual/en/function.is-dir.php#70005>
 if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : "") chdir (APP_ROOT.$path);
 
-//page number, obviously. for folders full of threads, it’s divided into pages
+//page number, obviously
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
 //submitted info for making a new thread
@@ -19,25 +20,20 @@ $TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 //has the user the submitted a new thread?
 if ($SUBMIT = @$_POST['submit']) if (
 	//`APP_ENABLED` (in 'shared.php') can be toggled to disable posting
-	//the email check is a fake, hidden field in the form to try and fool spam bots
+	//the email check is a fake hidden field in the form to try and fool spam bots
 	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TITLE && $TEXT
+	&& checkName ($NAME, $PASS)
 ) {
-	//users are stored as text files based on the hash of the given name
-	$user = APP_ROOT."users/".md5 ("C64:$NAME").".txt";
-	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 ("C64:$PASS"));
-	//does password match?
-	if (file_get_contents ($user) == md5 ("C64:$PASS")) {
-		//generate the file name for the RSS thread
-		$file = flattenTitle ($TITLE);
-		$url  = ($path ? rawurlencode ($path)."/" : "").$file;
-		//if this file already exists (double-submission from back button?), redirect to it
-		if (file_exists ("$file.xml")) header (
-			"Location: http://".$_SERVER['HTTP_HOST']."/$url", 303
-		);
-		
-		//write out the new thread as an RSS file
-		file_put_contents ("$file.xml", template_tags (<<<XML
+	//generate the file name for the RSS thread
+	$file = flattenTitle ($TITLE);
+	$url  = ($path ? rawurlencode ($path)."/" : "").$file;
+	//if this file already exists (double-submission from back button?), redirect to it
+	if (file_exists ("$file.xml")) header (
+		"Location: http://".$_SERVER['HTTP_HOST']."/$url", 303
+	);
+	
+	//write out the new thread as an RSS file
+	file_put_contents ("$file.xml", template_tags (<<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
@@ -54,65 +50,58 @@ if ($SUBMIT = @$_POST['submit']) if (
 </channel>
 </rss>
 XML
-		, array (
-			'APP_HOST'	=> APP_HOST,
-			'TITLE'		=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
-			'URL'		=> $url,
-			'NAME'		=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
-			'DATE'		=> gmdate ('r'),
-			'TEXT'		=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
-		)));
-		
-		//create RSS thread for this folder (a list of new threads)
-		createRSSIndex ();
-		
-		//redirect to newley created thread
-		header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
-	}
+	, array (
+		'APP_HOST'	=> APP_HOST,
+		'TITLE'		=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
+		'URL'		=> $url,
+		'NAME'		=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
+		'DATE'		=> gmdate ('r'),
+		'TEXT'		=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
+	)));
+	
+	//create RSS thread for this folder (a list of new threads)
+	createRSSIndex ();
+	
+	//redirect to newley created thread
+	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
 }
 
-?><!doctype html>
+echo template_tags (<<<HTML
+<!doctype html>
 <meta charset="utf-8" />
-<title>camen design forums</title>
+<title>&__TITLE__;</title>
 <link rel="stylesheet" href="/theme/c64.css" />
 <header>
 	<hgroup>
 		<h1>**** camen design forums v2 ****</h1>
 		<h2>Copyright (CC-BY) 1984-2010 Kroc Camen</h2>
 	</hgroup>
-	<p>
-		READY.
-	</p>
+	<p>READY.</p>
 	<nav>
 		<a href="#new">Add Thread</a>
 		<a href="index.rss">RSS</a>
-<?php
-
-if ($path) {
-	echo <<<HTML
-		<ol>
-			<li>
-				<a href="/">Forum Index</a>
-				<ol><li>$path:</li></ol>
-			</li>
-		</ol>
-
-HTML;
-	
-} else {
-	echo <<<HTML
-		<ol>
-			<li>• Forum Index:</li>
-		</ol>
-
-HTML;
-}
-
-?>
+&__PATH__;
 	</nav>
 </header>
+HTML
+, array (
+	'TITLE'	=> $path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index',
+	'PATH'	=> $path ? <<<HTML
+			<ol>
+				<li>
+					<a href="/">Forum Index</a>
+					<ol><li>$path:</li></ol>
+				</li>
+			</ol>
 
-<?php
+HTML
+		: <<<HTML
+			<ol>
+				<li>• Forum Index:</li>
+			</ol>
+
+HTML
+));
 
 //get a list of folders
 if ($folders = array_filter (
@@ -187,7 +176,7 @@ HTML
 			'STICKY'=> array_key_exists ($file, $stickies) ? ' class="sticky"' : '',  
 			'TITLE' => $xml->channel->title,
 			'COUNT' => count ($items),
-			'TIME'  => strtoupper (date ('d-M\'y h:i', strtotime ($last->pubDate))),
+			'TIME'  => strtoupper (date ('d-M\'y H:i', strtotime ($last->pubDate))),
 			'DATE'	=> date ('c', strtotime ($last->pubDate)),
 			'NAME'  => $last->author
 		));
