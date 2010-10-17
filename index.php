@@ -85,7 +85,8 @@ echo template_tags (<<<HTML
 </header>
 HTML
 , array (
-	'TITLE'	=> $path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index',
+	'TITLE'	=> ($path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index').
+		   ($page > 1 ? " · Page $page" : ""),
 	'PATH'	=> $path ? <<<HTML
 			<ol>
 				<li>

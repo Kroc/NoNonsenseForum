@@ -1,5 +1,3 @@
-•	Show thread title in <title>, duh!
-
 •	Error message if thread already exists (could be paged out of view)
 	-	Could be done with an interstitial page, point user to the thread
 	-	Also, if file exists, could append a number to flattened title to allow more than one thread of same name
