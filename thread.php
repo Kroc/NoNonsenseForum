@@ -70,8 +70,8 @@ echo template_tags (TEMPLATE_THREAD_FIRST, array (
 if (count ($thread)) {
 	//sort the other way around
 	//<http://stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
-	$sort_proxy = array();
-	foreach ($thread as $node) $sort_proxy[] = (string) $node->pubDate;
+	$sort_proxy = array ();
+	foreach ($thread as $node) $sort_proxy[] = strtotime ($node->pubDate);
 	array_multisort ($sort_proxy, SORT_ASC, $thread);
 	
 	//paging
