@@ -29,9 +29,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//include the folder if present
 	$url  = ($path ? rawurlencode ($path)."/" : "").$file;
 	//if this file already exists (double-submission from back button?), redirect to it
-	if (file_exists ("$file.xml")) header (
-		"Location: http://".$_SERVER['HTTP_HOST']."/$url", 303
-	);
+	if (file_exists ("$file.xml")) header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
 	
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
@@ -46,7 +44,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	createRSSIndex ();
 	
 	//redirect to newley created thread
-	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
+	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
 }
 
 /* ====================================================================================================================== */

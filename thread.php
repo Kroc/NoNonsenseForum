@@ -28,16 +28,16 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ("item");
-	$item->addChild ("title", htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
-	$item->addChild ("link", "http://".$_SERVER['HTTP_HOST']."/$url");
-	$item->addChild ("author", htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
-	$item->addChild ("pubDate", gmdate ('r'));
-	$item->addChild ("description", htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("title",	htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("link",	"http://".$_SERVER['HTTP_HOST']."/$url");
+	$item->addChild ("author",	htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("pubDate",	gmdate ('r'));
+	$item->addChild ("description",	htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
 	
 	//save
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
 	
-	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", 303);
+	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
 }
 
 /* ====================================================================================================================== */
