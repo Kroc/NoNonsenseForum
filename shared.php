@@ -3,7 +3,6 @@
 //PHP 5.3 issues a warning if the timezone is not set when using date-related commands
 date_default_timezone_set ('Europe/London');
 
-define ('APP_HOST',    'forum.camendesign.com');	//preferred domain
 define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute references
 define ('APP_ENABLED', true);				//if posting is allowed
 define ('APP_THREADS', 50);				//number of threads per page on the index
@@ -89,7 +88,6 @@ function createRSSIndex () {
 		$item = end ($items);
 		
 		@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
-			'APP_HOST'	=> APP_HOST,
 			'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME),
 			'NAME'		=> htmlspecialchars ($item->author, ENT_NOQUOTES, 'UTF-8'),
@@ -99,7 +97,6 @@ function createRSSIndex () {
 	}
 	
 	file_put_contents ("index.rss", template_tags (TEMPLATE_RSS_INDEX, array (
-		'APP_HOST' => APP_HOST,
 		'TITLE'    => $xml->channel->title,
 		'ITEMS'    => $rss
 	)), LOCK_EX);
@@ -108,19 +105,24 @@ function createRSSIndex () {
 function formatText ($text) {
 	$text = htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
 	
-	$text = preg_replace ('/
-		((?:http|ftp)s?:\/\/)					# $1 = protocol
-		(?:www\.)?						# ignore www
-		(							# $2 = friendly URL (no protocol)
-			([a-z0-9._%+-]+@[a-z0-9.-]+)?			# $3 = email address
-			[a-z0-9.-]{2,}(?:\.[a-z]{2,4})+			# domain name
-		)(							# $4 = folders and filename, relative URL
-			\/						# slash required after full domain
-			[\/a-z0-9_!~*\'().;?:@&=+$,%-]*			# folders and filename
-			(?:\x23[^\s"]+)?				# bookmark
-		)?			
-		/exi',
-		'"<a href=\"".("$1"?"$1":"http://")."$2$4"."\">$2".("$4"?"/…":"")."</a>"',
+	$text = preg_replace (
+		'/(?:
+			((?:http|ftp)s?:\/\/)					# $1 = protocol
+			(?:www\.)?						# ignore www
+			(							# $2 = friendly URL (no protocol)
+				[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+			# domain name
+			)(?(3)|(						# $3 = folders and filename, relative URL
+				\/						# slash required after full domain
+				(?:						# folders and filename
+					[:)](?!\s|$)|				# ignore a colon or bracket at end of URL
+					[\/a-z0-9_!~*\'(.;?@&=+$,%-]		
+				)*
+				(?:\x23[^\s"]+)?				# bookmark
+			)?)
+		|
+			([a-z0-9._%+-]+@[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+)	# $4 = e-mail
+		)/exi',
+		'"<a href=\"".("$4"?"mailto:$4":("$1"?"$1":"http://")."$2$3")."\">$2$4".("$3"?"/…":"")."</a>"',
 	$text);
 	
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {

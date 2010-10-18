@@ -29,7 +29,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ("item");
 	$item->addChild ("title", htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
-	$item->addChild ("link", "http://".APP_HOST."/$url");
+	$item->addChild ("link", "http://".$_SERVER['HTTP_HOST']."/$url");
 	$item->addChild ("author", htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
 	$item->addChild ("pubDate", gmdate ('r'));
 	$item->addChild ("description", htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
@@ -46,7 +46,6 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
 	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8').
 			   ($page > 1 ? " · Page $page" : ""),
-	'HOST'		=> APP_HOST,
 	'MENU'		=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 	'PATH'		=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
 				'URL' => rawurlencode ($path), 'PATH' => htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')

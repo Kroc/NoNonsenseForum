@@ -35,7 +35,6 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
-		'APP_HOST'	=> APP_HOST,
 		'TITLE'		=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
 		'URL'		=> $url,
 		'NAME'		=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
