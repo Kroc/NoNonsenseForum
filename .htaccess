@@ -7,15 +7,6 @@ DirectoryIndex index.php
 # <webmasterworld.com/apache/3808792.htm>
 Options -MultiViews +Indexes
 
-# force the latest IE version and use ChromeFrame if it's installed
-# (from <github.com/paulirish/html5-boilerplate/blob/master/.htaccess>)
-<IfModule mod_setenvif.c>
-	<IfModule mod_headers.c>
-		BrowserMatch MSIE ie
-		Header set X-UA-Compatible "IE=Edge,chrome=1" env=ie
-	</IfModule>
-</IfModule>
-
 AddType application/rss+xml	.rss
 
 AddType font/ttf		.ttf

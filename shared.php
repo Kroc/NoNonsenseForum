@@ -6,7 +6,7 @@ date_default_timezone_set ('Europe/London');
 define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute references
 define ('APP_ENABLED', true);				//if posting is allowed
 define ('APP_THREADS', 50);				//number of threads per page on the index
-define ('APP_POSTS',   25);				//number of posts per page on the index
+define ('APP_POSTS',   25);				//number of posts per page on threads
 define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when hashing
 
 //<uk3.php.net/manual/en/function.is-dir.php#70005>

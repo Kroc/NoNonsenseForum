@@ -1,6 +1,13 @@
+•	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
+
+•	Have to template the error messages too, still using a class
+
 •	Link to go to the last post on a page
 
 •	Put RSS feeds in <head>!
+	-	An RSS feed for threads in a folder ordered by updated time?
+
+•	A way to regenerate index.rss, if a thread is deleted, for example (may have to make index.rss dynamic)
 
 •	Show posts from the OP in a different colour
 
@@ -10,8 +17,6 @@
 
 •	Check for double-posting
 
-•	A way to regenerate index.rss, if a thread is deleted, for example (may have to make index.rss dynamic)
-
 •	Search:
 	
 	<form method="get" action="http://google.com/search">
@@ -20,7 +25,7 @@
 		<input type="submit" value="Search" />
 	</form>
 
-•	Sitemap
+•	XML Sitemap
 
 •	Post editing
 •	Post deleting (problem with IDs reshuffling, need to create permalink IDs)

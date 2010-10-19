@@ -12,10 +12,10 @@ if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : "") chdir
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
 //submitted info for making a new thread
-$NAME	= mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,        'UTF-8');
-$PASS	= mb_substr (      stripslashes (@$_POST['password']),  0, 20,        'UTF-8');
-$TITLE	= mb_substr (trim (stripslashes (@$_POST['title']   )), 0, 80,        'UTF-8');
-$TEXT	= mb_substr (trim (stripslashes (@$_POST['text']    )),     0, 32768, 'UTF-8');
+$NAME	= mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,    'UTF-8');
+$PASS	= mb_substr (      stripslashes (@$_POST['password']),  0, 20,    'UTF-8');
+$TITLE	= mb_substr (trim (stripslashes (@$_POST['title']   )), 0, 80,    'UTF-8');
+$TEXT	= mb_substr (trim (stripslashes (@$_POST['text']    )), 0, 32768, 'UTF-8');
 
 //has the user the submitted a new thread?
 if ($SUBMIT = @$_POST['submit']) if (
