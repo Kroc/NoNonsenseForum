@@ -1,6 +1,6 @@
-•	Put RSS feeds in <head>!
+•	Link to go to the last post on a page
 
-•	Ignore : / ) after URL
+•	Put RSS feeds in <head>!
 
 •	Show posts from the OP in a different colour
 
@@ -27,3 +27,5 @@
 	-	Could keep post and just remove text "This post has been bahleeted."
 
 •	IE support (no reason why not)
+
+•	Mobile support (iPhone / iPad / Android)

@@ -108,17 +108,17 @@ function formatText ($text) {
 	$text = preg_replace (
 		'/(?:
 			((?:http|ftp)s?:\/\/)					# $1 = protocol
-			(?:www\.)?						# ignore www
+			(?:www\.)?						# ignore www in friendly URL
 			(							# $2 = friendly URL (no protocol)
 				[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+			# domain name
-			)(?(3)|(						# $3 = folders and filename, relative URL
+			)(							# $3 = folders and filename, relative URL
 				\/						# slash required after full domain
 				(?:						# folders and filename
-					[:)](?!\s|$)|				# ignore a colon or bracket at end of URL
-					[\/a-z0-9_!~*\'(.;?@&=+$,%-]		
+					[:).](?!\s|$)|				# ignore a colon or bracket at end of URL
+					[\/a-z0-9_!~*\'(;?@&=+$,%-]
 				)*
 				(?:\x23[^\s"]+)?				# bookmark
-			)?)
+			)?
 		|
 			([a-z0-9._%+-]+@[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+)	# $4 = e-mail
 		)/exi',
