@@ -1,6 +1,6 @@
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
-
 •	Have to template the error messages too, still using a class
+•	Template date format too
 
 •	Link to go to the last post on a page
 
@@ -25,7 +25,7 @@
 		<input type="submit" value="Search" />
 	</form>
 
-•	XML Sitemap
+•	Sitemap
 
 •	Post editing
 •	Post deleting (problem with IDs reshuffling, need to create permalink IDs)
@@ -34,3 +34,5 @@
 •	IE support (no reason why not)
 
 •	Mobile support (iPhone / iPad / Android)
+
+•	Read-only (lock) threads and folders. Use file-permissions?

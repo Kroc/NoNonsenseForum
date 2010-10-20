@@ -46,6 +46,8 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
 	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8').
 			   ($page > 1 ? " · Page $page" : ""),
+	'RSS_URL'	=> "$file.xml",
+	'RSS_TITLE'	=> "Replies",
 	'MENU'		=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 	'PATH'		=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
 				'URL' => rawurlencode ($path), 'PATH' => htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')

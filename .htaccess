@@ -7,7 +7,7 @@ DirectoryIndex index.php
 # <webmasterworld.com/apache/3808792.htm>
 Options -MultiViews +Indexes
 
-AddType application/rss+xml	.rss
+AddType application/rss+xml	.rss .xml
 
 AddType font/ttf		.ttf
 AddType font/x-woff		.woff

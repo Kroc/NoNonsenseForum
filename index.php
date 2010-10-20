@@ -52,12 +52,14 @@ if ($SUBMIT = @$_POST['submit']) if (
 //write the header:
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
-	'TITLE'	=> ($path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index').
-		   ($page > 1 ? " · Page $page" : ""),
-	'MENU'	=> TEMPLATE_INDEX_MENU,
-	'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER,
-			'PATH', htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
-		) : TEMPLATE_INDEX_PATH
+	'TITLE'		=> ($path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index').
+		   	   ($page > 1 ? " · Page $page" : ""),
+	'RSS_URL'	=> 'index.rss',
+	'RSS_TITLE'	=> $path ? htmlspecialchars ($path, ENT_COMPAT, 'UTF-8') : "Forum Index",
+	'MENU'		=> TEMPLATE_INDEX_MENU,
+	'PATH'		=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER,
+				'PATH', htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
+			) : TEMPLATE_INDEX_PATH
 ));
 
 /* ====================================================================================================================== */

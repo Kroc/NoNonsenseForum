@@ -3,7 +3,12 @@
 //PHP 5.3 issues a warning if the timezone is not set when using date-related commands
 date_default_timezone_set ('Europe/London');
 
+/* constants: some stuff we don’t expect to change
+   ---------------------------------------------------------------------------------------------------------------------- */
 define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute references
+
+/* options: stuff for you
+   ---------------------------------------------------------------------------------------------------------------------- */
 define ('APP_ENABLED', true);				//if posting is allowed
 define ('APP_THREADS', 50);				//number of threads per page on the index
 define ('APP_POSTS',   25);				//number of posts per page on threads

@@ -8,6 +8,7 @@ define ("TEMPLATE_HEADER", <<<HTML
 	<meta charset="utf-8" />
 	<title>&__TITLE__;</title>
 	<link rel="stylesheet" href="/theme/c64.css" />
+	<link rel="alternate" type="application/rss+xml" href="&__RSS_URL__;" title="&__RSS_TITLE__;" />
 </head><body>
 
 <header>

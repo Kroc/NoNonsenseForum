@@ -1,0 +1,15 @@
+NoNonsenseForum:
+================
+The PHP / HTML / CSS and other resources of this project are licenced under a Creative Commons 3.0 Attribution Unported licence, viewable here: http://creativecommons.org/licenses/by/3.0/deed.en_GB
+
+What does this mean? This means that you may do anything you want with this code, as long as you give credit. How you decide to give credit is up to you, it can be visible in the web browser or just a comment in the HTML. An example attribution could be:
+
+<!-- original code by Kroc Camen <forum.camendesign.com> -->
+
+
+
+Please Note:
+============
+The font files in the theme file are created by STYLE <style64.org/c64-truetype> and have their own licence, viewable in 'license.txt' in the theme folder. I have been given personal permission to use these fonts in this project, please read their licence if you intend to use the C64 theme.
+
+
