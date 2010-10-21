@@ -73,13 +73,24 @@ function pageLinks ($page, $pages) {
 
 function checkName ($name, $pass) {
 	//users are stored as text files based on the hash of the given name
-	$user = APP_ROOT."users/".md5 (APP_SALT.$name).".txt";
+	$user = APP_ROOT."users/".md5 (APP_SALT.strtolower ($name)).".txt";
 	//create the user, if new
 	if (!file_exists ($user)) file_put_contents ($user, md5 (APP_SALT.$pass));
 	//does password match?
 	return (file_get_contents ($user) == md5 (APP_SALT.$pass));
 }
 
+//check to see if a name is a known moderator in mods.txt
+function isMod ($name) {
+	//todo: per-folder mods.txt
+	if (!file_exists (APP_ROOT."mods.txt")) return false;
+	return in_array (
+		strtolower ($name),
+		array_map ('strtolower', file (APP_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+	);
+}
+
+//it is assumed that the directory has been changed to the appropriate folder
 function createRSSIndex () {
 	//get list of threads
 	$threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);

@@ -56,13 +56,15 @@ echo template_tags (TEMPLATE_HEADER, array (
 		   	   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> 'index.rss',
 	'RSS_TITLE'	=> $path ? htmlspecialchars ($path, ENT_COMPAT, 'UTF-8') : "Forum Index",
-	'MENU'		=> TEMPLATE_INDEX_MENU,
-	'PATH'		=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER,
+	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
+		'MENU'	=> TEMPLATE_INDEX_MENU,
+		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER,
 				'PATH', htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
 			) : TEMPLATE_INDEX_PATH
+	))
 ));
 
-/* ====================================================================================================================== */
+/* ---------------------------------------------------------------------------------------------------------------------- */
 
 //get a list of folders
 if ($folders = array_filter (
@@ -126,21 +128,20 @@ if ($threads) {
 	)); $html = "";
 }
 
+/* ---------------------------------------------------------------------------------------------------------------------- */
+
 //the new thread form
 echo APP_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
 	'NAME'	=> htmlspecialchars ($NAME,  ENT_COMPAT, 'UTF-8'),
 	'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
 	'TITLE'	=> htmlspecialchars ($TITLE, ENT_COMPAT, 'UTF-8'),
 	'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
-	'ERROR'	=> !$SUBMIT
-		   ? "There is no need to \"register\", just enter the name + password you want."
-		   : "<span class=\"red\">".
-		     (!$NAME  ? "Enter a name. You’ll need to use this with the password each time."
-		   : (!$PASS  ? "Enter a password. It’s so you can re-use your name each time."
-		   : (!$TITLE ? "You need to enter the title of your new discussion thread"
-		   : (!$TEXT  ? "Well, write a message!"
-		   : "That name is taken. Provide the password for it, or choose another name. (password typo?)"
-		   ))))."</span>"
+	'ERROR'	=> !$SUBMIT ? ERROR_NONE
+		   : (!$NAME  ? ERROR_NAME
+		   : (!$PASS  ? ERROR_PASS
+		   : (!$TITLE ? ERROR_TITLE
+		   : (!$TEXT  ? ERROR_TEXT
+		   : ERROR_AUTH))))
 )) : TEMPLATE_INDEX_FORM_DISABLED;
 
 //and we’re all done

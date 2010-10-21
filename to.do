@@ -1,11 +1,10 @@
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
-•	Have to template the error messages too, still using a class
 •	Template date format too
+•	Template small strings like "Forum Index" too (so translation is possible in the skin)
 
 •	Link to go to the last post on a page
 
-•	Put RSS feeds in <head>!
-	-	An RSS feed for threads in a folder ordered by updated time?
+•	An RSS feed for threads in a folder ordered by updated time? (see all updates happening)
 
 •	A way to regenerate index.rss, if a thread is deleted, for example (may have to make index.rss dynamic)
 

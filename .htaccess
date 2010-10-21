@@ -22,11 +22,11 @@ AddType font/x-woff		.woff
 
 <IfModule mod_expires.c>
 	ExpiresActive on
-	ExpiresByType image/png			"access plus 1 month"
-	ExpiresByType image/jpg			"access plus 1 month"
-	ExpiresByType image/jpeg		"access plus 1 month"
-	ExpiresByType font/ttf			"access plus 1 year"
-	ExpiresByType font/x-woff		"access plus 1 year"
+	ExpiresByType image/png		"access plus 1 month"
+	ExpiresByType image/jpg		"access plus 1 month"
+	ExpiresByType image/jpeg	"access plus 1 month"
+	ExpiresByType font/ttf		"access plus 1 year"
+	ExpiresByType font/x-woff	"access plus 1 year"
 </IfModule>
 
 # this is a mess, and probably wrong

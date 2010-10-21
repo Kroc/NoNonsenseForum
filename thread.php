@@ -48,13 +48,15 @@ echo template_tags (TEMPLATE_HEADER, array (
 			   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> "$file.xml",
 	'RSS_TITLE'	=> "Replies",
-	'MENU'		=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
-	'PATH'		=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
+	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
+		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
+		'PATH'	=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
 				'URL' => rawurlencode ($path), 'PATH' => htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
 			)) : TEMPLATE_THREAD_PATH
+	))
 ));
 
-/* ====================================================================================================================== */
+/* ---------------------------------------------------------------------------------------------------------------------- */
 
 $thread = $xml->channel->xpath ('item');
 
@@ -64,6 +66,7 @@ echo template_tags (TEMPLATE_THREAD_FIRST, array (
 	'AUTHOR'	=> $post->author,
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
+	'DELETE'	=> "/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file",
 	'DESCRIPTION'	=> $post->description
 ));
 
@@ -97,19 +100,18 @@ if (count ($thread)) {
 	));
 }
 
+/* ---------------------------------------------------------------------------------------------------------------------- */
+
 //the reply form
 echo APP_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
-	'NAME'	=> htmlspecialchars ($NAME,  ENT_COMPAT, 'UTF-8'),
-	'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
-	'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
-	'ERROR'	=> !$SUBMIT
-		   ? "There is no need to \"register\", just enter the name + password you want."
-		   : "<span class=\"red\">".
-		     (!$NAME  ? "Enter a name. You’ll need to use this with the password each time."
-		   : (!$PASS  ? "Enter a password. It’s so you can re-use your name each time."
-		   : (!$TEXT  ? "Well, write a message!"
-		   : "That name is taken. Provide the password for it, or choose another name. (password typo?)"
-		   )))."</span>"
+	'NAME'	=> htmlspecialchars ($NAME, ENT_COMPAT, 'UTF-8'),
+	'PASS'	=> htmlspecialchars ($PASS, ENT_COMPAT, 'UTF-8'),
+	'TEXT'	=> htmlspecialchars ($TEXT, ENT_COMPAT, 'UTF-8'),
+	'ERROR'	=> !$SUBMIT ? ERROR_NONE
+		   : (!$NAME ? ERROR_NAME
+		   : (!$PASS ? ERROR_PASS
+		   : (!$TEXT ? ERROR_TEXT
+		   : ERROR_AUTH)))
 )) : TEMPLATE_THREAD_FORM_DISABLED;
 
 //bon voyage, HTML!

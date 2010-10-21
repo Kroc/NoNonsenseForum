@@ -2,6 +2,13 @@
 
 /* the opening HTML and website header
    ---------------------------------------------------------------------------------------------------------------------- */
+/* tags:
+	&__TITLE__;		HTML `<title>`
+	&__RSS_URL__;		URL to RSS feed for the current page
+	&__RSS_TITLE__;		the label for the RSS feed, like “New threads”
+	&__NAV__;		a placeholder for a menu used on index / thread pages, but not delete / edit
+				see `TEMPLATE_HEADER_NAV` below
+*/
 define ("TEMPLATE_HEADER", <<<HTML
 <!doctype html>
 <html><head>
@@ -9,6 +16,7 @@ define ("TEMPLATE_HEADER", <<<HTML
 	<title>&__TITLE__;</title>
 	<link rel="stylesheet" href="/theme/c64.css" />
 	<link rel="alternate" type="application/rss+xml" href="&__RSS_URL__;" title="&__RSS_TITLE__;" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
 </head><body>
 
 <header>
@@ -17,13 +25,20 @@ define ("TEMPLATE_HEADER", <<<HTML
 		<h2>Copyright (CC-BY) 1984-2010 Kroc Camen</h2>
 	</hgroup>
 	<p>READY.</p>
-	
+	&__NAV__;
+</header>
+
+HTML
+);
+
+//the nav menu for RSS, new / reply links
+//some pages (like edit / delete) won’t include this
+define ("TEMPLATE_HEADER_NAV", <<<HTML
+
 	<nav>
 &__MENU__;
 &__PATH__;
 	</nav>
-</header>
-
 HTML
 );
 
@@ -136,7 +151,7 @@ define ("TEMPLATE_INDEX_FORM", <<<HTML
 	--></p><p><!--
 		--><label for="password">Password:</label><!--
 		--><input id="password" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
-		          value="&__PASS__;"/><!--
+		          value="&__PASS__;" /><!--
 	--></p><p><!--
 		--><label for="email">Email:</label><!--
 		--><input id="email" name="email" type="text" value="example@abc.com" required autocomplete="off" /><!--
@@ -167,14 +182,33 @@ define ("TEMPLATE_INDEX_FORM_DISABLED", <<<HTML
 HTML
 );
 
+/* form error messages
+   ---------------------------------------------------------------------------------------------------------------------- */
+define ("ERROR_NONE",  "There is no need to \"register\", just enter the name + password you want.");
+define ("ERROR_NAME",  "<span class=\"red\">Enter a name. You’ll need to use this with the password each time.</span>");
+define ("ERROR_PASS",  "<span class=\"red\">Enter a password. It’s so you can re-use your name each time.</span>");
+define ("ERROR_TITLE", "<span class=\"red\">You need to enter the title of your new discussion thread</span>");
+define ("ERROR_TEXT",  "<span class=\"red\">Well, write a message!</span>");
+define ("ERROR_AUTH",  "<span class=\"red\">That name is taken. Provide the password for it, or choose another name. (password typo?)</span>");
+
 /* the first post in a thread
    ---------------------------------------------------------------------------------------------------------------------- */
+/* tags:
+	&__TITLE__;		Title of the thread
+	&__DELETE__;		URL to delete the thread
+	&__DATETIME__;		timestamp in "Sun, 17 Oct 2010 19:41:09 +0000" format for HTML5 `<time>` datetime attribute
+	&__PUBDATE__;		Human readable timestamp
+	&__AUTHOR__;		Name of thread originator
+	&__DESCRIPTION__;	The post message text, HTML formatted and encoded
+*/
 define ("TEMPLATE_THREAD_FIRST", <<<HTML
 <h1>&__TITLE__;</h1>
 
 <article id="1">
 	<header>
-		<time datetime="&__DATETIME__;" pubdate>&__PUBDATE__;</time> <a href="#1">#1.</a> <b>&__AUTHOR__;</b>
+		<a class="delete" href="&__DELETE__;">Delete</a>
+		<time datetime="&__DATETIME__;" pubdate>&__PUBDATE__;</time>
+		<a href="#1">#1.</a> <b>&__AUTHOR__;</b>
 	</header>
 	
 	&__DESCRIPTION__;
@@ -221,25 +255,28 @@ define ("TEMPLATE_THREAD_FORM", <<<HTML
 <form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Reply</legend>
 	
-	<p><!--
-		--><label for="name">Name:</label><!--
-		--><input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
-		          value="&__NAME__;" /><!--
-	--></p><p><!--
-		--><label for="password">Password:</label><!--
-		--><input id="password" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
-		          value="&__PASS__;"/><!--
-	--></p><p><!--
-		--><label for="email">Email:</label><!--
-		--><input id="email" name="email" type="text" value="example@abc.com" required automcomplete="on" /><!--
-		-->Leave this as-is, it’s a trap!<!--
-	--></p><p>
+	<label>Name:
+		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+		 value="&__NAME__;" />
+	</label>
+	<label>Password:
+		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+		 value="&__PASS__;" />
+	</label>
+	<label>Email: (Leave this as-is, it’s a trap!)
+		<input name="email" type="text" value="example@abc.com" required automcomplete="on" />
+	</label>
+	
+	<p>
 		&__ERROR__;
-	   </p><p><!--
-		--><label for="text">Message:</label><br /><!--
-		--><textarea id="text" name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
-		   >&__TEXT__;</textarea><!--
-	--></p><p id="rules">
+	</p>
+	
+	<label>Message:
+		<textarea name="text" cols="40" rows="25" maxlength="32768" required autocomplete="off"
+		>&__TEXT__;</textarea>
+	</label>
+	
+	<p id="rules">
 		<input id="submit" name="submit" type="submit" value="Reply" />
 		
 		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
@@ -257,6 +294,7 @@ HTML
 
 /* the site footer and closing HTML
    ---------------------------------------------------------------------------------------------------------------------- */
+/* tags: none */
 define ("TEMPLATE_FOOTER", <<<HTML
 
 <footer><p>
@@ -271,6 +309,36 @@ define ("TEMPLATE_FOOTER", <<<HTML
 </body></html>
 HTML
 );
+
+
+/* the deletion page
+   ====================================================================================================================== */
+/* delete thread
+   ---------------------------------------------------------------------------------------------------------------------- */
+define ("TEMPLATE_DELETE_THREAD", <<<HTML
+<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+	<legend>Delete Thread &amp; Replies</legend>
+	
+	<label>Name:
+		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+		 value="&__NAME__;" />
+	</label>
+	<label>Password:
+		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+		 value="&__PASS__;" />
+	</label>
+	
+	<p>
+		&__ERROR__;
+	</p><p>
+		<input id="submit" name="submit" type="submit" value="Delete" />
+	</p>
+</fieldset></form>
+HTML
+);
+define ("ERROR_DELETE_NONE", "To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.");
+define ("ERROR_DELETE_AUTH", "<span class=\"red\">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>");
+
 
 /* RSS feeds
    ====================================================================================================================== */
