@@ -144,30 +144,34 @@ define ("TEMPLATE_INDEX_FORM", <<<HTML
 <form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Add Thread</legend>
 	
-	<p><!--
-		--><label for="name">Name:</label><!--
-		--><input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
-		          value="&__NAME__;" /><!--
-	--></p><p><!--
-		--><label for="password">Password:</label><!--
-		--><input id="password" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
-		          value="&__PASS__;" /><!--
-	--></p><p><!--
-		--><label for="email">Email:</label><!--
-		--><input id="email" name="email" type="text" value="example@abc.com" required autocomplete="off" /><!--
-		-->(Leave this as-is, it’s a trap!)<!--
-	--></p><p>
+	<label>Name:
+		<input name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+	          value="&__NAME__;" />
+	</label>
+	<label>Password:
+		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+	          value="&__PASS__;" />
+	</label>
+	<label class="email">Email:
+		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+		(Leave this as-is, it’s a trap!)
+	</label>
+	
+	<p>
 		&__ERROR__;
-	   </p><p><!--
-		--><label for="title">Title:</label><!--
-		--><input id="title" name="title" type="text" size="28" maxlength="80" required autocomplete="off"
-		    value="&__TITLE__;" /><!--
-	--></p><p><!--
-		--><label for="text">Message:</label><br /><!--
-		--><textarea id="text" name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
-		   >&__TEXT__;</textarea><!--
-	--></p><p id="rules">
-		<input id="submit" name="submit" type="submit" value="Submit" />
+	</p>
+	
+	<label>Title:
+		<input name="title" type="text" size="28" maxlength="80" required autocomplete="off"
+		    value="&__TITLE__;" />
+	</label>
+	<label>Message:
+		<textarea name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
+		>&__TEXT__;</textarea>
+	</label>
+	
+	<p id="rules">
+		<input name="submit" type="submit" value="Submit" />
 		
 		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
 	</p>
@@ -263,7 +267,7 @@ define ("TEMPLATE_THREAD_FORM", <<<HTML
 		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
 		 value="&__PASS__;" />
 	</label>
-	<label>Email: (Leave this as-is, it’s a trap!)
+	<label class="email">Email: (Leave this as-is, it’s a trap!)
 		<input name="email" type="text" value="example@abc.com" required automcomplete="on" />
 	</label>
 	
@@ -277,7 +281,7 @@ define ("TEMPLATE_THREAD_FORM", <<<HTML
 	</label>
 	
 	<p id="rules">
-		<input id="submit" name="submit" type="submit" value="Reply" />
+		<input name="submit" type="submit" value="Reply" />
 		
 		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
 	</p>

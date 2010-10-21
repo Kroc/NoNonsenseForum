@@ -134,6 +134,7 @@ textarea			{width: 100%; height: 23em; margin: 1em 0 0 0; padding: 1em; border: 
 				         box-sizing: border-box;
 				 background: #ABABAB;}
 
+.email				{display: none;}
 fieldset>p#rules		{padding-left: 1em; color: white;}
 input[type=submit]		{float: right; margin: 0 1em 0 1em; padding: 1em; border: 0; cursor: pointer;
 				 font: 1em/100% "C64 Pro", monospace; color: #3E31A2; text-transform: uppercase;
