@@ -6,7 +6,7 @@ include "shared.php";
 
 //which folder to show, not present for forum index. we have to change directory for `is_dir` to work,
 //see <uk3.php.net/manual/en/function.is-dir.php#70005>
-if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : "") chdir (APP_ROOT.$path);
+if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '') chdir (APP_ROOT.$path);
 
 //page number, obviously
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
@@ -27,21 +27,21 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//the file on disk is a simplified version of the title
 	$file = flattenTitle ($TITLE);
 	//include the folder if present
-	$url  = ($path ? rawurlencode ($path)."/" : "").$file;
+	$url  = ($path ? rawurlencode ($path).'/' : '').$file;
 	//if this file already exists (double-submission from back button?), redirect to it
 	if (file_exists ("$file.xml")) header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
 	
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
-		'TITLE'		=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
-		'URL'		=> $url,
-		'NAME'		=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
-		'DATE'		=> gmdate ('r'),
-		'TEXT'		=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
+		'TITLE'	=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
+		'URL'	=> $url,
+		'NAME'	=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
+		'DATE'	=> gmdate ('r'),
+		'TEXT'	=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
 	)));
 	
 	//create RSS thread for this folder (a feed of the newest threads)
-	createRSSIndex ();
+	createRSSIndex ($path);
 	
 	//redirect to newley created thread
 	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
@@ -49,7 +49,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 
 /* ====================================================================================================================== */
 
-//write the header:
+//write the website header:
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
 	'TITLE'		=> ($path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index').
@@ -111,14 +111,14 @@ if ($threads) {
 		$last = reset ($items);
 		
 		@$html .= template_tags (TEMPLATE_INDEX_THREAD, array (
-			'URL'	=> flattenTitle ($xml->channel->title),
-			'PAGE'	=> count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
-			'STICKY'=> array_key_exists ($file, $stickies) ? ' class="sticky"' : '',  
-			'TITLE' => $xml->channel->title,
-			'COUNT' => count ($items),
-			'TIME'  => strtoupper (date ('d-M\'y H:i', strtotime ($last->pubDate))),
-			'DATE'	=> date ('c', strtotime ($last->pubDate)),
-			'NAME'  => $last->author
+			'URL'      => flattenTitle ($xml->channel->title),
+			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
+			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
+			'TITLE'    => $xml->channel->title,
+			'COUNT'    => count ($items),
+			'DATEITME' => date ('c', strtotime ($last->pubDate)),
+			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
+			'NAME'     => $last->author
 		));
 	}
 	
@@ -136,12 +136,12 @@ echo APP_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
 	'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
 	'TITLE'	=> htmlspecialchars ($TITLE, ENT_COMPAT, 'UTF-8'),
 	'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
-	'ERROR'	=> !$SUBMIT ? ERROR_NONE
-		   : (!$NAME  ? ERROR_NAME
-		   : (!$PASS  ? ERROR_PASS
-		   : (!$TITLE ? ERROR_TITLE
-		   : (!$TEXT  ? ERROR_TEXT
-		   : ERROR_AUTH))))
+	'ERROR'	=> !$SUBMIT ? ERROR_NONE	//no problem? show default help text
+		   : (!$NAME  ? ERROR_NAME	//the name is missing
+		   : (!$PASS  ? ERROR_PASS	//the password is missing
+		   : (!$TITLE ? ERROR_TITLE	//the title is missing
+		   : (!$TEXT  ? ERROR_TEXT	//the message text is missing
+		   : ERROR_AUTH))))		//the name / password pair didn’t match
 )) : TEMPLATE_INDEX_FORM_DISABLED;
 
 //and we’re all done

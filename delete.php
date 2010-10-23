@@ -9,7 +9,7 @@ include "shared.php";
 $file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
 if ($path = @$_[1]) chdir ($path);
 
-$xml = simplexml_load_file ("$file.xml", 'my_node');
+$xml = simplexml_load_file ("$file.xml", 'allow_prepend');
 
 $NAME = mb_substr (stripslashes (@$_POST['username']), 0, 18, 'UTF-8');
 $PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20, 'UTF-8');
@@ -23,7 +23,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	@unlink (APP_ROOT."$file.xml");
 	
 	//rebuild the index for this folder
-	createRSSIndex ();
+	createRSSIndex ($path);
 	
 	//return to the index
 	header ("Location: http://".$_SERVER['HTTP_HOST'].($path ? "/$path/" : "/"), true, 303);

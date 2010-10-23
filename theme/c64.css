@@ -69,15 +69,16 @@ body>h2				{color: #68A941}
 a				{text-decoration: none; color: #d0dc71;}
 a:hover				{color: #fff;}
 
-body>dl				{margin: 0; padding: 0 0 0 1em;}
-body>dl>dt			{padding: 0 1em 0 2em; font-family: "C64 Pro";}
-body>dl>dt>a:before		{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}
-body>dl>dt>a.sticky:before	{content: '\0ee53'; color: #894036;}
-body>dl>dd			{margin: 0; padding: 0 0 0 2em; color: #808080;}
-body>dl
- >dd:not(:last-child):after	{display: block; margin-left: -3em; color: #68A941;
+dl				{margin: 0; padding: 0 0 0 1em;}
+dt				{padding: 0 1em 0 2em; font-family: "C64 Pro";}
+dt>a:before			{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}
+dt>a.sticky:before		{content: '\0ee53'; color: #894036;}
+dd				{margin: 0; padding: 0 0 0 2em; color: #808080;}
+dd>time:before			{content: '+'; color: #ABABAB;}
+dd>b:before			{content: '\02190'; color: #ABABAB;}
+dl>dd:not(:last-child):after	{display: block; margin-left: -3em; color: #68A941;
 				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}
-body>dl>dt+dt			{margin-top: 1em;}
+dt+dt				{margin-top: 1em;}
 
 body>h2, nav.pages		{margin: .7em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
 nav.pages			{text-align: right;}

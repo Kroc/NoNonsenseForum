@@ -1,4 +1,4 @@
-<?php
+<?php //display a particular thread’s contents
 
 include "shared.php";
 
@@ -8,7 +8,7 @@ include "shared.php";
 $file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
 if ($path = @$_[1]) chdir ($path);
 
-$xml = simplexml_load_file ("$file.xml", 'my_node');
+$xml = simplexml_load_file ("$file.xml", 'allow_prepend');
 
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
@@ -63,11 +63,11 @@ $thread = $xml->channel->xpath ('item');
 $post = array_pop ($thread);
 echo template_tags (TEMPLATE_THREAD_FIRST, array (
 	'TITLE'		=> $xml->channel->title,
-	'AUTHOR'	=> $post->author,
+	'NAME'		=> $post->author,
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-	'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
+	'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 	'DELETE'	=> "/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file",
-	'DESCRIPTION'	=> $post->description
+	'TEXT'		=> $post->description
 ));
 
 //any replies?
@@ -86,10 +86,10 @@ if (count ($thread)) {
 	foreach ($thread as &$post) {
 		@$html .= template_tags (TEMPLATE_THREAD_POST, array (
 			'ID'		=> $c,
-			'AUTHOR'	=> $post->author,
+			'NAME'		=> $post->author,
 			'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-			'PUBDATE'	=> strtoupper (date ('d-M\'y H:i', strtotime ($post->pubDate))),
-			'DESCRIPTION'	=> $post->description
+			'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
+			'TEXT'		=> $post->description
 		));
 		$c++;
 	}

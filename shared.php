@@ -1,4 +1,4 @@
-<?php
+<?php //reduce some duplication
 
 //PHP 5.3 issues a warning if the timezone is not set when using date-related commands
 date_default_timezone_set ('Europe/London');
@@ -91,7 +91,7 @@ function isMod ($name) {
 }
 
 //it is assumed that the directory has been changed to the appropriate folder
-function createRSSIndex () {
+function createRSSIndex ($path='') {
 	//get list of threads
 	$threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
 	foreach ($threads as $file => &$date) $date = filectime ($file);
@@ -104,11 +104,11 @@ function createRSSIndex () {
 		$item = end ($items);
 		
 		@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
-			'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
-			'URL'		=> pathinfo ($file, PATHINFO_FILENAME),
-			'NAME'		=> htmlspecialchars ($item->author, ENT_NOQUOTES, 'UTF-8'),
-			'DATE'		=> gmdate ('r', strtotime ($item->pubDate)),
-			'TEXT'		=> htmlspecialchars ($item->description, ENT_NOQUOTES, 'UTF-8'),
+			'TITLE'	=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
+			'URL'	=> ($path ? rawurlencode ($path).'/' : '').pathinfo ($file, PATHINFO_FILENAME),
+			'NAME'	=> htmlspecialchars ($item->author, ENT_NOQUOTES, 'UTF-8'),
+			'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
+			'TEXT'	=> htmlspecialchars ($item->description, ENT_NOQUOTES, 'UTF-8'),
 		));
 	}
 	
@@ -150,7 +150,7 @@ function formatText ($text) {
 }
 
 //<http://stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-class my_node extends SimpleXMLElement {
+class allow_prepend extends SimpleXMLElement {
 	public function prependChild ($name, $value=null) {
 		$dom = dom_import_simplexml ($this);
 		$new = $dom->insertBefore (
