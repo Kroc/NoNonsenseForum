@@ -9,8 +9,6 @@
 	
 •	An RSS feed for threads in a folder ordered by updated time? (see all updates happening)
 	
-•	A way to regenerate index.rss, if a thread is deleted, for example (may have to make index.rss dynamic)
-	
 •	Show posts from the OP in a different colour
 	
 •	Error message if thread already exists (could be paged out of view)

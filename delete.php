@@ -22,9 +22,6 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//delete the thread for reals
 	@unlink (APP_ROOT."$file.xml");
 	
-	//rebuild the index for this folder
-	createRSSIndex ($path);
-	
 	//return to the index
 	header ("Location: http://".$_SERVER['HTTP_HOST'].($path ? "/$path/" : "/"), true, 303);
 }

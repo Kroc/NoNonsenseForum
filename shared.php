@@ -1,7 +1,7 @@
 <?php //reduce some duplication
 
 //PHP 5.3 issues a warning if the timezone is not set when using date-related commands
-date_default_timezone_set ('Europe/London');
+date_default_timezone_set ('UTC');
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -88,34 +88,6 @@ function isMod ($name) {
 		strtolower ($name),
 		array_map ('strtolower', file (APP_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 	);
-}
-
-//it is assumed that the directory has been changed to the appropriate folder
-function createRSSIndex ($path='') {
-	//get list of threads
-	$threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
-	foreach ($threads as $file => &$date) $date = filectime ($file);
-	arsort ($threads, SORT_NUMERIC);
-	
-	$threads = array_slice ($threads, 0, APP_THREADS);
-	foreach ($threads as $file => $date) {
-		$xml = simplexml_load_file ($file);
-		$items = $xml->channel->xpath ('item');
-		$item = end ($items);
-		
-		@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
-			'TITLE'	=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
-			'URL'	=> ($path ? rawurlencode ($path).'/' : '').pathinfo ($file, PATHINFO_FILENAME),
-			'NAME'	=> htmlspecialchars ($item->author, ENT_NOQUOTES, 'UTF-8'),
-			'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
-			'TEXT'	=> htmlspecialchars ($item->description, ENT_NOQUOTES, 'UTF-8'),
-		));
-	}
-	
-	file_put_contents ("index.rss", template_tags (TEMPLATE_RSS_INDEX, array (
-		'TITLE'    => $xml->channel->title,
-		'ITEMS'    => $rss
-	)), LOCK_EX);
 }
 
 function formatText ($text) {

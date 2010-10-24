@@ -12,6 +12,10 @@ AddType application/rss+xml	.rss .xml
 AddType font/ttf		.ttf
 AddType font/x-woff		.woff
 
+# force utf-8 for a number of file formats:
+AddDefaultCharset utf-8
+AddCharset utf-8 .css .xml .txt .do
+
 <IfModule mod_deflate.c>
 	AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript text/javascript application/javascript application/json text/xml application/xml application/rss+xml
 	
@@ -47,3 +51,7 @@ RewriteRule ^.*$ /index.php?path=$0 [QSA,L]
 RewriteCond %{REQUEST_URI} ^/([^.]+/)?[^./]+$
 RewriteCond %{DOCUMENT_ROOT}%0.xml -f
 RewriteRule ^.*$ /thread.php?file=$0 [QSA,L]
+
+# an index RSS feed
+RewriteCond %{REQUEST_URI} ^/([^.]+/)?index.rss$
+RewriteRule ^([^.]+/)?index.rss$ /rss.php?path=$1 [QSA,L]

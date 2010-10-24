@@ -2,8 +2,8 @@
 
 /* how the theme works:
    ====================================================================================================================== */
-/* to keep the PHP and HTML sparate, we put HTML chunks into constants, and use search and replace (via `template_tag` and
-   `template_tags` in shared.php) to swap out “tags” in the form of “&__TAG__;” with the data from the PHP or in other
+/* to keep the PHP and HTML sparate we put HTML chunks into constants and use search and replace (via `template_tag` and
+   `template_tags` in shared.php) to swap out “tags” in the form of “&__TAG__;” with the data from the PHP, or in other
    instances with another template. this keeps the PHP logic separate from the HTML it is outputting
 */
 
@@ -540,6 +540,7 @@ XML
 /* attached to:
 	nothing, inserted directly into the page by shared.php
    tags:
+	&__PATH__;	if in a sub-folder, the URL encoded folder name (including ending slash but no prefix slash)
 	&__TITLE__;	title of the thread
 	&__ITEMS__;	a generated list of RSS items, see `TEMPLATE_RSS_ITEM` below
 */
@@ -547,7 +548,7 @@ define ("TEMPLATE_RSS_INDEX", <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}/index.rss" rel="self" type="application/rss+xml" />
+<atom:link href="http://${_SERVER['HTTP_HOST']}/&__PATH__;index.rss" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
 <link>http://${_SERVER['HTTP_HOST']}/</link>
 &__ITEMS__;

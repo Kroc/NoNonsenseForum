@@ -40,9 +40,6 @@ if ($SUBMIT = @$_POST['submit']) if (
 		'TEXT'	=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
 	)));
 	
-	//create RSS thread for this folder (a feed of the newest threads)
-	createRSSIndex ($path);
-	
 	//redirect to newley created thread
 	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
 }
