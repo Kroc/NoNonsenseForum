@@ -10,6 +10,6 @@ What does this mean? This means that you may do anything you want with this code
 
 Please Note:
 ============
-The font files in the theme file are created by STYLE <style64.org/c64-truetype> and have their own licence, viewable in 'license.txt' in the theme folder. I have been given personal permission to use these fonts in this project, please read their licence if you intend to use the C64 theme.
+The font files in the C=64 themes folder are created by STYLE <style64.org/c64-truetype> and have their own licence, viewable in 'license.txt' in the C=64 themes folder. I have been given personal permission to use these fonts in this project, please read their licence if you intend to use the C=64 theme.
 
 

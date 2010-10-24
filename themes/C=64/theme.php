@@ -321,7 +321,7 @@ define ("ERROR_AUTH",  "<span class=\"red\">That name is taken. Provide the pass
 define ("TEMPLATE_THREAD_FIRST", <<<HTML
 <h1>&__TITLE__;</h1>
 
-<article id="1">
+<article id="1" class="op">
 	<header>
 		<a class="delete" href="&__DELETE__;">Delete</a>
 		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
@@ -361,14 +361,15 @@ HTML
 /* attached to:
 	&__POSTS__;	TEMPLATE_THREAD_POSTS
    tags:
+	&__ID__;	HTML ID of the post, pointed to by the RSS
+	&__OP__;	if the post is by the thread’s original poster, `TEMPLATE_THREAD_OP` gets inserted here
 	&__DATETIME__;	timestamp in "Sun, 17 Oct 2010 19:41:09 +0000" format for HTML5 `<time>` datetime attribute
 	&__TIME__;	Human readable timestamp
-	&__ID__;	HTML ID of the post, pointed to by the RSS
 	&__NAME__;	the poster’s name
 	&__TEXT__;	the post message
 */
 define ("TEMPLATE_THREAD_POST", <<<HTML
-<article id="&__ID__;">
+<article id="&__ID__;"&__OP__;>
 	<header>
 		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
 		<a href="#&__ID__;">#&__ID__;.</a>
@@ -380,6 +381,13 @@ define ("TEMPLATE_THREAD_POST", <<<HTML
 
 HTML
 );
+//if the post is by the thread’s original poster
+/* attached to:
+	&__OP__;	TEMPLATE_THREAD_POST
+   tags:
+	none
+*/
+define ("TEMPLATE_THREAD_OP", ' class="op"');
 
 /* the reply input form
    ---------------------------------------------------------------------------------------------------------------------- */

@@ -72,7 +72,7 @@ a:hover				{color: #fff;}
 dl				{margin: 0; padding: 0 0 0 1em;}
 dt				{padding: 0 1em 0 2em; font-family: "C64 Pro";}
 dt>a:before			{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}
-dt>a.sticky:before		{content: '\0ee53'; color: #894036;}
+dt>a.sticky:before		{content: '\0ee53'; color: #BB776D;}
 dd				{margin: 0; padding: 0 0 0 2em; color: #808080;}
 dd>time:before			{content: '+'; color: #ABABAB;}
 dd>b:before			{content: '\02190'; color: #ABABAB;}
@@ -87,6 +87,7 @@ h2+.pages			{margin-top: -3em;}
 
 article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
 				 word-wrap: break-word; font-family: "C64 Pro", monospace;}
+article.op			{color: #ABABAB;}
 
 article>header			{color: #808080;}
 article>header>time		{float: right;}

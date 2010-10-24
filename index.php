@@ -113,11 +113,11 @@ if ($threads) {
 			'URL'      => flattenTitle ($xml->channel->title),
 			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
 			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
-			'TITLE'    => $xml->channel->title,
+			'TITLE'    => htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
 			'COUNT'    => count ($items),
 			'DATEITME' => date ('c', strtotime ($last->pubDate)),
 			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
-			'NAME'     => $last->author
+			'NAME'     => htmlspecialchars ($last->author, ENT_NOQUOTES, 'UTF-8')
 		));
 	}
 	

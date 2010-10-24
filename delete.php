@@ -17,7 +17,7 @@ $PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20, 'UTF-8');
 //has the un/pw been submitted to authenticate the delete?
 if ($SUBMIT = @$_POST['submit']) if (
 	$NAME && $PASS && checkName ($NAME, $PASS)
-	&& (isMod ($NAME) || $NAME == $xml->channel->item[0]->author)
+	&& (isMod ($NAME) || $NAME == (string) $xml->channel->item[count ($xml->channel->item)-1]->author)
 ) {
 	//delete the thread for reals
 	@unlink (APP_ROOT."$file.xml");
@@ -35,8 +35,8 @@ echo template_tags (TEMPLATE_HEADER, array (
 ));
 
 echo template_tags (TEMPLATE_DELETE_THREAD, array (
-	'NAME'		=> $NAME,
-	'PASS'		=> $PASS,
+	'NAME'		=> htmlspecialchars ($NAME, ENT_COMPAT, 'UTF-8'),
+	'PASS'		=> htmlspecialchars ($PASS, ENT_COMPAT, 'UTF-8'),
 	'ERROR'		=> !$SUBMIT ? ERROR_DELETE_NONE
 			   : (!$NAME  ? ERROR_NAME
 			   : (!$PASS  ? ERROR_PASS

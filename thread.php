@@ -62,13 +62,16 @@ $thread = $xml->channel->xpath ('item');
 
 $post = array_pop ($thread);
 echo template_tags (TEMPLATE_THREAD_FIRST, array (
-	'TITLE'		=> $xml->channel->title,
-	'NAME'		=> $post->author,
+	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
+	'NAME'		=> htmlspecialchars ($post->author, ENT_NOQUOTES, 'UTF-8'),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 	'DELETE'	=> "/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file",
 	'TEXT'		=> $post->description
 ));
+
+//remember the original poster’s name, for marking replies by the OP
+$author = (string) $post->author;
 
 //any replies?
 if (count ($thread)) {
@@ -83,16 +86,14 @@ if (count ($thread)) {
 	$thread = array_slice ($thread, ($page-1) * APP_POSTS, APP_POSTS);
 	
 	$c=2 + (($page-1) * APP_POSTS);
-	foreach ($thread as &$post) {
-		@$html .= template_tags (TEMPLATE_THREAD_POST, array (
-			'ID'		=> $c,
-			'NAME'		=> $post->author,
-			'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-			'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
-			'TEXT'		=> $post->description
-		));
-		$c++;
-	}
+	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_THREAD_POST, array (
+		'ID'		=> $c++,
+		'OP'		=> $post->author == $author ? TEMPLATE_THREAD_OP : '',
+		'NAME'		=> htmlspecialchars ($post->author, ENT_NOQUOTES, 'UTF-8'),
+		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
+		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
+		'TEXT'		=> $post->description
+	));
 	
 	echo template_tags (TEMPLATE_THREAD_POSTS, array (
 		'POSTS' => $html,
