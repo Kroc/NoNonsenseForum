@@ -10,6 +10,7 @@ define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute refere
 /* options: stuff for you
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('APP_ENABLED', true);				//if posting is allowed
+define ('APP_THEME',   'C=64');				//theme name, in “/themes/*”
 define ('APP_THREADS', 50);				//number of threads per page on the index
 define ('APP_POSTS',   25);				//number of posts per page on threads
 define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when hashing
@@ -18,7 +19,7 @@ define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when
 chdir (APP_ROOT);
 
 //include the HTML skin
-require_once "theme/template.php";
+require_once "themes/".APP_THEME."/theme.php";
 
 /* ====================================================================================================================== */
 

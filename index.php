@@ -65,8 +65,8 @@ echo template_tags (TEMPLATE_HEADER, array (
 
 //get a list of folders
 if ($folders = array_filter (
-	//include only directories, but ignore directories starting with ‘.’ and the users / theme folders
-	preg_grep ('/^(\.|users$|theme$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
+	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
 	//string together the list
 	foreach ($folders as $folder) {
@@ -79,6 +79,8 @@ if ($folders = array_filter (
 	//output
 	echo template_tag (TEMPLATE_INDEX_FOLDERS, 'FOLDERS', $html); $html = "";
 }
+
+/* ---------------------------------------------------------------------------------------------------------------------- */
 
 //get list of threads
 $threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
