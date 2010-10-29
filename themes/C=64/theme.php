@@ -571,8 +571,8 @@ define ("ERROR_DELETE_NONE", "To delete this thread, and all replies to it, you 
 define ("ERROR_DELETE_AUTH", "<span class=\"red\">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>");
 
 //the text left behind when a post is deleted
-define ("TEMPLATE_DELETE_USER", '<p class="deleted">This post was deleted by its owner</p>');
-define ("TEMPLATE_DELETE_MOD",  '<p class="deleted">This post was deleted by a moderator</p>');
+define ("TEMPLATE_DELETE_USER", '<p>This post was deleted by its owner</p>');
+define ("TEMPLATE_DELETE_MOD",  '<p>This post was deleted by a moderator</p>');
 
 
 /* RSS feeds

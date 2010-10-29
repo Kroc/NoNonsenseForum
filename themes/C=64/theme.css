@@ -88,6 +88,7 @@ h2+.pages			{margin-top: -3em;}
 article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
 				 word-wrap: break-word; font-family: "C64 Pro", monospace;}
 article.op			{color: #ABABAB;}
+article.deleted			{color: #68A941;}
 
 article>header			{color: #808080;}
 article>header>time		{float: right;}
@@ -99,8 +100,6 @@ a.delete:hover			{width: auto;}
 
 article>:not(header) a:before	{content: "<";}
 article>:not(header) a:after	{content: ">";}
-
-.deleted			{color: #68A941;}
 
 h2~article:not(:last-of-type):after
 				{position: absolute; display: block; margin: 0 0 0 -1em; color: #68A941;

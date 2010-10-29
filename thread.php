@@ -96,8 +96,8 @@ if (count ($thread)) {
 					"/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file&amp;id=$c"
 				),
 		'ID'		=> $c++,
-		'TYPE'		=> $post->author == $author ? TEMPLATE_POST_OP
-				   : ($post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED : ''),
+		'TYPE'		=> $post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED
+				   : ($post->author == $author ? TEMPLATE_POST_OP : ''),
 		'NAME'		=> safetext ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
