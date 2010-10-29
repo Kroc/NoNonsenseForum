@@ -57,7 +57,7 @@ Deleting individual posts is not supported at this early stage but will be added
 
 Adding Moderators:
 ------------------
-Moderators can delete threads that were not originally made by them. to add moderators to your website, first have them post at least once in order to reserve the name. Then create a “mods.txt” file in webroot (per-folder mods are not supported at this moment, but will be) and populate it with the reserved names to allow moderator rights, one on each line. E.g.
+Moderators can delete threads that were not originally made by them. To add moderators to your website, first have them post at least once in order to reserve the name. Then create a “mods.txt” file in webroot (per-folder mods are not supported at this moment, but will be) and populate it with the reserved names to allow moderator rights, one on each line. E.g.
 
 Kroc
 theraje

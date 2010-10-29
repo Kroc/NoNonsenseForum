@@ -5,6 +5,8 @@
 /* to keep the PHP and HTML sparate we put HTML chunks into constants and use search and replace (via `template_tag` and
    `template_tags` in shared.php) to swap out “tags” in the form of “&__TAG__;” with the data from the PHP, or in other
    instances with another template. this keeps the PHP logic separate from the HTML it is outputting
+
+   tags may be used once, more than once, or not at all in your templates
 */
 
 //the `date` format code used to print human readable dates into the HTML,
@@ -312,7 +314,7 @@ define ("ERROR_AUTH",  "<span class=\"red\">That name is taken. Provide the pass
 	nothing, inserted directly into the page by thread.php
    tags:
 	&__TITLE__;	Title of the thread
-	&__DELETE__;	URL to delete the thread
+	&__DELETE__;	if delete is allowed, TEMPLATE_DELETE is inserted here
 	&__DATETIME__;	timestamp in "Sun, 17 Oct 2010 19:41:09 +0000" format for HTML5 `<time>` datetime attribute
 	&__TIME__;	Human readable timestamp
 	&__NAME__;	Name of thread originator
@@ -322,8 +324,7 @@ define ("TEMPLATE_THREAD_FIRST", <<<HTML
 <h1>&__TITLE__;</h1>
 
 <article id="1" class="op">
-	<header>
-		<a class="delete" href="&__DELETE__;">Delete</a>
+	<header>&__DELETE__;
 		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
 		<a href="#1">#1.</a> <b>&__NAME__;</b>
 	</header>
@@ -333,6 +334,17 @@ define ("TEMPLATE_THREAD_FIRST", <<<HTML
 
 HTML
 );
+/* the delete button 
+   attached to:
+	&__DELETE__;	TEMPLATE_THREAD_FIRST, TEMPLATE_POST
+   tags:
+	&__URL__;	The URL to delete a thread
+*/
+define ("TEMPLATE_DELETE", <<<HTML
+
+		<a class="delete" href="&__URL__;">Delete</a>
+HTML
+);
 
 /* the list of posts in a thread (including page list)
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -340,7 +352,7 @@ HTML
 	nothing, inserted directly into the page by thread.php
   tags:
 	&__PAGES__;	a generated list of page links, see TEMPLATE_PAGES_*
-	&__POSTS__;	a generated list of posts, see TEMPLATE_THREAD_POST below
+	&__POSTS__;	a generated list of posts, see TEMPLATE_POST below
 */
 define ("TEMPLATE_THREAD_POSTS", <<<HTML
 <h2 id="list">Replies</h2>
@@ -362,18 +374,20 @@ HTML
 	&__POSTS__;	TEMPLATE_THREAD_POSTS
    tags:
 	&__ID__;	HTML ID of the post, pointed to by the RSS
-	&__OP__;	if the post is by the thread’s original poster, `TEMPLATE_THREAD_OP` gets inserted here
+	&__TYPE__;	either nothing, TEMPLTE_POST_OP or TEMPLATE_POST_DELETED as appropriate
+	&__OP__;	if the post is by the thread’s original poster, TEMPLATE_POST_OP gets inserted here
+	&__DELETED__;	if the post is marked as deleted, TEMPLATE_POST_DELETED gets inserted here
+	&__DELETE__;	if delete is allowed, TEMPLATE_DELETE is inserted here
 	&__DATETIME__;	timestamp in "Sun, 17 Oct 2010 19:41:09 +0000" format for HTML5 `<time>` datetime attribute
 	&__TIME__;	Human readable timestamp
 	&__NAME__;	the poster’s name
 	&__TEXT__;	the post message
 */
-define ("TEMPLATE_THREAD_POST", <<<HTML
-<article id="&__ID__;"&__OP__;>
-	<header>
+define ("TEMPLATE_POST", <<<HTML
+<article id="&__ID__;" class="&__TYPE__;">
+	<header>&__DELETE__;
 		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
-		<a href="#&__ID__;">#&__ID__;.</a>
-		<b>&__NAME__;</b>
+		<a href="#&__ID__;">#&__ID__;.</a> <b>&__NAME__;</b>
 	</header>
 	
 	&__TEXT__;
@@ -383,11 +397,19 @@ HTML
 );
 //if the post is by the thread’s original poster
 /* attached to:
-	&__OP__;	TEMPLATE_THREAD_POST
+	&__TYPE__;	TEMPLATE_POST
    tags:
 	none
 */
-define ("TEMPLATE_THREAD_OP", ' class="op"');
+define ("TEMPLATE_POST_OP", 'op');
+
+//if the post has been deleted
+/* attached to:
+	&__TYPE__;	TEMPLATE_POST
+   tags:
+	none
+*/
+define ("TEMPLATE_POST_DELETED", 'deleted');
 
 /* the reply input form
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -499,8 +521,46 @@ define ("TEMPLATE_DELETE_THREAD", <<<HTML
 		<input id="submit" name="submit" type="submit" value="Delete" />
 	</p>
 </fieldset></form>
+
+<h1>Post</h1>
+&__POST__;
 HTML
 );
+/* delete post
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* attached to:
+	nothing, inserted directly into the page by delete.php
+   tags:
+	&__NAME__;	the value of the input field named 'username', echoed back to maintain form state
+	&__PASS__;	the password entered
+	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
+*/
+define ("TEMPLATE_DELETE_POST", <<<HTML
+
+<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+	<legend>Delete Post</legend>
+	
+	<label>Name:
+		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+		 value="&__NAME__;" />
+	</label>
+	<label>Password:
+		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+		 value="&__PASS__;" />
+	</label>
+	
+	<p>
+		&__ERROR__;
+	</p><p>
+		<input id="submit" name="submit" type="submit" value="Delete" />
+	</p>
+</fieldset></form>
+
+<h1>Post</h1>
+&__POST__;
+HTML
+);
+
 //a different default text for the delete form, and an error message if the user is not authorised to delete a thread/post
 /* attached to:
 	&__ERROR__;	TEMPLATE_DELETE_THREAD
@@ -509,6 +569,10 @@ HTML
 */
 define ("ERROR_DELETE_NONE", "To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.");
 define ("ERROR_DELETE_AUTH", "<span class=\"red\">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>");
+
+//the text left behind when a post is deleted
+define ("TEMPLATE_DELETE_USER", '<p class="deleted">This post was deleted by its owner</p>');
+define ("TEMPLATE_DELETE_MOD",  '<p class="deleted">This post was deleted by a moderator</p>');
 
 
 /* RSS feeds
@@ -528,16 +592,12 @@ define ("TEMPLATE_RSS", <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-	<atom:link href="http://${_SERVER['HTTP_HOST']}/&__URL__;.xml" rel="self" type="application/rss+xml" />
-	<title>&__TITLE__;</title>
-	<link>http://${_SERVER['HTTP_HOST']}/&__URL__;</link>
-	<item>
-		<title>&__TITLE__;</title>
-		<link>http://${_SERVER['HTTP_HOST']}/&__URL__;#1</link>
-		<author>&__NAME__;</author>
-		<pubDate>&__DATE__;</pubDate>
-		<description>&__TEXT__;</description>
-	</item>
+<atom:link href="http://${_SERVER['HTTP_HOST']}/&__URL__;.xml" rel="self" type="application/rss+xml" />
+<title>&__TITLE__;</title>
+<link>http://${_SERVER['HTTP_HOST']}/&__URL__;</link>
+
+&__ITEMS__;
+
 </channel>
 </rss>
 XML

@@ -28,11 +28,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ("item");
-	$item->addChild ("title",	htmlspecialchars ("RE: ".$xml->channel->title, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("title",	safetext ("RE: ".$xml->channel->title));
 	$item->addChild ("link",	"http://".$_SERVER['HTTP_HOST']."/$url");
-	$item->addChild ("author",	htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("author",	safetext ($NAME));
 	$item->addChild ("pubDate",	gmdate ('r'));
-	$item->addChild ("description",	htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'));
+	$item->addChild ("description",	safetext (formatText ($TEXT)));
 	
 	//save
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
@@ -44,14 +44,15 @@ if ($SUBMIT = @$_POST['submit']) if (
 
 echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
-	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8').
+	'TITLE'		=> safetext ($xml->channel->title).
 			   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> "$file.xml",
 	'RSS_TITLE'	=> "Replies",
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 		'PATH'	=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
-				'URL' => rawurlencode ($path), 'PATH' => htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
+				'URL'	=> rawurlencode ($path),
+				'PATH'	=> safetext ($path)
 			)) : TEMPLATE_THREAD_PATH
 	))
 ));
@@ -62,11 +63,14 @@ $thread = $xml->channel->xpath ('item');
 
 $post = array_pop ($thread);
 echo template_tags (TEMPLATE_THREAD_FIRST, array (
-	'TITLE'		=> htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
-	'NAME'		=> htmlspecialchars ($post->author, ENT_NOQUOTES, 'UTF-8'),
+	'TITLE'		=> safetext ($xml->channel->title),
+	'NAME'		=> safetext ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
-	'DELETE'	=> "/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file",
+	'DELETE'	=> template_tag (
+				TEMPLATE_DELETE, 'URL',
+				"/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file"
+			),
 	'TEXT'		=> $post->description
 ));
 
@@ -86,10 +90,15 @@ if (count ($thread)) {
 	$thread = array_slice ($thread, ($page-1) * APP_POSTS, APP_POSTS);
 	
 	$c=2 + (($page-1) * APP_POSTS);
-	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_THREAD_POST, array (
+	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
+		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
+					TEMPLATE_DELETE, 'URL',
+					"/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file&amp;id=$c"
+				),
 		'ID'		=> $c++,
-		'OP'		=> $post->author == $author ? TEMPLATE_THREAD_OP : '',
-		'NAME'		=> htmlspecialchars ($post->author, ENT_NOQUOTES, 'UTF-8'),
+		'TYPE'		=> $post->author == $author ? TEMPLATE_POST_OP
+				   : ($post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED : ''),
+		'NAME'		=> safetext ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 		'TEXT'		=> $post->description
@@ -105,9 +114,9 @@ if (count ($thread)) {
 
 //the reply form
 echo APP_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
-	'NAME'	=> htmlspecialchars ($NAME, ENT_COMPAT, 'UTF-8'),
-	'PASS'	=> htmlspecialchars ($PASS, ENT_COMPAT, 'UTF-8'),
-	'TEXT'	=> htmlspecialchars ($TEXT, ENT_COMPAT, 'UTF-8'),
+	'NAME'	=> safevalue ($NAME),
+	'PASS'	=> safevalue ($PASS),
+	'TEXT'	=> safevalue ($TEXT),
 	'ERROR'	=> !$SUBMIT ? ERROR_NONE
 		   : (!$NAME ? ERROR_NAME
 		   : (!$PASS ? ERROR_PASS

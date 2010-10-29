@@ -21,13 +21,13 @@ chdir (APP_ROOT);
 //include the HTML skin
 require_once "themes/".APP_THEME."/theme.php";
 
-/* ====================================================================================================================== */
-
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)
 header("Cache-Control: no-cache");
 header("Expires: -1");
 
+
+/* ====================================================================================================================== */
 
 //replace a marker (“&__TAG__;”) in the template with some other text
 function template_tag ($s_template, $s_tag, $s_content) {
@@ -48,6 +48,54 @@ function flattenTitle ($s_title) {
 		str_replace (array ("'", "‘", "’", '"', '“','”'), '', strtolower ($s_title))
 	));
 }
+
+//we have to do these very often, so may as well shorten them:
+function safetext ($text) {
+	//encode a string for insertion into an HTML element
+	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
+}
+function safevalue ($text) {
+	//encode a string for insertion between quotes in an HTML attribute
+	return htmlspecialchars ($text, ENT_COMPAT, 'UTF-8');
+}
+
+/* ====================================================================================================================== */
+
+//<http://stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
+//we could of course do all the XML manipulation in DOM proper to save doing this…
+class allow_prepend extends SimpleXMLElement {
+	public function prependChild ($name, $value=null) {
+		$dom = dom_import_simplexml ($this);
+		$new = $dom->insertBefore (
+			$dom->ownerDocument->createElement ($name, $value),
+			$dom->firstChild
+		);
+		return simplexml_import_dom ($new, get_class ($this));
+	}
+}
+
+/* ====================================================================================================================== */
+
+function checkName ($name, $pass) {
+	//users are stored as text files based on the hash of the given name
+	$user = APP_ROOT."users/".md5 (APP_SALT.strtolower ($name)).".txt";
+	//create the user, if new
+	if (!file_exists ($user)) file_put_contents ($user, md5 (APP_SALT.$pass));
+	//does password match?
+	return (file_get_contents ($user) == md5 (APP_SALT.$pass));
+}
+
+//check to see if a name is a known moderator in mods.txt
+function isMod ($name) {
+	//todo: per-folder mods.txt
+	if (!file_exists (APP_ROOT."mods.txt")) return false;
+	return in_array (
+		strtolower ($name),
+		array_map ('strtolower', file (APP_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+	);
+}
+
+/* ====================================================================================================================== */
 
 function pageLinks ($page, $pages) {
 	//always include the first page
@@ -70,25 +118,6 @@ function pageLinks ($page, $pages) {
 	}
 	
 	return implode (TEMPLATE_PAGES_SEPARATOR, $html);
-}
-
-function checkName ($name, $pass) {
-	//users are stored as text files based on the hash of the given name
-	$user = APP_ROOT."users/".md5 (APP_SALT.strtolower ($name)).".txt";
-	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 (APP_SALT.$pass));
-	//does password match?
-	return (file_get_contents ($user) == md5 (APP_SALT.$pass));
-}
-
-//check to see if a name is a known moderator in mods.txt
-function isMod ($name) {
-	//todo: per-folder mods.txt
-	if (!file_exists (APP_ROOT."mods.txt")) return false;
-	return in_array (
-		strtolower ($name),
-		array_map ('strtolower', file (APP_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-	);
 }
 
 function formatText ($text) {
@@ -120,18 +149,6 @@ function formatText ($text) {
 	}
 	
 	return $text;
-}
-
-//<http://stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-class allow_prepend extends SimpleXMLElement {
-	public function prependChild ($name, $value=null) {
-		$dom = dom_import_simplexml ($this);
-		$new = $dom->insertBefore (
-			$dom->ownerDocument->createElement ($name, $value),
-			$dom->firstChild
-		);
-		return simplexml_import_dom ($new, get_class ($this));
-	}
 }
 
 ?>

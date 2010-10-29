@@ -100,6 +100,8 @@ a.delete:hover			{width: auto;}
 article>:not(header) a:before	{content: "<";}
 article>:not(header) a:after	{content: ">";}
 
+.deleted			{color: #68A941;}
+
 h2~article:not(:last-of-type):after
 				{position: absolute; display: block; margin: 0 0 0 -1em; color: #68A941;
 				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}

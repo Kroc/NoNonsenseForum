@@ -33,11 +33,12 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
-		'TITLE'	=> htmlspecialchars ($TITLE, ENT_NOQUOTES, 'UTF-8'),
-		'URL'	=> $url,
-		'NAME'	=> htmlspecialchars ($NAME, ENT_NOQUOTES, 'UTF-8'),
+		'ITEMS'	=> TEMPLATE_RSS_ITEM,
+		'TITLE'	=> safetext ($TITLE),
+		'URL'	=> $url."#1",
+		'NAME'	=> safetext ($NAME),
 		'DATE'	=> gmdate ('r'),
-		'TEXT'	=> htmlspecialchars (formatText ($TEXT), ENT_NOQUOTES, 'UTF-8'),
+		'TEXT'	=> safetext (formatText ($TEXT)),
 	)));
 	
 	//redirect to newley created thread
@@ -49,15 +50,13 @@ if ($SUBMIT = @$_POST['submit']) if (
 //write the website header:
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
-	'TITLE'		=> ($path ? htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8') : 'Forum Index').
+	'TITLE'		=> ($path ? safetext ($path) : 'Forum Index').
 		   	   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> 'index.rss',
-	'RSS_TITLE'	=> $path ? htmlspecialchars ($path, ENT_COMPAT, 'UTF-8') : "Forum Index",
+	'RSS_TITLE'	=> $path ? safevalue ($path) : "Forum Index",
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> TEMPLATE_INDEX_MENU,
-		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER,
-				'PATH', htmlspecialchars ($path, ENT_NOQUOTES, 'UTF-8')
-			) : TEMPLATE_INDEX_PATH
+		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safetext ($path)) : TEMPLATE_INDEX_PATH
 	))
 ));
 
@@ -72,7 +71,7 @@ if ($folders = array_filter (
 	foreach ($folders as $folder) {
 		@$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
 			'URL'	=> rawurlencode ($folder),
-			'FOLDER'=> htmlspecialchars ($folder, ENT_NOQUOTES, 'UTF-8')
+			'FOLDER'=> safetext ($folder)
 		));
 	}
 	
@@ -92,6 +91,11 @@ if ($threads) {
 	$stickies = array ();
 	if (file_exists ("sticky.txt")) {
 		$stickies = array_fill_keys (file ("sticky.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
+		
+		//trim any files listed in the stick list that no longer exist
+		$stickies = array_intersect_assoc ($stickies, $threads);
+		
+		//get the date order
 		foreach ($stickies as $sticky => &$date) $date = filemtime ($sticky);
 		arsort ($stickies, SORT_NUMERIC);
 		
@@ -113,11 +117,11 @@ if ($threads) {
 			'URL'      => flattenTitle ($xml->channel->title),
 			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
 			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
-			'TITLE'    => htmlspecialchars ($xml->channel->title, ENT_NOQUOTES, 'UTF-8'),
+			'TITLE'    => safetext ($xml->channel->title),
 			'COUNT'    => count ($items),
 			'DATEITME' => date ('c', strtotime ($last->pubDate)),
 			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
-			'NAME'     => htmlspecialchars ($last->author, ENT_NOQUOTES, 'UTF-8')
+			'NAME'     => safetext ($last->author)
 		));
 	}
 	
@@ -131,10 +135,10 @@ if ($threads) {
 
 //the new thread form
 echo APP_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
-	'NAME'	=> htmlspecialchars ($NAME,  ENT_COMPAT, 'UTF-8'),
-	'PASS'	=> htmlspecialchars ($PASS,  ENT_COMPAT, 'UTF-8'),
-	'TITLE'	=> htmlspecialchars ($TITLE, ENT_COMPAT, 'UTF-8'),
-	'TEXT'	=> htmlspecialchars ($TEXT,  ENT_COMPAT, 'UTF-8'),
+	'NAME'	=> safevalue ($NAME),
+	'PASS'	=> safevalue ($PASS),
+	'TITLE'	=> safevalue ($TITLE),
+	'TEXT'	=> safevalue ($TEXT),
 	'ERROR'	=> !$SUBMIT ? ERROR_NONE	//no problem? show default help text
 		   : (!$NAME  ? ERROR_NAME	//the name is missing
 		   : (!$PASS  ? ERROR_PASS	//the password is missing
