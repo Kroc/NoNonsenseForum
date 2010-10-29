@@ -92,12 +92,12 @@ if ($threads) {
 	if (file_exists ("sticky.txt")) {
 		$stickies = array_fill_keys (file ("sticky.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
 		
+		//get the date order
+		foreach ($stickies as $sticky => &$date) $date = @filemtime ($sticky);
+		arsort ($stickies, SORT_NUMERIC);
+		
 		//trim any files listed in the stick list that no longer exist
 		$stickies = array_intersect_assoc ($stickies, $threads);
-		
-		//get the date order
-		foreach ($stickies as $sticky => &$date) $date = filemtime ($sticky);
-		arsort ($stickies, SORT_NUMERIC);
 		
 		//remove the stickies from the thread list, then add them to the top of the list
 		$threads = $stickies + array_diff_key ($threads, $stickies);
