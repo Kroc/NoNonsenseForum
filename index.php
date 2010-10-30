@@ -6,7 +6,8 @@ include "shared.php";
 
 //which folder to show, not present for forum index. we have to change directory for `is_dir` to work,
 //see <uk3.php.net/manual/en/function.is-dir.php#70005>
-if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '') chdir (APP_ROOT.$path);
+$path = preg_match ('/themes\/|users\/|([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+if ($path) chdir (FORUM_ROOT.$path);
 
 //page number, obviously
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
@@ -19,9 +20,9 @@ $TEXT	= mb_substr (trim (stripslashes (@$_POST['text']    )), 0, 32768, 'UTF-8')
 
 //has the user the submitted a new thread?
 if ($SUBMIT = @$_POST['submit']) if (
-	//`APP_ENABLED` (in 'shared.php') can be toggled to disable posting
+	//`FORUM_ENABLED` (in 'shared.php') can be toggled to disable posting
 	//the email check is a fake hidden field in the form to try and fool spam bots
-	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TITLE && $TEXT
+	FORUM_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TITLE && $TEXT
 	&& checkName ($NAME, $PASS)
 ) {
 	//the file on disk is a simplified version of the title
@@ -29,7 +30,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//include the folder if present
 	$url  = ($path ? rawurlencode ($path).'/' : '').$file;
 	//if this file already exists (double-submission from back button?), redirect to it
-	if (file_exists ("$file.xml")) header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
+	if (file_exists ("$file.xml")) header ('Location: '.FORUM_URL.$url, true, 303);
 	
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
@@ -42,7 +43,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	)));
 	
 	//redirect to newley created thread
-	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
+	header ('Location: '.FORUM_URL.$url, true, 303);
 }
 
 /* ====================================================================================================================== */
@@ -70,7 +71,7 @@ if ($folders = array_filter (
 	//string together the list
 	foreach ($folders as $folder) {
 		@$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
-			'URL'	=> rawurlencode ($folder),
+			'URL'	=> '/'.rawurlencode ($folder).'/',
 			'FOLDER'=> safetext ($folder)
 		));
 	}
@@ -104,8 +105,8 @@ if ($threads) {
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
-	$pages = ceil ((count ($threads) - count ($stickies)) / APP_THREADS);
-	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($page-1) * APP_THREADS, APP_THREADS);
+	$pages = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
+	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($page-1) * FORUM_THREADS, FORUM_THREADS);
 	
 	foreach ($threads as $file => $date) {
 	
@@ -115,7 +116,7 @@ if ($threads) {
 		
 		@$html .= template_tags (TEMPLATE_INDEX_THREAD, array (
 			'URL'      => flattenTitle ($xml->channel->title),
-			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / APP_POSTS) : 1,
+			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / FORUM_POSTS) : 1,
 			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
 			'TITLE'    => safetext ($xml->channel->title),
 			'COUNT'    => count ($items),
@@ -134,7 +135,7 @@ if ($threads) {
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //the new thread form
-echo APP_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
+echo FORUM_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
 	'NAME'	=> safevalue ($NAME),
 	'PASS'	=> safevalue ($PASS),
 	'TITLE'	=> safevalue ($TITLE),

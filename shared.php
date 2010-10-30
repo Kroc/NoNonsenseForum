@@ -5,26 +5,27 @@ date_default_timezone_set ('UTC');
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('APP_ROOT',    dirname (__FILE__).'/');		//full path for absolute references
+define ('FORUM_ROOT',		dirname (__FILE__).'/');		//full path for absolute references
+define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST'].'/');	//todo: https support
 
 /* options: stuff for you
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('APP_ENABLED', true);				//if posting is allowed
-define ('APP_THEME',   'C=64');				//theme name, in “/themes/*”
-define ('APP_THREADS', 50);				//number of threads per page on the index
-define ('APP_POSTS',   25);				//number of posts per page on threads
-define ('APP_SALT',    'C64:');				//a string to prepend to names/passwords when hashing
+define ('FORUM_ENABLED',	true);					//if posting is allowed
+define ('FORUM_THEME',		'C=64');				//theme name, in “/themes/*”
+define ('FORUM_THREADS',	50);					//number of threads per page on the index
+define ('FORUM_POSTS',		25);					//number of posts per page on threads
+define ('FORUM_SALT',		'C64:');				//string to prepend to names/passwords when hashing
 
 //<uk3.php.net/manual/en/function.is-dir.php#70005>
-chdir (APP_ROOT);
+chdir (FORUM_ROOT);
 
 //include the HTML skin
-require_once "themes/".APP_THEME."/theme.php";
+require_once 'themes/'.FORUM_THEME.'/theme.php';
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)
-header("Cache-Control: no-cache");
-header("Expires: -1");
+header ('Cache-Control: no-cache');
+header ('Expires: -1');
 
 
 /* ====================================================================================================================== */
@@ -78,20 +79,20 @@ class allow_prepend extends SimpleXMLElement {
 
 function checkName ($name, $pass) {
 	//users are stored as text files based on the hash of the given name
-	$user = APP_ROOT."users/".md5 (APP_SALT.strtolower ($name)).".txt";
+	$user = FORUM_ROOT."users/".md5 (FORUM_SALT.strtolower ($name)).".txt";
 	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 (APP_SALT.$pass));
+	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.$pass));
 	//does password match?
-	return (file_get_contents ($user) == md5 (APP_SALT.$pass));
+	return (file_get_contents ($user) == md5 (FORUM_SALT.$pass));
 }
 
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {
 	//todo: per-folder mods.txt
-	if (!file_exists (APP_ROOT."mods.txt")) return false;
+	if (!file_exists (FORUM_ROOT."mods.txt")) return false;
 	return in_array (
 		strtolower ($name),
-		array_map ('strtolower', file (APP_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+		array_map ('strtolower', file (FORUM_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 	);
 }
 

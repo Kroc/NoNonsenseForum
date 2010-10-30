@@ -27,11 +27,8 @@
 •	Sitemap
 	
 •	Post editing
-•	Post deleting (problem with IDs reshuffling, need to create permalink IDs)
-	-	Could keep post and just remove text "This post has been bahleeted."
 	
 •	IE support (no reason why not)
-	
 •	Mobile support (iPhone / iPad / Android)
 	
-•	Read-only (lock) threads and folders. Use file-permissions?
+•	Read-only (lock) threads and folders. Use file-permissions? Read-only category on <channel>?

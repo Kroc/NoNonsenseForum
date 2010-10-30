@@ -17,19 +17,17 @@ $PASS	= mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
 $TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 
 if ($SUBMIT = @$_POST['submit']) if (
-	APP_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TEXT
+	FORUM_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TEXT
 	&& checkName ($NAME, $PASS)
 ) {
 	//where to?
-	$page = ceil ((count ($xml->channel->xpath ('item'))) / APP_POSTS);
-	$url = ($path ? rawurlencode ($path)."/" : "")."$file?page=$page#".
-		(count ($xml->channel->xpath ('item')) +1)
-	;
+	$page = ceil (count ($xml->channel->item)) / FORUM_POSTS);
+	$url  = ($path ? rawurlencode ($path).'/' : '')."$file?page=$page#".(count ($xml->channel->item) +1);
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ("item");
 	$item->addChild ("title",	safetext ("RE: ".$xml->channel->title));
-	$item->addChild ("link",	"http://".$_SERVER['HTTP_HOST']."/$url");
+	$item->addChild ("link",	FORUM_URL.$url);
 	$item->addChild ("author",	safetext ($NAME));
 	$item->addChild ("pubDate",	gmdate ('r'));
 	$item->addChild ("description",	safetext (formatText ($TEXT)));
@@ -37,7 +35,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//save
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
 	
-	header ("Location: http://".$_SERVER['HTTP_HOST']."/$url", true, 303);
+	header ('Location: '.FORUM_URL.$url, true, 303);
 }
 
 /* ====================================================================================================================== */
@@ -51,7 +49,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 		'PATH'	=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
-				'URL'	=> rawurlencode ($path),
+				'URL'	=> '/'.rawurlencode ($path).'/',
 				'PATH'	=> safetext ($path)
 			)) : TEMPLATE_THREAD_PATH
 	))
@@ -86,10 +84,10 @@ if (count ($thread)) {
 	array_multisort ($sort_proxy, SORT_ASC, $thread);
 	
 	//paging
-	$pages = ceil (count ($thread) / APP_POSTS);
-	$thread = array_slice ($thread, ($page-1) * APP_POSTS, APP_POSTS);
+	$pages = ceil (count ($thread) / FORUM_POSTS);
+	$thread = array_slice ($thread, ($page-1) * FORUM_POSTS, FORUM_POSTS);
 	
-	$c=2 + (($page-1) * APP_POSTS);
+	$c=2 + (($page-1) * FORUM_POSTS);
 	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
 		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
 					TEMPLATE_DELETE, 'URL',
@@ -113,7 +111,7 @@ if (count ($thread)) {
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //the reply form
-echo APP_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
+echo FORUM_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
 	'NAME'	=> safevalue ($NAME),
 	'PASS'	=> safevalue ($PASS),
 	'TEXT'	=> safevalue ($TEXT),

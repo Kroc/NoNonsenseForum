@@ -5,7 +5,6 @@ include "shared.php";
 /* ====================================================================================================================== */
 
 //thread to deal with, including path if in a folder
-//todo: deleting indivdual posts (will need better post-IDs first)
 $file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
 if ($path = @$_[1]) chdir ($path);
 
@@ -20,14 +19,15 @@ $PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20, 'UTF-8');
 
 //has the un/pw been submitted to authenticate the delete?
 if ($SUBMIT = @$_POST['submit']) if (
+	//validate form
 	$NAME && $PASS && checkName ($NAME, $PASS)
 	//only a moderator, or the post originator can delete a post/thread
 	&& (isMod ($NAME) || $NAME == (string) $post->author)
 
-//delete thread or post?
+//deleting a post?
 ) if (@$_GET['id']) {
 	//remove the post text
-	$post->description = $NAME == (string) $post->author ? TEMPLATE_DELETE_USER : TEMPLATE_DELETE_MOD;
+	$post->description = ($NAME == (string) $post->author) ? TEMPLATE_DELETE_USER : TEMPLATE_DELETE_MOD;
 	//add a "deleted" category so we know to no longer allow it to be edited or deleted again
 	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = "deleted";
 	
@@ -35,14 +35,14 @@ if ($SUBMIT = @$_POST['submit']) if (
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
 	
 	//return to the deleted post
-	header ("Location: http://".$_SERVER['HTTP_HOST'].($path ? "/$path/" : "/")."$file#$id", true, 303);
+	header ('Location: '.FORUM_URL.($path ? rawurlencode ($path).'/' : '')."$file#$id", true, 303);
 	
 } else {
 	//delete the thread for reals
-	@unlink (APP_ROOT."$file.xml");
+	@unlink (FORUM_ROOT."$file.xml");
 	
 	//return to the index
-	header ("Location: http://".$_SERVER['HTTP_HOST'].($path ? "/$path/" : "/"), true, 303);
+	header ('Location: '.FORUM_URL.($path ? rawurlencode ($path).'/' : ''), true, 303);
 
 }
 

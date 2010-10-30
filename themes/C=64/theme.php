@@ -6,12 +6,14 @@
    `template_tags` in shared.php) to swap out “tags” in the form of “&__TAG__;” with the data from the PHP, or in other
    instances with another template. this keeps the PHP logic separate from the HTML it is outputting
 
-   tags may be used once, more than once, or not at all in your templates
-*/
+   tags may be used once, more than once, or not at all in your templates */
 
+
+/* common strings used throughout or for non-HTML purposes
+   ---------------------------------------------------------------------------------------------------------------------- */
 //the `date` format code used to print human readable dates into the HTML,
 //see <php.net/manual/en/function.date.php> for documentation
-define ("DATE_FORMAT", "d-M'y H:i");
+define ('DATE_FORMAT', "d-M'y H:i");
 
 /* the opening HTML and website header
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -141,7 +143,7 @@ define ("TEMPLATE_THREAD_PATH_FOLDER", <<<HTML
 		<ol>
 			<li>
 				<a href="/">Forum Index</a>
-				<ol><li><a href="/&__URL__;/">&__PATH__;</a></li></ol>
+				<ol><li><a href="&__URL__;">&__PATH__;</a></li></ol>
 			</li>
 		</ol>
 HTML
@@ -169,7 +171,7 @@ HTML
 	&__FOLDER__;	name of folder, HTML encoded
 */
 define ("TEMPLATE_INDEX_FOLDER", <<<HTML
-	<dt><a href="/&__URL__;/">&__FOLDER__;</a></dt>
+	<dt><a href="&__URL__;">&__FOLDER__;</a></dt>
 
 HTML
 );
@@ -280,7 +282,7 @@ define ("TEMPLATE_INDEX_FORM", <<<HTML
 </fieldset></form>
 HTML
 );
-//this is inserted instead of the input form above if `APP_ENABLED` is false
+//this is inserted instead of the input form above if `FORUM_ENABLED` is false
 /* attached to:
 	nothing, inserted directly into the page by index.php
    tags:
@@ -454,7 +456,7 @@ define ("TEMPLATE_THREAD_FORM", <<<HTML
 </fieldset></form>
 HTML
 );
-//this is inserted instead of the input form above if `APP_ENABLED` is false
+//this is inserted instead of the input form above if `FORUM_ENABLED` is false
 /* attached to:
 	nothing, inserted directly into the page by thread.php
    tags:

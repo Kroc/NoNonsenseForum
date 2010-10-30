@@ -5,14 +5,14 @@ include "shared.php";
 /* ====================================================================================================================== */
 
 //which folder to show, not present for forum index
-if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '') chdir (APP_ROOT.$path);
+if ($path = preg_match ('/([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '') chdir (FORUM_ROOT.$path);
 
 //get list of threads
 $threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
 foreach ($threads as $file => &$date) $date = filectime ($file);
 arsort ($threads, SORT_NUMERIC);
 
-$threads = array_slice ($threads, 0, APP_THREADS);
+$threads = array_slice ($threads, 0, FORUM_THREADS);
 foreach ($threads as $file => $date) {
 	$xml = simplexml_load_file ($file);
 	$items = $xml->channel->xpath ('item');
