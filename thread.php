@@ -21,7 +21,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	&& checkName ($NAME, $PASS)
 ) {
 	//where to?
-	$page = ceil (count ($xml->channel->item)) / FORUM_POSTS;
+	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
 	$url  = ($path ? rawurlencode ($path).'/' : '')."$file?page=$page#".(count ($xml->channel->item) +1);
 	
 	//add the comment to the thread
