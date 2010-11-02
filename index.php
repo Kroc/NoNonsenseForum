@@ -120,7 +120,7 @@ if ($threads) {
 			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
 			'TITLE'    => safetext ($xml->channel->title),
 			'COUNT'    => count ($items),
-			'DATEITME' => date ('c', strtotime ($last->pubDate)),
+			'DATETIME' => date ('c', strtotime ($last->pubDate)),
 			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
 			'NAME'     => safetext ($last->author)
 		));
