@@ -1,11 +1,11 @@
 <?php //display a particular thread’s contents
 
-include "shared.php";
+require_once "shared.php";
 
 /* ====================================================================================================================== */
 
 //thread to show. todo: error page / 404
-$file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
+$file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
 if ($path = @$_[1]) chdir ($path);
 
 $xml = simplexml_load_file ("$file.xml", 'allow_prepend');
@@ -26,11 +26,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ("item");
-	$item->addChild ("title",	safetext ("RE: ".$xml->channel->title));
+	$item->addChild ("title",	safeHTML ("RE: ".$xml->channel->title));
 	$item->addChild ("link",	FORUM_URL.$url);
-	$item->addChild ("author",	safetext ($NAME));
+	$item->addChild ("author",	safeHTML ($NAME));
 	$item->addChild ("pubDate",	gmdate ('r'));
-	$item->addChild ("description",	safetext (formatText ($TEXT)));
+	$item->addChild ("description",	safeHTML (formatText ($TEXT)));
 	
 	//save
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
@@ -42,7 +42,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 
 echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
-	'TITLE'		=> safetext ($xml->channel->title).
+	'TITLE'		=> safeHTML ($xml->channel->title).
 			   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> "$file.xml",
 	'RSS_TITLE'	=> "Replies",
@@ -50,7 +50,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 		'PATH'	=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
 				'URL'	=> '/'.rawurlencode ($path).'/',
-				'PATH'	=> safetext ($path)
+				'PATH'	=> safeHTML ($path)
 			)) : TEMPLATE_THREAD_PATH
 	))
 ));
@@ -61,8 +61,8 @@ $thread = $xml->channel->xpath ('item');
 
 $post = array_pop ($thread);
 echo template_tags (TEMPLATE_THREAD_FIRST, array (
-	'TITLE'		=> safetext ($xml->channel->title),
-	'NAME'		=> safetext ($post->author),
+	'TITLE'		=> safeHTML ($xml->channel->title),
+	'NAME'		=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 	'DELETE'	=> template_tag (
@@ -96,7 +96,7 @@ if (count ($thread)) {
 		'ID'		=> $c++,
 		'TYPE'		=> $post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED
 				   : ($post->author == $author ? TEMPLATE_POST_OP : ''),
-		'NAME'		=> safetext ($post->author),
+		'NAME'		=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 		'TEXT'		=> $post->description
@@ -112,9 +112,9 @@ if (count ($thread)) {
 
 //the reply form
 echo FORUM_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
-	'NAME'	=> safevalue ($NAME),
-	'PASS'	=> safevalue ($PASS),
-	'TEXT'	=> safevalue ($TEXT),
+	'NAME'	=> safeString ($NAME),
+	'PASS'	=> safeString ($PASS),
+	'TEXT'	=> safeString ($TEXT),
 	'ERROR'	=> !$SUBMIT ? ERROR_NONE
 		   : (!$NAME ? ERROR_NAME
 		   : (!$PASS ? ERROR_PASS

@@ -1,5 +1,8 @@
 <?php //reduce some duplication
 
+//let me know when I’m being stupid
+error_reporting (-1);
+
 //PHP 5.3 issues a warning if the timezone is not set when using date-related commands
 date_default_timezone_set ('UTC');
 
@@ -51,12 +54,12 @@ function flattenTitle ($s_title) {
 }
 
 //we have to do these very often, so may as well shorten them:
-function safetext ($text) {
+function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
 	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
 }
-function safevalue ($text) {
-	//encode a string for insertion between quotes in an HTML attribute
+function safeString ($text) {
+	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
 	return htmlspecialchars ($text, ENT_COMPAT, 'UTF-8');
 }
 
@@ -88,12 +91,17 @@ function checkName ($name, $pass) {
 
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {
-	//todo: per-folder mods.txt
-	if (!file_exists (FORUM_ROOT."mods.txt")) return false;
-	return in_array (
-		strtolower ($name),
+	//'mods.txt' on webroot defines moderators for the whole forum
+	return (file_exists (FORUM_ROOT."mods.txt") && in_array (
+		strtolower ($name),  //(names are case insensitive)
 		array_map ('strtolower', file (FORUM_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-	);
+		
+	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
+	//(it is assumed that the current working directory has been changed to the sub-folder in question)
+	)) || (file_exists ("mods.txt") && in_array (
+		strtolower ($name),
+		array_map ('strtolower', file ("mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+	));
 }
 
 /* ====================================================================================================================== */

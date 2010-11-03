@@ -480,12 +480,9 @@ HTML
 define ("TEMPLATE_FOOTER", <<<HTML
 
 <footer><p>
-	&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;<!--
-     -->&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;<!--
-     -->&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;<!--
-     -->&#x0ee40;&#x0ee40;&#x0ee40;&#x0ee40;
-</p><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
+</p><p>
+	NoNonsenseForum: <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
 </p></footer>
 
 </body></html>

@@ -19,18 +19,18 @@ foreach ($threads as $file => $date) {
 	$item = end ($items);
 	
 	@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
-		'TITLE'	=> safetext ($xml->channel->title),
+		'TITLE'	=> safeHTML ($xml->channel->title),
 		'URL'	=> ($path ? rawurlencode ($path).'/' : '').pathinfo ($file, PATHINFO_FILENAME),
-		'NAME'	=> safetext ($item->author),
+		'NAME'	=> safeHTML ($item->author),
 		'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
-		'TEXT'	=> safetext ($item->description),
+		'TEXT'	=> safeHTML ($item->description),
 	));
 }
 
 header ("Content-Type: application/rss+xml;charset=UTF-8");
 die (template_tags (TEMPLATE_RSS_INDEX, array (
 	'PATH'	=> $path ? rawurlencode ($path).'/' : '',
-	'TITLE'	=> $path ? safetext ($path) : "Forum Index",
+	'TITLE'	=> $path ? safeHTML ($path) : "Forum Index",
 	'ITEMS'	=> $rss
 )));
 

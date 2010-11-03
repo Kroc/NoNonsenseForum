@@ -154,4 +154,6 @@ input[type=text]:invalid,
 input[type=number]:valid	{color: #68A941;}
 
 
-footer				{margin-top: 1em; text-align: center;}
+footer				{margin-top: 1em; font-family: "C64 Pro";}
+footer:before			{display: block; content: '\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40';}
+footer>p			{padding-left: 1em;}

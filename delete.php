@@ -1,11 +1,11 @@
 <?php  //delete threads and posts
 
-include "shared.php";
+require_once "shared.php";
 
 /* ====================================================================================================================== */
 
 //thread to deal with, including path if in a folder
-$file = (preg_match ('/(?:([^.]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
+$file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
 if ($path = @$_[1]) chdir ($path);
 
 //if deleting just one post, rather than the thread
@@ -39,7 +39,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 } else {
 	//delete the thread for reals
-	@unlink (FORUM_ROOT."$file.xml");
+	@unlink (FORUM_ROOT.($path ? "$path/" : '')."$file.xml");
 	
 	//return to the index
 	header ('Location: '.FORUM_URL.($path ? rawurlencode ($path).'/' : ''), true, 303);
@@ -48,20 +48,20 @@ if ($SUBMIT = @$_POST['submit']) if (
 
 echo template_tags (TEMPLATE_HEADER, array (
 	'URL'		=> "$file.xml",
-	'TITLE'		=> "Delete '".safetext ($xml->channel->title)."'?",
+	'TITLE'		=> @$_GET['id'] ? 'Delete post?' : "Delete '".safeHTML ($xml->channel->title)."'?",
 	'RSS_URL'	=> "$file.xml",
-	'RSS_TITLE'	=> "Replies",
-	'NAV'		=> ""
+	'RSS_TITLE'	=> 'Replies',
+	'NAV'		=> ''
 ));
 
 echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD, array (
-	'NAME'	=> safevalue ($NAME),
-	'PASS'	=> safevalue ($PASS),
+	'NAME'	=> safeString ($NAME),
+	'PASS'	=> safeString ($PASS),
 	'POST'	=> template_tags (TEMPLATE_POST, array (
 		'ID'		=> $id,
 		'TYPE'		=> '',
 		'DELETE'	=> '',
-		'NAME'		=> safetext ($post->author),
+		'NAME'		=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
 		'TEXT'		=> $post->description

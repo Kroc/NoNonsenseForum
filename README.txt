@@ -26,7 +26,9 @@ Install:
 
 Creating Sub-Forums:
 --------------------
-If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters except for “.”). Make sure the folder has write-permissions.
+If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server’s OS except for “.” and “&” — ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.
+
+Second-level sub-folders are not supported. (E.g. '/Music/Techno/')
 
 
 Stickying Threads:
@@ -48,18 +50,19 @@ The single most important thing to bear in mind is that the name reservation sys
 Whenever a name is reserved a text file is created in the users folder. The filename is a hash of the name and the file contains the hash of the password. Names are not case-sensitive, but passwords are.
 
 
-Deleting a Thread:
-------------------
-The person who made a thread can delete their thread by clicking on the delete button in the first post of a thread. They then have to enter the name and password pair that was originally used to post to delete the thread.
+Deleting a Thread or Post:
+--------------------------
+The person who made a thread (or a moderator) can delete their thread by clicking on the delete button in the first post of a thread. They then have to enter the name and password pair that was originally used to post to delete the thread. The entire thread is then permanently deleted.
 
-Deleting individual posts is not supported at this early stage but will be added.
+Deleting a post works the same way, by clicking the delete button on the particular post. Either the original author of the post or a moderator can delete the post, however individual posts are not permanently removed like threads. Upon deletion the post entry will remain but its text content will be stripped out and a message along the lines of "This post was deleted by the original poster" (or “a moderator”) will replace it.
 
 
 Adding Moderators:
 ------------------
-Moderators can delete threads that were not originally made by them. To add moderators to your website, first have them post at least once in order to reserve the name. Then create a “mods.txt” file in webroot (per-folder mods are not supported at this moment, but will be) and populate it with the reserved names to allow moderator rights, one on each line. E.g.
+Moderators can delete threads that were not originally made by them. To add moderators to your website, first have them post at least once in order to reserve the name. Then create a “mods.txt” file in webroot and populate it with the reserved names to allow moderator rights, one on each line. E.g.
 
 Kroc
 theraje
 SpeedoJoe
 
+The moderators you specify will be able to delete threads and posts in all folders, including root, of the forum. If you would like to set a moderator who can only delete within a certain folder, create a mods.txt file within the folder and specify the desired names. These moderators will not be able delete threads or posts in the forum root, or other folders.

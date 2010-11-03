@@ -1,12 +1,12 @@
 <?php //display the index of threads in a folder
 
-include "shared.php";
+require_once "shared.php";
 
 /* ====================================================================================================================== */
 
 //which folder to show, not present for forum index. we have to change directory for `is_dir` to work,
 //see <uk3.php.net/manual/en/function.is-dir.php#70005>
-$path = preg_match ('/themes\/|users\/|([^.\/]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+$path = preg_match ('/themes\/|users\/|([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
 if ($path) chdir (FORUM_ROOT.$path);
 
 //page number, obviously
@@ -35,11 +35,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//write out the new thread as an RSS file
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
 		'ITEMS'	=> TEMPLATE_RSS_ITEM,
-		'TITLE'	=> safetext ($TITLE),
+		'TITLE'	=> safeHTML ($TITLE),
 		'URL'	=> $url."#1",
-		'NAME'	=> safetext ($NAME),
+		'NAME'	=> safeHTML ($NAME),
 		'DATE'	=> gmdate ('r'),
-		'TEXT'	=> safetext (formatText ($TEXT)),
+		'TEXT'	=> safeHTML (formatText ($TEXT)),
 	)));
 	
 	//redirect to newley created thread
@@ -51,13 +51,13 @@ if ($SUBMIT = @$_POST['submit']) if (
 //write the website header:
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
-	'TITLE'		=> ($path ? safetext ($path) : 'Forum Index').
+	'TITLE'		=> ($path ? safeHTML ($path) : 'Forum Index').
 		   	   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> 'index.rss',
-	'RSS_TITLE'	=> $path ? safevalue ($path) : "Forum Index",
+	'RSS_TITLE'	=> $path ? safeString ($path) : "Forum Index",
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> TEMPLATE_INDEX_MENU,
-		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safetext ($path)) : TEMPLATE_INDEX_PATH
+		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safeHTML ($path)) : TEMPLATE_INDEX_PATH
 	))
 ));
 
@@ -72,7 +72,7 @@ if ($folders = array_filter (
 	foreach ($folders as $folder) {
 		@$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
 			'URL'	=> '/'.rawurlencode ($folder).'/',
-			'FOLDER'=> safetext ($folder)
+			'FOLDER'=> safeHTML ($folder)
 		));
 	}
 	
@@ -118,11 +118,11 @@ if ($threads) {
 			'URL'      => flattenTitle ($xml->channel->title),
 			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / FORUM_POSTS) : 1,
 			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
-			'TITLE'    => safetext ($xml->channel->title),
+			'TITLE'    => safeHTML ($xml->channel->title),
 			'COUNT'    => count ($items),
 			'DATETIME' => date ('c', strtotime ($last->pubDate)),
 			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
-			'NAME'     => safetext ($last->author)
+			'NAME'     => safeHTML ($last->author)
 		));
 	}
 	
@@ -136,10 +136,10 @@ if ($threads) {
 
 //the new thread form
 echo FORUM_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
-	'NAME'	=> safevalue ($NAME),
-	'PASS'	=> safevalue ($PASS),
-	'TITLE'	=> safevalue ($TITLE),
-	'TEXT'	=> safevalue ($TEXT),
+	'NAME'	=> safeString ($NAME),
+	'PASS'	=> safeString ($PASS),
+	'TITLE'	=> safeString ($TITLE),
+	'TEXT'	=> safeString ($TEXT),
 	'ERROR'	=> !$SUBMIT ? ERROR_NONE	//no problem? show default help text
 		   : (!$NAME  ? ERROR_NAME	//the name is missing
 		   : (!$PASS  ? ERROR_PASS	//the password is missing

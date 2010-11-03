@@ -46,15 +46,15 @@ AddCharset utf-8 .css .xml .txt .do
 </FilesMatch>
 
 # a folder
-RewriteCond %{REQUEST_URI} ^/[^./]+/$
+RewriteCond %{REQUEST_URI} ^/[^./&]+/$
 RewriteCond %{DOCUMENT_ROOT}%0 -d
 RewriteRule ^.*$ /index.php?path=$0 [QSA,L]
 
 # a thread
-RewriteCond %{REQUEST_URI} ^/([^.]+/)?[^./]+$
+RewriteCond %{REQUEST_URI} ^/([^./&]+/)?[^./]+$
 RewriteCond %{DOCUMENT_ROOT}%0.xml -f
 RewriteRule ^.*$ /thread.php?file=$0 [QSA,L]
 
 # an index RSS feed
-RewriteCond %{REQUEST_URI} ^/([^.]+/)?index.rss$
+RewriteCond %{REQUEST_URI} ^/([^./&]+/)?index.rss$
 RewriteRule ^([^.]+/)?index.rss$ /rss.php?path=$1 [QSA,L]
