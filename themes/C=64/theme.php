@@ -444,14 +444,15 @@ define ("TEMPLATE_THREAD_FORM", <<<HTML
 	</p>
 	
 	<label>Message:
-		<textarea name="text" cols="40" rows="25" maxlength="32768" required autocomplete="off"
+		<textarea name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
 		>&__TEXT__;</textarea>
 	</label>
 	
 	<p id="rules">
 		<input name="submit" type="submit" value="Reply" />
 		
-		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
+		There’s only 1 rule: don’t be an arse.
+		Rule #2 is Kroc makes up the rules.
 	</p>
 </fieldset></form>
 HTML

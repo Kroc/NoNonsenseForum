@@ -69,6 +69,8 @@ body>h2				{color: #68A941}
 a				{text-decoration: none; color: #d0dc71;}
 a:hover				{color: #fff;}
 
+time				{text-transform: uppercase;}
+
 dl				{margin: 0; padding: 0 0 0 1em;}
 dt				{padding: 0 1em 0 2em; font-family: "C64 Pro";}
 dt>a:before			{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}

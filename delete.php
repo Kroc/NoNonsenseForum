@@ -11,9 +11,12 @@ if ($path = @$_[1]) chdir ($path);
 //if deleting just one post, rather than the thread
 $id = preg_match ('/^[0-9]+$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
 
-$xml = simplexml_load_file ("$file.xml", 'allow_prepend');
+//load the thread to get the post preview
+$xml = simplexml_load_file ("$file.xml", 'allow_prepend') or die ("Invalid file");
 $post = &$xml->channel->item [count ($xml->channel->item) - $id];
 
+//name and password from form submission
+//(this page displays a username / password confirmation before deleting the thread / post)
 $NAME = mb_substr (stripslashes (@$_POST['username']), 0, 18, 'UTF-8');
 $PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20, 'UTF-8');
 
@@ -63,7 +66,7 @@ echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD
 		'DELETE'	=> '',
 		'NAME'		=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
+		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description
 	)),
 	'ERROR'	=> !$SUBMIT ? ERROR_DELETE_NONE

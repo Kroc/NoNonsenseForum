@@ -64,7 +64,7 @@ echo template_tags (TEMPLATE_THREAD_FIRST, array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
 	'NAME'		=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-	'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
+	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'DELETE'	=> template_tag (
 				TEMPLATE_DELETE, 'URL',
 				"/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file"
@@ -98,7 +98,7 @@ if (count ($thread)) {
 				   : ($post->author == $author ? TEMPLATE_POST_OP : ''),
 		'NAME'		=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'TIME'		=> strtoupper (date (DATE_FORMAT, strtotime ($post->pubDate))),
+		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description
 	));
 	

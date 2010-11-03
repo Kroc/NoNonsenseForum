@@ -4,19 +4,20 @@ require_once "shared.php";
 
 /* ====================================================================================================================== */
 
-//which folder to show, not present for forum index. we have to change directory for `is_dir` to work,
-//see <uk3.php.net/manual/en/function.is-dir.php#70005>
+//which folder to show, not present for forum index
 $path = preg_match ('/themes\/|users\/|([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+//we have to change directory for `is_dir` to work,
+//see <uk3.php.net/manual/en/function.is-dir.php#70005>
 if ($path) chdir (FORUM_ROOT.$path);
 
 //page number, obviously
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
 //submitted info for making a new thread
-$NAME	= mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,    'UTF-8');
-$PASS	= mb_substr (      stripslashes (@$_POST['password']),  0, 20,    'UTF-8');
-$TITLE	= mb_substr (trim (stripslashes (@$_POST['title']   )), 0, 80,    'UTF-8');
-$TEXT	= mb_substr (trim (stripslashes (@$_POST['text']    )), 0, 32768, 'UTF-8');
+$NAME  = mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,    'UTF-8');
+$PASS  = mb_substr (      stripslashes (@$_POST['password']),  0, 20,    'UTF-8');
+$TITLE = mb_substr (trim (stripslashes (@$_POST['title']   )), 0, 80,    'UTF-8');
+$TEXT  = mb_substr (trim (stripslashes (@$_POST['text']    )), 0, 32768, 'UTF-8');
 
 //has the user the submitted a new thread?
 if ($SUBMIT = @$_POST['submit']) if (
@@ -121,7 +122,7 @@ if ($threads) {
 			'TITLE'    => safeHTML ($xml->channel->title),
 			'COUNT'    => count ($items),
 			'DATETIME' => date ('c', strtotime ($last->pubDate)),
-			'TIME'     => strtoupper (date (DATE_FORMAT, strtotime ($last->pubDate))),
+			'TIME'     => date (DATE_FORMAT, strtotime ($last->pubDate)),
 			'NAME'     => safeHTML ($last->author)
 		));
 	}
