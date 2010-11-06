@@ -46,6 +46,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 			   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> "$file.xml",
 	'RSS_TITLE'	=> "Replies",
+	'ROBOTS'	=> '',
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$file.xml"),
 		'PATH'	=> $path ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
@@ -79,8 +80,7 @@ $author = (string) $post->author;
 if (count ($thread)) {
 	//sort the other way around
 	//<http://stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
-	$sort_proxy = array ();
-	foreach ($thread as $node) $sort_proxy[] = strtotime ($node->pubDate);
+	foreach ($thread as &$node) $sort_proxy[] = strtotime ($node->pubDate);
 	array_multisort ($sort_proxy, SORT_ASC, $thread);
 	
 	//paging
@@ -91,7 +91,7 @@ if (count ($thread)) {
 	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
 		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
 					TEMPLATE_DELETE, 'URL',
-					"/delete.php?file=".($path ? rawurlencode ($path)."/" : "")."$file&amp;id=$c"
+					'/delete.php?file='.($path ? rawurlencode ($path).'/' : '')."$file&amp;id=$c"
 				),
 		'ID'		=> $c++,
 		'TYPE'		=> $post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED

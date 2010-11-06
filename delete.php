@@ -54,6 +54,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'TITLE'		=> @$_GET['id'] ? 'Delete post?' : "Delete '".safeHTML ($xml->channel->title)."'?",
 	'RSS_URL'	=> "$file.xml",
 	'RSS_TITLE'	=> 'Replies',
+	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,
 	'NAV'		=> ''
 ));
 

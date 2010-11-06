@@ -56,6 +56,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 		   	   ($page > 1 ? " · Page $page" : ""),
 	'RSS_URL'	=> 'index.rss',
 	'RSS_TITLE'	=> $path ? safeString ($path) : "Forum Index",
+	'ROBOTS'	=> '',
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> TEMPLATE_INDEX_MENU,
 		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safeHTML ($path)) : TEMPLATE_INDEX_PATH

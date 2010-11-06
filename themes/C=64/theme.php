@@ -23,6 +23,7 @@ define ('DATE_FORMAT', "d-M'y H:i");
 	&__TITLE__;	HTML `<title>`
 	&__RSS_URL__;	URL to RSS feed for the current page
 	&__RSS_TITLE__;	the label for the RSS feed, like “New threads”
+	&__ROBOTS__;	on delete pages, TEMPLATE_HEADER_ROBOTS is inserted here (to tell crawlers to ignore delete pages)
 	&__NAV__;	a placeholder for a menu used on index / thread pages, but not delete / edit pages
 			(see `TEMPLATE_HEADER_NAV` below)
 */
@@ -33,7 +34,7 @@ define ("TEMPLATE_HEADER", <<<HTML
 	<title>&__TITLE__;</title>
 	<link rel="stylesheet" href="/themes/C=64/theme.css" />
 	<link rel="alternate" type="application/rss+xml" href="&__RSS_URL__;" title="&__RSS_TITLE__;" />
-	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />&__ROBOTS__;
 </head><body>
 
 <header>
@@ -44,6 +45,16 @@ define ("TEMPLATE_HEADER", <<<HTML
 	<p>READY.</p>&__NAV__;
 </header>
 
+HTML
+);
+/* attached to:
+	&__ROBOTS__;	TEMPLATE_HEADER
+   tags:
+	none
+*/
+define ('TEMPLATE_HEADER_ROBOTS', <<<HTML
+
+	<meta name="robots" content="noindex, nofollow" />
 HTML
 );
 
@@ -344,7 +355,7 @@ HTML
 */
 define ("TEMPLATE_DELETE", <<<HTML
 
-		<a class="delete" href="&__URL__;">Delete</a>
+		<a class="delete" rel="noindex nofollow" href="&__URL__;">Delete</a>
 HTML
 );
 
