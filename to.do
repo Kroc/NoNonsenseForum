@@ -1,8 +1,6 @@
 •	Add option for ignoring additional folders
 
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
-•	Template small strings like "Forum Index" too (so translation is possible in the skin)
-•	Template <title>, allow for global prefix (not currently on thread pages)
 
 •	abc.com/ shouldn’t convert to <abc.com/…>
 	

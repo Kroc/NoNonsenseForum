@@ -1,18 +1,18 @@
 <?php  //delete threads and posts
 
-require_once "shared.php";
+require_once 'shared.php';
 
 /* ====================================================================================================================== */
 
 //thread to deal with, including path if in a folder
-$file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ("Malformed request");
+$file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ('Malformed request');
 if ($path = @$_[1]) chdir ($path);
 
 //if deleting just one post, rather than the thread
 $id = preg_match ('/^[0-9]+$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
 
 //load the thread to get the post preview
-$xml = simplexml_load_file ("$file.xml", 'allow_prepend') or die ("Invalid file");
+$xml = simplexml_load_file ("$file.xml", 'allow_prepend') or die ('Invalid file');
 $post = &$xml->channel->item [count ($xml->channel->item) - $id];
 
 //name and password from form submission
@@ -32,7 +32,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	//remove the post text
 	$post->description = ($NAME == (string) $post->author) ? TEMPLATE_DELETE_USER : TEMPLATE_DELETE_MOD;
 	//add a "deleted" category so we know to no longer allow it to be edited or deleted again
-	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = "deleted";
+	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 	
 	//commit the data
 	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
@@ -50,10 +50,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 }
 
 echo template_tags (TEMPLATE_HEADER, array (
-	'URL'		=> "$file.xml",
-	'TITLE'		=> @$_GET['id'] ? 'Delete post?' : "Delete '".safeHTML ($xml->channel->title)."'?",
-	'RSS_URL'	=> "$file.xml",
-	'RSS_TITLE'	=> 'Replies',
+	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (
+				TEMPLATE_HTMLTITLE_NAME, 'NAME',
+				@$_GET['id'] ? 'Delete post?' : "Delete '".safeHTML ($xml->channel->title)."'?"
+			),
+	'RSS'		=> "$file.xml",
 	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,
 	'NAV'		=> ''
 ));

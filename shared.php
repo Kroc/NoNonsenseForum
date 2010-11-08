@@ -82,7 +82,7 @@ class allow_prepend extends SimpleXMLElement {
 
 function checkName ($name, $pass) {
 	//users are stored as text files based on the hash of the given name
-	$user = FORUM_ROOT."users/".md5 (FORUM_SALT.strtolower ($name)).".txt";
+	$user = FORUM_ROOT.'users/'.md5 (FORUM_SALT.strtolower ($name)).'.txt';
 	//create the user, if new
 	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.$pass));
 	//does password match?
@@ -92,15 +92,15 @@ function checkName ($name, $pass) {
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {
 	//'mods.txt' on webroot defines moderators for the whole forum
-	return (file_exists (FORUM_ROOT."mods.txt") && in_array (
+	return (file_exists (FORUM_ROOT.'mods.txt') && in_array (
 		strtolower ($name),  //(names are case insensitive)
-		array_map ('strtolower', file (FORUM_ROOT."mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+		array_map ('strtolower', file (FORUM_ROOT.'mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 		
 	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
 	//(it is assumed that the current working directory has been changed to the sub-folder in question)
-	)) || (file_exists ("mods.txt") && in_array (
+	)) || (file_exists ('mods.txt') && in_array (
 		strtolower ($name),
-		array_map ('strtolower', file ("mods.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+		array_map ('strtolower', file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 	));
 }
 
@@ -153,7 +153,7 @@ function formatText ($text) {
 	$text);
 	
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		$chunk = "<p>\n".str_replace ("\n", "<br />", $chunk)."\n</p>";
+		$chunk = "<p>\n".str_replace ("\n", '<br />', $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	

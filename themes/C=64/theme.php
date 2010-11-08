@@ -15,25 +15,30 @@
 //see <php.net/manual/en/function.date.php> for documentation
 define ('DATE_FORMAT', "d-M'y H:i");
 
+//the HTML `<title>` string
+define ('TEMPLATE_HTMLTITLE_SLUG', 'Camen Design Forum');		//always first
+define ('TEMPLATE_HTMLTITLE_NAME', ' * &__NAME__;');			//added next. name of folder or thread
+define ('TEMPLATE_HTMLTITLE_PAGE', ' * Page &__PAGE__;');		//added next
+
+
 /* the opening HTML and website header
    ---------------------------------------------------------------------------------------------------------------------- */
 /* attached to:
 	nothing, inserted directly into the page by index.php, thread.php & delete.php
    tags:
-	&__TITLE__;	HTML `<title>`
-	&__RSS_URL__;	URL to RSS feed for the current page
-	&__RSS_TITLE__;	the label for the RSS feed, like “New threads”
+	&__HTMLTITLE__;	HTML `<title>`, see TEMPLATE_HTMLTITLE_* for construction
+	&__RSS__;	URL to RSS feed for the current page
 	&__ROBOTS__;	on delete pages, TEMPLATE_HEADER_ROBOTS is inserted here (to tell crawlers to ignore delete pages)
 	&__NAV__;	a placeholder for a menu used on index / thread pages, but not delete / edit pages
 			(see `TEMPLATE_HEADER_NAV` below)
 */
-define ("TEMPLATE_HEADER", <<<HTML
+define ('TEMPLATE_HEADER', <<<HTML
 <!doctype html>
 <html><head>
 	<meta charset="utf-8" />
-	<title>&__TITLE__;</title>
+	<title>&__HTMLTITLE__;</title>
 	<link rel="stylesheet" href="/themes/C=64/theme.css" />
-	<link rel="alternate" type="application/rss+xml" href="&__RSS_URL__;" title="&__RSS_TITLE__;" />
+	<link rel="alternate" type="application/rss+xml" href="&__RSS__;" />
 	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />&__ROBOTS__;
 </head><body>
 
@@ -70,7 +75,7 @@ HTML
 			-	`TEMPLATE_THREAD_PATH` on thread pages (in root folder)
 			-	`TEMPLATE_THREAD_PATH_FOLDER` on threads in sub-folders (links back to folder)
 */
-define ("TEMPLATE_HEADER_NAV", <<<HTML
+define ('TEMPLATE_HEADER_NAV', <<<HTML
 
 	<nav>
 &__MENU__;
@@ -85,7 +90,7 @@ HTML
    tags:
 	none 
 */
-define ("TEMPLATE_INDEX_MENU", <<<HTML
+define ('TEMPLATE_INDEX_MENU', <<<HTML
 		<a href="#new">Add Thread</a>
 		<a href="index.rss">RSS</a>
 HTML
@@ -97,7 +102,7 @@ HTML
    tags:
 	&__RSS__;	URL to the RSS feed for this thread (the thread’s filename ending in “.xml”)
 */
-define ("TEMPLATE_THREAD_MENU", <<<HTML
+define ('TEMPLATE_THREAD_MENU', <<<HTML
 		<a href="#reply">Reply</a>
 		<a href="&__RSS__;">RSS</a>
 HTML
@@ -109,9 +114,9 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_INDEX_PATH", <<<HTML
+define ('TEMPLATE_INDEX_PATH', <<<HTML
 		<ol>
-			<li>• Forum Index:</li>
+			<li>• Index:</li>
 		</ol>
 HTML
 );
@@ -121,10 +126,10 @@ HTML
    tags:
 	&__PATH__;	the name of the folder being viewed, HTML encoded
 */
-define ("TEMPLATE_INDEX_PATH_FOLDER", <<<HTML
+define ('TEMPLATE_INDEX_PATH_FOLDER', <<<HTML
 		<ol>
 			<li>
-				<a href="/">Forum Index</a>
+				<a href="/">Index</a>
 				<ol><li>&__PATH__;:</li></ol>
 			</li>
 		</ol>
@@ -137,9 +142,9 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_THREAD_PATH", <<<HTML
+define ('TEMPLATE_THREAD_PATH', <<<HTML
 		<ol>
-			<li><a href="/">Forum Index</a></li>
+			<li><a href="/">Index</a></li>
 		</ol>
 HTML
 );
@@ -150,10 +155,10 @@ HTML
 	&__URL__;	URL to the folder the thread is within
 	&__PATH__;	HTML encoded name of the folder
 */
-define ("TEMPLATE_THREAD_PATH_FOLDER", <<<HTML
+define ('TEMPLATE_THREAD_PATH_FOLDER', <<<HTML
 		<ol>
 			<li>
-				<a href="/">Forum Index</a>
+				<a href="/">Index</a>
 				<ol><li><a href="&__URL__;">&__PATH__;</a></li></ol>
 			</li>
 		</ol>
@@ -167,7 +172,7 @@ HTML
    tags:
 	&__FOLDERS__;	a generated list of folders (see TEMPLATE_INDEX_FOLDER)
 */
-define ("TEMPLATE_INDEX_FOLDERS", <<<HTML
+define ('TEMPLATE_INDEX_FOLDERS', <<<HTML
 <h2 id="folders">Folders</h2>
 <dl>
 &__FOLDERS__;</dl>
@@ -181,7 +186,7 @@ HTML
 	&__URL__;	URL of folder
 	&__FOLDER__;	name of folder, HTML encoded
 */
-define ("TEMPLATE_INDEX_FOLDER", <<<HTML
+define ('TEMPLATE_INDEX_FOLDER', <<<HTML
 	<dt><a href="&__URL__;">&__FOLDER__;</a></dt>
 
 HTML
@@ -195,7 +200,7 @@ HTML
 	&__THREADS__;	a generated list of thread links, see TEMPLATE_INDEX_THREAD
 	&__PAGES__;	a generated list of page links, see TEMPLATE_PAGES_*
 */
-define ("TEMPLATE_INDEX_THREADS", <<<HTML
+define ('TEMPLATE_INDEX_THREADS', <<<HTML
 <h2 id="list">Threads</h2>
 <dl>
 &__THREADS__;</dl>
@@ -219,7 +224,7 @@ HTML
 	&__TIME__;	human-readable timestamp
 	&__NAME__;	name of last poster in thread
 */
-define ("TEMPLATE_INDEX_THREAD", <<<HTML
+define ('TEMPLATE_INDEX_THREAD', <<<HTML
 	<dt><a href="&__URL__;?page=&__PAGE__;"&__STICKY__;>&__TITLE__;</a> (&__COUNT__;)</dt>
 	<dd>
 		<time datetime="&__DATETIME__;">&__TIME__;</time>
@@ -234,15 +239,15 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_STICKY", ' class="sticky"');
+define ('TEMPLATE_STICKY', ' class="sticky"');
 
 /* the page list
    ---------------------------------------------------------------------------------------------------------------------- */
 //I should probably do this using LIs so generated content can be used to do commas and the designer has more freedom
-define ("TEMPLATE_PAGES_PAGE",      "<a href=\"?page=&__PAGE__;#list\">&__PAGE__;</a>");
-define ("TEMPLATE_PAGES_CURRENT",   "<span class=\"ltgreen\">&__PAGE__;</span>");
-define ("TEMPLATE_PAGES_GAP",       "…");
-define ("TEMPLATE_PAGES_SEPARATOR", ",");
+define ('TEMPLATE_PAGES_PAGE',      '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>');
+define ('TEMPLATE_PAGES_CURRENT',   '<span class="ltgreen">&__PAGE__;</span>');
+define ('TEMPLATE_PAGES_GAP',       '…');
+define ('TEMPLATE_PAGES_SEPARATOR', ',');
 
 /* the new thread input form
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -255,7 +260,7 @@ define ("TEMPLATE_PAGES_SEPARATOR", ",");
 	&__TITLE__;	the title of the new thread
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
-define ("TEMPLATE_INDEX_FORM", <<<HTML
+define ('TEMPLATE_INDEX_FORM', <<<HTML
 <form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Add Thread</legend>
 	
@@ -299,7 +304,7 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_INDEX_FORM_DISABLED", <<<HTML
+define ('TEMPLATE_INDEX_FORM_DISABLED', <<<HTML
 <h1>Add Thread</h1>
 <p class="red">
 	Sorry, posting is currently disabled.
@@ -314,12 +319,12 @@ HTML
    tags:
 	none
 */
-define ("ERROR_NONE",  "There is no need to \"register\", just enter the name + password you want.");
-define ("ERROR_NAME",  "<span class=\"red\">Enter a name. You’ll need to use this with the password each time.</span>");
-define ("ERROR_PASS",  "<span class=\"red\">Enter a password. It’s so you can re-use your name each time.</span>");
-define ("ERROR_TITLE", "<span class=\"red\">You need to enter the title of your new discussion thread</span>");
-define ("ERROR_TEXT",  "<span class=\"red\">Well, write a message!</span>");
-define ("ERROR_AUTH",  "<span class=\"red\">That name is taken. Provide the password for it, or choose another name. (password typo?)</span>");
+define ('ERROR_NONE',  'There is no need to "register", just enter the name + password you want.');
+define ('ERROR_NAME',  '<span class="red">Enter a name. You’ll need to use this with the password each time.</span>');
+define ('ERROR_PASS',  '<span class="red">Enter a password. It’s so you can re-use your name each time.</span>');
+define ('ERROR_TITLE', '<span class="red">You need to enter the title of your new discussion thread</span>');
+define ('ERROR_TEXT',  '<span class="red">Well, write a message!</span>');
+define ('ERROR_AUTH',  '<span class="red">That name is taken. Provide the password for it, or choose another name. (password typo?)</span>');
 
 /* the first post in a thread
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -333,7 +338,7 @@ define ("ERROR_AUTH",  "<span class=\"red\">That name is taken. Provide the pass
 	&__NAME__;	Name of thread originator
 	&__TEXT__;	The post message text, HTML formatted and encoded
 */
-define ("TEMPLATE_THREAD_FIRST", <<<HTML
+define ('TEMPLATE_THREAD_FIRST', <<<HTML
 <h1>&__TITLE__;</h1>
 
 <article id="1" class="op">
@@ -353,7 +358,7 @@ HTML
    tags:
 	&__URL__;	The URL to delete a thread
 */
-define ("TEMPLATE_DELETE", <<<HTML
+define ('TEMPLATE_DELETE', <<<HTML
 
 		<a class="delete" rel="noindex nofollow" href="&__URL__;">Delete</a>
 HTML
@@ -367,7 +372,7 @@ HTML
 	&__PAGES__;	a generated list of page links, see TEMPLATE_PAGES_*
 	&__POSTS__;	a generated list of posts, see TEMPLATE_POST below
 */
-define ("TEMPLATE_THREAD_POSTS", <<<HTML
+define ('TEMPLATE_THREAD_POSTS', <<<HTML
 <h2 id="list">Replies</h2>
 <nav class="pages">
 	Page &__PAGES__;
@@ -396,7 +401,7 @@ HTML
 	&__NAME__;	the poster’s name
 	&__TEXT__;	the post message
 */
-define ("TEMPLATE_POST", <<<HTML
+define ('TEMPLATE_POST', <<<HTML
 <article id="&__ID__;" class="&__TYPE__;">
 	<header>&__DELETE__;
 		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
@@ -414,7 +419,7 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_POST_OP", 'op');
+define ('TEMPLATE_POST_OP', 'op');
 
 //if the post has been deleted
 /* attached to:
@@ -422,7 +427,7 @@ define ("TEMPLATE_POST_OP", 'op');
    tags:
 	none
 */
-define ("TEMPLATE_POST_DELETED", 'deleted');
+define ('TEMPLATE_POST_DELETED', 'deleted');
 
 /* the reply input form
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -434,7 +439,7 @@ define ("TEMPLATE_POST_DELETED", 'deleted');
 	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
-define ("TEMPLATE_THREAD_FORM", <<<HTML
+define ('TEMPLATE_THREAD_FORM', <<<HTML
 <form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Reply</legend>
 	
@@ -474,7 +479,7 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_THREAD_FORM_DISABLED", <<<HTML
+define ('TEMPLATE_THREAD_FORM_DISABLED', <<<HTML
 <h1>Reply</h1>
 <p class="red">
 	Sorry, posting is currently disabled.
@@ -489,7 +494,7 @@ HTML
    tags:
 	none
 */
-define ("TEMPLATE_FOOTER", <<<HTML
+define ('TEMPLATE_FOOTER', <<<HTML
 
 <footer><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
@@ -513,7 +518,7 @@ HTML
 	&__PASS__;	the password entered
 	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
 */
-define ("TEMPLATE_DELETE_THREAD", <<<HTML
+define ('TEMPLATE_DELETE_THREAD', <<<HTML
 <form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Delete Thread &amp; Replies</legend>
 	
@@ -546,7 +551,7 @@ HTML
 	&__PASS__;	the password entered
 	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
 */
-define ("TEMPLATE_DELETE_POST", <<<HTML
+define ('TEMPLATE_DELETE_POST', <<<HTML
 
 <form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
 	<legend>Delete Post</legend>
@@ -578,12 +583,12 @@ HTML
    tags:
 	none
 */
-define ("ERROR_DELETE_NONE", "To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.");
-define ("ERROR_DELETE_AUTH", "<span class=\"red\">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>");
+define ('ERROR_DELETE_NONE', 'To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.');
+define ('ERROR_DELETE_AUTH', '<span class="red">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>');
 
 //the text left behind when a post is deleted
-define ("TEMPLATE_DELETE_USER", '<p>This post was deleted by its owner</p>');
-define ("TEMPLATE_DELETE_MOD",  '<p>This post was deleted by a moderator</p>');
+define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
+define ('TEMPLATE_DELETE_MOD',  '<p>This post was deleted by a moderator</p>');
 
 
 /* RSS feeds
@@ -599,7 +604,7 @@ define ("TEMPLATE_DELETE_MOD",  '<p>This post was deleted by a moderator</p>');
 	&__DATE__;	RSS formatted timestamp
 	&__TEXT__;	the message, HTML formatted and XML encoded
 */
-define ("TEMPLATE_RSS", <<<XML
+define ('TEMPLATE_RSS', <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
@@ -623,7 +628,7 @@ XML
 	&__TITLE__;	title of the thread
 	&__ITEMS__;	a generated list of RSS items, see `TEMPLATE_RSS_ITEM` below
 */
-define ("TEMPLATE_RSS_INDEX", <<<XML
+define ('TEMPLATE_RSS_INDEX', <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
@@ -647,7 +652,7 @@ XML
 	&__DATE__;	RSS formatted timestamp
 	&__TEXT__;	the message, HTML formatted and XML encoded
 */
-define ("TEMPLATE_RSS_ITEM", <<<XML
+define ('TEMPLATE_RSS_ITEM', <<<XML
 <item>
 	<title>&__TITLE__;</title>
 	<link>http://${_SERVER['HTTP_HOST']}/&__URL__;</link>

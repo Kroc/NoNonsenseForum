@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 
-require_once "shared.php";
+require_once 'shared.php';
 
 /* ====================================================================================================================== */
 
@@ -23,7 +23,7 @@ $TEXT  = mb_substr (trim (stripslashes (@$_POST['text']    )), 0, 32768, 'UTF-8'
 if ($SUBMIT = @$_POST['submit']) if (
 	//`FORUM_ENABLED` (in 'shared.php') can be toggled to disable posting
 	//the email check is a fake hidden field in the form to try and fool spam bots
-	FORUM_ENABLED && @$_POST['email'] == "example@abc.com" && $NAME && $PASS && $TITLE && $TEXT
+	FORUM_ENABLED && @$_POST['email'] == 'example@abc.com' && $NAME && $PASS && $TITLE && $TEXT
 	&& checkName ($NAME, $PASS)
 ) {
 	//the file on disk is a simplified version of the title
@@ -37,7 +37,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
 		'ITEMS'	=> TEMPLATE_RSS_ITEM,
 		'TITLE'	=> safeHTML ($TITLE),
-		'URL'	=> $url."#1",
+		'URL'	=> "$url#1",
 		'NAME'	=> safeHTML ($NAME),
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText ($TEXT)),
@@ -52,10 +52,10 @@ if ($SUBMIT = @$_POST['submit']) if (
 //write the website header:
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
-	'TITLE'		=> ($path ? safeHTML ($path) : 'Forum Index').
-		   	   ($page > 1 ? " · Page $page" : ""),
-	'RSS_URL'	=> 'index.rss',
-	'RSS_TITLE'	=> $path ? safeString ($path) : "Forum Index",
+	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG
+			  .($path ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($path)) : '')
+		   	  .($page > 1 ? template_tag (TEMPLATE_HTMLTITLE_PAGE, 'PAGE', $page) : ''),
+	'RSS'		=> 'index.rss',
 	'ROBOTS'	=> '',
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> TEMPLATE_INDEX_MENU,
@@ -92,8 +92,8 @@ arsort ($threads, SORT_NUMERIC);
 if ($threads) {
 	//does this folder have a sticky list?
 	$stickies = array ();
-	if (file_exists ("sticky.txt")) {
-		$stickies = array_fill_keys (file ("sticky.txt", FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
+	if (file_exists ('sticky.txt')) {
+		$stickies = array_fill_keys (file ('sticky.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
 		
 		//get the date order
 		foreach ($stickies as $sticky => &$date) $date = @filemtime ($sticky);

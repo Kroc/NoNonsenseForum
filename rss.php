@@ -1,6 +1,6 @@
 <? //generate an RSS feed for index pages
 
-include "shared.php";
+include 'shared.php';
 
 /* ====================================================================================================================== */
 
@@ -27,10 +27,10 @@ foreach ($threads as $file => $date) {
 	));
 }
 
-header ("Content-Type: application/rss+xml;charset=UTF-8");
+header ('Content-Type: application/rss+xml;charset=UTF-8');
 die (template_tags (TEMPLATE_RSS_INDEX, array (
 	'PATH'	=> $path ? rawurlencode ($path).'/' : '',
-	'TITLE'	=> $path ? safeHTML ($path) : "Forum Index",
+	'TITLE'	=> TEMPLATE_HTMLTITLE_SLUG.($path ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($path)) : ''),
 	'ITEMS'	=> $rss
 )));
 
