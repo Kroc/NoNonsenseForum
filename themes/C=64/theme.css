@@ -1,3 +1,9 @@
+/* ====================================================================================================================== */
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
+*/
+
 /* yeah, I could really do with constants in CSS plz */
 .black				{color: #000000;}
 .white				{color: #ffffff;}
@@ -25,7 +31,8 @@ header, hgroup, nav, footer,
 ::-moz-selection		{background-color: #7C70DA; color: #fff; text-shadow: none;}
 ::selection 			{background-color: #7C70DA; color: #fff; text-shadow: none;}
 
-/* C64 font provided by <style64.org/c64-truetype> */
+/* C64 font provided by <style64.org/c64-truetype>,
+   see license.txt in this directory for font licence */
 @font-face 			{font-family: "C64 Pro";
 				 src: url("C64_Pro_v1.0-STYLE.woff") format("woff"),
 				      url("C64_Pro_v1.0-STYLE.ttf") format("truetype");}

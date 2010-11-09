@@ -1,4 +1,9 @@
 <?php //display the index of threads in a folder
+/* ====================================================================================================================== */
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
+*/
 
 require_once 'shared.php';
 
