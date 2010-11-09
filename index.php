@@ -10,7 +10,7 @@ require_once 'shared.php';
 /* ====================================================================================================================== */
 
 //which folder to show, not present for forum index
-$path = preg_match ('/themes\/|users\/|([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+$path = preg_match ('/([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
 //we have to change directory for `is_dir` to work,
 //see <uk3.php.net/manual/en/function.is-dir.php#70005>
 if ($path) chdir (FORUM_ROOT.$path);

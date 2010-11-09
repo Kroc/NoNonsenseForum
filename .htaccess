@@ -1,7 +1,11 @@
 RewriteEngine	on
 
 # don’t allow any access to /users (this is accessed purely from the PHP)
-RewriteRule ^users/.*$ - [F]
+RewriteRule ^users/.*$ - [NC,F]
+
+# don’t allow forum access to users / themes folder
+RewriteCond %{QUERY_STRING} path=(?:themes|users) [NC]
+RewriteRule ^ - [F]
 
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
@@ -48,7 +52,7 @@ AddCharset utf-8 .css .xml .txt .do
 # a folder
 RewriteCond %{REQUEST_URI} ^/[^./&]+/$
 RewriteCond %{DOCUMENT_ROOT}%0 -d
-RewriteRule ^.*$ /index.php?path=$0 [QSA,L]
+RewriteRule ^.*$ /?path=$0 [QSA,L]
 
 # a thread
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?[^./]+$

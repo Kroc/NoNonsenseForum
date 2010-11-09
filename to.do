@@ -1,3 +1,8 @@
+•	Move $path to shared
+	-	will have to unify use of path by splitting some pages to ?file=…&path=…
+
+•	Invalid page number error
+
 •	Add option for ignoring additional folders
 
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
