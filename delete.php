@@ -14,7 +14,7 @@ $file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2
 if ($path = @$_[1]) chdir ($path);
 
 //if deleting just one post, rather than the thread
-$id = preg_match ('/^[0-9]+$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
+$id = preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
 
 //load the thread to get the post preview
 $xml = simplexml_load_file ("$file.xml", 'allow_prepend') or die ('Invalid file');
