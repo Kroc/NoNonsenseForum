@@ -53,7 +53,7 @@ function flattenTitle ($s_title) {
 	));
 }
 
-//we have to do these very often, so may as well shorten them:
+//santise output:
 function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
 	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
@@ -130,26 +130,28 @@ function pageLinks ($page, $pages) {
 }
 
 function formatText ($text) {
-	$text = htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
+	//sanitise HTML against injection
+	$text = safeHTML ($text);
 	
+	//find URLs
 	$text = preg_replace (
 		'/(?:
 			((?:http|ftp)s?:\/\/)					# $1 = protocol
 			(?:www\.)?						# ignore www in friendly URL
 			(							# $2 = friendly URL (no protocol)
 				[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+			# domain name
-			)(							# $3 = folders and filename, relative URL
-				\/						# slash required after full domain
+			)(\/)?							# $3 = slash is excluded from friendly URL
+			(?(3)(							# $4 = folders and filename, relative URL
 				(?:						# folders and filename
-					[:).](?!\s|$)|				# ignore a colon or bracket at end of URL
+					[:).](?!\s|$)|				# ignore a colon, bracket or dot on the end
 					[\/a-z0-9_!~*\'(;?@&=+$,%-]
 				)*
 				(?:\x23[^\s"]+)?				# bookmark
-			)?
+			)?)
 		|
-			([a-z0-9._%+-]+@[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+)	# $4 = e-mail
+			([a-z0-9._%+-]+@[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+)	# $5 = e-mail
 		)/exi',
-		'"<a href=\"".("$4"?"mailto:$4":("$1"?"$1":"http://")."$2$3")."\">$2$4".("$3"?"/…":"")."</a>"',
+		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
 	
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {

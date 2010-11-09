@@ -1,8 +1,6 @@
 •	Add option for ignoring additional folders
 
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
-
-•	abc.com/ shouldn’t convert to <abc.com/…>
 	
 •	Link to go to the last post on a page
 	

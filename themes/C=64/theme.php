@@ -17,8 +17,8 @@ define ('DATE_FORMAT', "d-M'y H:i");
 
 //the HTML `<title>` string
 define ('TEMPLATE_HTMLTITLE_SLUG', 'Camen Design Forum');		//always first
-define ('TEMPLATE_HTMLTITLE_NAME', ' * &__NAME__;');			//added next. name of folder or thread
-define ('TEMPLATE_HTMLTITLE_PAGE', ' * Page &__PAGE__;');		//added next
+define ('TEMPLATE_HTMLTITLE_NAME', ' * &__NAME__;');			//added next, name of folder or thread
+define ('TEMPLATE_HTMLTITLE_PAGE', ' * Page &__PAGE__;');		//added next, current page number
 
 
 /* the opening HTML and website header
