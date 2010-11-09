@@ -55,9 +55,8 @@ if ($SUBMIT = @$_POST['submit']) if (
 }
 
 echo template_tags (TEMPLATE_HEADER, array (
-	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (
-				TEMPLATE_HTMLTITLE_NAME, 'NAME',
-				@$_GET['id'] ? 'Delete post?' : "Delete '".safeHTML ($xml->channel->title)."'?"
+	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME',
+				@$_GET['id'] ? TEMPLATE_HTMLTITLE_DELETE_POST : TEMPLATE_HTMLTITLE_DELETE_THREAD
 			),
 	'RSS'		=> "$file.xml",
 	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,

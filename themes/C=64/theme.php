@@ -21,9 +21,11 @@
 define ('DATE_FORMAT', "d-M'y H:i");
 
 //the HTML `<title>` string
-define ('TEMPLATE_HTMLTITLE_SLUG', 'Camen Design Forum');		//always first
-define ('TEMPLATE_HTMLTITLE_NAME', ' * &__NAME__;');			//added next, name of folder or thread
-define ('TEMPLATE_HTMLTITLE_PAGE', ' * Page &__PAGE__;');		//added next, current page number
+define ('TEMPLATE_HTMLTITLE_SLUG',		'Camen Design Forum');		//always first
+define ('TEMPLATE_HTMLTITLE_NAME',		' * &__NAME__;');		//added next, name of folder or thread
+define ('TEMPLATE_HTMLTITLE_PAGE',		' * Page &__PAGE__;');		//added next, current page number
+define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	' * Delete Thread?');		//on delete.php
+define ('TEMPLATE_HTMLTITLE_DELETE_POST',	' * Delete Post?');		//on delete.php
 
 
 /* the opening HTML and website header
