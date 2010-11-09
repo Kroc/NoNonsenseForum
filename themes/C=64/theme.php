@@ -27,6 +27,9 @@ define ('TEMPLATE_HTMLTITLE_PAGE',		' * Page &__PAGE__;');		//added next, curren
 define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	' * Delete Thread?');		//on delete.php
 define ('TEMPLATE_HTMLTITLE_DELETE_POST',	' * Delete Post?');		//on delete.php
 
+//prepended to the thread title for each reply (like in e-mail)
+define ('TEMPLATE_RE',				'RE: ');
+
 
 /* the opening HTML and website header
    ---------------------------------------------------------------------------------------------------------------------- */

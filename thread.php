@@ -17,9 +17,9 @@ $xml = simplexml_load_file ("$file.xml", 'allow_prepend');
 
 $page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
-$NAME	= mb_substr (stripslashes (@$_POST['username']), 0, 18,    'UTF-8');
-$PASS	= mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
-$TEXT	= mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
+$NAME = mb_substr (stripslashes (@$_POST['username']), 0, 18,    'UTF-8');
+$PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
+$TEXT = mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
 
 if ($SUBMIT = @$_POST['submit']) if (
 	FORUM_ENABLED && @$_POST['email'] == 'example@abc.com' && $NAME && $PASS && $TEXT
@@ -31,7 +31,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ('item');
-	$item->addChild ('title',	safeHTML ('RE: '.$xml->channel->title));
+	$item->addChild ('title',	safeHTML (TEMPLATE_RE.$xml->channel->title));
 	$item->addChild ('link',	FORUM_URL.$url);
 	$item->addChild ('author',	safeHTML ($NAME));
 	$item->addChild ('pubDate',	gmdate ('r'));
