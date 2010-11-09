@@ -214,21 +214,20 @@ HTML
 /* attached to:
 	&__THREADS__;	TEMPLATE_INDEX_THREADS
    tags:
-	&__URL__;	filename of the thread, sans “.xml”, e.g. “this_is_my_thread”
-	&__PAGE__;	the last page number in the thread--to link to the last page of discussion from an index page
+	&__URL__;	URL to the thread
 	&__STICKY__;	added to sticky threads to mark them as such (see `TEMPLATE_STICKY` below)
 	&__TITLE__;	title of the thread, HTML encoded
 	&__COUNT__;	number of posts in thread (including OP)
 	&__DATETIME__;	timestamp (of last post in the thread) in "Sun, 17 Oct 2010 19:41:09 +0000" format
 			for HTML5 `<time>` datetime attribute
 	&__TIME__;	human-readable timestamp
-	&__NAME__;	name of last poster in thread
+	&__AUTHOR__;	name of last poster in thread
 */
 define ('TEMPLATE_INDEX_THREAD', <<<HTML
-	<dt><a href="&__URL__;?page=&__PAGE__;"&__STICKY__;>&__TITLE__;</a> (&__COUNT__;)</dt>
+	<dt><a href="&__URL__;"&__STICKY__;>&__TITLE__;</a> (&__COUNT__;)</dt>
 	<dd>
 		<time datetime="&__DATETIME__;">&__TIME__;</time>
-		<b>&__NAME__;</b>
+		<b>&__AUTHOR__;</b>
 	</dd>
 
 HTML

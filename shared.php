@@ -44,15 +44,6 @@ function template_tags ($s_template, $a_values) {
 	return $s_template;
 }
 
-function flattenTitle ($s_title) {
-	return preg_replace ('/_{2,}/', '_', preg_replace (
-		//replace non alphanumerics with underscores (don’t use more than 2 above)
-		'/[^_a-z0-9-]/i', '_',
-		//for neatness use "Microsofts" instead of "Microsoft_s" when removing the apostrophe
-		str_replace (array ("'", "‘", "’", '"', '“','”'), '', strtolower ($s_title))
-	));
-}
-
 //santise output:
 function safeHTML ($text) {
 	//encode a string for insertion into an HTML element

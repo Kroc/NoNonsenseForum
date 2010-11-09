@@ -27,7 +27,12 @@ if ($SUBMIT = @$_POST['submit']) if (
 	&& checkName ($NAME, $PASS)
 ) {
 	//the file on disk is a simplified version of the title
-	$file = flattenTitle ($TITLE);
+	$file = preg_replace (
+		//replace non alphanumerics with underscores and don’t use more than 2 in a row
+		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
+		//for neatness use "Microsofts" instead of "Microsoft_s" when removing the apostrophe
+		str_replace (array ("'", "‘", "’", '"', '“','”'), '', strtolower ($TITLE))
+	);
 	//include the folder if present
 	$url  = ($path ? rawurlencode ($path).'/' : '').$file;
 	//if this file already exists (double-submission from back button?), redirect to it
@@ -113,18 +118,18 @@ if ($threads) {
 	foreach ($threads as $file => $date) {
 	
 		$xml = simplexml_load_file ($file);
-		$items = $xml->channel->xpath ('item');
-		$last = reset ($items);
+		$last = $xml->channel->item[0];
 		
 		@$html .= template_tags (TEMPLATE_INDEX_THREAD, array (
-			'URL'      => flattenTitle ($xml->channel->title),
-			'PAGE'     => count ($items) > 1 ? ceil ((count ($items) -1) / FORUM_POSTS) : 1,
-			'STICKY'   => array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
-			'TITLE'    => safeHTML ($xml->channel->title),
-			'COUNT'    => count ($items),
-			'DATETIME' => date ('c', strtotime ($last->pubDate)),
-			'TIME'     => date (DATE_FORMAT, strtotime ($last->pubDate)),
-			'NAME'     => safeHTML ($last->author)
+			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page='.(count ($xml->channel->item) > 1
+						? ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : 1
+					),
+			'STICKY'	=> array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
+			'TITLE'		=> safeHTML ($xml->channel->title),
+			'COUNT'		=> count ($xml->channel->item),
+			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
+			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+			'AUTHOR'	=> safeHTML ($last->author)
 		));
 	}
 	
