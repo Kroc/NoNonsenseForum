@@ -249,7 +249,7 @@ define ('TEMPLATE_STICKY', ' class="sticky"');
    ---------------------------------------------------------------------------------------------------------------------- */
 //I should probably do this using LIs so generated content can be used to do commas and the designer has more freedom
 define ('TEMPLATE_PAGES_PAGE',      '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>');
-define ('TEMPLATE_PAGES_CURRENT',   '<span class="ltgreen">&__PAGE__;</span>');
+define ('TEMPLATE_PAGES_CURRENT',   '<em>&__PAGE__;</em>');
 define ('TEMPLATE_PAGES_GAP',       '…');
 define ('TEMPLATE_PAGES_SEPARATOR', ',');
 
@@ -281,9 +281,7 @@ define ('TEMPLATE_INDEX_FORM', <<<HTML
 		(Leave this as-is, it’s a trap!)
 	</label>
 	
-	<p>
-		&__ERROR__;
-	</p>
+	&__ERROR__;
 	
 	<label>Title:
 		<input name="title" type="text" size="28" maxlength="80" required autocomplete="off"
@@ -310,7 +308,7 @@ HTML
 */
 define ('TEMPLATE_INDEX_FORM_DISABLED', <<<HTML
 <h1>Add Thread</h1>
-<p class="red">
+<p class="error">
 	Sorry, posting is currently disabled.
 </p>
 HTML
@@ -323,12 +321,12 @@ HTML
    tags:
 	none
 */
-define ('ERROR_NONE',  'There is no need to "register", just enter the name + password you want.');
-define ('ERROR_NAME',  '<span class="red">Enter a name. You’ll need to use this with the password each time.</span>');
-define ('ERROR_PASS',  '<span class="red">Enter a password. It’s so you can re-use your name each time.</span>');
-define ('ERROR_TITLE', '<span class="red">You need to enter the title of your new discussion thread</span>');
-define ('ERROR_TEXT',  '<span class="red">Well, write a message!</span>');
-define ('ERROR_AUTH',  '<span class="red">That name is taken. Provide the password for it, or choose another name. (password typo?)</span>');
+define ('ERROR_NONE',  '<p>There is no need to "register", just enter the name + password you want.</p>');
+define ('ERROR_NAME',  '<p class="error">Enter a name. You’ll need to use this with the password each time.</p>');
+define ('ERROR_PASS',  '<p class="error">Enter a password. It’s so you can re-use your name each time.</p>');
+define ('ERROR_TITLE', '<p class="error">You need to enter the title of your new discussion thread</p>');
+define ('ERROR_TEXT',  '<p class="error">Well, write a message!</p>');
+define ('ERROR_AUTH',  '<p class="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>');
 
 /* the first post in a thread
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -459,9 +457,7 @@ define ('TEMPLATE_THREAD_FORM', <<<HTML
 		<input name="email" type="text" value="example@abc.com" required automcomplete="on" />
 	</label>
 	
-	<p>
-		&__ERROR__;
-	</p>
+	&__ERROR__;
 	
 	<label>Message:
 		<textarea name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
@@ -485,7 +481,7 @@ HTML
 */
 define ('TEMPLATE_THREAD_FORM_DISABLED', <<<HTML
 <h1>Reply</h1>
-<p class="red">
+<p class="error">
 	Sorry, posting is currently disabled.
 </p>
 HTML
@@ -535,9 +531,9 @@ define ('TEMPLATE_DELETE_THREAD', <<<HTML
 		 value="&__PASS__;" />
 	</label>
 	
+	&__ERROR__;
+	
 	<p>
-		&__ERROR__;
-	</p><p>
 		<input id="submit" name="submit" type="submit" value="Delete" />
 	</p>
 </fieldset></form>
@@ -569,9 +565,9 @@ define ('TEMPLATE_DELETE_POST', <<<HTML
 		 value="&__PASS__;" />
 	</label>
 	
+	&__ERROR__;
+	
 	<p>
-		&__ERROR__;
-	</p><p>
 		<input id="submit" name="submit" type="submit" value="Delete" />
 	</p>
 </fieldset></form>
@@ -587,8 +583,8 @@ HTML
    tags:
 	none
 */
-define ('ERROR_DELETE_NONE', 'To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.');
-define ('ERROR_DELETE_AUTH', '<span class="red">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</span>');
+define ('ERROR_DELETE_NONE', '<p>To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.</p>');
+define ('ERROR_DELETE_AUTH', '<p class="error">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</p>');
 
 //the text left behind when a post is deleted
 define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');

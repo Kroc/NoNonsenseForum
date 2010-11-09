@@ -4,7 +4,11 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-/* yeah, I could really do with constants in CSS plz */
+/* ---
+	look ma, no pixels!
+--- */
+
+/* yeah, I could really do with constants in CSS plz:
 .black				{color: #000000;}
 .white				{color: #ffffff;}
 .red				{color: #894036;}
@@ -21,15 +25,15 @@
 .ltgreen			{color: #ACEA88;}
 .ltblue				{color: #7C70DA;}
 .ltgrey				{color: #ABABAB;}
-
+*/
 
 header, hgroup, nav, footer,
  section, aside, article	{display: block;}
 
 /* these selection declarations have to be separate
    no text-shadow: <twitter.com/miketaylr/status/12228805301> */
-::-moz-selection		{background-color: #7C70DA; color: #fff; text-shadow: none;}
-::selection 			{background-color: #7C70DA; color: #fff; text-shadow: none;}
+::-moz-selection		{background-color: #7c70da; color: white; text-shadow: none;}
+::selection 			{background-color: #7c70da; color: white; text-shadow: none;}
 
 /* C64 font provided by <style64.org/c64-truetype>,
    see license.txt in this directory for font licence */
@@ -44,8 +48,8 @@ html				{font: normal 100%/1em "C64 Pro Mono", monospace;
 				 -webkit-font-smoothing: none;
 				 background: #1d1d1d;}
 body				{position: relative; width: 40em; margin: 0 auto; padding: 0 0 1em 0;
-				 border: 64px solid #7c70da; border-width: 70px 64px;
-				 color: #7c70da; background: #3e31a2;}
+				 border: 4em solid #7c70da; color: #7c70da;
+				 background: #3e31a2;}
 
 p				{margin: 1em 0 0 0; padding: 0;}
 
@@ -92,6 +96,7 @@ dt+dt				{margin-top: 1em;}
 body>h2, nav.pages		{margin: .7em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
 nav.pages			{text-align: right;}
 h2+.pages			{margin-top: -3em;}
+.pages em			{font-style: normal; color: #ACEA88;}
 
 
 article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
@@ -123,6 +128,8 @@ legend:after			{display: block; padding-bottom: 1em; margin: 1em 0 -1em -1em; co
 
 form p				{padding-left: 11em;
 				 font-family: "C64 Pro", monospace; color: #808080;}
+
+p.error				{color: #894036;}
 
 label				{display: block; margin: 1em 0 0 0; padding: 0 1em;
 				 font-family: "C64 Pro Mono", monospace; color: #8A46AE;}
