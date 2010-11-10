@@ -10,15 +10,14 @@ require_once 'shared.php';
 /* ====================================================================================================================== */
 
 //thread to deal with, including path if in a folder
-$file = (preg_match ('/(?:([^.\/&]+)\/)?([^.\/]+)$/', @$_GET['file'], $_) ? $_[2] : false) or die ('Malformed request');
-if ($path = @$_[1]) chdir ($path);
+$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //if deleting just one post, rather than the thread
-$id = preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
+$ID = preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
 
 //load the thread to get the post preview
-$xml = simplexml_load_file ("$file.xml", 'allow_prepend') or die ('Invalid file');
-$post = &$xml->channel->item [count ($xml->channel->item) - $id];
+$xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Invalid file');
+$post = &$xml->channel->item[count ($xml->channel->item) - $ID];
 
 //name and password from form submission
 //(this page displays a username / password confirmation before deleting the thread / post)
@@ -40,17 +39,17 @@ if ($SUBMIT = @$_POST['submit']) if (
 	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 	
 	//commit the data
-	file_put_contents ("$file.xml", $xml->asXML (), LOCK_EX);
+	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
 	
 	//return to the deleted post
-	header ('Location: '.FORUM_URL.($path ? rawurlencode ($path).'/' : '')."$file#$id", true, 303);
+	header ('Location: '.FORUM_URL."$PATH_RAW$FILE#$ID", true, 303);
 	
 } else {
 	//delete the thread for reals
-	@unlink (FORUM_ROOT.($path ? "$path/" : '')."$file.xml");
+	@unlink (FORUM_ROOT."$PATH_URL$FILE.xml");
 	
 	//return to the index
-	header ('Location: '.FORUM_URL.($path ? rawurlencode ($path).'/' : ''), true, 303);
+	header ('Location: '.FORUM_URL.$PATH_RAW, true, 303);
 
 }
 
@@ -58,7 +57,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME',
 				@$_GET['id'] ? TEMPLATE_HTMLTITLE_DELETE_POST : TEMPLATE_HTMLTITLE_DELETE_THREAD
 			),
-	'RSS'		=> "$file.xml",
+	'RSS'		=> "$FILE.xml",
 	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,
 	'NAV'		=> ''
 ));
@@ -67,7 +66,7 @@ echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD
 	'NAME'	=> safeString ($NAME),
 	'PASS'	=> safeString ($PASS),
 	'POST'	=> template_tags (TEMPLATE_POST, array (
-		'ID'		=> $id,
+		'ID'		=> $ID,
 		'TYPE'		=> '',
 		'DELETE'	=> '',
 		'NAME'		=> safeHTML ($post->author),

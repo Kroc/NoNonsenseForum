@@ -24,11 +24,20 @@ define ('FORUM_THREADS',	50);					//number of threads per page on the index
 define ('FORUM_POSTS',		25);					//number of posts per page on threads
 define ('FORUM_SALT',		'C64:');				//string to prepend to names/passwords when hashing
 
-//<uk3.php.net/manual/en/function.is-dir.php#70005>
-chdir (FORUM_ROOT);
-
 //include the HTML skin
 require_once 'themes/'.FORUM_THEME.'/theme.php';
+
+//all our pages use path (often optional) so this is done here
+//(the end slash is because of delete.php using $PATH_RAW to build its URLs, can I factor this out?)
+$PATH = preg_match ('/([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+//these two get used an awful lot
+$PATH_RAW = $PATH ? rawurlencode ($PATH).'/' : '';
+$PATH_URL = $PATH ? "$PATH/": '';
+
+//we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
+//being in the right directory is also assumed for reading 'mods.txt' and in 'rss.php'
+chdir (FORUM_ROOT.$PATH);
+
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)

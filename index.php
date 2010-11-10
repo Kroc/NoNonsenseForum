@@ -9,14 +9,8 @@ require_once 'shared.php';
 
 /* ====================================================================================================================== */
 
-//which folder to show, not present for forum index
-$path = preg_match ('/([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
-//we have to change directory for `is_dir` to work,
-//see <uk3.php.net/manual/en/function.is-dir.php#70005>
-if ($path) chdir (FORUM_ROOT.$path);
-
 //page number, obviously
-$page = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
+$PAGE = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
 
 //submitted info for making a new thread
 $NAME  = mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,    'UTF-8');
@@ -38,23 +32,19 @@ if ($SUBMIT = @$_POST['submit']) if (
 		//for neatness use "Microsofts" instead of "Microsoft_s" when removing the apostrophe
 		str_replace (array ("'", "‘", "’", '"', '“','”'), '', strtolower ($TITLE))
 	);
-	//include the folder if present
-	$url  = ($path ? rawurlencode ($path).'/' : '').$file;
-	//if this file already exists (double-submission from back button?), redirect to it
-	if (file_exists ("$file.xml")) header ('Location: '.FORUM_URL.$url, true, 303);
 	
 	//write out the new thread as an RSS file
-	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
+	if (!file_exists ("$file.xml")) file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
 		'ITEMS'	=> TEMPLATE_RSS_ITEM,
 		'TITLE'	=> safeHTML ($TITLE),
-		'URL'	=> "$url#1",
+		'URL'	=> "$PATH_RAW$file#1",
 		'NAME'	=> safeHTML ($NAME),
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText ($TEXT)),
 	)));
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.$url, true, 303);
+	header ('Location: '.FORUM_URL.$PATH_RAW.$file, true, 303);
 }
 
 /* ====================================================================================================================== */
@@ -63,13 +53,13 @@ if ($SUBMIT = @$_POST['submit']) if (
 echo template_tags (TEMPLATE_HEADER, array (
 	//HTML `<title>`
 	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG
-			  .($path ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($path)) : '')
-		   	  .($page > 1 ? template_tag (TEMPLATE_HTMLTITLE_PAGE, 'PAGE', $page) : ''),
+			  .($PATH ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($PATH)) : '')
+		   	  .($PAGE > 1 ? template_tag (TEMPLATE_HTMLTITLE_PAGE, 'PAGE', $PAGE) : ''),
 	'RSS'		=> 'index.rss',
 	'ROBOTS'	=> '',
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> TEMPLATE_INDEX_MENU,
-		'PATH'	=> $path ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safeHTML ($path)) : TEMPLATE_INDEX_PATH
+		'PATH'	=> $PATH ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safeHTML ($PATH)) : TEMPLATE_INDEX_PATH
 	))
 ));
 
@@ -118,7 +108,7 @@ if ($threads) {
 	
 	//paging (stickies are not included in the count as they appear on all pages)
 	$pages = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
-	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($page-1) * FORUM_THREADS, FORUM_THREADS);
+	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($PAGE-1) * FORUM_THREADS, FORUM_THREADS);
 	
 	foreach ($threads as $file => $date) {
 	
@@ -140,7 +130,7 @@ if ($threads) {
 	
 	echo template_tags (TEMPLATE_INDEX_THREADS, array (
 		'THREADS' => $html,
-		'PAGES'   => pageLinks ($page, $pages)
+		'PAGES'   => pageLinks ($PAGE, $pages)
 	)); $html = "";
 }
 

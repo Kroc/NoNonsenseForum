@@ -1,6 +1,3 @@
-•	Move $path to shared
-	-	will have to unify use of path by splitting some pages to ?file=…&path=…
-
 •	Invalid page number error
 
 •	Add option for ignoring additional folders
@@ -33,3 +30,8 @@
 •	Mobile support (iPhone / iPad / Android)
 	
 •	Read-only (lock) threads and folders. Use file-permissions? Read-only category on <channel>?
+
+•	Add ‘touch’ page to restore from backup by setting the created and modified dates on the XML files according to
+	their content
+
+•	Add pattern attribute to form fields for validation, style validation
