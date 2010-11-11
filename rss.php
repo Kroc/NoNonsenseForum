@@ -11,8 +11,7 @@ include 'shared.php';
 
 //get list of threads
 $threads = preg_grep ('/\.xml$/', scandir ('.'));
-//look ma, no loop!
-array_multisort (array_map ('filectime', $threads), SORT_DESC, $threads);
+array_multisort (array_map ('filectime', $threads), SORT_DESC, $threads);	//look ma, no loop!
 
 foreach (array_slice ($threads, 0, FORUM_THREADS) as $file) {
 	$xml  = simplexml_load_file ($file);

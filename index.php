@@ -68,12 +68,10 @@ if ($folders = array_filter (
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
 	//string together the list
-	foreach ($folders as $folder) {
-		@$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
-			'URL'	=> '/'.rawurlencode ($folder).'/',
-			'FOLDER'=> safeHTML ($folder)
-		));
-	}
+	foreach ($folders as $folder) @$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
+		'URL'	=> '/'.rawurlencode ($folder).'/',
+		'FOLDER'=> safeHTML ($folder)
+	));
 	
 	//output
 	echo template_tag (TEMPLATE_INDEX_FOLDERS, 'FOLDERS', $html); $html = "";
@@ -82,41 +80,37 @@ if ($folders = array_filter (
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //get list of threads
-$threads = array_fill_keys (preg_grep ('/\.xml$/', scandir ('.')) , 0);
-foreach ($threads as $file => &$date) $date = filemtime ($file);
-arsort ($threads, SORT_NUMERIC);
+$threads = preg_grep ('/\.xml$/', scandir ('.'));
+array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 
 if ($threads) {
 	//does this folder have a sticky list?
 	$stickies = array ();
 	if (file_exists ('sticky.txt')) {
-		$stickies = array_fill_keys (file ('sticky.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), 0);
+		//get sticky list, trimming any files that no longer exist
+		$stickies = array_intersect (file ('sticky.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), $threads);
 		
-		//get the date order
-		foreach ($stickies as $sticky => &$date) $date = @filemtime ($sticky);
-		arsort ($stickies, SORT_NUMERIC);
-		
-		//trim any files listed in the stick list that no longer exist
-		$stickies = array_intersect_assoc ($stickies, $threads);
+		//order the stickies by reverse date order
+		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
 		
 		//remove the stickies from the thread list, then add them to the top of the list
-		$threads = $stickies + array_diff_key ($threads, $stickies);
+		$threads = array_merge ($stickies, array_diff ($threads, $stickies));
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
 	$pages = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
 	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($PAGE-1) * FORUM_THREADS, FORUM_THREADS);
 	
-	foreach ($threads as $file => $date) {
-	
+	foreach ($threads as $file) {
+		
 		$xml = simplexml_load_file ($file);
-		$last = $xml->channel->item[0];
+		$last = &$xml->channel->item[0];
 		
 		@$html .= template_tags (TEMPLATE_INDEX_THREAD, array (
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page='.(count ($xml->channel->item) > 1
 						? ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : 1
 					),
-			'STICKY'	=> array_key_exists ($file, $stickies) ? TEMPLATE_STICKY : '',
+			'STICKY'	=> in_array ($file, $stickies) ? TEMPLATE_STICKY : '',
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item),
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
