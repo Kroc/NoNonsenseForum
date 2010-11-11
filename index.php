@@ -9,9 +9,6 @@ require_once 'shared.php';
 
 /* ====================================================================================================================== */
 
-//page number, obviously
-$PAGE = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
-
 //submitted info for making a new thread
 $NAME  = mb_substr (trim (stripslashes (@$_POST['username'])), 0, 18,    'UTF-8');
 $PASS  = mb_substr (      stripslashes (@$_POST['password']),  0, 20,    'UTF-8');
@@ -37,14 +34,14 @@ if ($SUBMIT = @$_POST['submit']) if (
 	if (!file_exists ("$file.xml")) file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
 		'ITEMS'	=> TEMPLATE_RSS_ITEM,
 		'TITLE'	=> safeHTML ($TITLE),
-		'URL'	=> "$PATH_RAW$file#1",
+		'URL'	=> "$PATH_URL$file#1",
 		'NAME'	=> safeHTML ($NAME),
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText ($TEXT)),
 	)));
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.$PATH_RAW.$file, true, 303);
+	header ('Location: '.FORUM_URL.$PATH_URL.$file, true, 303);
 }
 
 /* ====================================================================================================================== */

@@ -25,17 +25,21 @@ define ('FORUM_SALT',		'C64:');				//string to prepend to names/passwords when h
 require_once 'themes/'.FORUM_THEME.'/theme.php';
 
 //all our pages use path (often optional) so this is done here
-//(the end slash is because of delete.php using $PATH_RAW to build its URLs, can I factor this out?)
 $PATH = preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '';
 //these two get used an awful lot
-$PATH_RAW = !$PATH ? '/' : '/'.rawurlencode ($PATH).'/';
-$PATH_URL = !$PATH ? '/' : "/$PATH/";
+$PATH_URL = !$PATH ? '/' : '/'.rawurlencode ($PATH).'/';		//when outputting as part of a URL to HTML
+$PATH_DIR = !$PATH ? '/' : "/$PATH/";					//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and in 'rss.php'
 //(oddly with `chdir` the path must end in a slash)
-chdir (FORUM_ROOT.$PATH_URL);
+chdir (FORUM_ROOT.$PATH_DIR);
 
+//whilst page number is not used everywhere (like 'delete.php'), it does no harm to get it here because it can simply be
+//ignored on 'delete.php' &c. whilst avoiding duplicated code on the scripts that do use it
+$PAGE = preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
+
+/* ---------------------------------------------------------------------------------------------------------------------- */
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)

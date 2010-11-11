@@ -14,8 +14,6 @@ $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die
 
 $xml = simplexml_load_file ("$FILE.xml", 'allow_prepend');
 
-$PAGE = preg_match ('/^[0-9]+$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
-
 $NAME = mb_substr (stripslashes (@$_POST['username']), 0, 18,    'UTF-8');
 $PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
 $TEXT = mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
@@ -25,8 +23,8 @@ if ($SUBMIT = @$_POST['submit']) if (
 	&& checkName ($NAME, $PASS)
 ) {
 	//where to?
-	$PAGE = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
-	$url  = "$PATH_RAW$FILE?page=$PAGE#".(count ($xml->channel->item) +1);
+	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
+	$url  = "$PATH_URL$FILE?page=$page#".(count ($xml->channel->item) +1);
 	
 	//add the comment to the thread
 	$item = $xml->channel->prependChild ('item');
@@ -40,6 +38,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
 	
 	header ('Location: '.FORUM_URL.$url, true, 303);
+	exit;
 }
 
 /* ====================================================================================================================== */
@@ -53,7 +52,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$FILE.xml"),
 		'PATH'	=> $PATH ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
-				'URL'	=> $PATH_RAW,
+				'URL'	=> $PATH_URL,
 				'PATH'	=> safeHTML ($PATH)
 			)) : TEMPLATE_THREAD_PATH
 	))

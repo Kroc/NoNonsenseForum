@@ -1,5 +1,3 @@
-•	Invalid page number error
-
 •	Add option for ignoring additional folders
 
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific

@@ -42,14 +42,14 @@ if ($SUBMIT = @$_POST['submit']) if (
 	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
 	
 	//return to the deleted post
-	header ('Location: '.FORUM_URL."$PATH_RAW$FILE#$ID", true, 303);
+	header ('Location: '.FORUM_URL."$PATH_URL$FILE#$ID", true, 303);
 	
 } else {
 	//delete the thread for reals
-	@unlink (FORUM_ROOT."$PATH_URL$FILE.xml");
+	@unlink (FORUM_ROOT."$PATH_DIR$FILE.xml");
 	
 	//return to the index
-	header ('Location: '.FORUM_URL.$PATH_RAW, true, 303);
+	header ('Location: '.FORUM_URL.$PATH_URL, true, 303);
 
 }
 
