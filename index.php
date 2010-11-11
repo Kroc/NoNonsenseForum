@@ -93,13 +93,13 @@ if ($threads) {
 		//order the stickies by reverse date order
 		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
 		
-		//remove the stickies from the thread list, then add them to the top of the list
-		$threads = array_merge ($stickies, array_diff ($threads, $stickies));
+		//remove the stickies from the thread list
+		$threads = array_diff ($threads, $stickies);
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
 	$pages = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
-	$threads = $stickies + array_slice (array_diff_key ($threads, $stickies), ($PAGE-1) * FORUM_THREADS, FORUM_THREADS);
+	$threads = array_merge ($stickies, array_slice ($threads, ($PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	foreach ($threads as $file) {
 		
