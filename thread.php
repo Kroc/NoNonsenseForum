@@ -53,7 +53,7 @@ echo template_tags (TEMPLATE_HEADER, array (
 	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
 		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$FILE.xml"),
 		'PATH'	=> $PATH ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
-				'URL'	=> "/$PATH_RAW",
+				'URL'	=> $PATH_RAW,
 				'PATH'	=> safeHTML ($PATH)
 			)) : TEMPLATE_THREAD_PATH
 	))
@@ -71,7 +71,7 @@ echo template_tags (TEMPLATE_THREAD_FIRST, array (
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'DELETE'	=> template_tag (
 				TEMPLATE_DELETE, 'URL',
-				"/delete.php?path=$PATH_RAW&amp;file=$FILE"
+				'/delete.php?path='.rawurlencode ($PATH)."&amp;file=$FILE"
 			),
 	'TEXT'		=> $post->description
 ));
@@ -94,7 +94,7 @@ if (count ($thread)) {
 	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
 		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
 					TEMPLATE_DELETE, 'URL',
-					"/delete.php?path=$PATH_RAW&amp;file=$FILE&amp;id=$c"
+					'/delete.php?path='.rawurlencode ($PATH)."&amp;file=$FILE&amp;id=$c"
 				),
 		'ID'		=> $c++,
 		'TYPE'		=> $post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED

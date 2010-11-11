@@ -52,13 +52,13 @@ AddCharset utf-8 .css .xml .txt .do
 # a folder
 RewriteCond %{REQUEST_URI} ^/[^./&]+/$
 RewriteCond %{DOCUMENT_ROOT}%0 -d
-RewriteRule ^(?:([^./&]+)/)?$ /?path=$1/ [QSA,L]
+RewriteRule ^(?:([^./&]+)/)?$ /?path=$1 [QSA,L]
 
 # a thread
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?([^./]+)$
 RewriteCond %{DOCUMENT_ROOT}%0.xml -f
-RewriteRule ^(?:([^./&]+)/)?([^./]+)$ /thread.php?path=$1/&file=$2 [QSA,L]
+RewriteRule ^(?:([^./&]+)/)?([^./]+)$ /thread.php?path=$1&file=$2 [QSA,L]
 
 # an index RSS feed
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?index.rss$
-RewriteRule ^(?:([^./&]+)/)?index.rss$ /rss.php?path=$1/ [QSA,L]
+RewriteRule ^(?:([^./&]+)/)?index.rss$ /rss.php?path=$1 [QSA,L]

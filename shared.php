@@ -5,16 +5,13 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//let me know when I’m being stupid
-error_reporting (-1);
-
-//PHP 5.3 issues a warning if the timezone is not set when using date-related commands
-date_default_timezone_set ('UTC');
+error_reporting (-1);			//let me know when I’m being stupid
+date_default_timezone_set ('UTC');	//PHP 5.3 issues a warning if the timezone is not set when using date commands
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('FORUM_ROOT',		dirname (__FILE__).'/');		//full path for absolute references
-define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST'].'/');	//todo: https support
+define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
+define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
 /* options: stuff for you
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -29,14 +26,15 @@ require_once 'themes/'.FORUM_THEME.'/theme.php';
 
 //all our pages use path (often optional) so this is done here
 //(the end slash is because of delete.php using $PATH_RAW to build its URLs, can I factor this out?)
-$PATH = preg_match ('/([^.\/&]+)\//', @$_GET['path'], $_) ? $_[1] : '';
+$PATH = preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '';
 //these two get used an awful lot
-$PATH_RAW = $PATH ? rawurlencode ($PATH).'/' : '';
-$PATH_URL = $PATH ? "$PATH/": '';
+$PATH_RAW = !$PATH ? '/' : '/'.rawurlencode ($PATH).'/';
+$PATH_URL = !$PATH ? '/' : "/$PATH/";
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and in 'rss.php'
-chdir (FORUM_ROOT.$PATH);
+//(oddly with `chdir` the path must end in a slash)
+chdir (FORUM_ROOT.$PATH_URL);
 
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
@@ -87,7 +85,7 @@ class allow_prepend extends SimpleXMLElement {
 
 function checkName ($name, $pass) {
 	//users are stored as text files based on the hash of the given name
-	$user = FORUM_ROOT.'users/'.md5 (FORUM_SALT.strtolower ($name)).'.txt';
+	$user = FORUM_ROOT.'/users/'.md5 (FORUM_SALT.strtolower ($name)).'.txt';
 	//create the user, if new
 	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.$pass));
 	//does password match?
@@ -97,9 +95,9 @@ function checkName ($name, $pass) {
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {
 	//'mods.txt' on webroot defines moderators for the whole forum
-	return (file_exists (FORUM_ROOT.'mods.txt') && in_array (
+	return (file_exists (FORUM_ROOT.'/mods.txt') && in_array (
 		strtolower ($name),  //(names are case insensitive)
-		array_map ('strtolower', file (FORUM_ROOT.'mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+		array_map ('strtolower', file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 		
 	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
 	//(it is assumed that the current working directory has been changed to the sub-folder in question)

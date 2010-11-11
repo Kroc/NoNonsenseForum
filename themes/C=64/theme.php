@@ -613,9 +613,9 @@ define ('TEMPLATE_RSS', <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}/&__URL__;.xml" rel="self" type="application/rss+xml" />
+<atom:link href="http://${_SERVER['HTTP_HOST']}&__URL__;.xml" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
-<link>http://${_SERVER['HTTP_HOST']}/&__URL__;</link>
+<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
 
 &__ITEMS__;
 
@@ -637,7 +637,7 @@ define ('TEMPLATE_RSS_INDEX', <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}/&__PATH__;index.rss" rel="self" type="application/rss+xml" />
+<atom:link href="http://${_SERVER['HTTP_HOST']}&__PATH__;index.rss" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
 <link>http://${_SERVER['HTTP_HOST']}/</link>
 &__ITEMS__;
@@ -660,7 +660,7 @@ XML
 define ('TEMPLATE_RSS_ITEM', <<<XML
 <item>
 	<title>&__TITLE__;</title>
-	<link>http://${_SERVER['HTTP_HOST']}/&__URL__;</link>
+	<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
 	<author>&__NAME__;</author>
 	<pubDate>&__DATE__;</pubDate>
 	<description>&__TEXT__;</description>
