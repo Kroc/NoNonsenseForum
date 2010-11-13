@@ -36,6 +36,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//save
 	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+	clearstatcache ();
 	
 	header ('Location: '.FORUM_URL.$url, true, 303);
 	exit;

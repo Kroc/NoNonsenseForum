@@ -9,7 +9,7 @@ require_once 'shared.php';
 
 /* ====================================================================================================================== */
 
-//thread to deal with, including path if in a folder
+//thread to deal with
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //if deleting just one post, rather than the thread
@@ -39,10 +39,13 @@ if ($SUBMIT = @$_POST['submit']) if (
 	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 	
 	//commit the data
+	//(todo: deleting a post should not push the thread to the top of the index!)
 	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+	clearstatcache ();
 	
 	//return to the deleted post
 	header ('Location: '.FORUM_URL."$PATH_URL$FILE#$ID", true, 303);
+	exit;
 	
 } else {
 	//delete the thread for reals
@@ -50,7 +53,7 @@ if ($SUBMIT = @$_POST['submit']) if (
 	
 	//return to the index
 	header ('Location: '.FORUM_URL.$PATH_URL, true, 303);
-
+	exit;
 }
 
 echo template_tags (TEMPLATE_HEADER, array (

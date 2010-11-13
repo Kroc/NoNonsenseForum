@@ -39,9 +39,11 @@ if ($SUBMIT = @$_POST['submit']) if (
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText ($TEXT)),
 	)));
+	clearstatcache ();
 	
 	//redirect to newley created thread
 	header ('Location: '.FORUM_URL.$PATH_URL.$file, true, 303);
+	exit;
 }
 
 /* ====================================================================================================================== */
