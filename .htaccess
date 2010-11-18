@@ -1,4 +1,5 @@
-RewriteEngine	on
+ServerSignature	Off
+RewriteEngine	On
 
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]

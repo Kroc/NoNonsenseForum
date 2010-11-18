@@ -26,17 +26,23 @@ if ($SUBMIT = @$_POST['submit']) if (
 	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
 	$url  = "$PATH_URL$FILE?page=$page#".(count ($xml->channel->item) +1);
 	
-	//add the comment to the thread
-	$item = $xml->channel->prependChild ('item');
-	$item->addChild ('title',	safeHTML (TEMPLATE_RE.$xml->channel->title));
-	$item->addChild ('link',	FORUM_URL.$url);
-	$item->addChild ('author',	safeHTML ($NAME));
-	$item->addChild ('pubDate',	gmdate ('r'));
-	$item->addChild ('description',	safeHTML (formatText ($TEXT)));
-	
-	//save
-	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
-	clearstatcache ();
+	//ignore a double-post (could be an accident with the back button)
+	if (!(
+		$NAME == $xml->channel->item[0]->author &&
+		formatText ($TEXT) == $xml->channel->item[0]->description
+	)) {
+		//add the comment to the thread
+		$item = $xml->channel->prependChild ('item');
+		$item->addChild ('title',	safeHTML (TEMPLATE_RE.$xml->channel->title));
+		$item->addChild ('link',	FORUM_URL.$url);
+		$item->addChild ('author',	safeHTML ($NAME));
+		$item->addChild ('pubDate',	gmdate ('r'));
+		$item->addChild ('description',	safeHTML (formatText ($TEXT)));
+
+		//save
+		file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+		clearstatcache ();
+	}
 	
 	header ('Location: '.FORUM_URL.$url, true, 303);
 	exit;

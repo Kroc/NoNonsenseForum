@@ -1,3 +1,6 @@
+•	Change delete buttons to use POST instead of GET
+	(removes need for noindex, nofollow and will allow for switching to single click deletion in the future)
+
 •	Add option for ignoring additional folders
 
 •	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
@@ -9,8 +12,6 @@
 •	Error message if thread already exists (could be paged out of view)
 	-	Could be done with an interstitial page, point user to the thread
 	-	Also, if file exists, could append a number to flattened title to allow more than one thread of same name
-	
-•	Check for double-posting
 	
 •	Search:
 	
