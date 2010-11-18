@@ -1,19 +1,19 @@
-•	Change delete buttons to use POST instead of GET
+CODE:	Change delete buttons to use POST instead of GET
 	(removes need for noindex, nofollow and will allow for switching to single click deletion in the future)
 
-•	Add option for ignoring additional folders
+FEATURE:Add option for ignoring additional folders
 
-•	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
+DESIGN:	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
 	
-•	Link to go to the last post on a page
+DESIGN:	Link to go to the last post on a page
 	
-•	An RSS feed for threads in a folder ordered by updated time? (see all updates happening)
+FEATURE:An RSS feed for threads in a folder ordered by updated time? (see all updates happening)
 	
-•	Error message if thread already exists (could be paged out of view)
+CODE:	Error message if thread already exists (could be paged out of view)
 	-	Could be done with an interstitial page, point user to the thread
 	-	Also, if file exists, could append a number to flattened title to allow more than one thread of same name
 	
-•	Search:
+DESIGN:	Search:
 	
 	<form method="get" action="http://google.com/search">
 		<input type="hidden" name="as_sitesearch" value="&__HOST__;" />
@@ -21,16 +21,16 @@
 		<input type="submit" value="Search" />
 	</form>
 	
-•	Sitemap
+CODE:	Sitemap
 	
-•	Post editing
+FEATURE:Post appending (can’t edit because `formatText` is one way)
 	
-•	IE support (no reason why not)
-•	Mobile support (iPhone / iPad / Android)
+DESIGN:	IE support (no reason why not)
+DESIGN:	Mobile support (iPhone / iPad / Android)
 	
-•	Read-only (lock) threads and folders. Use file-permissions? Read-only category on <channel>?
+FEATURE:Read-only (lock) threads and folders. Use file-permissions? Read-only category on <channel>?
 
-•	Add ‘touch’ page to restore from backup by setting the created and modified dates on the XML files according to
-	their content
+CODE:	Add ‘touch’ page to restore from backup by setting the created and modified dates on the XML files
+	according to their content
 
-•	Add pattern attribute to form fields for validation, style validation
+DESIGN: Add pattern attribute to form fields for validation, style validation

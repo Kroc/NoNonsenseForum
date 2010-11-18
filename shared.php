@@ -137,6 +137,9 @@ function pageLinks ($page, $pages) {
 }
 
 function formatText ($text) {
+	//unify carriage returns between Windows / UNIX
+	$text = preg_replace ('/\r\n?/', "\n", $text);
+	
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
 	
