@@ -165,7 +165,7 @@ function formatText ($text) {
 	$text);
 	
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		$chunk = "<p>\n".str_replace ("\n", '<br />', $chunk)."\n</p>";
+		$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
