@@ -35,6 +35,16 @@ header, hgroup, nav, footer,
 ::-moz-selection		{background-color: #7c70da; color: white; text-shadow: none;}
 ::selection 			{background-color: #7c70da; color: white; text-shadow: none;}
 
+/* remove the custom "search" style in WebKit
+   <css-tricks.com/webkit-html5-search-inputs/#comment-82432> */
+input[type=search]		{-webkit-appearance: textfield;
+				 -webkit-box-sizing: content-box;}
+input[type=search]::-webkit-search-decoration,
+ input[type=search]::-webkit-search-cancel-button,
+ input[type=search]::-webkit-search-results-button,
+ input[type=search]::-webkit-search-results-decoration
+				{display: none;}
+
 /* C64 font provided by <style64.org/c64-truetype>,
    see license.txt in this directory for font licence */
 @font-face 			{font-family: "C64 Pro";
@@ -93,11 +103,20 @@ dl>dd:not(:last-child):after	{display: block; margin-left: -3em; color: #68A941;
 				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}
 dt+dt				{margin-top: 1em;}
 
-body>h2, nav.pages		{margin: .7em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
+body>h2, nav.pages		{margin: .3333em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
 nav.pages			{text-align: right;}
-h2+.pages			{margin-top: -3em;}
+h2+.pages			{margin-top: -2.6em;}
 .pages em			{font-style: normal; color: #ACEA88;}
 
+form[action^="http://google."]	{position: absolute; right: 1em; margin: -3em 0 0 0;
+				 text-align: right; color: #68A941;}
+form[action^="http://google."]
+ input[type=search]		{display: inline-block; width: 8em;
+				 /*gecko:*/vertical-align: top;}
+form[action^="http://google."]
+ input[type=submit]		{width: 1.15em; height: 1.15em; padding: 0; border: 0; cursor: pointer;
+				 font: 1em/1em "C64 Pro", monospace; color: #3E31A2; 
+				 background: #D0DC71;}
 
 article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
 				 word-wrap: break-word; font-family: "C64 Pro", monospace;}
@@ -135,16 +154,16 @@ label				{display: block; margin: 1em 0 0 0; padding: 0 1em;
 				 font-family: "C64 Pro Mono", monospace; color: #8A46AE;}
 label>input			{float: right;}
 
-input[type=text], input[type=password], input[type=number], textarea
-				{margin: 0; padding: 0; border: 0;
+input[type=text], input[type=password], input[type=number], input[type=search], textarea
+				{margin: 0; padding: 0 1em; border: 0;
 				 font: 1em/100% "C64 Pro", monospace; color: #555555;
 				 background: #ABABAB;}
-input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, textarea:focus
+input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, input[type=search]:focus, textarea:focus
 				{background: #fff;}
 
 input[type=text], input[type=password]
-				{width: 26em; padding: 0 1em;}
-input[type=number]		{width: 4em; padding: 0 1em;}
+				{width: 26em;}
+input[type=number]		{width: 4em;}
 
 textarea			{width: 100%; height: 23em; margin: 1em 0 0 0; padding: 1em; border: 0; resize: none;
 				 font: 1em/100% "C64 Pro", monospace; color: #555555;
@@ -154,12 +173,12 @@ textarea			{width: 100%; height: 23em; margin: 1em 0 0 0; padding: 1em; border: 
 				 background: #ABABAB;}
 
 .email				{display: none;}
-fieldset>p#rules		{padding-left: 1em; color: white;}
-input[type=submit]		{float: right; margin: 0 1em 0 1em; padding: 1em; border: 0; cursor: pointer;
+p#rules				{padding-left: 1em; color: white;}
+fieldset input[type=submit]	{float: right; margin: 0 1em 0 1em; padding: 1em; border: 0; cursor: pointer;
 				 font: 1em/100% "C64 Pro", monospace; color: #3E31A2; text-transform: uppercase;
 				 background: #D0DC71;}
-input[type=submit]:hover	{color: #894036; background: #fff;}
-input[type=submit]:active	{color: white; background: #894036;}
+input[type=submit]:hover	{color: #894036 !important; background: #fff !important;}
+input[type=submit]:active	{color: white !important; background: #894036 !important;}
 
 input[type=text]:invalid,
  input[type=password]:invalid,

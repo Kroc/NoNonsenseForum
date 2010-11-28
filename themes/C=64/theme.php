@@ -212,6 +212,13 @@ HTML
 */
 define ('TEMPLATE_INDEX_THREADS', <<<HTML
 <h2 id="list">Threads</h2>
+<form method="get" action="http://google.com/search">
+	Search
+	<input type="hidden" name="as_sitesearch" value="${_SERVER['HTTP_HOST']}" /><!--
+	--><input type="search" name="as_q" /><!--
+	--><input type="submit" value="✓" />
+</form>
+
 <dl>
 &__THREADS__;</dl>
 <nav class="pages">
