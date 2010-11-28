@@ -14,9 +14,9 @@ $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die
 
 $xml = simplexml_load_file ("$FILE.xml", 'allow_prepend');
 
-$NAME = mb_substr (stripslashes (@$_POST['username']), 0, 18,    'UTF-8');
-$PASS = mb_substr (stripslashes (@$_POST['password']), 0, 20,    'UTF-8');
-$TEXT = mb_substr (stripslashes (@$_POST['text']),     0, 32768, 'UTF-8');
+$NAME = mb_substr (@$_POST['username'], 0, 18,    'UTF-8');
+$PASS = mb_substr (@$_POST['password'], 0, 20,    'UTF-8');
+$TEXT = mb_substr (@$_POST['text'],     0, 32768, 'UTF-8');
 
 if ($SUBMIT = @$_POST['submit']) if (
 	FORUM_ENABLED && @$_POST['email'] == 'example@abc.com' && $NAME && $PASS && $TEXT
@@ -96,7 +96,7 @@ if (count ($thread)) {
 	$pages = ceil (count ($thread) / FORUM_POSTS);
 	$thread = array_slice ($thread, ($PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
-	$c=2 + (($PAGE-1) * FORUM_POSTS);
+	$c = 2 + (($PAGE-1) * FORUM_POSTS);
 	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
 		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
 					TEMPLATE_DELETE, 'URL',

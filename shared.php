@@ -164,6 +164,7 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
 	
+	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";

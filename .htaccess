@@ -1,6 +1,9 @@
 ServerSignature	Off
 RewriteEngine	On
 
+# stop automatically adding slashes to input forms
+php_flag magic_quotes_gpc off
+
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]
 
