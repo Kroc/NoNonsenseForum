@@ -24,27 +24,45 @@ define ('FORUM_SALT',		'C64:');				//string to prepend to names/passwords when h
 //include the HTML skin
 require_once 'themes/'.FORUM_THEME.'/theme.php';
 
+/* get input
+   ---------------------------------------------------------------------------------------------------------------------- */
+//all pages can accept a name / password when committing actions (new thread / post &c.)
+define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
+define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
+
+//if name & password are provided, validate them
+if (NAME && PASS) {
+	//users are stored as text files based on the hash of the given name
+	$user = FORUM_ROOT.'/users/'.md5 (FORUM_SALT.strtolower (NAME)).'.txt';
+	//create the user, if new
+	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.PASS));
+	//does password match?
+	define ('AUTH', file_get_contents ($user) == md5 (FORUM_SALT.PASS));
+} else {
+	define ('AUTH', false);
+}
+
+//whilst page number is not used everywhere (like 'delete.php'), it does no harm to get it here because it can simply be
+//ignored on 'delete.php' &c. whilst avoiding duplicated code on the scripts that do use it
+define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
+
 //all our pages use path (often optional) so this is done here
-$PATH = preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '';
+define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-$PATH_URL = !$PATH ? '/' : '/'.rawurlencode ($PATH).'/';		//when outputting as part of a URL to HTML
-$PATH_DIR = !$PATH ? '/' : "/$PATH/";					//when using serverside, like `chdir` / `unlink`
+define ('PATH_URL', !PATH ? '/' : '/'.rawurlencode (PATH).'/');		//when outputting as part of a URL to HTML
+define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and in 'rss.php'
 //(oddly with `chdir` the path must end in a slash)
-chdir (FORUM_ROOT.$PATH_DIR);
-
-//whilst page number is not used everywhere (like 'delete.php'), it does no harm to get it here because it can simply be
-//ignored on 'delete.php' &c. whilst avoiding duplicated code on the scripts that do use it
-$PAGE = preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1;
+chdir (FORUM_ROOT.PATH_DIR);
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 //(this needs to be better placed and tested)
 header ('Cache-Control: no-cache');
-header ('Expires: -1');
+header ('Expires: 0');
 
 
 /* ====================================================================================================================== */
@@ -86,15 +104,6 @@ class allow_prepend extends SimpleXMLElement {
 }
 
 /* ====================================================================================================================== */
-
-function checkName ($name, $pass) {
-	//users are stored as text files based on the hash of the given name
-	$user = FORUM_ROOT.'/users/'.md5 (FORUM_SALT.strtolower ($name)).'.txt';
-	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.$pass));
-	//does password match?
-	return (file_get_contents ($user) == md5 (FORUM_SALT.$pass));
-}
 
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {

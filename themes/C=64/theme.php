@@ -43,14 +43,13 @@ define ('TEMPLATE_RE',				'RE: ');
 			(see `TEMPLATE_HEADER_NAV` below)
 */
 define ('TEMPLATE_HEADER', <<<HTML
-<!doctype html>
-<html><head>
-	<meta charset="utf-8" />
-	<title>&__HTMLTITLE__;</title>
-	<link rel="stylesheet" href="/themes/C=64/theme.css" />
-	<link rel="alternate" type="application/rss+xml" href="&__RSS__;" />
-	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />&__ROBOTS__;
-</head><body>
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>&__HTMLTITLE__;</title>
+<link rel="stylesheet" href="/themes/C=64/theme.css" />
+<link rel="alternate" type="application/rss+xml" href="&__RSS__;" />
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />&__ROBOTS__;
+<body>
 
 <header>
 	<hgroup>
@@ -340,6 +339,9 @@ define ('ERROR_TITLE', '<p class="error">You need to enter the title of your new
 define ('ERROR_TEXT',  '<p class="error">Well, write a message!</p>');
 define ('ERROR_AUTH',  '<p class="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>');
 
+
+/* the thread page
+   ====================================================================================================================== */
 /* the first post in a thread
    ---------------------------------------------------------------------------------------------------------------------- */
 /* attached to:
@@ -348,7 +350,7 @@ define ('ERROR_AUTH',  '<p class="error">That name is taken. Provide the passwor
 	&__TITLE__;	Title of the thread
 	&__DELETE__;	if delete is allowed, TEMPLATE_DELETE is inserted here
 	&__DATETIME__;	timestamp in "Sun, 17 Oct 2010 19:41:09 +0000" format for HTML5 `<time>` datetime attribute
-	&__TIME__;	Human readable timestamp
+	&__TIME__;	Human readable timestamp (uses `DATE_FORMAT` at top of this page)
 	&__NAME__;	Name of thread originator
 	&__TEXT__;	The post message text, HTML formatted and encoded
 */
@@ -495,7 +497,7 @@ define ('TEMPLATE_THREAD_FORM_DISABLED', <<<HTML
 <h1>Reply</h1>
 <p class="error">
 	Sorry, posting is currently disabled.
-</p>
+</p></form>
 HTML
 );
 
@@ -508,13 +510,14 @@ HTML
 */
 define ('TEMPLATE_FOOTER', <<<HTML
 
+<!-- =================================================================================================================== -->
 <footer><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
 </p><p>
 	NoNonsenseForum: <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
 </p></footer>
 
-</body></html>
+</body>
 HTML
 );
 
@@ -647,7 +650,9 @@ define ('TEMPLATE_RSS_INDEX', <<<XML
 <atom:link href="http://${_SERVER['HTTP_HOST']}&__PATH__;index.rss" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
 <link>http://${_SERVER['HTTP_HOST']}/</link>
+
 &__ITEMS__;
+
 </channel>
 </rss>
 XML

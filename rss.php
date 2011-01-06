@@ -19,7 +19,7 @@ foreach (array_slice ($threads, 0, FORUM_THREADS) as $file) {
 	
 	@$rss .= template_tags (TEMPLATE_RSS_ITEM, array (
 		'TITLE'	=> safeHTML ($xml->channel->title),
-		'URL'	=> $PATH_URL.pathinfo ($file, PATHINFO_FILENAME),
+		'URL'	=> PATH_URL.pathinfo ($file, PATHINFO_FILENAME),
 		'NAME'	=> safeHTML ($item->author),
 		'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
 		'TEXT'	=> safeHTML ($item->description),
@@ -28,8 +28,8 @@ foreach (array_slice ($threads, 0, FORUM_THREADS) as $file) {
 
 header ('Content-Type: application/rss+xml;charset=UTF-8');
 die (template_tags (TEMPLATE_RSS_INDEX, array (
-	'PATH'	=> safeHTML ($PATH_URL),
-	'TITLE'	=> TEMPLATE_HTMLTITLE_SLUG.($PATH ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($PATH)) : ''),
+	'PATH'	=> safeHTML (PATH_URL),
+	'TITLE'	=> TEMPLATE_HTMLTITLE_SLUG.(PATH ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML (PATH)) : ''),
 	'ITEMS'	=> $rss
 )));
 
