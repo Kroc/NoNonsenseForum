@@ -276,7 +276,7 @@ define ('TEMPLATE_PAGES_SEPARATOR', ',');
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
 define ('TEMPLATE_INDEX_FORM', <<<HTML
-<form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+<form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Add Thread</legend>
 	
 	<label>Name:
@@ -299,7 +299,7 @@ define ('TEMPLATE_INDEX_FORM', <<<HTML
 		    value="&__TITLE__;" />
 	</label>
 	<label>Message:
-		<textarea name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
+		<textarea name="text" cols="40" rows="23" maxlength="32768" required
 		>&__TEXT__;</textarea>
 	</label>
 	
@@ -456,7 +456,7 @@ define ('TEMPLATE_POST_DELETED', 'deleted');
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
 define ('TEMPLATE_THREAD_FORM', <<<HTML
-<form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+<form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Reply</legend>
 	
 	<label>Name:
@@ -468,13 +468,13 @@ define ('TEMPLATE_THREAD_FORM', <<<HTML
 		 value="&__PASS__;" />
 	</label>
 	<label class="email">Email: (Leave this as-is, it’s a trap!)
-		<input name="email" type="text" value="example@abc.com" required automcomplete="on" />
+		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
 	</label>
 	
 	&__ERROR__;
 	
 	<label>Message:
-		<textarea name="text" cols="40" rows="23" maxlength="32768" required autocomplete="off"
+		<textarea name="text" cols="40" rows="23" maxlength="32768" required
 		>&__TEXT__;</textarea>
 	</label>
 	
@@ -534,7 +534,7 @@ HTML
 	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
 */
 define ('TEMPLATE_DELETE_THREAD', <<<HTML
-<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Delete Thread &amp; Replies</legend>
 	
 	<label>Name:
@@ -568,7 +568,7 @@ HTML
 */
 define ('TEMPLATE_DELETE_POST', <<<HTML
 
-<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8"><fieldset>
+<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Delete Post</legend>
 	
 	<label>Name:

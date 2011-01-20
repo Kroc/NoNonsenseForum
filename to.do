@@ -1,3 +1,5 @@
+CODE:	Lock file when opening XML and unlock when writing it back
+
 CODE:	Do not allow deleting if forum is disabled?
 	(could be used to clean up spam)
 

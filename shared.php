@@ -19,7 +19,6 @@ define ('FORUM_ENABLED',	true);					//if posting is allowed
 define ('FORUM_THEME',		'C=64');				//theme name, in “/themes/*”
 define ('FORUM_THREADS',	50);					//number of threads per page on the index
 define ('FORUM_POSTS',		25);					//number of posts per page on threads
-define ('FORUM_SALT',		'C64:');				//string to prepend to names/passwords when hashing
 
 //include the HTML skin
 require_once 'themes/'.FORUM_THEME.'/theme.php';
@@ -30,14 +29,19 @@ require_once 'themes/'.FORUM_THEME.'/theme.php';
 define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
 define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
 
+//if it’s a spammer, ignore them—don’t pollute the users folder
+if (isset ($_POST['email']) && @$_POST['email'] != 'example@abc.com') {
+	define ('AUTH', false);
+
 //if name & password are provided, validate them
-if (NAME && PASS) {
+} elseif (NAME && PASS) {
 	//users are stored as text files based on the hash of the given name
-	$user = FORUM_ROOT.'/users/'.md5 (FORUM_SALT.strtolower (NAME)).'.txt';
+	$name = hash ('sha512', strtolower (NAME));
+	$user = FORUM_ROOT."/users/$name.txt";
 	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, md5 (FORUM_SALT.PASS));
+	if (!file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
 	//does password match?
-	define ('AUTH', file_get_contents ($user) == md5 (FORUM_SALT.PASS));
+	define ('AUTH', file_get_contents ($user) == hash ('sha512', $name.PASS));
 } else {
 	define ('AUTH', false);
 }
