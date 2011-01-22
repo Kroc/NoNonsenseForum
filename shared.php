@@ -118,7 +118,7 @@ function isMod ($name) {
 		
 	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
 	//(it is assumed that the current working directory has been changed to the sub-folder in question)
-	)) || (file_exists ('mods.txt') && in_array (
+	)) || (PATH && file_exists ('mods.txt') && in_array (
 		strtolower ($name),
 		array_map ('strtolower', file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
 	));
@@ -162,17 +162,16 @@ function formatText ($text) {
 			((?:http|ftp)s?:\/\/)					# $1 = protocol
 			(?:www\.)?						# ignore www in friendly URL
 			(							# $2 = friendly URL (no protocol)
-				[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+			# domain name
+				[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+		# domain name
 			)(\/)?							# $3 = slash is excluded from friendly URL
 			(?(3)(							# $4 = folders and filename, relative URL
-				(?:						# folders and filename
-					[:).](?!\s|$)|				# ignore a colon, bracket or dot on the end
-					[\/a-z0-9_!~*\'(;?@&=+$,%-]
+				(?>						# folders and filename
+					[:)\.](?!\s|$)|				# ignore a colon, bracket or dot on the end
+					[^\s":)\.]				# the rest, including bookmark
 				)*
-				(?:\x23[^\s"]+)?				# bookmark
 			)?)
 		|
-			([a-z0-9._%+-]+@[a-z0-9.-]{1,}(?:\.[a-z]{2,4})+)	# $5 = e-mail
+			([a-z0-9\._%+\-]+@[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+)	# $5 = e-mail
 		)/exi',
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
