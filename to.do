@@ -1,3 +1,7 @@
+BUG:	Can let a spam through by not including the e-mail field at all
+
+CODE:	Change home page RSS feed to track all changes, since ctime is not a reliable "creation date" on UNIX
+
 CODE:	Lock file when opening XML and unlock when writing it back
 
 CODE:	Do not allow deleting if forum is disabled?
@@ -11,12 +15,11 @@ CODE:	When a post is deleted or spammed, don’t change the modified date of the
 
 CODE:	Change delete buttons to use POST instead of GET
 	(removes need for noindex, nofollow and will allow for switching to single click deletion in the future)
+	-	Requires some re-engineering of the form submission / HTML
 
 DESIGN:	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-specific
 	
 DESIGN:	Link to go to the last post on a page
-	
-FEATURE:An RSS feed for threads in a folder ordered by updated time? (see all updates happening)
 	
 CODE:	Error message if thread already exists (could be paged out of view)
 	-	Could be done with an interstitial page, point user to the thread

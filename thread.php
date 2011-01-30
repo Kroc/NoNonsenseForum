@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -11,18 +11,16 @@ require_once 'shared.php';
 
 //thread to show. todo: error page / 404
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+$xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML');
 
-$xml = simplexml_load_file ("$FILE.xml", 'allow_prepend');
-
+//get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 define ('TEXT', mb_substr (@$_POST['text'], 0, 32768, 'UTF-8'));
 
-if ($SUBMIT = @$_POST['submit']) if (
-	FORUM_ENABLED && @$_POST['email'] == 'example@abc.com'
-	&& NAME && PASS && AUTH && TEXT
-) {
+//was the submit button clicked? (and is the info valid?)
+if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TEXT) {
 	//where to?
 	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
-	$url  = PATH_URL."$FILE?page=$page#".(count ($xml->channel->item) +1);
+	$url  = PATH_URL."$FILE?page=$page#".(count ($xml->channel->item)+1);
 	
 	//ignore a double-post (could be an accident with the back button)
 	if (!(
@@ -122,7 +120,7 @@ echo FORUM_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TEXT'	=> safeString (TEXT),
-	'ERROR'	=> !$SUBMIT ? ERROR_NONE
+	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
 		   : (!TEXT ? ERROR_TEXT

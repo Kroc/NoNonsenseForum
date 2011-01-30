@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -14,13 +14,8 @@ require_once 'shared.php';
 define ('TITLE', mb_substr (trim (@$_POST['title']   ), 0, 80,    'UTF-8'));
 define ('TEXT',  mb_substr (trim (@$_POST['text']    ), 0, 32768, 'UTF-8'));
 
-//has the user the submitted a new thread?
-if ($SUBMIT = @$_POST['submit']) if (
-	//`FORUM_ENABLED` (in 'shared.php') can be toggled to disable posting
-	//the email check is a fake hidden field in the form to try and fool spam bots
-	FORUM_ENABLED && @$_POST['email'] == 'example@abc.com'
-	&& NAME && PASS && AUTH && TITLE && TEXT
-) {
+//has the user the submitted a new thread? (and is the info valid?)
+if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT) {
 	//the file on disk is a simplified version of the title
 	$file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
@@ -75,7 +70,7 @@ if ($folders = array_filter (
 	));
 	
 	//output
-	echo template_tag (TEMPLATE_INDEX_FOLDERS, 'FOLDERS', $html); $html = "";
+	echo template_tag (TEMPLATE_INDEX_FOLDERS, 'FOLDERS', $html); $html = '';
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
@@ -123,7 +118,7 @@ if ($threads) {
 	echo template_tags (TEMPLATE_INDEX_THREADS, array (
 		'THREADS' => $html,
 		'PAGES'   => pageLinks (PAGE, $pages)
-	)); $html = "";
+	)); $html = '';
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
@@ -134,12 +129,12 @@ echo FORUM_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
 	'PASS'	=> safeString (PASS),
 	'TITLE'	=> safeString (TITLE),
 	'TEXT'	=> safeString (TEXT),
-	'ERROR'	=> !$SUBMIT ? ERROR_NONE	//no problem? show default help text
-		   : (!NAME  ? ERROR_NAME	//the name is missing
-		   : (!PASS  ? ERROR_PASS	//the password is missing
-		   : (!TITLE ? ERROR_TITLE	//the title is missing
-		   : (!TEXT  ? ERROR_TEXT	//the message text is missing
-		   : ERROR_AUTH))))		//the name / password pair didn’t match
+	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE	//no problem? show default help text
+		   : (!NAME  ? ERROR_NAME		//the name is missing
+		   : (!PASS  ? ERROR_PASS		//the password is missing
+		   : (!TITLE ? ERROR_TITLE		//the title is missing
+		   : (!TEXT  ? ERROR_TEXT		//the message text is missing
+		   : ERROR_AUTH))))			//the name / password pair didn’t match
 )) : TEMPLATE_INDEX_FORM_DISABLED;
 
 //and we’re all done

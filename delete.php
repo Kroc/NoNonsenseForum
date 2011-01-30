@@ -1,6 +1,6 @@
 <?php  //delete threads and posts
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -20,9 +20,8 @@ $xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Invalid file'
 $post = &$xml->channel->item[count ($xml->channel->item) - $ID];
 
 //has the un/pw been submitted to authenticate the delete?
-if ($SUBMIT = @$_POST['submit']) if (
-	//validate form
-	NAME && PASS && AUTH
+if (
+	@$_POST['submit'] && NAME && PASS && AUTH 
 	//only a moderator, or the post originator can delete a post/thread
 	&& (isMod (NAME) || NAME == (string) $post->author)
 
@@ -72,7 +71,7 @@ echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description
 	)),
-	'ERROR'	=> !$SUBMIT ? ERROR_DELETE_NONE
+	'ERROR'	=> !@$_POST['submit'] ? ERROR_DELETE_NONE
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
 		   : ERROR_DELETE_AUTH))

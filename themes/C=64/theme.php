@@ -1,6 +1,6 @@
 <?php //defines the website theme, keeping HTML in one place
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -54,7 +54,7 @@ define ('TEMPLATE_HEADER', <<<HTML
 <header>
 	<hgroup>
 		<h1>**** Camen Design Forums v2 ****</h1>
-		<h2>Copyright (CC-BY) 1984-2010 Kroc Camen</h2>
+		<h2>Copyright (CC-BY) 1984-2011 Kroc Camen</h2>
 	</hgroup>
 	<p>READY.</p>&__NAV__;
 </header>

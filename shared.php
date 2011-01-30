@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2010
+/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -29,7 +29,8 @@ require_once 'themes/'.FORUM_THEME.'/theme.php';
 define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
 define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
 
-//if it’s a spammer, ignore them—don’t pollute the users folder
+//if it’s a spammer, ignore them--don’t pollute the users folder
+//the email check is a fake hidden field in the form to try and fool spam bots
 if (isset ($_POST['email']) && @$_POST['email'] != 'example@abc.com') {
 	define ('AUTH', false);
 
