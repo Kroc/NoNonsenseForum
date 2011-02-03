@@ -6,8 +6,8 @@ define ('DATE_FORMAT', "F jS, Y - H:i");
 define ('TEMPLATE_HTMLTITLE_SLUG',	        'Grayscale Demo Forum');  // Base title
 define ('TEMPLATE_HTMLTITLE_NAME',		    ' :: &__NAME__;');		  // Current folder/thread part
 define ('TEMPLATE_HTMLTITLE_PAGE',		    ' # Page &__PAGE__;');	  // Page number
-define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	'');                      // on delete.php for threads
-define ('TEMPLATE_HTMLTITLE_DELETE_POST',	'');                      // on delete.php for posts
+define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	' ! Delete thread');      // on delete.php for threads
+define ('TEMPLATE_HTMLTITLE_DELETE_POST',	' ! Delete post');        // on delete.php for posts
 
 define ('TEMPLATE_RE',				'RE: '); // Reply prefix
 
@@ -520,9 +520,11 @@ HTML
 	&__ERROR__;	a message / error depending on form state, see ERROR_* templates
 */
 define ('TEMPLATE_DELETE_THREAD', <<<HTML
-<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
+<form class="postform" id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Delete Thread &amp; Replies</legend>
 	
+	&__ERROR__;
+        
 	<label>Name:
 		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
 		 value="&__NAME__;" />
@@ -532,15 +534,14 @@ define ('TEMPLATE_DELETE_THREAD', <<<HTML
 		 value="&__PASS__;" />
 	</label>
 	
-	&__ERROR__;
-	
 	<p>
 		<input id="submit" name="submit" type="submit" value="Delete" />
 	</p>
 </fieldset></form>
 
-<h1>Post</h1>
+<div class="list">
 &__POST__;
+</div>
 HTML
 );
 /* delete post
@@ -554,9 +555,11 @@ HTML
 */
 define ('TEMPLATE_DELETE_POST', <<<HTML
 
-<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
+<form class="postform" id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Delete Post</legend>
 	
+	&__ERROR__;
+        
 	<label>Name:
 		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
 		 value="&__NAME__;" />
@@ -566,15 +569,14 @@ define ('TEMPLATE_DELETE_POST', <<<HTML
 		 value="&__PASS__;" />
 	</label>
 	
-	&__ERROR__;
-	
 	<p>
 		<input id="submit" name="submit" type="submit" value="Delete" />
 	</p>
 </fieldset></form>
 
-<h1>Post</h1>
+<div class="list">
 &__POST__;
+</div>
 HTML
 );
 
