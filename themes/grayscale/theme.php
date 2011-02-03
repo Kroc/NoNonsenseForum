@@ -1,38 +1,18 @@
-<?php //defines the website theme, keeping HTML in one place
-/* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
-   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
-   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
-*/
+<?php
 
-/* how the theme works:
-   ====================================================================================================================== */
-/* to keep the PHP and HTML sparate we put HTML chunks into constants and use search and replace (via `template_tag` and
-   `template_tags` in shared.php) to swap out “tags” in the form of “&__TAG__;” with the data from the PHP, or in other
-   instances with another template. this keeps the PHP logic separate from the HTML it is outputting
+/** Configuration parameters **/
+define ('DATE_FORMAT', "F jS, Y - H:i");
 
-   tags may be used once, more than once, or not at all in your templates */
+define ('TEMPLATE_HTMLTITLE_SLUG',	        'Grayscale Demo Forum');  // Base title
+define ('TEMPLATE_HTMLTITLE_NAME',		    ' :: &__NAME__;');		  // Current folder/thread part
+define ('TEMPLATE_HTMLTITLE_PAGE',		    ' # Page &__PAGE__;');	  // Page number
+define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	'');                      // on delete.php for threads
+define ('TEMPLATE_HTMLTITLE_DELETE_POST',	'');                      // on delete.php for posts
 
+define ('TEMPLATE_RE',				'RE: '); // Reply prefix
 
-/* common strings used throughout or for non-HTML purposes
-   ---------------------------------------------------------------------------------------------------------------------- */
-//the `date` format code used to print human readable dates into the HTML,
-//see <php.net/manual/en/function.date.php> for documentation
-define ('DATE_FORMAT', "d-M'y H:i");
+/** Page header templates **/
 
-//the HTML `<title>` string
-define ('TEMPLATE_HTMLTITLE_SLUG',		'Camen Design Forum');		//always first
-define ('TEMPLATE_HTMLTITLE_NAME',		' * &__NAME__;');		//added next, name of folder or thread
-define ('TEMPLATE_HTMLTITLE_PAGE',		' * Page &__PAGE__;');		//added next, current page number
-define ('TEMPLATE_HTMLTITLE_DELETE_THREAD',	' * Delete Thread?');		//on delete.php
-define ('TEMPLATE_HTMLTITLE_DELETE_POST',	' * Delete Post?');		//on delete.php
-
-//prepended to the thread title for each reply (like in e-mail)
-define ('TEMPLATE_RE',				'RE: ');
-
-
-/* the opening HTML and website header
-   ---------------------------------------------------------------------------------------------------------------------- */
 /* attached to:
 	nothing, inserted directly into the page by index.php, thread.php & delete.php
    tags:
@@ -42,32 +22,33 @@ define ('TEMPLATE_RE',				'RE: ');
 	&__NAV__;	a placeholder for a menu used on index / thread pages, but not delete / edit pages
 			(see `TEMPLATE_HEADER_NAV` below)
 */
+$pageTitle = TEMPLATE_HTMLTITLE_SLUG; // Needed since heredocs cannot include constants (e.g. the page title)
 define ('TEMPLATE_HEADER', <<<HTML
 <!DOCTYPE html>
 <meta charset="utf-8" />
 <title>&__HTMLTITLE__;</title>
 <link rel="stylesheet" href="/themes/grayscale/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="&__RSS__;" />
-<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />&__ROBOTS__;
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
+&__ROBOTS__;
 <body>
 
 <header>
 	<hgroup>
-		<h1>**** Camen Design Forums v2 ****</h1>
-		<h2>Copyright (CC-BY) 1984-2011 Kroc Camen</h2>
+		<h1>$pageTitle</h1>
 	</hgroup>
-	<p>READY.</p>&__NAV__;
+	&__NAV__;
 </header>
 
 HTML
 );
+
 /* attached to:
 	&__ROBOTS__;	TEMPLATE_HEADER
    tags:
 	none
 */
 define ('TEMPLATE_HEADER_ROBOTS', <<<HTML
-
 	<meta name="robots" content="noindex, nofollow" />
 HTML
 );
@@ -85,10 +66,11 @@ HTML
 			-	`TEMPLATE_THREAD_PATH_FOLDER` on threads in sub-folders (links back to folder)
 */
 define ('TEMPLATE_HEADER_NAV', <<<HTML
-
 	<nav>
-&__MENU__;
-&__PATH__;
+        &__MENU__;
+        <ol>
+            &__PATH__;
+        </ol>
 	</nav>
 HTML
 );
@@ -100,8 +82,8 @@ HTML
 	none 
 */
 define ('TEMPLATE_INDEX_MENU', <<<HTML
-		<a href="#new">Add Thread</a>
-		<a href="index.rss">RSS</a>
+    <a href="#new">Add Thread</a>
+	<a href="index.rss">RSS</a>
 HTML
 );
 
@@ -112,8 +94,8 @@ HTML
 	&__RSS__;	URL to the RSS feed for this thread (the thread’s filename ending in “.xml”)
 */
 define ('TEMPLATE_THREAD_MENU', <<<HTML
-		<a href="#reply">Reply</a>
-		<a href="&__RSS__;">RSS</a>
+    <a href="#reply">Reply</a>
+    <a href="&__RSS__;">RSS</a>
 HTML
 );
 
@@ -123,12 +105,8 @@ HTML
    tags:
 	none
 */
-define ('TEMPLATE_INDEX_PATH', <<<HTML
-		<ol>
-			<li>Index:</li>
-		</ol>
-HTML
-);
+define ('TEMPLATE_INDEX_PATH', "<li>Index</li>");
+
 //the path navigation (on index pages), when in a folder
 /* attached to:
 	&__PATH__;	TEMPLATE_HEADER_NAV
@@ -136,12 +114,8 @@ HTML
 	&__PATH__;	the name of the folder being viewed, HTML encoded
 */
 define ('TEMPLATE_INDEX_PATH_FOLDER', <<<HTML
-		<ol>
-			<li>
-				<a href="/">Index</a>
-				<ol><li>&__PATH__;:</li></ol>
-			</li>
-		</ol>
+<li><a href="/">Index</a></li>
+<li>&__PATH__;</li>
 HTML
 );
 
@@ -152,11 +126,10 @@ HTML
 	none
 */
 define ('TEMPLATE_THREAD_PATH', <<<HTML
-		<ol>
-			<li><a href="/">Index</a></li>
-		</ol>
+<li><a href="/">Index</a></li>
 HTML
 );
+
 //the path navigation (on thread pages), when in a folder
 /* attached to:
 	&__PATH__;	TEMPLATE_HEADER_NAV
@@ -165,29 +138,27 @@ HTML
 	&__PATH__;	HTML encoded name of the folder
 */
 define ('TEMPLATE_THREAD_PATH_FOLDER', <<<HTML
-		<ol>
-			<li>
-				<a href="/">Index</a>
-				<ol><li><a href="&__URL__;">&__PATH__;</a></li></ol>
-			</li>
-		</ol>
+<li><a href="/">Index</a></li>
+<li><a href="&__URL__;">&__PATH__;</a></li>
 HTML
 );
 
-/* the folders list on index pages
-   ---------------------------------------------------------------------------------------------------------------------- */
+/** Folder list **/
+
 /* attached to:
 	nothing, inserted directly into page by index.php
    tags:
 	&__FOLDERS__;	a generated list of folders (see TEMPLATE_INDEX_FOLDER)
 */
 define ('TEMPLATE_INDEX_FOLDERS', <<<HTML
-<h2 id="folders">Folders</h2>
+<div id="folders"
+<h2>Folders</h2>
 <dl>
-&__FOLDERS__;</dl>
-
+    &__FOLDERS__;
+</dl>
 HTML
 );
+
 //a folder (appended in sequence)
 /* attached to:
 	&__FOLDERS__;	TEMPLATE_INDEX_FOLDERS
@@ -197,12 +168,11 @@ HTML
 */
 define ('TEMPLATE_INDEX_FOLDER', <<<HTML
 	<dt><a href="&__URL__;">&__FOLDER__;</a></dt>
-
 HTML
 );
 
-/* the threads list on index pages (including page list)
-   ---------------------------------------------------------------------------------------------------------------------- */
+/** Thread list **/
+
 /* attached to:
 	nothing, inserted directly into page by index.php
    tags:
@@ -214,20 +184,21 @@ define ('TEMPLATE_INDEX_THREADS', <<<HTML
 <h2>Threads</h2>
 <form method="get" action="http://google.com/search">
 	Search
-	<input type="hidden" name="as_sitesearch" value="${_SERVER['HTTP_HOST']}" /><!--
-	--><input type="search" name="as_q" /><!--
-	--><input type="submit" value="✓" />
+	<input type="hidden" name="as_sitesearch" value="${_SERVER['HTTP_HOST']}" />
+	<input type="search" name="as_q" />
+	<input type="submit" value="✓" />
 </form>
 
 <dl>
-&__THREADS__;</dl>
+    &__THREADS__;
+</dl>
 <nav class="pages">
 	Page &__PAGES__;
 </nav>
-</div>
-        
+</div>  
 HTML
 );
+
 //a thread link on an index page (appended in sequence)
 /* attached to:
 	&__THREADS__;	TEMPLATE_INDEX_THREADS
@@ -247,9 +218,9 @@ define ('TEMPLATE_INDEX_THREAD', <<<HTML
 		<time datetime="&__DATETIME__;">&__TIME__;</time>
 		<b>&__AUTHOR__;</b>
 	</dd>
-
 HTML
 );
+
 //added to a thread to make it sticky
 /* attached to:
 	&__STICKY__;	TEMPLATE_INDEX_THREAD
@@ -258,16 +229,15 @@ HTML
 */
 define ('TEMPLATE_STICKY', ' class="sticky"');
 
-/* the page list
-   ---------------------------------------------------------------------------------------------------------------------- */
+/** Page listing **/
 //I should probably do this using LIs so generated content can be used to do commas and the designer has more freedom
 define ('TEMPLATE_PAGES_PAGE',      '<a href="?page=&__PAGE__;#list">&__PAGE__;</a>');
 define ('TEMPLATE_PAGES_CURRENT',   '<em>&__PAGE__;</em>');
 define ('TEMPLATE_PAGES_GAP',       '…');
 define ('TEMPLATE_PAGES_SEPARATOR', ',');
 
-/* the new thread input form
-   ---------------------------------------------------------------------------------------------------------------------- */
+/** New thread form **/
+
 /* attached to:
 	nothing, inserted directly into the page by index.php
    tags:
@@ -278,40 +248,45 @@ define ('TEMPLATE_PAGES_SEPARATOR', ',');
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
 define ('TEMPLATE_INDEX_FORM', <<<HTML
-<form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
+<form id="new" class="postform" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Add Thread</legend>
 	
+	<label id="message">Message:
+		<textarea tabindex="4" name="text" cols="40" rows="23" maxlength="32768" required
+		>&__TEXT__;</textarea>
+	</label>
+        
+	&__ERROR__;
+        
 	<label>Name:
-		<input name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+		<input tabindex="1" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
 	          value="&__NAME__;" />
 	</label>
-	<label>Password:
-		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+
+    <label>Password:
+		<input tabindex="2" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
 	          value="&__PASS__;" />
 	</label>
-	<label class="email">Email:
+
+    <label class="email">Email:
 		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
 		(Leave this as-is, it’s a trap!)
 	</label>
 	
-	&__ERROR__;
-	
 	<label>Title:
-		<input name="title" type="text" size="28" maxlength="80" required autocomplete="off"
+		<input tabindex="3" name="title" type="text" size="28" maxlength="80" required autocomplete="off"
 		    value="&__TITLE__;" />
-	</label>
-	<label>Message:
-		<textarea name="text" cols="40" rows="23" maxlength="32768" required
-		>&__TEXT__;</textarea>
 	</label>
 	
 	<p id="rules">
-		There’s only 1 rule: don’t be an arse. Rule #2 is Kroc makes up the rules.
-		<input name="submit" type="submit" value="Submit" />
+		There’s only 1 rule: don’t be an arse.<br />
+        Rule #2 is Kroc makes up the rules.
+		<input tabindex="5" name="submit" type="submit" value="Submit" />
 	</p>
 </fieldset></form>
 HTML
 );
+
 //this is inserted instead of the input form above if `FORUM_ENABLED` is false
 /* attached to:
 	nothing, inserted directly into the page by index.php
@@ -319,15 +294,16 @@ HTML
 	none
 */
 define ('TEMPLATE_INDEX_FORM_DISABLED', <<<HTML
-<h1>Add Thread</h1>
-<p class="error">
-	Sorry, posting is currently disabled.
-</p>
+<form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
+    <fieldset>
+        <legend>Add Thread</legend>
+        <p class="error">Sorry, posting is currently disabled.</p>
+    </fieldset>
+</form>
 HTML
 );
 
-/* form error messages
-   ---------------------------------------------------------------------------------------------------------------------- */
+/** Error messages **/
 /* attached to:
 	&__ERROR__;	TEMPLATE_INDEX_FORM, TEMPLATE_THREAD_FORM, TEMPLATE_DELETE_FORM
    tags:
@@ -340,11 +316,9 @@ define ('ERROR_TITLE', '<p class="error">You need to enter the title of your new
 define ('ERROR_TEXT',  '<p class="error">Well, write a message!</p>');
 define ('ERROR_AUTH',  '<p class="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>');
 
+/** Thread page **/
 
-/* the thread page
-   ====================================================================================================================== */
-/* the first post in a thread
-   ---------------------------------------------------------------------------------------------------------------------- */
+// The first post in a thread
 /* attached to:
 	nothing, inserted directly into the page by thread.php
    tags:
@@ -356,12 +330,13 @@ define ('ERROR_AUTH',  '<p class="error">That name is taken. Provide the passwor
 	&__TEXT__;	The post message text, HTML formatted and encoded
 */
 define ('TEMPLATE_THREAD_FIRST', <<<HTML
+<section class="thread">
 <h1>&__TITLE__;</h1>
 
 <article id="1" class="op">
 	<header>&__DELETE__;
-		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
-		<a href="#1">#1.</a> <b>&__NAME__;</b>
+		<a href="#1">#1</a>
+		<b>&__NAME__;</b> <time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
 	</header>
 	
 	&__TEXT__;
@@ -377,7 +352,7 @@ HTML
 */
 define ('TEMPLATE_DELETE', <<<HTML
 
-		<a class="delete" rel="noindex nofollow" href="&__URL__;">Delete</a>
+		<a class="delete" rel="noindex nofollow" href="&__URL__;">[delete]</a>
 HTML
 );
 
@@ -390,7 +365,8 @@ HTML
 	&__POSTS__;	a generated list of posts, see TEMPLATE_POST below
 */
 define ('TEMPLATE_THREAD_POSTS', <<<HTML
-<h2 id="list">Replies</h2>
+<div id="list">
+<h2>Replies</h2>
 <nav class="pages">
 	Page &__PAGES__;
 </nav>
@@ -400,6 +376,8 @@ define ('TEMPLATE_THREAD_POSTS', <<<HTML
 <nav class="pages">
 	Page &__PAGES__;
 </nav>
+</div>
+</section>
 HTML
 );
 
@@ -421,8 +399,8 @@ HTML
 define ('TEMPLATE_POST', <<<HTML
 <article id="&__ID__;" class="&__TYPE__;">
 	<header>&__DELETE__;
-		<time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
-		<a href="#&__ID__;">#&__ID__;.</a> <b>&__NAME__;</b>
+		<a href="#&__ID__;">#&__ID__;</a>
+		<b>&__NAME__;</b> <time datetime="&__DATETIME__;" pubdate>&__TIME__;</time>
 	</header>
 	
 	&__TEXT__;
@@ -457,33 +435,35 @@ define ('TEMPLATE_POST_DELETED', 'deleted');
 	&__TEXT__;	the user’s message HTML encoded to go in a `<textarea>`
 */
 define ('TEMPLATE_THREAD_FORM', <<<HTML
-<form id="reply" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
+<form id="reply" class="postform" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Reply</legend>
 	
+	<label tabindex="3" id="message">Message:
+		<textarea name="text" cols="40" rows="23" maxlength="32768" required
+		>&__TEXT__;</textarea>
+	</label>
+
+    &__ERROR__;
+        
 	<label>Name:
-		<input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
+		<input tabindex="1" id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
 		 value="&__NAME__;" />
 	</label>
+        
 	<label>Password:
-		<input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
+		<input tabindex="2" name="password" type="password" size="28" maxlength="20" required autocomplete="on"
 		 value="&__PASS__;" />
 	</label>
+        
 	<label class="email">Email: (Leave this as-is, it’s a trap!)
 		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
 	</label>
 	
-	&__ERROR__;
-	
-	<label>Message:
-		<textarea name="text" cols="40" rows="23" maxlength="32768" required
-		>&__TEXT__;</textarea>
-	</label>
-	
 	<p id="rules">
-		<input name="submit" type="submit" value="Reply" />
-		
-		There’s only 1 rule: don’t be an arse.
+		There’s only 1 rule: don’t be an arse.<br />
 		Rule #2 is Kroc makes up the rules.
+
+        <input tabindex="4" name="submit" type="submit" value="Reply" />
 	</p>
 </fieldset></form>
 HTML

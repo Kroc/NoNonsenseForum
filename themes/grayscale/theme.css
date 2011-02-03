@@ -4,6 +4,10 @@ body {
     margin: 0;
     font-family: Georgia;
 }
+.error {
+    font-weight: bold;
+    color: #D11;
+    }
 
 hgroup > h1 {
     background: #222;
@@ -62,15 +66,13 @@ nav > ol > li + li:before {
     -webkit-box-sizing: border-box;
     font-size: 2em;
     padding: .3em;
-    margin-top: 0;
-    margin-bottom: 1em;
+    margin: 0;
 }
 #list > form {
     float: right;
     background: #444;
     color: white;
     padding: .6em;
-    margin-top: -2em;
 }
 #list > dl {
     margin-left: 1em;
@@ -136,40 +138,47 @@ nav > ol > li + li:before {
     color: #CCF;
 }
 
-#new {
+.postform {
     width: 50em;
     margin: 1em auto;
 }
-#new > fieldset {
+.postform > fieldset {
     background: #444;
     color: white;
 }
-#new > fieldset > legend {
+.postform > fieldset > legend {
     display: none;
 }
-#new > fieldset > label, #new > fieldset > p {
+.postform > fieldset > label, #new > fieldset > p {
     float: left;
     width: 24em;
     clear: left;
     overflow: hidden;
 }
 #rules {
-    display: block;
-    float: none !important;
-    width: auto !important;
-    clear: both !important;
+    float: left;
+    width: 24em;
     color: #888;
-    text-align: center;
-    padding-top: 1em;
+    text-align: left;
 }
+#rules:before {
+    display: block;
+    color: white;
+    font-style: italic;
+    content: "Rules:";
+    }
 #rules > input {
     display: block;
     width: 7em;
-    margin: .5em auto 0 auto;
+    margin: 1em auto 0 auto;
 }
-#new > fieldset > label > input {
+.postform > fieldset > p {
+    text-align: center;
+    }
+.postform > fieldset > label > input {
     float: right;
     text-align: left;
+    font-weight: normal;
 }
 #message {
     float: right !important;
@@ -182,6 +191,47 @@ nav > ol > li + li:before {
 .email {
     display: none !important;
 }
+
+.thread {
+    width: 50em;
+    margin: 0 auto;
+}
+article > header {
+    background: #AAA;
+    padding: .5em;
+    color: #222;
+    }
+article > header > a {
+    color: #CCC;
+    text-decoration: none;
+    font-weight: bold;
+    }
+article > header > a:hover {
+    color: #FFF;
+    }
+article > header > b {
+    display: inline-block;
+    min-width: 7em;
+    text-align: right;
+    }
+article > header > time {
+    color: #444;
+    }
+article > header > time:before {
+    content: " @ ";
+    color: #CCC;
+    }
+.delete {
+    float: right;
+    color: #A11;
+    text-decoration: none;
+    }
+.delete:hover {
+    text-decoration: underline;
+    }
+article > p {
+    padding: 0 1em;
+    }
 
 footer {
     text-align: center;
