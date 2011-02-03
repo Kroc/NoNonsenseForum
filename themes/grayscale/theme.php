@@ -151,11 +151,12 @@ HTML
 	&__FOLDERS__;	a generated list of folders (see TEMPLATE_INDEX_FOLDER)
 */
 define ('TEMPLATE_INDEX_FOLDERS', <<<HTML
-<div id="folders"
+<div class="list" id="folders">
 <h2>Folders</h2>
 <dl>
     &__FOLDERS__;
 </dl>
+</div>
 HTML
 );
 
@@ -180,7 +181,7 @@ HTML
 	&__PAGES__;	a generated list of page links, see TEMPLATE_PAGES_*
 */
 define ('TEMPLATE_INDEX_THREADS', <<<HTML
-<div id="list">
+<div id="threads" class="list">
 <h2>Threads</h2>
 <form method="get" action="http://google.com/search">
 	Search
@@ -365,7 +366,7 @@ HTML
 	&__POSTS__;	a generated list of posts, see TEMPLATE_POST below
 */
 define ('TEMPLATE_THREAD_POSTS', <<<HTML
-<div id="list">
+<div id="replies" class="list">
 <h2>Replies</h2>
 <nav class="pages">
 	Page &__PAGES__;
@@ -438,8 +439,8 @@ define ('TEMPLATE_THREAD_FORM', <<<HTML
 <form id="reply" class="postform" method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on"><fieldset>
 	<legend>Reply</legend>
 	
-	<label tabindex="3" id="message">Message:
-		<textarea name="text" cols="40" rows="23" maxlength="32768" required
+	<label id="message">Message:
+		<textarea tabindex="3" name="text" cols="40" rows="23" maxlength="32768" required
 		>&__TEXT__;</textarea>
 	</label>
 
@@ -491,12 +492,16 @@ HTML
 */
 define ('TEMPLATE_FOOTER', <<<HTML
 
-<!-- =================================================================================================================== -->
-<footer><p>
-	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
-</p><p>
-	NoNonsenseForum: <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
-</p></footer>
+<!-- ============================================================================================== -->
+<footer>
+  <p>
+	<a href="mailto:admin@example.com">admin@example.com</a> : <a href="http://example.com">example.com</a>
+  </p><p>
+	NoNonsenseForum : <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
+  </p><p>
+    Grayscale Theme : <a href="http://www.thesquareplanet.com">Jon Gjengset</a>
+  </p>
+</footer>
 
 </body>
 HTML
