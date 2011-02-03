@@ -16,7 +16,7 @@ define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 /* options: stuff for you
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('FORUM_ENABLED',	true);					//if posting is allowed
-define ('FORUM_THEME',		'C=64');				//theme name, in “/themes/*”
+define ('FORUM_THEME',		'grayscale');				//theme name, in “/themes/*”
 define ('FORUM_THREADS',	50);					//number of threads per page on the index
 define ('FORUM_POSTS',		25);					//number of posts per page on threads
 
