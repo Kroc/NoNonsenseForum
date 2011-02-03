@@ -1,0 +1,190 @@
+/** Before anyone says anything, yes it is ugly formated, and yes I'm going to do something about that! **/
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Georgia;
+}
+
+hgroup > h1 {
+    background: #222;
+    color: white;
+    padding: .3em;
+    line-height: 1.1;
+    margin-bottom: .1em;
+    text-align: center;
+}
+hgroup > h2 {
+    color: #CCC;
+    text-align: center;
+    font-size: 1em;
+}
+header > p {
+    display: none;
+}
+nav {
+    text-align: center;
+}
+header > nav > a {
+    display: inline-block;
+    background: #444;
+    color: white;
+    padding: .3em .5em;
+    text-decoration: none;
+    font-weight: bold;
+    -webkit-transform: rotate(1deg);
+    border: 1px solid black;
+}
+header > nav > a:hover {
+    background: white;
+    color: black;
+    -webkit-transform: rotate(-1deg);
+}
+nav > ol {
+    list-style-type: none;
+}
+nav > ol > li {
+    display: inline;
+}
+nav > ol > li + li:before {
+    content: " >> ";
+    color: #CCC;
+}
+
+#list {
+    border: 1px solid #888;
+    width: 50em;
+    margin: 0 auto;
+}
+#list > h2 {
+    background: #222;
+    color: white;
+    width: 25em;
+    -webkit-box-sizing: border-box;
+    font-size: 2em;
+    padding: .3em;
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+#list > form {
+    float: right;
+    background: #444;
+    color: white;
+    padding: .6em;
+    margin-top: -2em;
+}
+#list > dl {
+    margin-left: 1em;
+}
+#list > dl > dt {
+    color: #AAA;
+}
+.sticky:before {
+    content: "!";
+    float: left;
+    font-size: 2.7em;
+    font-weight: bold;
+    color: black;
+    margin-right: .3em;
+    line-height: 1;
+}
+#list > dl > dt, #list > dl > dd {
+    padding-left: .5em;
+}
+#list > dl > dd + dt {
+    margin-top: .5em;
+    border-top: 1px solid #AAA;
+    padding-top: .5em;
+}
+#list > dl > dt > a {
+    color: #111;
+    font-weight: bold;
+    text-decoration: none;
+}
+#list > dl > dd {
+    margin-left: 1em;
+}
+#list > dl > dd > time {
+    color: #888;
+}
+#list > dl > dd > b {
+    color: #888;
+}
+#list > dl > dd > b:before {
+    content: " by ";
+    color: #AAA;
+    font-weight: normal;
+}
+
+.pages {
+    background: #444;
+    color: white;
+    padding: .5em;
+}
+.pages > em {
+    font-weight: bold;
+    font-style: normal;
+}
+.pages > * + * {
+    margin-left: .3em;
+}
+.pages > a {
+    color: #AAF;
+    text-decoration: none;
+}
+.pages > a:hover {
+    text-decoration: underline;
+    color: #CCF;
+}
+
+#new {
+    width: 50em;
+    margin: 1em auto;
+}
+#new > fieldset {
+    background: #444;
+    color: white;
+}
+#new > fieldset > legend {
+    display: none;
+}
+#new > fieldset > label, #new > fieldset > p {
+    float: left;
+    width: 24em;
+    clear: left;
+    overflow: hidden;
+}
+#rules {
+    display: block;
+    float: none !important;
+    width: auto !important;
+    clear: both !important;
+    color: #888;
+    text-align: center;
+    padding-top: 1em;
+}
+#rules > input {
+    display: block;
+    width: 7em;
+    margin: .5em auto 0 auto;
+}
+#new > fieldset > label > input {
+    float: right;
+    text-align: left;
+}
+#message {
+    float: right !important;
+    clear: none;
+    text-align: center;
+}
+#message > textarea {
+    text-align: left;
+}
+.email {
+    display: none !important;
+}
+
+footer {
+    text-align: center;
+    font-size: .9em;
+    color: #AAA;
+}
