@@ -27,6 +27,7 @@ define ('TEMPLATE_HEADER', <<<HTML
 <!DOCTYPE html>
 <meta charset="utf-8" />
 <title>&__HTMLTITLE__;</title>
+<link rel="stylesheet" href="/themes/grayscale/icons/iconic.css" />
 <link rel="stylesheet" href="/themes/grayscale/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="&__RSS__;" />
 <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
@@ -35,7 +36,7 @@ define ('TEMPLATE_HEADER', <<<HTML
 
 <header>
 	<hgroup>
-		<h1>$pageTitle</h1>
+		<h1><a href="/" class="iconic home">$pageTitle</a></h1>
 	</hgroup>
 	&__NAV__;
 </header>
@@ -82,8 +83,8 @@ HTML
 	none 
 */
 define ('TEMPLATE_INDEX_MENU', <<<HTML
-    <a href="#new">Add Thread</a>
-	<a href="index.rss">RSS</a>
+    <a href="#new" class="iconic new-window">Add Thread</a>
+	<a href="index.rss" class="iconic rss">RSS</a>
 HTML
 );
 

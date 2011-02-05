@@ -7,13 +7,10 @@
 	     url('iconic_stroke.svg#iconic') format('svg');
 	}
 
-.iconic {
+.iconic:before {
 	color:inherit;
 	font-family: "Iconic";
-}
-
-a.iconic:hover {
-	color:inherit;
+    margin-right: .2em;
 }
 
 .iconic.home:before { content: '!'; }
