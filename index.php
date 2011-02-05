@@ -20,8 +20,11 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT)
 	$file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
 		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
-		//for neatness use "Microsofts" instead of "Microsoft_s" when removing the apostrophe
-		str_replace (array ("'", "‘", "’", '"', '“','”'), '', strtolower (TITLE))
+		//remove the additional characters added by transliteration, e.g. "ñ" = "~n"
+		str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
+			//unaccent: <php.net/manual/en/function.iconv.php>
+			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
+		))
 	);
 	
 	//write out the new thread as an RSS file
