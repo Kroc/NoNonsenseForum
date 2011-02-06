@@ -19,7 +19,10 @@ a {
     a:hover {
         color: #996633;
     }
-
+.hide {
+    display: none;
+}
+    
 /** Header **/
 header > hgroup {
     background: #222222;
@@ -58,14 +61,10 @@ header > nav {
         padding: 0;
         margin: 0;
     }
-        header > nav > ol:before {
-            content: "You are here: ";
-            color: #aaaaaa;
-        }
         header nav ol li {
             display: inline;
         }
-            header nav ol li + li:before {
+            header nav ol li + li + li:before {
                 content: " :: ";
                 color: #aaaaaa;
             }
@@ -209,41 +208,41 @@ header > nav {
     width: 50em;
     margin: 0 auto;
 }
-    .thread > article > header {
+    .thread article > header {
         background: #aaaaaa;
         padding: .5em;
         color: #222222;
     }
-        .thread > article > header > a {
+        .thread article > header > a {
             color: #CCC;
         }
-            .thread > article > header > a:hover {
+            .thread article > header > a:hover {
                 color: white;
             }
-        .thread > article > header > b {
+        .thread article > header > b {
             display: inline-block;
             min-width: 7em;
             text-align: right;
         }
-        .thread > article > header > time {
+        .thread article > header > time {
             color: #444444;
         }
-            .thread > article > header > time:before {
+            .thread article > header > time:before {
                 content: " @ ";
                 color: #CCC;
             }
-        .thread > article > header > .delete {
+        .thread article > header > .delete {
             float: right;
             color: #A11;
             text-decoration: none;
         }
-            .thread > article > header > .delete:hover {
+            .thread article > header > .delete:hover {
                 text-decoration: underline;
             }
-    .thread > article > p {
+    .thread article > p {
         padding: 0 1em;
     }
-    .thread > article.deleted {
+    .thread article.deleted {
         opacity: 0.3;
     }
 

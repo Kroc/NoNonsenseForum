@@ -70,6 +70,7 @@ define ('TEMPLATE_HEADER_NAV', <<<HTML
 	<nav>
         &__MENU__;
         <ol>
+            <li><span class="iconic map-pin"></span><span class="hide">You are here:</span></li>
             &__PATH__;
         </ol>
 	</nav>
@@ -95,8 +96,8 @@ HTML
 	&__RSS__;	URL to the RSS feed for this thread (the thread’s filename ending in “.xml”)
 */
 define ('TEMPLATE_THREAD_MENU', <<<HTML
-    <a href="#reply">Reply</a>
-    <a href="&__RSS__;">RSS</a>
+    <a href="#reply" class="iconic comment">Reply</a>
+    <a href="&__RSS__;" class="iconic rss">RSS</a>
 HTML
 );
 
@@ -153,7 +154,7 @@ HTML
 */
 define ('TEMPLATE_INDEX_FOLDERS', <<<HTML
 <div class="list" id="folders">
-<h2>Folders</h2>
+<h2 class="iconic book">Folders</h2>
 <dl>
     &__FOLDERS__;
 </dl>
@@ -183,7 +184,7 @@ HTML
 */
 define ('TEMPLATE_INDEX_THREADS', <<<HTML
 <div id="threads" class="list">
-<h2>Threads</h2>
+<h2 class="iconic chat">Threads</h2>
 <form method="get" action="http://google.com/search">
 	Search
 	<input type="hidden" name="as_sitesearch" value="${_SERVER['HTTP_HOST']}" />
@@ -588,8 +589,8 @@ HTML
 	none
 */
 define ('ERROR_DELETE_THREAD', '<p>To delete this thread, and all replies to it, you must be either the original author or a designated moderator.</p>');
-define ('ERROR_DELETE_NONE', '<p>To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.</p>');
-define ('ERROR_DELETE_AUTH', '<p class="error">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</p>');
+define ('ERROR_DELETE_POST',   '<p>To delete this post you must be either the original author or a designated moderator.</p>');
+define ('ERROR_DELETE_AUTH',   '<p class="error">Name / password mismatch! You must enter the name and password of either the original author, or a designated moderator.</p>');
 
 //the text left behind when a post is deleted
 define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
