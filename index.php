@@ -48,36 +48,20 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT)
 
 /* ====================================================================================================================== */
 
-//write the website header:
-echo template_tags (TEMPLATE_HEADER, array (
-	//HTML `<title>`
-	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG
-			  .(PATH ? template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML (PATH)) : '')
-		   	  .(PAGE > 1 ? template_tag (TEMPLATE_HTMLTITLE_PAGE, 'PAGE', PAGE) : ''),
-	'RSS'		=> 'index.rss',
-	'ROBOTS'	=> '',
-	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
-		'MENU'	=> TEMPLATE_INDEX_MENU,
-		'PATH'	=> PATH ? template_tag (TEMPLATE_INDEX_PATH_FOLDER, 'PATH', safeHTML (PATH)) : TEMPLATE_INDEX_PATH
-	))
-));
-
-/* ---------------------------------------------------------------------------------------------------------------------- */
+//prepare the website header:
+$HEADER = array (
+	'PATH'	=> safeHTML (PATH),		//the current sub-folder, if any
+	'PAGE'	=> PAGE				//the current page number
+);
 
 //get a list of folders
-if ($folders = array_filter (
+foreach (array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
-)) {
-	//string together the list
-	foreach ($folders as $folder) @$html .= template_tags (TEMPLATE_INDEX_FOLDER, array (
-		'URL'	=> '/'.rawurlencode ($folder).'/',
-		'FOLDER'=> safeHTML ($folder)
-	));
-	
-	//output
-	echo template_tag (TEMPLATE_INDEX_FOLDERS, 'FOLDERS', $html); $html = '';
-}
+) as $FOLDER) $FOLDERS[] = array (
+	'URL'	=> '/'.rawurlencode ($FOLDER).'/',
+	'NAME'	=> safeHTML ($FOLDER)
+);
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
@@ -108,24 +92,28 @@ if ($threads) {
 		$xml = simplexml_load_file ($file);
 		$last = &$xml->channel->item[0];
 		
-		@$html .= template_tags (TEMPLATE_INDEX_THREAD, array (
+		$thread = array (
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page='.(count ($xml->channel->item) > 1
 						? ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : 1
 					),
-			'STICKY'	=> in_array ($file, $stickies) ? TEMPLATE_STICKY : '',
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item),
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
 			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 			'AUTHOR'	=> safeHTML ($last->author)
-		));
+		);
+		
+		if (in_array ($file, $stickies)) {$STICKIES[] = $thread;} else {$THREADS[] = $thread;}
 	}
 	
+	/*
 	echo template_tags (TEMPLATE_INDEX_THREADS, array (
-		'THREADS' => $html,
 		'PAGES'   => pageLinks (PAGE, $pages)
 	)); $html = '';
+	*/
 }
+
+include 'themes/'.FORUM_THEME.'/index.php';
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
