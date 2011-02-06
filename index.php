@@ -17,18 +17,21 @@ define ('TEXT',  mb_substr (trim (@$_POST['text']    ), 0, 32768, 'UTF-8'));
 //has the user the submitted a new thread? (and is the info valid?)
 if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT) {
 	//the file on disk is a simplified version of the title
-	$file = preg_replace (
+	$c = 0; do $file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
 		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
-		//remove the additional characters added by transliteration, e.g. "ñ" = "~n"
-		str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
-			//unaccent: <php.net/manual/en/function.iconv.php>
+			//remove the additional characters added by transliteration, e.g. "ñ" = "~n",
+			//has the added benefit of converting “microsoft's” to “microsofts” instead of “microsoft_s”
+			str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
+				//unaccent: <php.net/manual/en/function.iconv.php>
 			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
 		))
-	);
+	//if a thread already exsits with that name, append a number until an available filename is found
+	).(++$c ? "_$c" : '');
+	while (file_exists ("$file.xml"));
 	
 	//write out the new thread as an RSS file
-	if (!file_exists ("$file.xml")) file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
+	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
 		'ITEMS'	=> TEMPLATE_RSS_ITEM,
 		'TITLE'	=> safeHTML (TITLE),
 		'URL'	=> PATH_URL."$file#1",
