@@ -51,15 +51,15 @@ if (
 }
 
 echo template_tags (TEMPLATE_HEADER, array (
-	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME',
-				@$_GET['id'] ? TEMPLATE_HTMLTITLE_DELETE_POST : TEMPLATE_HTMLTITLE_DELETE_THREAD
-			),
+	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (
+				TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($xml->channel->title)
+			).($ID > 1 ? TEMPLATE_HTMLTITLE_DELETE_POST : TEMPLATE_HTMLTITLE_DELETE_THREAD),
 	'RSS'		=> "$FILE.xml",
 	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,
 	'NAV'		=> ''
 ));
 
-echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD, array (
+echo template_tags ($ID > 1 ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD, array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'POST'	=> template_tags (TEMPLATE_POST, array (
@@ -71,7 +71,7 @@ echo template_tags (@$_GET['id'] ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description
 	)),
-	'ERROR'	=> !@$_POST['submit'] ? ERROR_DELETE_NONE
+	'ERROR'	=> !@$_POST['submit'] ? $ID > 1 ? ERROR_DELETE_POST : ERROR_DELETE_THREAD
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
 		   : ERROR_DELETE_AUTH))
