@@ -587,6 +587,7 @@ HTML
    tags:
 	none
 */
+define ('ERROR_DELETE_THREAD', '<p>To delete this thread, and all replies to it, you must be either the original author or a designated moderator.</p>');
 define ('ERROR_DELETE_NONE', '<p>To delete this thread, and all replies to it, you must be either the original poster, or a designated moderator.</p>');
 define ('ERROR_DELETE_AUTH', '<p class="error">Name / password mismatch! You must enter the name and password of either the post originator, or a designated moderator.</p>');
 
