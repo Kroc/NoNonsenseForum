@@ -16,32 +16,30 @@
 	<nav>
 		<a href="#new">Add Thread</a>
 		<a href="index.rss">RSS</a>
-<?php if ($HEADER['PATH']) { ?>
+<?php if ($HEADER['PATH']): ?>
 		<ol>
 			<li>
 				<a href="/">Index</a>
 				<ol><li><?=$HEADER['PATH']?>:</li></ol>
 			</li>
 		</ol>
-<?php } else { ?>
+<?php else: ?>
 		<ol>
 			<li>• Index:</li>
 		</ol>
-<?php } ?>
+<?php endif; ?>
 	</nav>
 </header>
 
-<?php if (isset ($FOLDERS)) { ?>
+<?php if (isset ($FOLDERS)): ?>
 <h2 id="folders">Folders</h2>
-<dl>
-<?php foreach ($FOLDERS as $FOLDER) { ?>
+<dl><?php foreach ($FOLDERS as $FOLDER): ?>
 	<dt><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a></dt>
 
-<?php } ?>
-</dl>
-<?php } ?>
+<?php endforeach; ?></dl>
+<?php endif; ?>
 
-<?php if (isset ($THREADS) || isset ($STICKIES)) { ?>
+<?php if (isset ($THREADS) || isset ($STICKIES)): ?>
 <h2 id="list">Threads</h2>
 <form method="get" action="http://google.com/search">
 	Search
@@ -51,24 +49,37 @@
 </form>
 
 <dl>
-<?php foreach ($STICKIES as $THREAD) { ?>
+<?php foreach ($STICKIES as $THREAD): ?>
 	<dt><a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a> (<?=$THREAD['COUNT']?>)</dt>
 	<dd>
 		<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
 		<b><?=$THREAD['AUTHOR']?></b>
 	</dd>
 
-<?php } ?>
-<?php foreach ($THREADS as $THREAD) { ?>
+<?php endforeach; ?>
+<?php foreach ($THREADS as $THREAD): ?>
 	<dt><a href="<?=$THREAD['URL']?>"><?=$THREAD['TITLE']?></a> (<?=$THREAD['COUNT']?>)</dt>
 	<dd>
 		<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
 		<b><?=$THREAD['AUTHOR']?></b>
 	</dd>
 
-<?php } ?>
+<?php endforeach; ?>
 </dl>
+<?php if (isset ($PAGES)): ?>
 <nav class="pages">
-	Page &__PAGES__;
+	Page <?php
+foreach ($PAGES as &$PAGE):
+	if ($PAGE == PAGE):
+		$PAGE = "<em>$PAGE</em>";
+	elseif ($PAGE):
+		$PAGE = "<a href=\"?page=$PAGE#list\">$PAGE</a>";
+	else:
+		$PAGE = "…";
+	endif;
+endforeach;
+echo (implode (", ", $PAGES));
+?>
 </nav>
-<?php } ?>
+<?php endif; ?>
+<?php endif; ?>

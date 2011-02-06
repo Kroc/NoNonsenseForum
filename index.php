@@ -11,8 +11,8 @@ require_once 'shared.php';
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
-define ('TITLE', mb_substr (trim (@$_POST['title']   ), 0, 80,    'UTF-8'));
-define ('TEXT',  mb_substr (trim (@$_POST['text']    ), 0, 32768, 'UTF-8'));
+define ('TITLE', mb_substr (trim (@$_POST['title']), 0, 80,    'UTF-8'));
+define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, 32768, 'UTF-8'));
 
 //has the user the submitted a new thread? (and is the info valid?)
 if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT) {
@@ -50,8 +50,8 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT)
 
 //prepare the website header:
 $HEADER = array (
-	'PATH'	=> safeHTML (PATH),		//the current sub-folder, if any
-	'PAGE'	=> PAGE				//the current page number
+	'PATH'	=> safeHTML (PATH),	//the current sub-folder, if any
+	'PAGE'	=> PAGE			//the current page number
 );
 
 //get a list of folders
@@ -84,7 +84,7 @@ if ($threads) {
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
-	$pages = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
+	$pages   = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	foreach ($threads as $file) {
@@ -103,14 +103,10 @@ if ($threads) {
 			'AUTHOR'	=> safeHTML ($last->author)
 		);
 		
-		if (in_array ($file, $stickies)) {$STICKIES[] = $thread;} else {$THREADS[] = $thread;}
+		if (in_array ($file, $stickies)): $STICKIES[] = $thread; else: $THREADS[] = $thread; endif;
 	}
 	
-	/*
-	echo template_tags (TEMPLATE_INDEX_THREADS, array (
-		'PAGES'   => pageLinks (PAGE, $pages)
-	)); $html = '';
-	*/
+	$PAGES = pageLinks (PAGE, $pages);
 }
 
 include 'themes/'.FORUM_THEME.'/index.php';

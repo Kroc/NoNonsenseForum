@@ -127,27 +127,26 @@ function isMod ($name) {
 
 /* ====================================================================================================================== */
 
-function pageLinks ($page, $pages) {
+function pageLinks ($current, $total) {
 	//always include the first page
-	$html[] = template_tag ($page == 1 ? TEMPLATE_PAGES_CURRENT : TEMPLATE_PAGES_PAGE, 'PAGE', 1);
+	$PAGES[] = 1;
 	//more than one page?
-	if ($pages > 1) {
+	if ($total > 1) {
 		//if previous page is not the same as 2, include ellipses
 		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-		if ($page-1 > 2) $html[] = TEMPLATE_PAGES_GAP;
+		if ($current-1 > 2) $PAGES[] = '';
 		//the page before the current page
-		if ($page-1 > 1) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page-1);
+		if ($current-1 > 1) $PAGES[] = $current-1;
 		//the current page
-		if ($page != 1) $html[] = template_tag (TEMPLATE_PAGES_CURRENT, 'PAGE', $page);
+		if ($current != 1) $PAGES[] = $current;
 		//the page after the current page (if not at end)
-		if ($page+1 < $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page+1);
+		if ($current+1 < $total) $PAGES[] = $current+1;
 		//if there’s a gap between page+1 and the last page
-		if ($page+1 < $pages-1) $html[] = TEMPLATE_PAGES_GAP;
+		if ($current+1 < $total-1) $PAGES[] = '';
 		//last page
-		if ($page != $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $pages);
+		if ($current != $total) $PAGES[] = $total;
 	}
-	
-	return implode (TEMPLATE_PAGES_SEPARATOR, $html);
+	return $PAGES;
 }
 
 function formatText ($text) {
