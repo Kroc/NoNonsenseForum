@@ -84,7 +84,7 @@ if ($threads) {
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
-	$pages   = ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS);
+	$PAGES   = pageLinks (PAGE, ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS));
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	foreach ($threads as $file) {
@@ -105,29 +105,24 @@ if ($threads) {
 		
 		if (in_array ($file, $stickies)): $STICKIES[] = $thread; else: $THREADS[] = $thread; endif;
 	}
-	
-	$PAGES = pageLinks (PAGE, $pages);
 }
-
-include 'themes/'.FORUM_THEME.'/index.php';
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
-//the new thread form
-echo FORUM_ENABLED ? template_tags (TEMPLATE_INDEX_FORM, array (
+if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TITLE'	=> safeString (TITLE),
-	'TEXT'	=> safeString (TEXT),
+	'TEXT'	=> safeHTML (TEXT),
 	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE	//no problem? show default help text
 		   : (!NAME  ? ERROR_NAME		//the name is missing
 		   : (!PASS  ? ERROR_PASS		//the password is missing
 		   : (!TITLE ? ERROR_TITLE		//the title is missing
 		   : (!TEXT  ? ERROR_TEXT		//the message text is missing
 		   : ERROR_AUTH))))			//the name / password pair didn’t match
-)) : TEMPLATE_INDEX_FORM_DISABLED;
+);
 
-//and we’re all done
-echo TEMPLATE_FOOTER;
+//all the data prepared, now output the HTML
+include 'themes/'.FORUM_THEME.'/index.inc.php';
 
 ?>

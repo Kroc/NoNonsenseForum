@@ -13,6 +13,14 @@ date_default_timezone_set ('UTC');	//PHP 5.3 issues a warning if the timezone is
 define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
+//these are just some enums for templates to react to
+define ('ERROR_NONE',		0);
+define ('ERROR_NAME',		1);					//name entered is invalid / blank
+define ('ERROR_PASS',		2);					//password is invalid / blank
+define ('ERROR_TITLE',		3);					//the title is invalid / blank
+define ('ERROR_TEXT',		4);					//post text is invalid / blank
+define ('ERROR_AUTH',		5);					//name / password did not match
+
 /* options: stuff for you
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('FORUM_ENABLED',	true);					//if posting is allowed

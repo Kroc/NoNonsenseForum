@@ -46,37 +46,27 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TEXT) {
 
 /* ====================================================================================================================== */
 
-echo template_tags (TEMPLATE_HEADER, array (
-	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG
-			   .template_tag (TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($xml->channel->title))
-			   .(PAGE > 1 ? template_tag (TEMPLATE_HTMLTITLE_PAGE, 'PAGE', PAGE) : ''),
+$HEADER = array (
+	'THREAD'	=> safeHTML ($xml->channel->title),
+	'PAGE'		=> PAGE,
 	'RSS'		=> "$FILE.xml",
-	'ROBOTS'	=> '',
-	'NAV'		=> template_tags (TEMPLATE_HEADER_NAV, array (
-		'MENU'	=> template_tag (TEMPLATE_THREAD_MENU, 'RSS', "$FILE.xml"),
-		'PATH'	=> PATH ? template_tags (TEMPLATE_THREAD_PATH_FOLDER, array (
-				'URL'	=> PATH_URL,
-				'PATH'	=> safeHTML (PATH)
-			)) : TEMPLATE_THREAD_PATH
-	))
-));
+	'PATH'		=> safeHTML (PATH),
+	'PATH_URL'	=> PATH_URL
+);
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 $thread = $xml->channel->xpath ('item');
-
 $post = array_pop ($thread);
-echo template_tags (TEMPLATE_THREAD_FIRST, array (
+
+$POST = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
-	'NAME'		=> safeHTML ($post->author),
+	'AUTHOR'	=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'DELETE'	=> template_tag (
-				TEMPLATE_DELETE, 'URL',
-				'/delete.php?path='.rawurlencode (PATH)."&amp;file=$FILE"
-			),
+	'DELETE_URL'	=> '/delete.php?path='.rawurlencode (PATH)."&amp;file=$FILE",
 	'TEXT'		=> $post->description
-));
+);
 
 //remember the original poster’s name, for marking replies by the OP
 $author = (string) $post->author;
@@ -89,34 +79,26 @@ if (count ($thread)) {
 	array_multisort ($sort_proxy, SORT_ASC, $thread);
 	
 	//paging
-	$pages = ceil (count ($thread) / FORUM_POSTS);
+	$PAGES  = pageLinks (PAGE, ceil (count ($thread) / FORUM_POSTS));
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	$id = 2 + ((PAGE-1) * FORUM_POSTS);
-	foreach ($thread as &$post) @$html .= template_tags (TEMPLATE_POST, array (
-		'DELETE'	=> $post->xpath ("category[text()='deleted']") ? '' : template_tag (
-					TEMPLATE_DELETE, 'URL',
-					'/delete.php?path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id=$id"
-				),
+	foreach ($thread as &$post) $POSTS[] = array (
 		'ID'		=> $id++,
-		'TYPE'		=> $post->xpath ("category[text()='deleted']") ? TEMPLATE_POST_DELETED
-				   : ($post->author == $author ? TEMPLATE_POST_OP : ''),
-		'NAME'		=> safeHTML ($post->author),
+		'AUTHOR'	=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-		'TEXT'		=> $post->description
-	));
-	
-	echo template_tags (TEMPLATE_THREAD_POSTS, array (
-		'POSTS' => $html,
-		'PAGES' => pageLinks (PAGE, $pages)
-	));
+		'TEXT'		=> $post->description,
+		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
+		'DELETE_URL'	=> '/delete.php?path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id=$id",
+		'OP'		=> $post->author == $author
+	);
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //the reply form
-echo FORUM_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
+if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TEXT'	=> safeString (TEXT),
@@ -125,9 +107,9 @@ echo FORUM_ENABLED ? template_tags (TEMPLATE_THREAD_FORM, array (
 		   : (!PASS ? ERROR_PASS
 		   : (!TEXT ? ERROR_TEXT
 		   : ERROR_AUTH)))
-)) : TEMPLATE_THREAD_FORM_DISABLED;
+);
 
-//bon voyage, HTML!
-echo TEMPLATE_FOOTER;
+//all the data prepared, now output the HTML
+include 'themes/'.FORUM_THEME.'/thread.inc.php';
 
 ?>
