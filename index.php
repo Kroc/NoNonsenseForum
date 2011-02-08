@@ -27,7 +27,7 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT)
 			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
 		))
 	//if a thread already exsits with that name, append a number until an available filename is found
-	).(++$c ? "_$c" : '');
+	).($c++ ? '_'.($c-1) : '');
 	while (file_exists ("$file.xml"));
 	
 	//write out the new thread as an RSS file
