@@ -20,19 +20,37 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT)
 	$c = 0; do $file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
 		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
-			//remove the additional characters added by transliteration, e.g. "ñ" = "~n",
-			//has the added benefit of converting “microsoft's” to “microsofts” instead of “microsoft_s”
-			str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
-				//unaccent: <php.net/manual/en/function.iconv.php>
+		//remove the additional characters added by transliteration, e.g. "ñ" = "~n",
+		//has the added benefit of converting “microsoft's” to “microsofts” instead of “microsoft_s”
+		str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
+			//unaccent: <php.net/manual/en/function.iconv.php>
 			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
-		))
-	//if a thread already exsits with that name, append a number until an available filename is found
-	).($c++ ? '_'.($c-1) : '');
+		//if a thread already exsits with that name, append a number until an available filename is found
+		)).($c++ ? '_'.($c-1) : '')
+	);
 	while (file_exists ("$file.xml"));
 	
 	//write out the new thread as an RSS file
-	file_put_contents ("$file.xml", template_tags (TEMPLATE_RSS, array (
-		'ITEMS'	=> TEMPLATE_RSS_ITEM,
+	file_put_contents ("$file.xml", template_tags (<<<XML
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<atom:link href="http://${_SERVER['HTTP_HOST']}&__URL__;.xml" rel="self" type="application/rss+xml" />
+<title>&__TITLE__;</title>
+<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+
+<item>
+	<title>&__TITLE__;</title>
+	<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+	<author>&__NAME__;</author>
+	<pubDate>&__DATE__;</pubDate>
+	<description>&__TEXT__;</description>
+</item>
+
+</channel>
+</rss>
+XML
+	, array (
 		'TITLE'	=> safeHTML (TITLE),
 		'URL'	=> PATH_URL."$file#1",
 		'NAME'	=> safeHTML (NAME),
