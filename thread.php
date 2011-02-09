@@ -34,7 +34,7 @@ if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TEXT) {
 		$item->addChild ('author',	safeHTML (NAME));
 		$item->addChild ('pubDate',	gmdate ('r'));
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
-
+		
 		//save
 		file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
 		clearstatcache ();

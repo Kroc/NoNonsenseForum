@@ -21,18 +21,25 @@ define ('ERROR_TITLE',		3);					//the title is invalid / blank
 define ('ERROR_TEXT',		4);					//post text is invalid / blank
 define ('ERROR_AUTH',		5);					//name / password did not match
 
-/* options: stuff for you
+/* forum configuration options
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('FORUM_ENABLED',	true);					//if posting is allowed
-define ('FORUM_THEME',		'C=64');				//theme name, in “/themes/*”
-define ('FORUM_THREADS',	50);					//number of threads per page on the index
-define ('FORUM_POSTS',		25);					//number of posts per page on threads
+//set the forum owner’s personal config
+@include 'config.php';
 
-//include the HTML skin
-require_once 'themes/'.FORUM_THEME.'/theme.php';
+//apply defaults for anything unset:
+//(these are explained in 'config.example.php')
+if (!defined ('FORUM_ENABLED'))		define ('FORUM_ENABLED',	true);
+if (!defined ('FORUM_THEME'))		define ('FORUM_THEME',		'C=64');
+if (!defined ('FORUM_THREADS'))		define ('FORUM_THREADS',	50);
+if (!defined ('FORUM_POSTS'))		define ('FORUM_POSTS',		25);
+if (!defined ('DATE_FORMAT'))		define ('DATE_FORMAT', 		"d-M'y H:i");
+if (!defined ('TEMPLATE_RE'))		define ('TEMPLATE_RE', 		'RE: ');
+if (!defined ('TEMPLATE_DELETE_USER'))	define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
+if (!defined ('TEMPLATE_DELETE_MOD'))	define ('TEMPLATE_DELETE_MOD',  '<p>This post was deleted by a moderator</p>');
+
 
 /* get input
-   ---------------------------------------------------------------------------------------------------------------------- */
+   ====================================================================================================================== */
 //all pages can accept a name / password when committing actions (new thread / post &c.)
 define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
 define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));

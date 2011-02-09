@@ -2,3 +2,4 @@ users/*.txt
 *.xml
 sticky.txt
 mods.txt
+config.php
