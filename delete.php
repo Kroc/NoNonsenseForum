@@ -13,15 +13,15 @@ require_once 'shared.php';
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //if deleting just one post, rather than the thread
-$ID = preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1;
+define ('ID', preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1);
 
 //load the thread to get the post preview
 $xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Invalid file');
-$post = &$xml->channel->item[count ($xml->channel->item) - $ID];
+$post = &$xml->channel->item[count ($xml->channel->item) - ID];
 
 //has the un/pw been submitted to authenticate the delete?
 if (
-	@$_POST['submit'] && NAME && PASS && AUTH 
+	@$_POST['submit'] && NAME && PASS && AUTH
 	//only a moderator, or the post originator can delete a post/thread
 	&& (isMod (NAME) || NAME == (string) $post->author)
 
@@ -38,7 +38,7 @@ if (
 	clearstatcache ();
 	
 	//return to the deleted post
-	header ('Location: '.FORUM_URL.PATH_URL."$FILE#$ID", true, 303);
+	header ('Location: '.FORUM_URL.PATH_URL."$FILE#".ID, true, 303);
 	exit;
 	
 } else {
@@ -50,33 +50,29 @@ if (
 	exit;
 }
 
-echo template_tags (TEMPLATE_HEADER, array (
-	'HTMLTITLE'	=> TEMPLATE_HTMLTITLE_SLUG.template_tag (
-				TEMPLATE_HTMLTITLE_NAME, 'NAME', safeHTML ($xml->channel->title)
-			).($ID > 1 ? TEMPLATE_HTMLTITLE_DELETE_POST : TEMPLATE_HTMLTITLE_DELETE_THREAD),
-	'RSS'		=> "$FILE.xml",
-	'ROBOTS'	=> TEMPLATE_HEADER_ROBOTS,
-	'NAV'		=> ''
-));
+/* ====================================================================================================================== */
 
-echo template_tags ($ID > 1 ? TEMPLATE_DELETE_POST : TEMPLATE_DELETE_THREAD, array (
+$HEADER = array (
+	'THREAD'	=> safeHTML ($xml->channel->title)
+);
+
+$FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
-	'POST'	=> template_tags (TEMPLATE_POST, array (
-		'ID'		=> $ID,
-		'TYPE'		=> '',
-		'DELETE'	=> '',
-		'NAME'		=> safeHTML ($post->author),
-		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-		'TEXT'		=> $post->description
-	)),
-	'ERROR'	=> !@$_POST['submit'] ? $ID > 1 ? ERROR_DELETE_POST : ERROR_DELETE_THREAD
+	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
-		   : ERROR_DELETE_AUTH))
-));
+		   : ERROR_AUTH))
+);
 
-echo TEMPLATE_FOOTER;
+$POST = array (
+	'AUTHOR'	=> safeHTML ($post->author),
+	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
+	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+	'TEXT'		=> $post->description
+);
+
+//all the data prepared, now output the HTML
+include 'themes/'.FORUM_THEME.'/delete.inc.php';
 
 ?>

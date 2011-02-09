@@ -21,18 +21,8 @@ DESIGN:	Template the hyperlink, so that the abbreviation <abc.com/…> is theme-
 	
 DESIGN:	Link to go to the last post on a page
 	
-CODE:	Error message if thread already exists (could be paged out of view)
-	-	Could be done with an interstitial page, point user to the thread
-	-	Also, if file exists, could append a number to flattened title to allow more than one thread of same name
-	
-CODE:	Sitemap
-	
-FEATURE:Post appending (can’t edit because `formatText` is one way)
-	
 DESIGN:	IE support (no reason why not)
 DESIGN:	Mobile support (iPhone / iPad / Android)
-	
-FEATURE:Read-only (lock) threads and folders. Use file-permissions? Read-only category on <channel>?
 
 CODE:	Add ‘touch’ page to restore from backup by setting the created and modified dates on the XML files
 	according to their content

@@ -59,7 +59,7 @@ if (isset ($PAGES)) {
 </form>
 
 <dl>
-<?php foreach ($STICKIES as $THREAD): ?>
+<?php if (isset ($STICKIES)) foreach ($STICKIES as $THREAD): ?>
 	<dt><a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a> (<?=$THREAD['COUNT']?>)</dt>
 	<dd>
 		<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
