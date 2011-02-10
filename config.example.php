@@ -15,6 +15,9 @@ define ('FORUM_ENABLED',	true);
 //folder name of the theme to use, in "/themes/*"
 define ('FORUM_THEME',		'C=64');
 
+//forum’s title. used in theme, and in index RSS feeds
+define ('FORUM_NAME',		'NoNonsense Forum');
+
 //number of threads and posts to show per page
 //WARNING: changing these will inadvertadely invalidate post permalinks, decide on these numbers in the beginning
 define ('FORUM_THREADS',	50);

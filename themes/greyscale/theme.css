@@ -1,0 +1,264 @@
+/** Page setup **/
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Georgia;
+    overflow-y: scroll;
+}
+
+/** Global styles **/
+.error {
+    font-weight: bold;
+    color: #D11;
+}
+a {
+    color: #222222;
+    text-decoration: none;
+    font-weight: bold;
+}
+    a:hover {
+        color: #996633;
+    }
+.hide {
+    display: none;
+}
+    
+/** Header **/
+header > hgroup {
+    background: #222222;
+}
+    header > hgroup > h1 {
+        padding: .3em;
+        margin: 0 auto;
+        line-height: 1.1;
+        margin-bottom: .1em;
+        text-align: left;
+        font-size: 2em;
+        width: 25em;
+    }
+        header > hgroup > h1 > a {
+            color: white;
+        }
+            header > hgroup > h1 > a:before {
+                font-size: 1.2em;
+            }
+
+/** Menu **/
+header > nav {
+    width: 55em;
+    margin: 1em auto;
+    text-align: right;
+    font-size: .9em;
+}
+    header > nav > a {
+        float: right;
+        margin-left: 1em;
+    }
+    header > nav > ol {
+        display: block;
+        list-style-type: none;
+        text-align: left;
+        padding: 0;
+        margin: 0;
+    }
+        header nav ol li {
+            display: inline;
+        }
+            header nav ol li + li + li:before {
+                content: " :: ";
+                color: #aaaaaa;
+            }
+            
+/** Thread/Folder listings **/
+.list {
+    border: 1px solid #888888;
+    width: 50em;
+    margin: 0 auto;
+}
+    .list + .list {
+        margin-top: 1em;
+    }
+    .list > h2 {
+        background: #222222;
+        color: white;
+        -webkit-box-sizing: border-box;
+        font-size: 1.5em;
+        padding: .3em .5em;
+        margin: 0;
+    }
+    .list > form {
+        float: right;
+        background: #444444;
+        color: white;
+        padding: .6em;
+    }
+    .list > dl {
+        margin-left: 1em;
+    }
+        .list > dl > dt {
+            color: #aaaaaa;
+        }
+        .list > dl .sticky:before {
+            content: "!";
+            float: left;
+            font-size: 2.7em;
+            font-weight: bold;
+            color: black;
+            margin-right: .3em;
+            line-height: 1;
+        }
+        .list > dl > dt, .list > dl > dd {
+            padding-left: .5em;
+        }
+        .list > dl > dd + dt {
+            margin-top: .5em;
+            border-top: 1px solid #aaaaaa;
+            padding-top: .5em;
+        }
+        .list > dl > dd {
+            margin-left: 1em;
+        }
+            .list > dl > dd > time {
+                color: #888888;
+            }
+            .list > dl > dd > b {
+                color: #444444;
+            }
+                .list > dl > dd > b:before {
+                    content: " by ";
+                    color: #aaaaaa;
+                    font-weight: normal;
+                }
+    .list > .pages {
+        background: #444444;
+        color: white;
+        padding: .5em;
+    }
+        .list > .pages > em {
+            font-weight: bold;
+            font-style: normal;
+        }
+        .list > .pages > * + * {
+            margin-left: .3em;
+        }
+        .list > .pages > a {
+            color: #AAF;
+        }
+            .list > .pages > a:hover {
+                text-decoration: underline;
+                color: #CCF;
+            }
+
+/** Forms **/
+.postform {
+    width: 50em;
+    margin: 1em auto;
+}
+    .postform > fieldset {
+        background: #444444;
+        color: white;
+    }
+        .postform > fieldset > legend {
+            display: none;
+        }
+        .postform > fieldset > label, #new > fieldset > p {
+            float: left;
+            width: 24em;
+            clear: left;
+            overflow: hidden;
+        }
+        .postform > fieldset > label > input, #new > fieldset > p > input {
+            float: right;
+            text-align: left;
+            font-weight: normal;
+        }
+        #rules {
+            float: left;
+            width: 24em;
+            color: #888888;
+            text-align: left;
+        }
+            #rules:before {
+                display: block;
+                color: #aaaaaa;
+                content: "Rules:";
+            }
+            #rules > input {
+                display: block;
+                width: 7em;
+                margin: 1em auto 0 auto;
+            }
+        .postform > fieldset > p {
+            text-align: center;
+        }
+        #message {
+            float: right !important;
+            clear: none;
+            text-align: center;
+        }
+            #message > textarea {
+                text-align: left;
+            }
+        .postform > fieldset > .email {
+            display: none !important;
+        }
+
+/** Thread styling **/
+.thread {
+    width: 50em;
+    margin: 0 auto;
+}
+    .thread article > header {
+        background: #aaaaaa;
+        padding: .5em;
+        color: #222222;
+    }
+        .thread article > header > a {
+            color: #CCC;
+        }
+            .thread article > header > a:hover {
+                color: white;
+            }
+        .thread article > header > b {
+            display: inline-block;
+            min-width: 7em;
+            text-align: right;
+        }
+        .thread article > header > time {
+            color: #444444;
+        }
+            .thread article > header > time:before {
+                content: " @ ";
+                color: #CCC;
+            }
+        .thread article > header > .delete {
+            float: right;
+            color: #A11;
+            text-decoration: none;
+        }
+            .thread article > header > .delete:hover {
+                text-decoration: underline;
+            }
+    .thread article > p {
+        padding: 0 1em;
+    }
+    .thread article.deleted {
+        opacity: 0.3;
+    }
+
+/** Footer */        
+footer {
+    text-align: center;
+    font-size: .9em;
+    color: #aaaaaa;
+    margin-bottom: 1em;
+}
+    footer > p {
+        margin: .3em 0;
+    }
+        footer > p > a {
+            color: #888888;
+        }
+            footer > p > a:hover {
+                text-decoration: underline;
+            }
