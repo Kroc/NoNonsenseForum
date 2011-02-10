@@ -13,18 +13,33 @@ date_default_timezone_set ('UTC');	//PHP 5.3 issues a warning if the timezone is
 define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
-/* options: stuff for you
-   ---------------------------------------------------------------------------------------------------------------------- */
-define ('FORUM_ENABLED',	true);					//if posting is allowed
-define ('FORUM_THEME',		'grayscale');				//theme name, in “/themes/*”
-define ('FORUM_THREADS',	50);					//number of threads per page on the index
-define ('FORUM_POSTS',		25);					//number of posts per page on threads
+//these are just some enums for templates to react to
+define ('ERROR_NONE',		0);
+define ('ERROR_NAME',		1);					//name entered is invalid / blank
+define ('ERROR_PASS',		2);					//password is invalid / blank
+define ('ERROR_TITLE',		3);					//the title is invalid / blank
+define ('ERROR_TEXT',		4);					//post text is invalid / blank
+define ('ERROR_AUTH',		5);					//name / password did not match
 
-//include the HTML skin
-require_once 'themes/'.FORUM_THEME.'/theme.php';
+/* forum configuration options
+   ---------------------------------------------------------------------------------------------------------------------- */
+//set the forum owner’s personal config
+@include 'config.php';
+
+//apply defaults for anything unset:
+//(these are explained in 'config.example.php')
+if (!defined ('FORUM_ENABLED'))		define ('FORUM_ENABLED',	true);
+if (!defined ('FORUM_THEME'))		define ('FORUM_THEME',		'C=64');
+if (!defined ('FORUM_THREADS'))		define ('FORUM_THREADS',	50);
+if (!defined ('FORUM_POSTS'))		define ('FORUM_POSTS',		25);
+if (!defined ('DATE_FORMAT'))		define ('DATE_FORMAT', 		"d-M'y H:i");
+if (!defined ('TEMPLATE_RE'))		define ('TEMPLATE_RE', 		'RE: ');
+if (!defined ('TEMPLATE_DELETE_USER'))	define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
+if (!defined ('TEMPLATE_DELETE_MOD'))	define ('TEMPLATE_DELETE_MOD',  '<p>This post was deleted by a moderator</p>');
+
 
 /* get input
-   ---------------------------------------------------------------------------------------------------------------------- */
+   ====================================================================================================================== */
 //all pages can accept a name / password when committing actions (new thread / post &c.)
 define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
 define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
@@ -127,27 +142,26 @@ function isMod ($name) {
 
 /* ====================================================================================================================== */
 
-function pageLinks ($page, $pages) {
+function pageLinks ($current, $total) {
 	//always include the first page
-	$html[] = template_tag ($page == 1 ? TEMPLATE_PAGES_CURRENT : TEMPLATE_PAGES_PAGE, 'PAGE', 1);
+	$PAGES[] = 1;
 	//more than one page?
-	if ($pages > 1) {
+	if ($total > 1) {
 		//if previous page is not the same as 2, include ellipses
 		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-		if ($page-1 > 2) $html[] = TEMPLATE_PAGES_GAP;
+		if ($current-1 > 2) $PAGES[] = '';
 		//the page before the current page
-		if ($page-1 > 1) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page-1);
+		if ($current-1 > 1) $PAGES[] = $current-1;
 		//the current page
-		if ($page != 1) $html[] = template_tag (TEMPLATE_PAGES_CURRENT, 'PAGE', $page);
+		if ($current != 1) $PAGES[] = $current;
 		//the page after the current page (if not at end)
-		if ($page+1 < $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $page+1);
+		if ($current+1 < $total) $PAGES[] = $current+1;
 		//if there’s a gap between page+1 and the last page
-		if ($page+1 < $pages-1) $html[] = TEMPLATE_PAGES_GAP;
+		if ($current+1 < $total-1) $PAGES[] = '';
 		//last page
-		if ($page != $pages) $html[] = template_tag (TEMPLATE_PAGES_PAGE, 'PAGE', $pages);
+		if ($current != $total) $PAGES[] = $total;
 	}
-	
-	return implode (TEMPLATE_PAGES_SEPARATOR, $html);
+	return $PAGES;
 }
 
 function formatText ($text) {
