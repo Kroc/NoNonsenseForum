@@ -11,11 +11,11 @@ include 'shared.php';
 
 //get list of threads
 $threads = preg_grep ('/\.xml$/', scandir ('.'));
-array_multisort (array_map ('filectime', $threads), SORT_DESC, $threads);	//look ma, no loop!
+array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);	//look ma, no loop!
 
 foreach (array_slice ($threads, 0, FORUM_THREADS) as $file) {
 	$xml  = simplexml_load_file ($file);
-	$item = $xml->channel->item[count ($xml->channel->item) - 1];
+	$item = $xml->channel->item[0];
 	
 	@$rss .= template_tags (<<<XML
 <item>
@@ -27,7 +27,7 @@ foreach (array_slice ($threads, 0, FORUM_THREADS) as $file) {
 </item>
 XML
 	, array (
-		'TITLE'	=> safeHTML ($xml->channel->title),
+		'TITLE'	=> safeHTML ($item->title),
 		'URL'	=> PATH_URL.pathinfo ($file, PATHINFO_FILENAME),
 		'NAME'	=> safeHTML ($item->author),
 		'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
@@ -51,7 +51,7 @@ die (template_tags (<<<XML
 XML
 , array (
 	'PATH'	=> safeHTML (PATH_URL),
-	'TITLE'	=> safeHTML (PATH),
+	'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
 	'ITEMS'	=> $rss
 )));
 
