@@ -1,6 +1,6 @@
 <?php  //delete threads and posts
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -21,7 +21,7 @@ $post = &$xml->channel->item[count ($xml->channel->item) - ID];
 
 //has the un/pw been submitted to authenticate the delete?
 if (
-	@$_POST['submit'] && NAME && PASS && AUTH
+	NAME && PASS && AUTH
 	//only a moderator, or the post originator can delete a post/thread
 	&& (isMod (NAME) || NAME == (string) $post->author)
 
@@ -59,7 +59,7 @@ $HEADER = array (
 $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
-	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE
+	'ERROR'	=> empty ($_POST) ? ERROR_NONE
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
 		   : ERROR_AUTH))

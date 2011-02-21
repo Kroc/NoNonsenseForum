@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -17,7 +17,7 @@ $xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML
 define ('TEXT', mb_substr (@$_POST['text'], 0, 32768, 'UTF-8'));
 
 //was the submit button clicked? (and is the info valid?)
-if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TEXT) {
+if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT) {
 	//where to?
 	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
 	$url  = PATH_URL."$FILE?page=$page#".(count ($xml->channel->item)+1);
@@ -102,7 +102,7 @@ if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TEXT'	=> safeString (TEXT),
-	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE
+	'ERROR'	=> empty ($_POST) ? ERROR_NONE
 		   : (!NAME ? ERROR_NAME
 		   : (!PASS ? ERROR_PASS
 		   : (!TEXT ? ERROR_TEXT

@@ -1,4 +1,4 @@
-NoNonsenseForum:
+NoNonsense Forum:
 ================
 The PHP / HTML / CSS and other resources of this project are licenced under a Creative Commons 3.0 Attribution Unported licence, viewable here: http://creativecommons.org/licenses/by/3.0/deed.en_GB
 

@@ -1,4 +1,4 @@
-NoNonsenseForum © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ================================================================
 A simple forum that focuses on discussion and simplicity
 

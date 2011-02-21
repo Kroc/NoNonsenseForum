@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -30,9 +30,10 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 //(these are explained in 'config.example.php')
 if (!defined ('FORUM_ENABLED'))		define ('FORUM_ENABLED',	true);
 if (!defined ('FORUM_THEME'))		define ('FORUM_THEME',		'C=64');
+if (!defined ('FORUM_NAME'))		define ('FORUM_NAME',		'NoNonsense Forum');
 if (!defined ('FORUM_THREADS'))		define ('FORUM_THREADS',	50);
 if (!defined ('FORUM_POSTS'))		define ('FORUM_POSTS',		25);
-if (!defined ('DATE_FORMAT'))		define ('DATE_FORMAT', 		"d-M'y H:i");
+if (!defined ('DATE_FORMAT'))		define ('DATE_FORMAT', 		"d M ’y · H:i");
 if (!defined ('TEMPLATE_RE'))		define ('TEMPLATE_RE', 		'RE: ');
 if (!defined ('TEMPLATE_DELETE_USER'))	define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
 if (!defined ('TEMPLATE_DELETE_MOD'))	define ('TEMPLATE_DELETE_MOD',  '<p>This post was deleted by a moderator</p>');

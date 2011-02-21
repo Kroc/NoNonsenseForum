@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsenseForum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -15,7 +15,7 @@ define ('TITLE', mb_substr (trim (@$_POST['title']), 0, 80,    'UTF-8'));
 define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, 32768, 'UTF-8'));
 
 //has the user the submitted a new thread? (and is the info valid?)
-if (FORUM_ENABLED && @$_POST['submit'] && NAME && PASS && AUTH && TITLE && TEXT) {
+if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT) {
 	//the file on disk is a simplified version of the title
 	$c = 0; do $file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
@@ -132,7 +132,7 @@ if (FORUM_ENABLED) $FORM = array (
 	'PASS'	=> safeString (PASS),
 	'TITLE'	=> safeString (TITLE),
 	'TEXT'	=> safeHTML (TEXT),
-	'ERROR'	=> !@$_POST['submit'] ? ERROR_NONE	//no problem? show default help text
+	'ERROR'	=> empty ($_POST) ? ERROR_NONE	//no problem? show default help text
 		   : (!NAME  ? ERROR_NAME		//the name is missing
 		   : (!PASS  ? ERROR_PASS		//the password is missing
 		   : (!TITLE ? ERROR_TITLE		//the title is missing

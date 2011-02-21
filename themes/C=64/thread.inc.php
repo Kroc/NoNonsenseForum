@@ -11,14 +11,14 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<title>Camen Design Forum<?=($HEADER['THREAD'] ? ' * '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' * page '.$HEADER['PAGE'] : '')?></title>
+<title><?=FORUM_NAME?><?=($HEADER['THREAD'] ? ' * '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' * page '.$HEADER['PAGE'] : '')?></title>
 <link rel="stylesheet" href="/themes/C=64/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
 <meta name="viewport" content="width=device-width" />
 <!-- =================================================================================================================== -->
 <header>
 	<hgroup>
-		<h1>**** Camen Design Forums v2 ****</h1>
+		<h1>**** <?=FORUM_NAME?> v2 ****</h1>
 		<h2>Copyright (CC-BY) 1984-2011 Kroc Camen</h2>
 	</hgroup>
 	<p>READY.</p>
@@ -145,5 +145,5 @@ if (isset ($PAGES)) {
 <footer><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
 </p><p>
-	NoNonsenseForum: <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
+	NoNonsense Forum: <a href="https://github.com/Kroc/NoNonsense Forum">Get the source on GitHub</a>
 </p></footer>

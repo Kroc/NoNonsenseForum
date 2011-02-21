@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<title><?php echo FORUM_NAME; ?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
+<title><?=FORUM_NAME?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
 <link rel="stylesheet" href="/themes/greyscale/icons/iconic.css" />
 <link rel="stylesheet" href="/themes/greyscale/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="index.rss" />
@@ -9,7 +9,7 @@
 <!-- =================================================================================================================== -->
 <header>
 	<hgroup>
-		<h1><a href="/" class="iconic home"><?php echo FORUM_NAME; ?></a></h1>
+		<h1><a href="/" class="iconic home"><?=FORUM_NAME?></a></h1>
 	</hgroup>
 </header>
 <!-- =================================================================================================================== -->
@@ -65,4 +65,7 @@
     </article>
 </div>
 <!-- =================================================================================================================== -->
-<?php include 'footer.inc.php'; ?>
+<footer><p>
+	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />
+	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p></footer>

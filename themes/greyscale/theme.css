@@ -1,139 +1,181 @@
-/** Page setup **/
-body {
-    padding: 0;
-    margin: 0;
-    font-family: Georgia;
-    overflow-y: scroll;
-}
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
+   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
+/* ====================================================================================================================== */
+/* original Grayscale theme by Jon Gjengset <thesquareplanet.com>,
+   greyscale theme by Kroc Camen, please modify to suit your needs
+*/
 
-/** Global styles **/
-.error {
-    font-weight: bold;
-    color: #D11;
-}
-a {
-    color: #222222;
-    text-decoration: none;
-    font-weight: bold;
-}
-    a:hover {
-        color: #996633;
-    }
-.hide {
-    display: none;
-}
-    
-/** Header **/
-header > hgroup {
-    background: #222222;
-}
-    header > hgroup > h1 {
-        padding: .3em;
-        margin: 0 auto;
-        line-height: 1.1;
-        margin-bottom: .1em;
-        text-align: left;
-        font-size: 2em;
-        width: 25em;
-    }
-        header > hgroup > h1 > a {
-            color: white;
-        }
-            header > hgroup > h1 > a:before {
-                font-size: 1.2em;
-            }
+header, hgroup, nav, footer,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
+ section, aside, article	{display: block;}
 
-/** Menu **/
-header > nav {
-    width: 55em;
-    margin: 1em auto;
-    text-align: right;
-    font-size: .9em;
-}
-    header > nav > a {
-        float: right;
-        margin-left: 1em;
-    }
-    header > nav > ol {
-        display: block;
-        list-style-type: none;
-        text-align: left;
-        padding: 0;
-        margin: 0;
-    }
-        header nav ol li {
-            display: inline;
-        }
-            header nav ol li + li + li:before {
-                content: " :: ";
-                color: #aaaaaa;
-            }
+html				{margin: 0; padding: 0; border: 0; /*< remove inset window edge in IE6 */
+				 font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
+				 background: white none fixed repeat-x;
+				 /* CSS3 gradients for browsers that support it: */
+	/* FF3.6+ */		 background-image: -moz-linear-gradient(white, #ddd);
+	/* Chrome / Safari */	 background-image: -webkit-gradient(linear,left top,left bottom,from(white),to(#ddd));
+	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
+	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd'); /* IE6–IE9 */
+	/* future? */		 background-image: linear-gradient(white, #ddd);}
+
+body				{width: 80%; margin: 0 auto;
+				 /* keep the scrollbar always visible to avoid page centre jumping about between pages */
+				 overflow-y: scroll;}
+
+h1, legend			{margin: 0; padding: 0 20px; text-indent: 40px; font-weight: bold; color: #f7f6f7;
+				 background: #222;}
+header h1			{font-size: 32px; line-height: 60px;}
+section h1, legend		{margin-top: 20px;
+				 font-size: 22px; line-height: 60px;
+				 background: #222 none no-repeat 15px 50%;}
+
+p				{margin: 0; padding: 0 0 20px;}
+
+a				{color: #222; text-decoration: none; font-weight: bold;}
+a:hover				{color: #666; text-decoration: underline;}
+
+dl				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;
+				 background: #f7f6f7;}
+dt, dd				{line-height: 20px; margin: 0; padding: 10px 20px; color: #888;}
+dt				{border-bottom: 1px dotted #444;}
+
+/* ====================================================================================================================== */
+
+header				{padding-top: 60px;}
+header h1			{position: absolute; top: 0; left: 0; right: 0;}
+header h1 a			{display: block; width: 80%; margin: 0 auto; color: inherit;
+				 background: url("icons/title.png") no-repeat 0 50%;}
+
+header nav			{margin: 20px 0; padding: 0 10px; color: #888; text-transform: uppercase;
+				 background: url("icons/here.png") no-repeat 25px 0;}
+#add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
+header nav p			{padding: 0 0 0 50px;}
+
+#add				{background: url("icons/add.png") no-repeat 0 3px;}
+#rss				{background: url("icons/rss.png") no-repeat 0 3px;}
+
+#search				{position: relative; float: right; margin: -100px 5px 0 0; padding: 0;}
+#query				{width: 180px; height: 20px; padding: 0 5px 0 25px; border: 0;
+				 -webkit-border-radius: 10px;
+				    -moz-border-radius: 10px;
+				         border-radius: 10px;
+				 font-size: 10px !important;
+				 background: white url("icons/search.png") no-repeat 5px 50%;}
+::-webkit-search-decoration,	/* reset Safari custom search-box design */
+ ::-webkit-search-cancel-button	{display: none;}
+input[type=search]		{-webkit-appearance:textfield;
+				 -webkit-box-sizing:content-box;}
+input[type=search]:focus	{outline: none;}
+
+#go				{margin-left: -20px; vertical-align: middle;}
+
+/* ====================================================================================================================== */
+
+#folders h1			{background-image: url("icons/folders.png");}
+
+#folders dt			{border-bottom: 1px solid #444;}
+
+#threads h1			{background-image: url("icons/threads.png");}
+
+#threads dt			{padding-left: 60px;}
+#threads dt i			{float: left; display: block; width: 25px; margin: 0 10px 0 -50px;
+				 font-family: Calibri, Tahoma, sans-serif; text-align: right;}
+#threads dt img			{margin-left: -20px; vertical-align: top;}
+
+#threads dt.sticky		{background: #eee;}
+
+#threads dd			{float: right; margin-top: -40px;}
+#threads dd time		{float: right; padding-left: 20px;
+				 font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
+#threads dd b			{padding-left: 20px;}
+
+#threads nav			{margin-top: -1px; padding: 0 20px;
+				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px; word-spacing: 5px;
+				 text-align: right; text-transform: uppercase; color: #aaa;
+				 background-color: #444;}
+#threads h1 + nav		{/* spaces required between '+' for WebKit!? */
+				 background: none; float: right; margin-top: -50px;}
+#threads nav em			{color: #f7f6f7; font-weight: bold; font-style: normal;}
+#threads nav a			{color: #aaa;}
+#threads nav a:hover		{color: white;}
+
+/* ====================================================================================================================== */
+
+form				{margin: 20px 0 0; padding: 0; background: #222;}
+fieldset			{position: relative; margin: 0; padding: 0;
+				 border-style: solid; border-width: 60px 1px 0; border-color: #222 #444;
+				 background: #f7f6f7;}
+legend				{position: absolute; top: -60px; margin: 0 !important;}
+
+input, textarea			{font: 12px/16px Monaco, Consolas, monospace, monospace;}
+
+label				{display: block; padding: 0 20px; line-height: 40px; color: #222;}
+
+#new legend			{background-image: url("icons/new.png");}
+
+form p				{padding: 0; margin: 0; color: #888;}
+
+input[type=text],
+ input[type=password]		{display: table-cell; width: 100%; height: 40px; margin: 0; padding: 5px 20px;
+				 border: 0; border-bottom: 1px dotted #444; 
+				 -webkit-box-sizing: padding-box;
+				    -moz-box-sizing: padding-box;
+				      -o-box-sizing: padding-box;
+				         box-sizing: padding-box;
+				 -webkit-box-shadow: inset 0 5px 5px -6px black;
+				    -moz-box-shadow: inset 0 5px 5px -6px black;
+				         box-shadow: inset 0 5px 5px -6px black;}
+
+#ptitle				{display: table; width: 100%; margin: 0; padding: 0;}
+#ptitle label			{display: table-cell; width: 100px; padding: 0; text-indent: 20px; line-height: 0;
+				 border-bottom: 1px dotted #444;}
+#title				{-webkit-box-shadow: inset 5px 0 5px -6px black;
+				    -moz-box-shadow: inset 5px 0 5px -6px black;
+				         box-shadow: inset 5px 0 5px -6px black;}
+
+#message			{float: left; width: 65%; margin: 0; padding: 0;}
+#message label			{display: block; line-height: 40px;}
+#text 				{display: block; margin: 0; padding: 20px; width: 100%;
+				 border: 0; border-right: 1px dotted #444;
+				 /* fix width for browsers that allow resizable text-areas */
+				 min-width: 100%; max-width: 100%; min-height: 230px; max-height: 700px;
+				 -webkit-box-sizing: padding-box;
+				    -moz-box-sizing: padding-box;
+				      -o-box-sizing: padding-box;
+				         box-sizing: padding-box;
+				 -webkit-box-shadow: inset 0 5px 5px -6px black;
+				    -moz-box-shadow: inset 0 5px 5px -6px black;
+				         box-shadow: inset 0 5px 5px -6px black;}
+
+#message ~ p			{margin-left: 65%; padding-left: 0px;}
+
+#ok, #error			{padding: 20px 20px 20px 21px !important;}
+#error				{color: #d11;}
+
+#pemail				{display: none;}
+
+#psubmit			{clear: both; margin: 0 !important; padding: 0 20px; line-height: 40px; text-align: right;
+				 background: #444;}
+
+#psubmit label			{display: inline; color: #f7f6f7; text-transform: uppercase; cursor: pointer;}
+#submit				{margin-left: 10px; vertical-align: -2px;}
+
+/* ====================================================================================================================== */
+
+html				{position: absolute;}
+footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 20px 0 0; left: 0; right: 0;
+				 background: #222;}
+
+footer p			{width: 80%; margin: 0 auto; font-size: .9em; color: #f7f6f7;}
+footer p a			{color: #888;}
+
+
+
+
             
 /** Thread/Folder listings **/
-.list {
-    border: 1px solid #888888;
-    width: 50em;
-    margin: 0 auto;
-}
-    .list + .list {
-        margin-top: 1em;
-    }
-    .list > h2 {
-        background: #222222;
-        color: white;
-        -webkit-box-sizing: border-box;
-        font-size: 1.5em;
-        padding: .3em .5em;
-        margin: 0;
-    }
-    .list > form {
-        float: right;
-        background: #444444;
-        color: white;
-        padding: .6em;
-    }
-    .list > dl {
-        margin-left: 1em;
-    }
-        .list > dl > dt {
-            color: #aaaaaa;
-        }
-        .list > dl .sticky:before {
-            content: "!";
-            float: left;
-            font-size: 2.7em;
-            font-weight: bold;
-            color: black;
-            margin-right: .3em;
-            line-height: 1;
-        }
-        .list > dl > dt, .list > dl > dd {
-            padding-left: .5em;
-        }
-        .list > dl > dd + dt {
-            margin-top: .5em;
-            border-top: 1px solid #aaaaaa;
-            padding-top: .5em;
-        }
-        .list > dl > dd {
-            margin-left: 1em;
-        }
-            .list > dl > dd > time {
-                color: #888888;
-            }
-            .list > dl > dd > b {
-                color: #444444;
-            }
-                .list > dl > dd > b:before {
-                    content: " by ";
-                    color: #aaaaaa;
-                    font-weight: normal;
-                }
-    .list > .pages {
-        background: #444444;
-        color: white;
-        padding: .5em;
-    }
+
         .list > .pages > em {
             font-weight: bold;
             font-style: normal;
@@ -148,60 +190,6 @@ header > nav {
                 text-decoration: underline;
                 color: #CCF;
             }
-
-/** Forms **/
-.postform {
-    width: 50em;
-    margin: 1em auto;
-}
-    .postform > fieldset {
-        background: #444444;
-        color: white;
-    }
-        .postform > fieldset > legend {
-            display: none;
-        }
-        .postform > fieldset > label, #new > fieldset > p {
-            float: left;
-            width: 24em;
-            clear: left;
-            overflow: hidden;
-        }
-        .postform > fieldset > label > input, #new > fieldset > p > input {
-            float: right;
-            text-align: left;
-            font-weight: normal;
-        }
-        #rules {
-            float: left;
-            width: 24em;
-            color: #888888;
-            text-align: left;
-        }
-            #rules:before {
-                display: block;
-                color: #aaaaaa;
-                content: "Rules:";
-            }
-            #rules > input {
-                display: block;
-                width: 7em;
-                margin: 1em auto 0 auto;
-            }
-        .postform > fieldset > p {
-            text-align: center;
-        }
-        #message {
-            float: right !important;
-            clear: none;
-            text-align: center;
-        }
-            #message > textarea {
-                text-align: left;
-            }
-        .postform > fieldset > .email {
-            display: none !important;
-        }
 
 /** Thread styling **/
 .thread {
@@ -245,20 +233,3 @@ header > nav {
     .thread article.deleted {
         opacity: 0.3;
     }
-
-/** Footer */        
-footer {
-    text-align: center;
-    font-size: .9em;
-    color: #aaaaaa;
-    margin-bottom: 1em;
-}
-    footer > p {
-        margin: .3em 0;
-    }
-        footer > p > a {
-            color: #888888;
-        }
-            footer > p > a:hover {
-                text-decoration: underline;
-            }

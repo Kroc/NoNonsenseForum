@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<title>Camen Design Forum * <?=$HEADER['THREAD']?> * <?=(ID==1) ? "Delete Thread" : "Delete Post"?>?</title>
+<title><?=FORUM_NAME?> * <?=$HEADER['THREAD']?> * <?=(ID==1) ? "Delete Thread" : "Delete Post"?>?</title>
 <link rel="stylesheet" href="/themes/C=64/theme.css" />
 <meta name="viewport" content="width=device-width" />
 <meta name="robots" content="noindex, nofollow" />
 <!-- =================================================================================================================== -->
 <header>
 	<hgroup>
-		<h1>**** Camen Design Forums v2 ****</h1>
+		<h1>**** <?=FORUM_NAME?> v2 ****</h1>
 		<h2>Copyright (CC-BY) 1984-2011 Kroc Camen</h2>
 	</hgroup>
 	<p>READY.</p>
@@ -70,5 +70,5 @@
 <footer><p>
 	<a href="mailto:kroccamen@gmail.com">kroccamen@gmail.com</a> • <a href="http://camendesign.com">camendesign.com</a>
 </p><p>
-	NoNonsenseForum: <a href="https://github.com/Kroc/NoNonsenseForum">Get the source on GitHub</a>
+	NoNonsense Forum: <a href="https://github.com/Kroc/NoNonsense Forum">Get the source on GitHub</a>
 </p></footer>

@@ -11,7 +11,7 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<title><?php echo FORUM_NAME; ?><?=($HEADER['THREAD'] ? ' :: '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
+<title><?=FORUM_NAME?><?=($HEADER['THREAD'] ? ' :: '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
 <link rel="stylesheet" href="/themes/greyscale/icons/iconic.css" />
 <link rel="stylesheet" href="/themes/greyscale/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="index.rss" />
@@ -19,20 +19,20 @@ if (isset ($PAGES)) {
 <!-- =================================================================================================================== -->
 <header>
 	<hgroup>
-		<h1><a href="/" class="iconic home"><?php echo FORUM_NAME; ?></a></h1>
+		<h1><a href="/" class="iconic home"><?=FORUM_NAME?></a></h1>
 	</hgroup>
 	
 	<nav>
 		<a href="#new" class="iconic new-window">Add Thread</a>
-        <a href="index.rss" class="iconic rss">RSS</a>
-        <ol>
-            <li><span class="iconic map-pin"></span><span class="hide">You are here:</span></li>
-            <?php if ($HEADER['PATH']): ?>
-                <li><a href="/">Index</a></li>
-                <li><a href="<?=$HEADER['PATH_URL']?>"><?=$HEADER['PATH']?></a></li>
-            <?php else: ?>
-                <li><a href="/">Index</a></li>
-            <?php endif; ?>
+		<a href="index.rss" class="iconic rss">RSS</a>
+		<ol>
+			<li><span class="iconic map-pin"></span><span class="hide">You are here:</span></li>
+<?php if ($HEADER['PATH']): ?>
+			<li><a href="/">Index</a></li>
+			<li><a href="<?=$HEADER['PATH_URL']?>"><?=$HEADER['PATH']?></a></li>
+<?php else: ?>
+                	<li><a href="/">Index</a></li>
+<?php endif; ?>
         </ol>
 	</nav>
 </header>
@@ -129,4 +129,7 @@ if (isset ($PAGES)) {
     </fieldset>
 </form>
 <!-- =================================================================================================================== -->
-<?php include 'footer.inc.php'; ?>
+<footer><p>
+	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />
+	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p></footer>
