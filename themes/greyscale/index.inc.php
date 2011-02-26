@@ -23,7 +23,7 @@ if (isset ($PAGES)) {
 <!-- =================================================================================================================== -->
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
-<header>
+<header id="mast">
 	<h1><a href="/"><?=FORUM_NAME?></a></h1>
 	
 	<nav><p>
@@ -34,7 +34,7 @@ if (isset ($PAGES)) {
 	</p></nav>
 	
 	<form id="search" method="get" action="http://google.com/search"><!--
-		--><input type="hidden" name="as_sitesearch" value="<?=$_SERVER['HTTP_HOST']?>" /><!--
+		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
 		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
 	--></form>
@@ -54,9 +54,7 @@ if (isset ($PAGES)) {
 <?php if (isset ($THREADS) || isset ($STICKIES)): ?>
 <section id="threads">
 	<h1>Threads</h1>
-<?php if (isset ($PAGES)): ?>
 	<nav class="pages">Page <?=$PAGES?></nav>
-<?php endif; ?>
 	<dl>
 <?php if (isset ($STICKIES)): ?>
 <?php foreach ($STICKIES as $THREAD): ?>
@@ -76,9 +74,7 @@ if (isset ($PAGES)) {
 		</dd>
 <?php endforeach; ?>
 	</dl>
-<?php if (isset ($PAGES)): ?>
 	<nav class="pages">Page <?=$PAGES?></nav>
-<?php endif; ?>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->
@@ -126,11 +122,9 @@ if (isset ($PAGES)) {
 	<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
 <?php endswitch; ?>
 	
-	<p id="psubmit">
-		<label for="submit">Submit
-			<input tabindex="5" id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" value="Submit" />
-		</label>
-	</p>
+	<p id="psubmit"><label for="submit">Submit
+		<input tabindex="5" id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+	</label></p>
 <?php else: ?>
 	<p class="error">Sorry, posting is currently disabled.</p>
 <?php endif; ?>

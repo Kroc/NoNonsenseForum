@@ -1,69 +1,72 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
+<!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
+     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?=FORUM_NAME?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
-<link rel="stylesheet" href="/themes/greyscale/icons/iconic.css" />
-<link rel="stylesheet" href="/themes/greyscale/theme.css" />
-<link rel="alternate" type="application/rss+xml" href="index.rss" />
+<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width" />
 <meta name="robots" content="noindex, nofollow" />
 <!-- =================================================================================================================== -->
-<header>
-	<hgroup>
-		<h1><a href="/" class="iconic home"><?=FORUM_NAME?></a></h1>
-	</hgroup>
+<!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
+     greyscale theme by Kroc Camen, please modify to suit your needs -->
+<header id="mast">
+	<h1><a href="/"><?=FORUM_NAME?></a></h1>
 </header>
 <!-- =================================================================================================================== -->
-<form id="delete" class="postform" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-    <fieldset>
-        <legend><?=(ID==1) ? "Delete Thread &amp; Replies" : "Delete Post"?></legend>
+<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+<fieldset><legend>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</legend>
+	<p>
+		<label for="user">Name:</label>
+		<input tabindex="1" name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+		       placeholder="Your name" value="<?=$FORM['NAME']?>" />
+	</p><p>
+		<label for="pass">Password:</label>
+		<input tabindex="2" name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
+	</p>
 	
-        <?php switch ($FORM['ERROR']):
-            case ERROR_NONE: ?>
-                <?php if (ID==1): ?>
-                    <p>To delete this thread, and all replies to it, you must be either the original author or a designated moderator.</p>
-                <?php else: ?>
-                    <p>To delete this post you must be either the original author or a designated moderator.</p>
-                <?php endif; ?>
-                <?php break;
-            case ERROR_NAME: ?>
-                <p class="error">Enter a name. You’ll need to use this with the password each time.</p>
-                <?php break;
-            case ERROR_PASS: ?>
-                <p class="error">Enter a password. It’s so you can re-use your name each time.</p>
-                <?php break;
-            case ERROR_AUTH: ?>
-                <p class="error">
-                    Name / password mismatch! You must enter the name and password of either the original author,
-                    or a designated moderator.
-                </p>
-        <?php endswitch; ?>
-    
-        <label>Name:
-            <input id="name" name="username" type="text" size="28" maxlength="18" required autocomplete="on"
-             value="<?=$FORM['NAME']?>" />
-        </label>
-        <label>Password:
-            <input name="password" type="password" size="28" maxlength="20" required autocomplete="on"
-             value="<?=$FORM['PASS']?>" />
-        </label>
-        
-        <p>
-            <input id="submit" name="submit" type="submit" value="Delete" />
-        </p>
-    </fieldset>
-</form>
+<?php switch ($FORM['ERROR']):
+	case ERROR_NONE:
+		if (ID==1): ?>
+	<p id="ok">
+		To delete this thread, and all replies to it, you must be either the original author
+		or a designated moderator.
+	</p>
+<?php		else: ?>
+	<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
+<?php		endif;
+	break;
+	case ERROR_NAME: ?>
+	<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
+<?php break;
+	case ERROR_PASS: ?>
+	<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
+<?php break;
+	case ERROR_AUTH: ?>
+	<p class="error">
+		Name / password mismatch! You must enter the name and password of either the original author,
+		or a designated moderator.
+	</p>
+<?php endswitch; ?>
+	
+	<p id="psubmit"><label for="submit">Delete
+		<input tabindex="5" id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+	</label></p>
+</fieldset></form>
 <!-- =================================================================================================================== -->
-<div class="list">
-    <h2>Post</h2>
-    <article id="<?=ID?>">
-        <header>
-            <a href="#<?=ID?>">#<?=ID?>.</a>
-            <b><?=$POST['AUTHOR']?></b> <time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-        </header>
-        
-        <?=$POST['TEXT']?>
-    </article>
-</div>
+<section id="post">
+	<h1>Post</h1>
+	<article id="<?=ID?>">
+		<header>
+			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
+			<a href="#<?=ID?>">#<?=ID?>.</a> <b><?=$POST['AUTHOR']?></b>
+		</header>
+		
+		<?=$POST['TEXT']?>
+	</article>
+</section>
 <!-- =================================================================================================================== -->
 <footer><p>
 	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />

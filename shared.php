@@ -111,7 +111,7 @@ function safeString ($text) {
 
 /* ====================================================================================================================== */
 
-//<http://stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
+//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
 //we could of course do all the XML manipulation in DOM proper to save doing this…
 class allow_prepend extends SimpleXMLElement {
 	public function prependChild ($name, $value=null) {

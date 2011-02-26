@@ -13,7 +13,7 @@
 define ('FORUM_ENABLED',	true);
 
 //folder name of the theme to use, in "/themes/*"
-define ('FORUM_THEME',		'C=64');
+define ('FORUM_THEME',		'greyscale');
 
 //forum’s title. used in theme, and in index RSS feeds
 define ('FORUM_NAME',		'NoNonsense Forum');
