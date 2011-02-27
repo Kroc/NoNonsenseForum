@@ -16,15 +16,26 @@ if (isset ($PAGES)) {
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?=FORUM_NAME?><?=($HEADER['THREAD'] ? ' :: '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
-<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
+<![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
 <meta name="viewport" content="width=device-width" />
+
+<body>
 <!-- =================================================================================================================== -->
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
 	<h1><a href="/"><?=FORUM_NAME?></a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
+		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
+	--></form>
 	
 	<nav><p>
 		<a id="add" href="#reply">Reply</a>
@@ -32,12 +43,6 @@ if (isset ($PAGES)) {
 	</p><p>
 		<a href="/">Index</a><?php if ($HEADER['PATH']): ?> » <a href="<?=$HEADER['PATH_URL']?>"><?=$HEADER['PATH']?></a><?php endif; ?>
 	</p></nav>
-	
-	<form id="search" method="get" action="http://google.com/search"><!--
-		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
-		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
-	--></form>
 </header>
 <!-- =================================================================================================================== -->
 <section id="post">
@@ -124,3 +129,5 @@ if (isset ($PAGES)) {
 	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
+
+</body>

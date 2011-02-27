@@ -4,15 +4,25 @@
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?=FORUM_NAME?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
-<!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
+<![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width" />
 <meta name="robots" content="noindex, nofollow" />
+
+<body>
 <!-- =================================================================================================================== -->
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
 	<h1><a href="/"><?=FORUM_NAME?></a></h1>
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
+		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
+	--></form>
 </header>
 <!-- =================================================================================================================== -->
 <form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
@@ -72,3 +82,5 @@
 	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
+
+</body>

@@ -143,7 +143,8 @@ function isMod ($name) {
 
 /* ====================================================================================================================== */
 
-function pageLinks ($current, $total) {
+//produces a truncated list of pages around the current page
+function pageList ($current, $total) {
 	//always include the first page
 	$PAGES[] = 1;
 	//more than one page?
@@ -165,6 +166,7 @@ function pageLinks ($current, $total) {
 	return $PAGES;
 }
 
+//take the author's message, process bbcode, and encode it safely for the RSS feed
 function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
 	$text = preg_replace ('/\r\n?/', "\n", $text);
@@ -172,7 +174,7 @@ function formatText ($text) {
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
 	
-	//find URLs
+	//find raw URLs and replace with a hyperlinked version
 	$text = preg_replace (
 		'/(?:
 			((?:http|ftp)s?:\/\/)					# $1 = protocol

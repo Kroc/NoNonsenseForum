@@ -7,19 +7,19 @@
 
 require_once 'shared.php';
 
-/* ====================================================================================================================== */
-
-//thread to show. todo: error page / 404
+//which thread to show
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
-$xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML');
+$xml  = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 define ('TEXT', mb_substr (@$_POST['text'], 0, 32768, 'UTF-8'));
 
+/* ====================================================================================================================== */
+
 //was the submit button clicked? (and is the info valid?)
-if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT) {
+if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//where to?
-	$page = ceil (count ($xml->channel->item) / FORUM_POSTS) ;
+	$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
 	$url  = PATH_URL."$FILE?page=$page#".(count ($xml->channel->item)+1);
 	
 	//ignore a double-post (could be an accident with the back button)
@@ -40,12 +40,14 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT) {
 		clearstatcache ();
 	}
 	
+	//refresh page to see the new post added
 	header ('Location: '.FORUM_URL.$url, true, 303);
 	exit;
 }
 
 /* ====================================================================================================================== */
 
+//info for the site header
 $HEADER = array (
 	'THREAD'	=> safeHTML ($xml->channel->title),
 	'PAGE'		=> PAGE,
@@ -56,9 +58,11 @@ $HEADER = array (
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
+//take the first post from the thread (removing it from the rest)
 $thread = $xml->channel->xpath ('item');
-$post = array_pop ($thread);
+$post   = array_pop ($thread);
 
+//prepare the first post, which on this forum appears above all pages of replies
 $POST = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
 	'AUTHOR'	=> safeHTML ($post->author),
@@ -79,9 +83,10 @@ if (count ($thread)) {
 	array_multisort ($sort_proxy, SORT_ASC, $thread);
 	
 	//paging
-	$PAGES  = pageLinks (PAGE, ceil (count ($thread) / FORUM_POSTS));
+	$PAGES  = pageList (PAGE, ceil (count ($thread) / FORUM_POSTS));
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
+	//ID of the posts, accounting for which page we are on
 	$id = 2 + ((PAGE-1) * FORUM_POSTS);
 	foreach ($thread as &$post) $POSTS[] = array (
 		'ID'		=> $id++,

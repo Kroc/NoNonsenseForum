@@ -1,0 +1,189 @@
+/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
+   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
+/* ====================================================================================================================== */
+
+/* yeah, I could really do with constants in CSS plz:
+.black				{color: #000000;}
+.white				{color: #ffffff;}
+.red				{color: #894036;}
+.cyan				{color: #7ABFC7;}
+.purple				{color: #8A46AE;}
+.green				{color: #68A941;}
+.blue				{color: #3E31A2;}
+.yellow				{color: #D0DC71;}
+.orange				{color: #905F25;}
+.brown				{color: #5C4700;}
+.ltred				{color: #BB776D;}
+.dkgrey				{color: #555555;}
+.grey				{color: #808080;}
+.ltgreen			{color: #ACEA88;}
+.ltblue				{color: #7C70DA;}
+.ltgrey				{color: #ABABAB;}
+*/
+
+header, hgroup, nav, footer,
+ section, aside, article	{display: block;}
+
+/* these selection declarations have to be separate
+   no text-shadow: <twitter.com/miketaylr/status/12228805301> */
+::-moz-selection		{background-color: #7c70da; color: white; text-shadow: none;}
+::selection 			{background-color: #7c70da; color: white; text-shadow: none;}
+
+/* remove the custom "search" style in WebKit
+   <css-tricks.com/webkit-html5-search-inputs/#comment-82432> */
+input[type=search]		{-webkit-appearance: textfield;
+				 -webkit-box-sizing: content-box;}
+input[type=search]::-webkit-search-decoration,
+ input[type=search]::-webkit-search-cancel-button,
+ input[type=search]::-webkit-search-results-button,
+ input[type=search]::-webkit-search-results-decoration
+				{display: none;}
+
+/* C64 font provided by <style64.org/c64-truetype>,
+   see license.txt in this directory for font licence */
+@font-face 			{font-family: "C64 Pro";
+				 src: url("C64_Pro_v1.0-STYLE.woff") format("woff"),
+				      url("C64_Pro_v1.0-STYLE.ttf") format("truetype");}
+@font-face 			{font-family: "C64 Pro Mono";
+				 src: url("C64_Pro_Mono_v1.0-STYLE.woff") format("woff"),
+				      url("C64_Pro_Mono_v1.0-STYLE.ttf") format("truetype");}
+
+html				{font: normal 100%/1em "C64 Pro Mono", monospace;
+				 -webkit-font-smoothing: none;
+				 background: #1d1d1d;}
+body				{position: relative; width: 40em; margin: 0 auto; padding: 0 0 1em 0;
+				 border: 4em solid #7c70da; color: #7c70da;
+				 background: #3e31a2;}
+
+p				{margin: 1em 0 0 0; padding: 0;}
+
+h1, h2				{margin: 0; padding: 0;
+				 font: normal 100%/1em "C64 Pro Mono", monospace;}
+header h1, header h2		{padding: 1em 0 0 0;
+				 text-align: center; text-transform: uppercase;}
+
+header>nav			{min-height: 1em; margin: 1em 0; padding: 0 0 0 1em;}
+header>nav>a			{float: right; margin-right: 1em; text-transform: uppercase;}
+header>nav>a:before		{content: '\0ee5a  '; color: #7ABFC7;}
+header>nav>a[href$=".xml"]:before,
+ header>nav>a[href$=".rss"]:before
+				{content: '\0efdf  '; color: #905F25;}
+header>nav ol			{margin: 0; padding: 0; color: #68A941;}
+header>nav>ol li		{margin: 0; padding: 0; list-style-type: none;}
+header>nav>ol>li>a:before	{content: '\0ee1f  '; color: #7ABFC7;}
+
+header>nav>ol>li>ol>li:before	{content: '\0ee6d  '; margin-left: 2em; color: #7ABFC7;}
+
+/* ====================================================================================================================== */
+
+body>h1				{margin-bottom: 1em; padding: 0 1em;
+				 font-family: "C64 Pro", monospace; color: white;}
+body>h1:after			{display: block; margin: 1em 0 0 -1em; content: '\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f';}
+body>h2				{color: #68A941}
+
+a				{text-decoration: none; color: #d0dc71;}
+a:hover				{color: #fff;}
+
+time				{text-transform: uppercase;}
+
+dl				{margin: 0; padding: 0 0 0 1em;}
+dt				{padding: 0 1em 0 2em; font-family: "C64 Pro";}
+dt>a:before			{position: absolute; content: '\0ee5a'; color: #7ABFC7; left: 1em;}
+dt>a.sticky:before		{content: '\0ee53'; color: #BB776D;}
+dd				{margin: 0; padding: 0 0 0 2em; color: #808080;}
+dd>time:before			{content: '+'; color: #ABABAB;}
+dd>b:before			{content: '\02190'; color: #ABABAB;}
+dl>dd:not(:last-child):after	{display: block; margin-left: -3em; color: #68A941;
+				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}
+dt+dt				{margin-top: 1em;}
+
+body>h2, nav.pages		{margin: .3333em .3333em; padding: .3333em; border: .3333em solid #68A941; color: #68A941;}
+nav.pages			{text-align: right;}
+h2+.pages			{margin-top: -2.6em;}
+.pages em			{font-style: normal; color: #ACEA88;}
+
+form[action^="http://google."]	{position: absolute; right: 1em; margin: -3em 0 0 0;
+				 text-align: right; color: #68A941;}
+form[action^="http://google."]
+ input[type=search]		{display: inline-block; width: 8em;
+				 /*gecko:*/vertical-align: top;}
+form[action^="http://google."]
+ input[type=submit]		{width: 1.15em; height: 1.15em; padding: 0; border: 0; cursor: pointer;
+				 font: 1em/1em "C64 Pro", monospace; color: #3E31A2; 
+				 background: #D0DC71;}
+
+article				{overflow: hidden; width: 38em; margin: 0 0 1em 0; padding: 0 1em 0 1em;
+				 word-wrap: break-word; font-family: "C64 Pro", monospace;}
+article.op			{color: #ABABAB;}
+article.deleted			{color: #68A941;}
+
+article>header			{color: #808080;}
+article>header>time		{float: right;}
+b				{font-weight: normal; color: white;}
+a.delete			{display: block; float: right; width: 1em; height: 1em; overflow: hidden; margin-left: 1em;
+				 color: #894036;}
+a.delete:before			{content: '\0ee56  ';}
+a.delete:hover			{width: auto;}
+
+article>:not(header) a:before	{content: "<";}
+article>:not(header) a:after	{content: ">";}
+
+h2~article:not(:last-of-type):after
+				{position: absolute; display: block; margin: 0 0 0 -1em; color: #68A941;
+				 content: '\0ee6b\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee73';}
+
+
+
+form				{margin: 0; padding: 1em 0 0 0;}
+fieldset			{margin: 0; padding: 0; border: 0;}
+legend				{display: block; margin: 0; padding: 0 0 0 1em; color: white;}
+legend:after			{display: block; padding-bottom: 1em; margin: 1em 0 -1em -1em; content: '\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f\0ee7f';}
+
+form p				{padding-left: 11em;
+				 font-family: "C64 Pro", monospace; color: #808080;}
+
+p.error				{color: #894036;}
+
+label				{display: block; margin: 1em 0 0 0; padding: 0 1em;
+				 font-family: "C64 Pro Mono", monospace; color: #8A46AE;}
+label>input			{float: right;}
+
+input[type=text], input[type=password], input[type=number], input[type=search], textarea
+				{margin: 0; padding: 0 1em; border: 0;
+				 font: 1em/100% "C64 Pro", monospace; color: #555555;
+				 background: #ABABAB;}
+input[type=text]:focus, input[type=password]:focus, input[type=number]:focus, input[type=search]:focus, textarea:focus
+				{background: #fff;}
+
+input[type=text], input[type=password]
+				{width: 26em;}
+input[type=number]		{width: 4em;}
+
+textarea			{width: 100%; height: 23em; margin: 1em 0 0 0; padding: 1em; border: 0; resize: none;
+				 font: 1em/100% "C64 Pro", monospace; color: #555555;
+				 -webkit-box-sizing: border-box;
+				    -moz-box-sizing: border-box;
+				         box-sizing: border-box;
+				 background: #ABABAB;}
+
+.email				{display: none;}
+p#rules				{padding-left: 1em; color: white;}
+fieldset input[type=submit]	{float: right; margin: 0 1em 0 1em; padding: 1em; border: 0; cursor: pointer;
+				 font: 1em/100% "C64 Pro", monospace; color: #3E31A2; text-transform: uppercase;
+				 background: #D0DC71;}
+input[type=submit]:hover	{color: #894036 !important; background: #fff !important;}
+input[type=submit]:active	{color: white !important; background: #894036 !important;}
+
+input[type=text]:invalid,
+ input[type=password]:invalid,
+ input[type=number]:invalid,
+ textarea:invalid		{color: #894036;
+				 -moz-box-shadow: none;
+				      box-shadow: none;}
+input[type=number]:valid	{color: #68A941;}
+
+
+footer				{margin-top: 1em; font-family: "C64 Pro";}
+footer:before			{display: block; content: '\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40\0ee40';}
+footer>p			{padding-left: 1em;}

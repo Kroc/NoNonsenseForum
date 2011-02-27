@@ -7,15 +7,15 @@
 
 require_once 'shared.php';
 
-/* ====================================================================================================================== */
-
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
 define ('TITLE', mb_substr (trim (@$_POST['title']), 0, 80,    'UTF-8'));
 define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, 32768, 'UTF-8'));
 
+/* ====================================================================================================================== */
+
 //has the user the submitted a new thread? (and is the info valid?)
-if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT) {
+if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//the file on disk is a simplified version of the title
 	$c = 0; do $file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
@@ -66,7 +66,7 @@ XML
 
 /* ====================================================================================================================== */
 
-//prepare the website header:
+//information for the site header:
 $HEADER = array (
 	'PATH'	=> safeHTML (PATH),	//the current sub-folder, if any
 	'PAGE'	=> PAGE			//the current page number
@@ -81,13 +81,11 @@ foreach (array_filter (
 	'NAME'	=> safeHTML ($FOLDER)
 );
 
-/* ---------------------------------------------------------------------------------------------------------------------- */
-
-//get list of threads
-$threads = preg_grep ('/\.xml$/', scandir ('.'));
-array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
-
-if ($threads) {
+//get list of threads (if any--could be an empty folder)
+if ($threads = preg_grep ('/\.xml$/', scandir ('.'))) {
+	//order by last modified date
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+	
 	//does this folder have a sticky list?
 	$stickies = array ();
 	if (file_exists ('sticky.txt')) {
@@ -102,42 +100,47 @@ if ($threads) {
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
-	$PAGES   = pageLinks (PAGE, ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS));
+	$PAGES   = pageList (PAGE, ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS));
+	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
+	//generate the list of threads with data, for the template
 	foreach ($threads as $file) {
-		
+		//read the file, and refer to the last post made (the first item in RSS feed as newest is first)
 		$xml = simplexml_load_file ($file);
 		$last = &$xml->channel->item[0];
 		
 		$thread = array (
+			//link to the thread--go to the last page of replies
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page='.(count ($xml->channel->item) > 1
 						? ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : 1
 					),
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item),
-			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
-			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr
+			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
 			'AUTHOR'	=> safeHTML ($last->author)
 		);
 		
+		//does this thread fit into the stickies list, or the main thread list?
 		if (in_array ($file, $stickies)): $STICKIES[] = $thread; else: $THREADS[] = $thread; endif;
 	}
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
+//the new thread input form (exclude if posting has been disabled)
 if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TITLE'	=> safeString (TITLE),
 	'TEXT'	=> safeHTML (TEXT),
 	'ERROR'	=> empty ($_POST) ? ERROR_NONE	//no problem? show default help text
-		   : (!NAME  ? ERROR_NAME		//the name is missing
-		   : (!PASS  ? ERROR_PASS		//the password is missing
-		   : (!TITLE ? ERROR_TITLE		//the title is missing
-		   : (!TEXT  ? ERROR_TEXT		//the message text is missing
-		   : ERROR_AUTH))))			//the name / password pair didn’t match
+		   : (!NAME  ? ERROR_NAME	//the name is missing
+		   : (!PASS  ? ERROR_PASS	//the password is missing
+		   : (!TITLE ? ERROR_TITLE	//the title is missing
+		   : (!TEXT  ? ERROR_TEXT	//the message text is missing
+		   : ERROR_AUTH))))		//the name / password pair didn’t match
 );
 
 //all the data prepared, now output the HTML
