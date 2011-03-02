@@ -33,7 +33,7 @@ if (isset ($PAGES)) {
 	
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
-		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
 		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
 	--></form>
 	
@@ -41,7 +41,7 @@ if (isset ($PAGES)) {
 		<a id="add" href="#new">Add Thread</a>
 		<a id="rss" href="index.rss">RSS</a>
 	</p><p>
-		<a href="/">Index</a><?php if ($HEADER['PATH']): ?> » <?=$HEADER['PATH']?><?php endif; ?>
+		<a id="index" href="/">Index</a><?php if ($HEADER['PATH']): ?> » <?=$HEADER['PATH']?><?php endif; ?>
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
@@ -88,19 +88,19 @@ if (isset ($PAGES)) {
 <?php if (FORUM_ENABLED): ?>
 	<p id="ptitle">
 		<label for="title">Title:</label>
-		<input tabindex="3" name="title" id="title" type="text" size="28" maxlength="80" required autocomplete="off"
+		<input name="title" id="title" type="text" size="28" maxlength="80" required autocomplete="off"
 		       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
 	</p><p id="message">
 		<label for="text">Message:</label>
-		<textarea tabindex="4" name="text" id="text" cols="40" rows="15" maxlength="32768" required
+		<textarea name="text" id="text" cols="40" rows="15" maxlength="32768" required
 		          placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
 	</p><p>
 		<label for="user">Name:</label>
-		<input tabindex="1" name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+		<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
 		       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 	</p><p>
 		<label for="pass">Password:</label>
-		<input tabindex="2" name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+		<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
 		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 	</p><p id="pemail">
 		<label class="email">Email:</label>
@@ -128,10 +128,10 @@ if (isset ($PAGES)) {
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Submit
-		<input tabindex="5" id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
 	</label></p>
 <?php else: ?>
-	<p class="error">Sorry, posting is currently disabled.</p>
+	<p id="error">Sorry, posting is currently disabled.</p>
 <?php endif; ?>
 </fieldset></form>
 <!-- =================================================================================================================== -->

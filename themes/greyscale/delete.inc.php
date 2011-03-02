@@ -20,7 +20,7 @@
 	<h1><a href="/"><?=FORUM_NAME?></a></h1>
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
-		--><input id="query"  type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
 		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
 	--></form>
 </header>
@@ -29,11 +29,11 @@
 <fieldset><legend>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</legend>
 	<p>
 		<label for="user">Name:</label>
-		<input tabindex="1" name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+		<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
 		       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 	</p><p>
 		<label for="pass">Password:</label>
-		<input tabindex="2" name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+		<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
 		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 	</p>
 	
@@ -55,14 +55,14 @@
 	<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
 <?php break;
 	case ERROR_AUTH: ?>
-	<p class="error">
+	<p id="error">
 		Name / password mismatch! You must enter the name and password of either the original author,
 		or a designated moderator.
 	</p>
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Delete
-		<input tabindex="5" id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
 	</label></p>
 </fieldset></form>
 <!-- =================================================================================================================== -->

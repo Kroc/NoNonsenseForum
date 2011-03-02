@@ -9,9 +9,8 @@
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
-html				{ /*< necesary for site footer */
-				 width: 100%; margin: 0; padding: 0; border: 0; /*< remove inset window edge in IE6 */
-				 font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
+html, body			{width: 100%; margin: 0; padding: 0; border: 0; /*< remove inset window edge in IE6 */}
+html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 				 background: white url("bg.png") fixed repeat-x bottom center;
 				 /* CSS3 gradients for browsers that support it: */
 	/* FF3.6+ */		 background-image: -moz-linear-gradient(white, #ddd);
@@ -20,12 +19,10 @@ html				{ /*< necesary for site footer */
 	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd'); /* IE6–IE9 */
 	/* future? */		 background-image: linear-gradient(white, #ddd);}
 
-body				{width: 100%; margin: 0; padding: 0;}
-
-h1, legend			{margin: 0; padding: 0 20px; text-indent: 40px; font-weight: bold; color: #f7f6f7;
+h1, legend			{margin: 0; padding: 0 0 0 60px;
+				 line-height: 60px; font-weight: bold; color: #f7f6f7;
 				 background: #222;}
-section h1, legend		{margin-top: 20px;
-				 font-size: 22px; line-height: 60px;
+section h1, legend		{margin-top: 20px; font-size: 22px;
 				 background: #222 none no-repeat 15px 50%;}
 
 dl				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;
@@ -44,26 +41,32 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 /* site header
    ====================================================================================================================== */
 #mast				{padding: 40px 0 0;}
-#mast h1			{position: absolute; top: 0; left: 0; right: 0;
-				 font-size: 32px; line-height: 60px;}
-#mast h1 a			{display: block; width: 80%; margin: 0 auto; color: #f7f6f7;
-				 background: url("icons/title.png") no-repeat 0 50%;}
+#mast h1			{position: absolute; top: 0; left: 0; right: 0; padding: 0; font-size: 32px;
+				 width: 100%; /*< IE6 */}
+#mast h1 a			{margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
+				 background: url("icons/title.png") no-repeat 15px 50%;}
 
 /* the breadcrumb and rss / new buttons: */
-#mast nav			{width: 80%; margin: 40px auto 0; padding: 0 10px;
-				 text-transform: uppercase; color: #888;
-				 background: url("icons/here.png") no-repeat 25px 0;}
-#add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
-#mast nav p			{padding: 0 0 0 50px;}
+#mast nav			{width: 80%; margin: 40px auto 0;
+				 text-transform: uppercase; color: #888;}
+#mast nav p			{padding: 0 0 0 60px;}
 
-#add				{background: url("icons/add.png") no-repeat 0 3px;}
+#index				{display: inline-block; /*< IE6/7 (even though they don’t support "inline-block") */
+				 padding-left: 36px; margin-left: -36px;
+				 background: url("icons/here.png") no-repeat 0 50%;}
+
+#add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
+
+#add				{margin-right: 20px;
+				 background: url("icons/add.png") no-repeat 0 3px;}
 #rss				{background: url("icons/rss.png") no-repeat 0 3px;}
 
 /* Google search box: */
-#search				{position: relative; width: 20%;
-				 /* `auto` on the left margin (instead of `70%`) is required for IE6 to get this right */
-				 margin: -20px 10% 0 auto; padding: 0;
-				 text-align: right; background: none !important;}
+#search				{position: relative;
+				 width: auto; /*< this makes magic happen in IE6/7 */
+				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
+				 margin: -20px 10% 0 auto; padding-right: 10px;
+				 text-align: right; background: none;}
 #query				{width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: 0;
 				 -webkit-border-radius: 10px;
 				    -moz-border-radius: 10px;
@@ -223,7 +226,8 @@ input[type=text],		/* measure "100%" width to not include the padding */
 /* site footer
    ====================================================================================================================== */
 footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 20px 0 0; left: 0; right: 0;
+				 width: 100%; /*< IE6 */
 				 background: #222;}
 
-footer p			{width: 80%; margin: 0 auto; font-size: .9em; color: #f7f6f7;}
+footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
