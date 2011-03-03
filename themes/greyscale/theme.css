@@ -58,6 +58,8 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 				 width: 100%; /*< IE6 */}
 #mast h1 a			{position: relative; z-index: 1; /*< surprisingly, IE isn't affected by the search box
 				 overlapping the title link, so this is for the benefit of Firefox &.c */
+				 _position: static; /*< position: relative, whilst not needed for the above mentioned bug,
+				 causes IE6 to misrender the background image! this is an IE6-only attribute hack */
 				 margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
 				 background: url("icons/title.png") no-repeat 15px 50%;}
 
