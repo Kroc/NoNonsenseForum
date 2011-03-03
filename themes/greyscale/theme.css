@@ -6,6 +6,19 @@
    greyscale theme by Kroc Camen, please modify to suit your needs
 */
 
+/* current known browser support: (and growing)
+	IE6, 7, 8, 9
+	Firefox 3, 3.5, 3.6, 4
+	Chrome Stable, Chrome Dev
+	Safari 3, 4, 5
+	Camino 2, 2.1
+
+   absolutely will not work with: (because it’s HTML5)
+	Firefox 2 or earlier
+	Camino 1
+	IE5.5 and below
+*/
+
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
@@ -19,16 +32,16 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd'); /* IE6–IE9 */
 	/* future? */		 background-image: linear-gradient(white, #ddd);}
 
-h1, legend			{margin: 0; padding: 0 0 0 60px;
-				 line-height: 60px; font-weight: bold; color: #f7f6f7;
+h1, legend			{margin: 0; padding: 20px 0 20px 60px;
+				 line-height: 20px; font-weight: bold; color: #f7f6f7;
 				 background: #222;}
-section h1, legend		{margin-top: 20px; font-size: 22px;
-				 background: #222 none no-repeat 15px 50%;}
+section h1, legend		{font-size: 22px;
+				 background: #222 none no-repeat 15px 15px;}
 
-dl				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;
+ol				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;
 				 background: #f7f6f7;}
-dt, dd				{line-height: 20px; margin: 0; padding: 10px 20px; color: #888;}
-dt				{border-bottom: 1px dotted #444;}
+li				{margin: 0; padding: 10px 20px; border-bottom: 1px dotted #444;
+				 list-style-type: none; line-height: 20px; color: #888;}
 
 p				{margin: 0; padding: 0 0 20px;}
 
@@ -41,9 +54,11 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 /* site header
    ====================================================================================================================== */
 #mast				{padding: 40px 0 0;}
-#mast h1			{position: absolute; top: 0; left: 0; right: 0; padding: 0; font-size: 32px;
+#mast h1			{position: absolute; top: 0; left: 0; right: 0; padding-left: 0; font-size: 32px;
 				 width: 100%; /*< IE6 */}
-#mast h1 a			{margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
+#mast h1 a			{position: relative; z-index: 1; /*< surprisingly, IE isn't affected by the search box
+				 overlapping the title link, so this is for the benefit of Firefox &.c */
+				 margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
 				 background: url("icons/title.png") no-repeat 15px 50%;}
 
 /* the breadcrumb and rss / new buttons: */
@@ -85,7 +100,7 @@ input[type=search]:focus	{outline: none;}
 
 /* index page
    ====================================================================================================================== */
-section, form			{width: 80%; margin: 0 auto 20px;}
+section, form			{width: 80%; margin: 20px auto 0;}
 
 /* page list */
 section nav			{margin-top: -1px; padding: 0 20px;
@@ -96,7 +111,7 @@ section nav em			{color: #f7f6f7; font-weight: bold; font-style: normal;}
 section nav a			{color: #aaa;}
 section nav a:hover		{color: white;}
 
-/* move the page list into the title for browsers that support the adjacent selector */
+/* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
 section h1 + nav		{background: none; float: right; margin-top: -50px;}
 
@@ -107,24 +122,21 @@ section h1 + nav		{background: none; float: right; margin-top: -50px;}
 #threads h1, #post h1		{background-image: url("icons/threads.png");}
 
 /* folder / thread names: */
-#folders dt			{border-bottom: 1px solid #444;}
+#folders li			{border-bottom: 1px solid #444;}
 
-#threads dt			{padding-left: 60px;}
-#threads dt i			{float: left; display: block; width: 25px; margin: 0 10px 0 -50px;
+#threads li			{padding-left: 60px;}
+#threads li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, Tahoma, sans-serif; text-align: right;}
-#threads dt img			{margin-left: -20px; vertical-align: top;}
+#threads li img			{margin-left: -20px; vertical-align: top;}
+#threads li b			{float: right; padding-left: 10px; text-align: right;}
 
-#threads dt.sticky		{background: #eee;}
+#threads li.sticky		{background: #eee;}
 
-/* thread meta info: */
-#threads dd			{float: right; margin-top: -40px;}
-#threads dd time		{float: right; padding-left: 20px;}
-#threads dd b			{padding-left: 20px;}
+#threads li time		{float: right; width: 9.1em; text-align: right;}
 
 
 /* thread page
    ====================================================================================================================== */
-
 article				{padding: 0 20px 0; border: 1px solid #444; border-width: 0 1px;
 				 background: #f7f6f7;}
 #post article			{border-bottom-width: 1px;}
@@ -225,7 +237,7 @@ input[type=text],		/* measure "100%" width to not include the padding */
 
 /* site footer
    ====================================================================================================================== */
-footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 20px 0 0; left: 0; right: 0;
+footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 20px 0 0; left: 0; right: 0;
 				 width: 100%; /*< IE6 */
 				 background: #222;}
 

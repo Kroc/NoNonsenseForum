@@ -48,11 +48,11 @@ if (isset ($PAGES)) {
 <?php if (isset ($FOLDERS)): ?>
 <section id="folders">
 	<h1>Sub-Forums</h1>
-	<dl>
+	<ol>
 <?php foreach ($FOLDERS as $FOLDER): ?>
-		<dt><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a></dt>
+		<li><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a></li>
 <?php endforeach; ?>
-	</dl>
+	</ol>
 </section>
 <?php endif; ?>
 
@@ -60,25 +60,26 @@ if (isset ($PAGES)) {
 <section id="threads">
 	<h1>Threads</h1>
 	<nav class="pages">Page <?=$PAGES?></nav>
-	<dl>
+	<ol>
 <?php if (isset ($STICKIES)): ?>
 <?php foreach ($STICKIES as $THREAD): ?>
-		<dt class="sticky"><i><?=$THREAD['COUNT']?></i> <img src="/themes/<?=FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" /> <a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a></dt>
-		<dd>
+		<li class="sticky">
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
-			<b><?=$THREAD['AUTHOR']?></b>
-		</dd>
+			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
+			<img src="/themes/<?=FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
+			<a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a>
+		</li>
 <?php endforeach; ?>
 <?php endif; ?>
 
 <?php foreach ($THREADS as $THREAD): ?>
-		<dt><i><?=$THREAD['COUNT']?></i> <a href="<?=$THREAD['URL']?>"><?=$THREAD['TITLE']?></a></dt>
-		<dd>
+		<li>
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
-			<b><?=$THREAD['AUTHOR']?></b>
-		</dd>
+			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
+			<a href="<?=$THREAD['URL']?>"><?=$THREAD['TITLE']?></a>
+		</li>
 <?php endforeach; ?>
-	</dl>
+	</ol>
 	<nav class="pages">Page <?=$PAGES?></nav>
 </section>
 <?php endif; ?>
