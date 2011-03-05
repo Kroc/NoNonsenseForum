@@ -3,7 +3,7 @@
 <!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
-<title><?=FORUM_NAME?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
+<title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
 <!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
@@ -11,13 +11,19 @@
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width" />
 <meta name="robots" content="noindex, nofollow" />
+<!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
+<meta name="application-name" content="<?=safeString (FORUM_NAME)?>" />
+<meta name="msapplication-starturl" content="<?=FORUM_URL?>" />
+<meta name="msapplication-window" content="width=1024;height=600" />
+<meta name="msapplication-navbutton-color" content="#222" />
+<link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
 
 <body>
 <!-- =================================================================================================================== -->
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
-	<h1><a href="/"><?=FORUM_NAME?></a></h1>
+	<h1><a href="/"><?=safeHTML(FORUM_NAME)?></a></h1>
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
@@ -79,7 +85,7 @@
 </section>
 <!-- =================================================================================================================== -->
 <footer><p>
-	Powered by <a href="https://github.com/Kroc/NoNonsense Forum">NoNonsense Forum</a><br />
+	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
 

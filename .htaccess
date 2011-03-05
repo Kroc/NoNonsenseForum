@@ -4,17 +4,17 @@ RewriteEngine	On
 # stop automatically adding slashes to input forms
 php_flag magic_quotes_gpc off
 
+# this ‘feature’ (MultiViews) drove me absolutely insane!
+# without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
+# <webmasterworld.com/apache/3808792.htm>
+Options -MultiViews -Indexes
+
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]
 
 # don’t allow forum access to users / themes folder
 RewriteCond %{QUERY_STRING} path=(?:themes|users) [NC]
 RewriteRule ^ - [F]
-
-# this ‘feature’ (MultiViews) drove me absolutely insane!
-# without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
-# <webmasterworld.com/apache/3808792.htm>
-Options -MultiViews -Indexes
 
 DirectoryIndex index.php
 
@@ -25,7 +25,7 @@ AddType font/x-woff		.woff
 
 # force utf-8 for a number of file formats:
 AddDefaultCharset utf-8
-AddCharset utf-8 .css .xml .txt .do
+AddCharset utf-8 .css .xml .txt
 
 <IfModule mod_deflate.c>
 	AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript text/javascript application/javascript application/json text/xml application/xml application/rss+xml
