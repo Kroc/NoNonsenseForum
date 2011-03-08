@@ -124,7 +124,7 @@ if (isset ($PAGES)) {
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Submit
-		<input id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
 	</label></p>
 <?php else: ?>
 	<p id="error">Sorry, posting is currently disabled.</p>

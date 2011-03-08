@@ -55,7 +55,7 @@ if (isset ($_POST['email']) && @$_POST['email'] != 'example@abc.com') {
 } elseif (
 	NAME && PASS &&
 	//I wonder what this does? ...
-	(isset ($_POST['x']) && isset ($_POST['y']))
+	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
 ) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
@@ -86,9 +86,8 @@ chdir (FORUM_ROOT.PATH_DIR);
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
-//(this needs to be better placed and tested)
-header ('Cache-Control: no-cache');
-header ('Expires: 0');
+header ('Cache-Control: no-cache', true);
+header ('Expires: 0', true);
 
 
 /* ====================================================================================================================== */

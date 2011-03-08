@@ -68,7 +68,7 @@
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Delete
-		<input id="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
 	</label></p>
 </fieldset></form>
 <!-- =================================================================================================================== -->
