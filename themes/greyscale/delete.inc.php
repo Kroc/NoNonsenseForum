@@ -88,5 +88,5 @@
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
-
+<!-- page generated in: <?=round (microtime(true) - START, 3)?>s -->
 </body>

@@ -10,6 +10,7 @@ date_default_timezone_set ('UTC');	//PHP 5.3 issues a warning if the timezone is
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
+define ('START', 		microtime (true));			//record how long the page takes to generate
 define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
@@ -51,7 +52,11 @@ if (isset ($_POST['email']) && @$_POST['email'] != 'example@abc.com') {
 	define ('AUTH', false);
 
 //if name & password are provided, validate them
-} elseif (NAME && PASS) {
+} elseif (
+	NAME && PASS &&
+	//I wonder what this does? ...
+	(isset ($_POST['x']) && isset ($_POST['y']))
+) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
 	$user = FORUM_ROOT."/users/$name.txt";
