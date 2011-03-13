@@ -46,14 +46,11 @@ if (!defined ('TEMPLATE_DELETE_MOD'))	define ('TEMPLATE_DELETE_MOD',  '<p>This p
 define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
 define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
 
-//if it’s a spammer, ignore them--don’t pollute the users folder
-//the email check is a fake hidden field in the form to try and fool spam bots
-if (isset ($_POST['email']) && @$_POST['email'] != 'example@abc.com') {
-	define ('AUTH', false);
-
 //if name & password are provided, validate them
-} elseif (
+if (
 	NAME && PASS &&
+	//the email check is a fake hidden field in the form to try and fool spam bots
+	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
 	//I wonder what this does? ...
 	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
 ) {

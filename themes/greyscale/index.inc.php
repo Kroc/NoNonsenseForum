@@ -40,7 +40,7 @@ if (isset ($PAGES)) {
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
+		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" value="Search" width="16" height="16" /><!--
 	--></form>
 	
 	<nav><p>
@@ -135,7 +135,7 @@ if (isset ($PAGES)) {
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Submit
-		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" value="&gt;" />
 	</label></p>
 <?php else: ?>
 	<p id="error">Sorry, posting is currently disabled.</p>

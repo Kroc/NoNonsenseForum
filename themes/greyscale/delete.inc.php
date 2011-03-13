@@ -27,7 +27,7 @@
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" width="16" height="16" /><!--
+		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" value="Search" width="16" height="16" /><!--
 	--></form>
 </header>
 <!-- =================================================================================================================== -->
@@ -68,7 +68,7 @@
 <?php endswitch; ?>
 	
 	<p id="psubmit"><label for="submit">Delete
-		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" />
+		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" value="&gt;"/>
 	</label></p>
 </fieldset></form>
 <!-- =================================================================================================================== -->
