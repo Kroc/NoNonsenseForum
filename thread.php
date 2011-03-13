@@ -89,14 +89,14 @@ if (count ($thread)) {
 	//ID of the posts, accounting for which page we are on
 	$id = 2 + ((PAGE-1) * FORUM_POSTS);
 	foreach ($thread as &$post) $POSTS[] = array (
-		'ID'		=> $id++,
 		'AUTHOR'	=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
 		'DELETE_URL'	=> '/delete.php?path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id=$id",
-		'OP'		=> $post->author == $author
+		'OP'		=> $post->author == $author,
+		'ID'		=> $id++
 	);
 }
 
