@@ -23,6 +23,9 @@ if (isset ($PAGES)) {
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
 <meta name="viewport" content="width=device-width" />
+<!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
+<link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
+<link rel="apple-touch-icon-precomposed" href="/themes/<?=FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 <meta name="application-name" content="<?=safeString (FORUM_NAME)?>" />
 <meta name="msapplication-starturl" content="<?=FORUM_URL?>" />
