@@ -33,8 +33,14 @@ if (
 	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 	
 	//commit the data
-	//(todo: deleting a post should not push the thread to the top of the index!)
 	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+	
+	//try set the modified date of the file back to the time of the last comment
+	//(so that deleting does not push the thread back to the top of the list)
+	//note: this may fail if the file is not owned by the Apache process
+	@touch ("$FILE.xml", strtotime ($xml->channel->item[0]->pubDate));
+	
+	//you saw nothing, right?
 	clearstatcache ();
 	
 	//return to the deleted post

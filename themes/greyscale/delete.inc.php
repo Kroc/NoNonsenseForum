@@ -44,6 +44,10 @@
 		<label for="pass">Password:</label>
 		<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
 		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
+	</p><p id="pemail">
+		<label class="email">Email:</label>
+		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+		(Leave this as-is, it’s a trap!)
 	</p>
 	
 <?php switch ($FORM['ERROR']):
