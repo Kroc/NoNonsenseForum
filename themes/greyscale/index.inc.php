@@ -92,57 +92,60 @@ if (isset ($PAGES)) {
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->
-<form id="new" method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-<fieldset><legend>Add Thread</legend>
+<section id="new">
+	<h1>Add Thread</h1>
+	<form method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 <?php if (FORUM_ENABLED): ?>
-	<p id="ptitle">
-		<label for="title">Title:</label>
-		<input name="title" id="title" type="text" size="28" maxlength="80" required autocomplete="off"
-		       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
-	</p><p id="message">
-		<label for="text">Message:</label>
-		<textarea name="text" id="text" cols="40" rows="15" maxlength="32768" required
-		          placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
-	</p><p>
-		<label for="user">Name:</label>
-		<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
-		       placeholder="Your name" value="<?=$FORM['NAME']?>" />
-	</p><p>
-		<label for="pass">Password:</label>
-		<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
-		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
-	</p><p id="pemail">
-		<label class="email">Email:</label>
-		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
-		(Leave this as-is, it’s a trap!)
-	</p>
+		<p id="ptitle">
+			<label for="title">Title:</label>
+			<input name="title" id="title" type="text" size="28" maxlength="80" required autocomplete="off"
+			       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
+		</p><p id="message">
+			<label for="text">Message:</label>
+			<textarea name="text" id="text" cols="40" rows="15" maxlength="32768" required
+			          placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
+		</p><p>
+			<label for="user">Name:</label>
+			<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
+		</p><p>
+			<label for="pass">Password:</label>
+			<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
+		</p><p id="pemail">
+			<label class="email">Email:</label>
+			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+			(Leave this as-is, it’s a trap!)
+		</p>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE: ?>
-	<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
+		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
 <?php break;
 	case ERROR_NAME: ?>
-	<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
+		<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
 <?php break;
 	case ERROR_PASS: ?>
-	<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
+		<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
 <?php break;
 	case ERROR_TITLE: ?>
-	<p id="error">You need to enter the title of your new discussion thread</p>
+		<p id="error">You need to enter the title of your new discussion thread</p>
 <?php break;
 	case ERROR_TEXT: ?>
-	<p id="error">Well, write a message!</p>
+		<p id="error">Well, write a message!</p>
 <?php break;
 	case ERROR_AUTH: ?>
-	<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
+		<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
 <?php endswitch; ?>
-	
-	<p id="psubmit"><label for="submit">Submit
-		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" value="&gt;" />
-	</label></p>
+		
+		<p id="psubmit"><label for="submit">Submit
+			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
+			       width="40" height="40" value="&gt;" />
+		</label></p>
 <?php else: ?>
-	<p id="error">Sorry, posting is currently disabled.</p>
+		<p id="error">Sorry, posting is currently disabled.</p>
 <?php endif; ?>
-</fieldset></form>
+	</form>
+</section>
 <!-- =================================================================================================================== -->
 <footer><p>
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsense Forum</a><br />

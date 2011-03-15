@@ -4,3 +4,7 @@
 /* ====================================================================================================================== */
 /* Internet Explorer specific fixes. fun. */
 
+#ptitle	label	{display: block; float: left; width: 20% !important; padding: 0 !important; text-indent: 20px;}
+
+#title		{display: block; position: absolute; left: 20%; right: 1px; width: 80%;
+		 padding: 0; text-indent: 20px; vertical-align: bottom;}

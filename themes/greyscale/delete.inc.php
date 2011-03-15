@@ -34,50 +34,52 @@
 	--></form>
 </header>
 <!-- =================================================================================================================== -->
-<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-<fieldset><legend>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</legend>
-	<p>
-		<label for="user">Name:</label>
-		<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
-		       placeholder="Your name" value="<?=$FORM['NAME']?>" />
-	</p><p>
-		<label for="pass">Password:</label>
-		<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
-		       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
-	</p><p id="pemail">
-		<label class="email">Email:</label>
-		<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
-		(Leave this as-is, it’s a trap!)
-	</p>
-	
+<section id="delete">
+	<h1>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</h1>
+	<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+		<p>
+			<label for="user">Name:</label>
+			<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
+		</p><p>
+			<label for="pass">Password:</label>
+			<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
+		</p><p id="pemail">
+			<label class="email">Email:</label>
+			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+			(Leave this as-is, it’s a trap!)
+		</p>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
 		if (ID==1): ?>
-	<p id="ok">
-		To delete this thread, and all replies to it, you must be either the original author
-		or a designated moderator.
-	</p>
+		<p id="ok">
+			To delete this thread, and all replies to it, you must be either the original author
+			or a designated moderator.
+		</p>
 <?php		else: ?>
-	<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
+		<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
 <?php		endif;
 	break;
 	case ERROR_NAME: ?>
-	<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
+		<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
 <?php break;
 	case ERROR_PASS: ?>
-	<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
+		<p id="error">Enter a password. It’s so you can re-use your name each time.</p>
 <?php break;
 	case ERROR_AUTH: ?>
-	<p id="error">
-		Name / password mismatch! You must enter the name and password of either the original author,
-		or a designated moderator.
-	</p>
+		<p id="error">
+			Name / password mismatch! You must enter the name and password of either the original author,
+			or a designated moderator.
+		</p>
 <?php endswitch; ?>
-	
-	<p id="psubmit"><label for="submit">Delete
-		<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png" value="&gt;"/>
-	</label></p>
-</fieldset></form>
+		
+		<p id="psubmit"><label for="submit">Delete
+			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
+			       width="40" height="40" value="&gt;" />
+		</label></p>
+	</form>
+</section>
 <!-- =================================================================================================================== -->
 <section id="post">
 	<h1>Post</h1>

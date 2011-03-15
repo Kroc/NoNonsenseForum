@@ -29,14 +29,13 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 	/* FF3.6+ */		 background-image: -moz-linear-gradient(white, #ddd);
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear,left top,left bottom,from(white),to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
-	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd'); /* IE6–IE9 */
+	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd');
 	/* future? */		 background-image: linear-gradient(white, #ddd);}
 
-h1, legend			{margin: 0; padding: 20px 0 20px 60px;
-				 line-height: 20px; font-weight: bold; color: #f7f6f7;
+h1				{margin: 0; padding: 20px 0 20px 60px;
+				 line-height: 20px; font-size: 22px; font-weight: bold; color: #f7f6f7;
 				 background: #222;}
-section h1, legend		{font-size: 22px;
-				 background: #222 none no-repeat 15px 15px;}
+section h1			{background: #222 none no-repeat 15px 15px;}
 
 ol				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;
 				 background: #f7f6f7;}
@@ -102,10 +101,10 @@ input[type=search]:focus	{outline: none;}
 
 /* index page
    ====================================================================================================================== */
-section, form			{width: 80%; margin: 20px auto 0;}
+section				{width: 80%; margin: 20px auto 0;}
 
 /* page list */
-section nav			{margin-top: -1px; padding: 0 20px;
+section nav			{margin-top: -1px; padding: 0 20px; height: 40px; /*< height required for IE6/7 */
 				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px; word-spacing: 5px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
@@ -171,41 +170,42 @@ article.deleted header		{background: #f7f6f7; color: #aaa;}
 
 /* input forms
    ====================================================================================================================== */
-#new legend,
- #reply legend			{background-image: url("icons/new.png");}
-#delete legend			{background-image: url("icons/deletetitle.png");}
+#new h1, #reply h1		{background-image: url("icons/new.png");}
+#delete h1			{background-image: url("icons/deletetitle.png");}
 
 /* we have to do a bit of hacking here since `<legend>` is not block-level
    and many browsers apply special properties to it */
-form				{padding: 0; background: #222;}
-fieldset			{position: relative; margin: 0; padding: 0;
-				 border-style: solid; border-width: 60px 1px 0; border-color: #222 #444;
-				 background: #f7f6f7;}
-legend				{position: absolute; top: -60px; margin: 0 !important;}
+form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
+				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
-input, textarea			{/* the use of `monospace monospace` fixes default font-size differences with WebKit */
+input, textarea			{/* the use of `monospace monospace` fixes default font-size differences in WebKit */
 				 font: 12px/16px Monaco, Consolas, monospace, monospace;}
 
-label				{display: block; padding: 0 20px; line-height: 40px; color: #222;}
+label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
-form p				{padding: 0; margin: 0; color: #888;}
+form p				{padding: 0; color: #888;}
 
 input[type=text],
- input[type=password]		{display: table-cell; width: 100%; height: 40px; margin: 0 0 0 -1px; padding: 5px 20px;
-				 border: 0; border-bottom: 1px dotted #444;
+ input[type=password]		{display: table-cell; width: 100%;}
+input[type=text],		/* measure "100%" width to not include the padding */
+ input[type=password], textarea	{-webkit-box-sizing: padding-box;
+				    -moz-box-sizing: padding-box;
+				      -o-box-sizing: padding-box;
+				         box-sizing: padding-box;
 				 -webkit-box-shadow: inset 0 5px 5px -6px black;
 				    -moz-box-shadow: inset 0 5px 5px -6px black;
 				         box-shadow: inset 0 5px 5px -6px black;}
 
-input[type=text],		/* measure "100%" width to not include the padding */
- input[type=password], textarea	{-webkit-box-sizing: border-box;
-				    -moz-box-sizing: border-box;
-				      -o-box-sizing: border-box;
-				         box-sizing: border-box;}
+#title, #user, #pass		{/* for the benefit of IE, which can't use better selectors */
+				 height: 39px; line-height: 39px;
+				 /* there's a major issue with WebKit getting box-sizing wrong, also since IE 6/7 don't
+				    support box-sizing, we can't use padding in the text-box, we'll just indent instead */
+				 padding: 0; text-indent: 20px;
+				 border: none; border-bottom: 1px dotted #444;}
 
 /* the "title" field, only present on the new thread form, index page */
-#ptitle				{display: table; width: 100%; margin: 0; padding: 0;}
-#ptitle label			{display: table-cell; width: 100px; padding: 0; text-indent: 20px; line-height: 0;
+#ptitle				{display: table; width: 100%;}
+#ptitle label			{display: table-cell; width: 80px; height: 39px; line-height: 37px;
 				 border-bottom: 1px dotted #444;}
 #title				{-webkit-box-shadow: inset 5px 0 5px -6px black;
 				    -moz-box-shadow: inset 5px 0 5px -6px black;
@@ -218,29 +218,29 @@ input[type=text],		/* measure "100%" width to not include the padding */
 				 border: 0; border-right: 1px dotted #444;
 				 /* fix width for browsers that allow resizable text-areas */
 				 min-width: 100%; max-width: 100%; min-height: 230px; max-height: 700px;
-				 -webkit-box-shadow: inset 0 5px 5px -6px black;
-				    -moz-box-shadow: inset 0 5px 5px -6px black;
-				         box-shadow: inset 0 5px 5px -6px black;}
+				 /* Chrome, Safari just don't get this right */
+				 -webkit-box-sizing: border-box;}
 
-#message ~ p			{margin-left: 65%; padding-left: 0px;}
+#message ~ p			{margin-left: 65%;}
 
-#ok, #error			{padding: 20px 20px 20px 21px !important;}
+#ok, #error			{padding: 20px !important;}
 #error				{color: #d11;}
 
 /* the e-mail field is an anti-spam feature and not used by the user */
 #pemail				{display: none;}
 
 /* submit button at bottom of form */
-#psubmit			{clear: both; margin: 0 !important; padding: 0 20px; line-height: 40px; text-align: right;
+#psubmit			{clear: both; height: 40px;
+				 margin: 0 !important; padding: 0; text-align: right;
 				 background: #444;}
-#psubmit label			{display: inline; padding: 0; color: #f7f6f7; text-transform: uppercase; cursor: pointer;}
-#submit				{margin-left: 10px; vertical-align: -2px;}
+#psubmit label			{padding: 0; color: #f7f6f7; text-transform: uppercase; cursor: pointer;}
+#submit				{vertical-align: middle;}
 
 
 /* site footer
    ====================================================================================================================== */
 footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 20px 0 0; left: 0; right: 0;
-				 width: 100%; /*< IE6 */
+				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
 				 background: #222;}
 
 footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
