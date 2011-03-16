@@ -98,19 +98,19 @@ if (isset ($PAGES)) {
 <?php if (FORUM_ENABLED): ?>
 		<p id="ptitle">
 			<label for="title">Title:</label>
-			<input name="title" id="title" type="text" size="28" maxlength="80" required autocomplete="off"
+			<input name="title" id="title" type="text" size="28" maxlength="<?=SIZE_TITLE?>" required autocomplete="off"
 			       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
 		</p><p id="message">
 			<label for="text">Message:</label>
-			<textarea name="text" id="text" cols="40" rows="15" maxlength="32768" required
+			<textarea name="text" id="text" cols="40" rows="15" maxlength="<?=SIZE_TEXT?>" required
 			          placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
 		</p><p>
 			<label for="user">Name:</label>
-			<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 		</p><p>
 			<label for="pass">Password:</label>
-			<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 		</p><p id="pemail">
 			<label class="email">Email:</label>

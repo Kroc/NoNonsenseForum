@@ -9,8 +9,8 @@ require_once 'shared.php';
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
-define ('TITLE', mb_substr (trim (@$_POST['title']), 0, 80,    'UTF-8'));
-define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, 32768, 'UTF-8'));
+define ('TITLE', mb_substr (trim (@$_POST['title']), 0, SIZE_TITLE, 'UTF-8'));
+define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, SIZE_TEXT,  'UTF-8'));
 
 /* ====================================================================================================================== */
 

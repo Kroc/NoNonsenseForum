@@ -39,11 +39,11 @@
 	<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 		<p>
 			<label for="user">Name:</label>
-			<input name="username" id="user" type="text" size="28" maxlength="18" required autocomplete="on"
+			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 		</p><p>
 			<label for="pass">Password:</label>
-			<input name="password" id="pass" type="password" size="28" maxlength="20" required autocomplete="on"
+			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 		</p><p id="pemail">
 			<label class="email">Email:</label>

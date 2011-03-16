@@ -12,7 +12,7 @@ $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die
 $xml  = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
-define ('TEXT', mb_substr (@$_POST['text'], 0, 32768, 'UTF-8'));
+define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
 
 /* ====================================================================================================================== */
 

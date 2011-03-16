@@ -34,6 +34,10 @@ if (!defined ('FORUM_THEME'))		define ('FORUM_THEME',		'C=64');
 if (!defined ('FORUM_NAME'))		define ('FORUM_NAME',		'NoNonsense Forum');
 if (!defined ('FORUM_THREADS'))		define ('FORUM_THREADS',	50);
 if (!defined ('FORUM_POSTS'))		define ('FORUM_POSTS',		25);
+if (!defined ('SIZE_NAME'))		define ('SIZE_NAME',		20);
+if (!defined ('SIZE_PASS'))		define ('SIZE_PASS',		20);
+if (!defined ('SIZE_TITLE'))		define ('SIZE_TITLE',		100);
+if (!defined ('SIZE_MESSAGE'))		define ('SIZE_MESSAGE',		50000);
 if (!defined ('DATE_FORMAT'))		define ('DATE_FORMAT', 		"d M ’y · H:i");
 if (!defined ('TEMPLATE_RE'))		define ('TEMPLATE_RE', 		'RE: ');
 if (!defined ('TEMPLATE_DELETE_USER'))	define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
@@ -43,8 +47,8 @@ if (!defined ('TEMPLATE_DELETE_MOD'))	define ('TEMPLATE_DELETE_MOD',  '<p>This p
 /* get input
    ====================================================================================================================== */
 //all pages can accept a name / password when committing actions (new thread / post &c.)
-define ('NAME', mb_substr (trim (@$_POST['username']), 0, 18, 'UTF-8'));
-define ('PASS', mb_substr (      @$_POST['password'],  0, 20, 'UTF-8'));
+define ('NAME', mb_substr (trim (@$_POST['username']), 0, SIZE_NAME, 'UTF-8'));
+define ('PASS', mb_substr (      @$_POST['password'],  0, SIZE_PASS, 'UTF-8'));
 
 //if name & password are provided, validate them
 if (
