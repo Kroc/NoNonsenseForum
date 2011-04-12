@@ -29,6 +29,7 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 	/* FF3.6+ */		 background-image: -moz-linear-gradient(white, #ddd);
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear,left top,left bottom,from(white),to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
+	/* Opera 11.10+ */	 background-image: -o-linear-gradient(white, #ddd);
 	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd');
 	/* future? */		 background-image: linear-gradient(white, #ddd);}
 
