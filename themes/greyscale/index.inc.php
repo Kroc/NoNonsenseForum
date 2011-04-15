@@ -100,15 +100,15 @@ if (isset ($PAGES)) {
 			<label for="title">Title:</label>
 			<input name="title" id="title" type="text" size="28" maxlength="<?=SIZE_TITLE?>" required autocomplete="off"
 			       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
-		</p><p id="message">
-			<label for="text">Message:</label>
-			<textarea name="text" id="text" cols="40" rows="15" maxlength="<?=SIZE_TEXT?>" required
-			          placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
-		</p><p>
+		</p>
+		
+		<div id="rightcol">
+		
+		<p id="puser">
 			<label for="user">Name:</label>
 			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
-		</p><p>
+		</p><p id="ppass">
 			<label for="pass">Password:</label>
 			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
@@ -136,6 +136,18 @@ if (isset ($PAGES)) {
 	case ERROR_AUTH: ?>
 		<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
 <?php endswitch; ?>
+		
+		</div><div id="leftcol">
+		
+		<p id="ptext">
+			<label for="text">Message:</label>
+			<div id="wtext">
+				<textarea name="text" id="text" cols="40" rows="16" maxlength="<?=SIZE_TEXT?>" required
+					  placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
+			</div>
+		</p>
+		
+		</div>
 		
 		<p id="psubmit"><label for="submit">Submit
 			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
