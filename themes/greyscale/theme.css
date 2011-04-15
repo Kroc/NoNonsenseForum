@@ -30,7 +30,7 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear,left top,left bottom,from(white),to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
 	/* Opera 11.10+ */	 background-image: -o-linear-gradient(white, #ddd);
-	/* IE6–9 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd');
+	/* IE6–10 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd');
 	/* future? */		 background-image: linear-gradient(white, #ddd);}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
@@ -234,7 +234,8 @@ input[type=text],		/* measure "100%" width to not include the padding */
 #psubmit			{clear: both; height: 40px;
 				 margin: 0 !important; padding: 0; text-align: right;
 				 background: #444;}
-#psubmit label			{padding: 0; color: #f7f6f7; text-transform: uppercase; cursor: pointer;}
+#psubmit label			{display: inline-block; padding: 0 0 0 20px; cursor: pointer;
+				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
 
