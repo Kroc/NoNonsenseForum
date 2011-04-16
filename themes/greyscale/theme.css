@@ -183,7 +183,7 @@ form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-s
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
 input, textarea			{/* the use of `monospace monospace` fixes default font-size difference with WebKit */
-				 font: 12px/16px Monaco, Consolas, monospace, monospace;}
+				 font: 13px/16px Menlo, Monaco, Consolas, monospace, monospace;}
 
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
