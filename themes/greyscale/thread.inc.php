@@ -24,8 +24,7 @@ if (isset ($PAGES)) {
 <![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
-<!-- Mobile viewport optimized: j.mp/bplateviewport -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?=FORUM_THEME?>/touch.png" />
