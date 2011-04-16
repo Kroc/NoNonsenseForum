@@ -4,6 +4,8 @@
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
+<!-- get rid of IE site compatibility button -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]>
 	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
