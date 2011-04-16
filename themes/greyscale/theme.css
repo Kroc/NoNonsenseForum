@@ -240,6 +240,86 @@ input[type=text],
 #submit				{vertical-align: middle;}
 
 
+/* Mobile design
+   ====================================================================================================================== */
+@media all and (orientation:portrait) {
+  /* Style adjustments for portrait mode goes here */
+}
+
+@media all and (orientation:landscape) {
+  /* Style adjustments for landscape mode goes here */
+}
+
+@media screen and (max-width: 640px) {
+    #mast {
+        padding-top: 0;
+    }
+    #mast h1 {
+        position: static;
+    }
+    #search {
+        margin: 0;
+        padding: 0 5%;
+        padding-bottom: 10px;
+        width: 90%;
+        background: #222;
+        text-align: right;
+        border: none;
+    }
+    #query {
+        width: 90%;
+        padding: 4px 0;
+        text-indent: 20px;
+        font-size: 18px;
+    }
+    #go {
+        top: 6px;
+    }
+    #mast nav {
+        margin-top: 20px;
+        overflow: hidden;
+    }
+    #mast nav p:last-child {
+        display: none;
+    }
+    #mast nav, section#delete, #threads, #new, #reply, #post, #replies {
+        width: 95%;
+    }
+    #threads ol li {
+        padding-left: 10px;
+    }
+        #threads ol li i {
+            display: none;
+        }
+        #threads ol li b {
+            display: none;
+        }
+        #threads ol li time {
+            display: none;
+        }
+    #rightcol, #leftcol {
+        position: static;
+        width: 100%;
+    }
+    #ptitle,#puser,#ppass, #delete > p {display: table; width: 100%;}
+    #pemail { display: none !important; }
+    #ptitle label, #puser label, #ppass label, #delete > p > label {
+        display: table-cell; width: 80px; height: 39px; line-height: 37px;
+		border-bottom: 1px dotted #444;}
+    #title, #user, #pass {
+        display: table-cell; width: 100%;
+		-webkit-box-shadow: inset 5px 0 5px -6px black;
+		-moz-box-shadow: inset 5px 0 5px -6px black;
+		box-shadow: inset 5px 0 5px -6px black;}
+    #text {
+        border: none;
+    }
+    footer p {
+        margin-left: 5% !important;
+        padding-left: 0 !important;
+    }
+}
+
 /* site footer
    ====================================================================================================================== */
 footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 20px 0 0; left: 0; right: 0;
