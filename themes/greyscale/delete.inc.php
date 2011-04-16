@@ -38,12 +38,12 @@
 <!-- =================================================================================================================== -->
 <section id="delete">
 	<h1>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</h1>
-	<form id="delete" method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-		<p>
+	<form method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+		<p id="puser">
 			<label for="user">Name:</label>
 			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
-		</p><p>
+		</p><p id="ppass">
 			<label for="pass">Password:</label>
 			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />

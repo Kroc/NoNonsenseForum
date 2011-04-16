@@ -271,7 +271,7 @@ html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 #mast nav			{margin-top: 20px; overflow: hidden;}
 #mast nav p:last-child		{display: none;}
 
-#mast nav, section#delete,
+#mast nav, #delete,
  #threads, #new, #reply, #post,
  #replies			{width: 95%;}
 
@@ -283,12 +283,12 @@ html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 #rightcol, #leftcol		{position: static; width: 100%;}
 
 #ptitle, #puser, #ppass,
- #delete > p			{display: table; width: 100%;}
+ #delete > form > p		{display: table; width: 100%;}
 #pemail				{display: none !important;}
 
 #ptitle label, #puser label,
  #ppass label,
- #delete > p > label		{display: table-cell; width: 80px; height: 39px; line-height: 37px;
+ #delete > form > p > label	{display: table-cell; width: 80px; height: 39px; line-height: 37px;
 				 border-bottom: 1px dotted #444;}
 #title, #user, #pass		{display: table-cell; width: 100%;}
 #text 				{border: none;}
