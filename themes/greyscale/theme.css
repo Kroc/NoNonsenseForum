@@ -31,12 +31,12 @@ html, body			{width: 100%; margin: 0; padding: 0; border: 0; /*< remove inset wi
 html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 				 background: white url("bg.png") fixed repeat-x bottom center;
 				 /* CSS3 gradients for browsers that support it: */
-	/* FF3.6+ */		 background-image: -moz-linear-gradient(white, #ddd);
-	/* Chrome / Safari */	 background-image: -webkit-gradient(linear,left top,left bottom,from(white),to(#ddd));
+	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
-	/* Opera 11.10+ */	 background-image: -o-linear-gradient(white, #ddd);
-	/* IE6–10 */		 filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='white', EndColorStr='#dddddd');
-	/* future? */		 background-image: linear-gradient(white, #ddd);}
+	/* FF3.6+ */		 background-image:    -moz-linear-gradient(white, #ddd);
+	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
+	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
+	/* future? */		 background-image:         linear-gradient(white, #ddd);}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 line-height: 20px; font-size: 22px; font-weight: bold; color: #f7f6f7;
