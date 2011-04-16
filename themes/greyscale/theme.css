@@ -182,8 +182,7 @@ article.deleted header		{background: #f7f6f7; color: #aaa;}
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
-input, textarea			{/* the use of `monospace monospace` fixes default font-size difference with WebKit */
-				 font: 13px/16px Menlo, Monaco, Consolas, monospace, monospace;}
+input, textarea			{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;}
 
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
