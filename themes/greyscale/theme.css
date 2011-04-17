@@ -38,6 +38,10 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
 	/* future? */		 background-image:         linear-gradient(white, #ddd);}
 
+
+/* page centering / width */
+#mast nav, section		{width: 80%; max-width: 1024px;}
+
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 line-height: 20px; font-size: 22px; font-weight: bold; color: #f7f6f7;
 				 background: #222;}
@@ -68,7 +72,7 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 				 background: url("icons/title.png") no-repeat 15px 50%;}
 
 /* the breadcrumb and rss / new buttons: */
-#mast nav			{width: 80%; margin: 40px auto 0;
+#mast nav			{margin: 40px auto 0;
 				 text-transform: uppercase; color: #888;}
 #mast nav p			{display: block; padding: 0 0 0 60px;}
 
@@ -106,7 +110,7 @@ input[type=search]:focus	{outline: none;}
 
 /* index page
    ====================================================================================================================== */
-section				{width: 80%; margin: 20px auto 0;
+section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 
 /* page list */
@@ -277,9 +281,7 @@ html, body			{/* prevent iPhone from zooming in when rotating */
 #mast nav			{margin-top: 20px; overflow: hidden;}
 #mast nav p:last-child		{display: none;}
 
-#mast nav, #delete, #folders,
- #threads, #new, #reply, #post,
- #replies			{width: 95%;}
+#mast nav, section		{width: 95%;}
 
 #threads ol li			{padding-left: 10px;}
 #threads ol li i,
