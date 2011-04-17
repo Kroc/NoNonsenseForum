@@ -32,7 +32,7 @@
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" value="Search" width="16" height="16" /><!--
+		--><input id="go" type="image" src="/themes/<?=FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
 	--></form>
 </header>
 <!-- =================================================================================================================== -->
@@ -99,5 +99,6 @@
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
+<div id="grid"></div>
 <!-- page generated in: <?=round (microtime(true) - START, 3)?>s -->
 </body>
