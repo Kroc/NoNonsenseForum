@@ -44,8 +44,12 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 section h1			{background: #222 none no-repeat 15px 15px;}
 
 ol				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
-li				{margin: 0; padding: 10px 20px; border-bottom: 1px dotted #444;
-				 list-style-type: none; line-height: 20px; color: #888;}
+li				{margin: 0; border-bottom: 1px dotted #444;
+				 list-style-type: none; color: #888;
+				 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
+				    line of text is 20px so that the bottom border never shifts out of place
+				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
+				 padding: 9.999px 20px 9px; line-height: 20px;}
 
 p				{margin: 0; padding: 0 0 20px;}
 
@@ -60,35 +64,31 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 #mast				{padding: 40px 0 0;}
 #mast h1			{position: absolute; top: 0; left: 0; right: 0; padding-left: 0; font-size: 32px;
 				 width: 100%; /*< IE6 */}
-#mast h1 a			{position: relative; z-index: 1; /*< surprisingly, IE isn't affected by the search box
-				 overlapping the title link, so this is for the benefit of Firefox &.c */
-				 _position: static; /*< position: relative, whilst not needed for the above mentioned bug,
-				 causes IE6 to misrender the background image! this is an IE6-only attribute hack */
-				 margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
+#mast h1 a			{margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;
 				 background: url("icons/title.png") no-repeat 15px 50%;}
 
 /* the breadcrumb and rss / new buttons: */
 #mast nav			{width: 80%; margin: 40px auto 0;
 				 text-transform: uppercase; color: #888;}
-#mast nav p			{padding: 0 0 0 60px;}
+#mast nav p			{display: block; padding: 0 0 0 60px;}
 
-#index				{display: inline-block; /*< IE6/7 (even though they don’t support "inline-block") */
-				 padding-left: 36px; margin-left: -36px;
+#index				{display: block; padding-left: 36px; margin-left: -36px;
 				 background: url("icons/here.png") no-repeat 0 50%;}
 
 #add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
-
 #add				{margin-right: 20px;
 				 background: url("icons/add.png") no-repeat 0 3px;}
 #rss				{background: url("icons/rss.png") no-repeat 0 3px;}
 
 /* Google search box: */
-#search				{position: relative;
-				 width: auto; /*< this makes magic happen in IE6/7 */
+#search				{float: right; *float: none; /*< IE6 & 7 work without floating */
+				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
 				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
-				 margin: -20px 10% 0 auto; padding-right: 10px;
+				 margin: -20px 10% 0 auto; padding: 0 10px 0 0; overflow: hidden;
+				 border: none; /* very bizarely, the positioning magically adds a border */
 				 text-align: right; background: none;}
-#query				{width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: 0;
+#query				{display: block; /*< removes magic-spacing / height on input box */
+				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
 				 -webkit-border-radius: 10px;
 				    -moz-border-radius: 10px;
 				         border-radius: 10px;
@@ -101,7 +101,7 @@ input[type=search]		{-webkit-appearance:textfield;
 				 -webkit-box-sizing:content-box;}
 input[type=search]:focus	{outline: none;}
 
-#go				{position: absolute; margin-left: -20px; top: 4px;}
+#go				{position: relative; margin-left: -20px; top: -20px;}
 
 
 /* index page
@@ -110,7 +110,7 @@ section				{width: 80%; margin: 20px auto 0;
 				 background: #f7f6f7;}
 
 /* page list */
-section nav			{margin-top: -1px; padding: 0 20px; height: 40px; /*< height required for IE6/7 */
+section nav			{margin-top: -1px; padding: 0 20px; height: 41px; /*< height required for IE6/7 */
 				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px; word-spacing: 5px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
@@ -145,13 +145,15 @@ section h1 + nav		{background: none; float: right; margin-top: -50px;}
 /* thread page
    ====================================================================================================================== */
 article				{padding: 0 20px 0; border: 1px solid #444; border-width: 0 1px;}
+
+/* close the border within the 20px rhythm on the initial post */
 #post article			{border-bottom-width: 1px;}
+#post article :last-child	{padding-bottom: 19px;}
 
 #replies h1			{background-image: url("icons/replies.png");}
-#replies article header		{border-bottom: 1px dotted #444;}
 
-article header			{line-height: 40px; margin: 0 -20px 20px; padding: 0 20px; color: #888;
-				 background: #ccc;}
+article header			{line-height: 39px; margin: 0 -20px 20px; padding: 0 20px; border-bottom: 1px dotted #444;
+				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}
 
@@ -207,7 +209,8 @@ input[type=text],
 
 /* the "title" field, only present on the new thread form, index page */
 #ptitle				{display: table; width: 100%;}
-#ptitle label			{display: table-cell; width: 80px; height: 39px; line-height: 37px;
+#ptitle label			{display: table-cell; width: 80px; height: 39px;
+				 line-height: 38.999px; /*< Chrome gets this a pixel out, use imprecision to fix */
 				 border-bottom: 1px dotted #444;}
 #title				{display: table-cell; width: 100%;
 				 -webkit-box-shadow: inset 5px 0 5px -6px black;
@@ -223,9 +226,9 @@ input[type=text],
 				 _position: static;  /*< that then breaks IE6 :P */
 				 padding: 0 40px 0 0;}
 #text 				{display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
-				 border: 0; border-right: 1px dotted #444;
+				 border: none; border-right: 1px dotted #444;
 				 /* fix width for browsers that allow resizable text-areas */
-				 min-width: 100%; max-width: 100%; min-height: 230px; max-height: 700px;}
+				 min-width: 100%; max-width: 100%; min-height: 300px; max-height: 700px;}
 
 /* the e-mail field is an anti-spam feature and not used by the user */
 #pemail				{display: none;}
@@ -253,24 +256,28 @@ footer p a			{color: #888;}
    ====================================================================================================================== */
 @media screen and (max-width: 640px) {
 
-html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
+html, body			{/* prevent iPhone from zooming in when rotating */
+				 width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 
 #mast				{padding: 0;}
-#mast h1			{position: static; padding: 10px 0; font-size: 20px; line-height: 20px;}
-#mast h1 a			{position: static; display: block; height: 30px; margin: 0; padding: 10px 0 0 50px;
+#mast h1			{/* reduce the title size */
+				 position: static; padding: 5px 0 0; font-size: 20px; line-height: 20px;}
+#mast h1 a			{/* fit the logo in tighter */
+				 position: static; display: block; height: 30px; margin: 0; padding: 10px 0 0 55px;
 				 background-position: 10px 50%;}
-#search				{width: 100%; margin: 0; padding: 0 10px 10px 50px; border: none; text-align: right;
+#search				{/* re-position the search field below the title */
+				 width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px; border: none; text-align: right;
 				 -webkit-box-sizing: border-box;
 				 background: #222;}
-#query				{width: 100%; padding: 4px 0; text-indent: 20px; font-size: 18px;
+#query				{width: 100%; padding: 4px 0; text-indent: 15px; font-size: 18px;
 				 -webkit-box-sizing: padding-box;
 				 -webkit-border-radius: 14px;}
-#go				{top: 6px;}
+#go				{left: -5px; top: -22px;}
 
 #mast nav			{margin-top: 20px; overflow: hidden;}
 #mast nav p:last-child		{display: none;}
 
-#mast nav, #delete,
+#mast nav, #delete, #folders,
  #threads, #new, #reply, #post,
  #replies			{width: 95%;}
 
@@ -295,3 +302,20 @@ html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 footer p			{margin-left: 5% !important; padding-left: 0 !important;}
 
 }
+
+@media screen and (max-width: 640px) and (orientation: landscape) {
+
+/* when landscape, shrink the size of the search field, and place the RSS / New Thread links in the header */
+/*
+#search				{width: 50%;}
+
+#mast nav			{margin-top: -35px; background: #222;}
+*/
+
+}
+
+/* debugging */
+body>#grid			{position: absolute; width: 100%; height: 6000px; top: 0; left: 0; opacity: 0.25;
+				 background: transparent url("/themes/greyscale/grid.png") top left;
+				 pointer-events: none;
+				 display: none;}
