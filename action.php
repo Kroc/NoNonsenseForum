@@ -1,4 +1,4 @@
-<?php  //delete threads and posts
+<?php  //commit actions on posts, like delete, edit &c.
 /* ====================================================================================================================== */
 /* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>

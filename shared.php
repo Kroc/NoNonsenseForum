@@ -53,8 +53,8 @@ if (
 	define ('AUTH', false);
 }
 
-//whilst page number is not used everywhere (like 'delete.php'), it does no harm to get it here because it can simply be
-//ignored on 'delete.php' &c. whilst avoiding duplicated code on the scripts that do use it
+//whilst page number is not used everywhere (like 'action.php'), it does no harm to get it here because it can simply be
+//ignored on 'action.php' &c. whilst avoiding duplicated code on the scripts that do use it
 define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
 
 //all our pages use path (often optional) so this is done here
