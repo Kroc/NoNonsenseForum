@@ -243,20 +243,24 @@ XML
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
+	chdir (FORUM_ROOT);
+	
 	//we’re going to use the RSS files as sitemaps
-	$files = array ('/');
+	$folders = array ('');
 	//find all RSS files in the site
 	foreach (array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-		preg_grep ('/^(\.|users$|themes$)/', scandir (FORUM_ROOT), PREG_GREP_INVERT), 'is_dir'
-	) as $folder) $files[] = "/$folder";
+		preg_grep ('/^(\.|users$|themes$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
+	) as $folder) $folders[] = $folder;
 	
 	//generate a sitemap index file, to point to each RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
-	foreach ($files as $file) {
+	foreach ($folders as $folder) {
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		if (@$xml = simplexml_load_file (FORUM_ROOT."$file/index.xml")) @$sitemaps .= template_tags (<<<XML
+		if (
+			@$xml = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
+		) @$sitemaps .= template_tags (<<<XML
 <sitemap>
 	<loc>http://${_SERVER['HTTP_HOST']}&__FILE__;/index.xml</loc>
 	<lastmod>&__DATE__;</lastmod>
@@ -264,8 +268,8 @@ XML
 
 XML
 		, array (
-			'FILE'	=> safeHTML (rawurlencode ($file)),
-			'DATE'	=> gmdate ('r', strtotime ($xml->item[0]->pubDate))
+			'FILE'	=> $folder ? '/'.safeHTML (rawurlencode ($folder)) : '',
+			'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
 		));
 	}
 	
