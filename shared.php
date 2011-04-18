@@ -192,4 +192,57 @@ function formatText ($text) {
 	return $text;
 }
 
+//regenerate a folder's RSS file (all changes happening in a folder)
+function indexRSS () {
+	//get list of threads
+	$threads = preg_grep ('/\.xml$/', scandir ('.'));
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);	//look ma, no loop!
+	
+	//get the last post made in each thread as an RSS item
+	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) {
+		$xml  = simplexml_load_file ($thread);
+		$item = $xml->channel->item[0];
+		
+		@$rss .= template_tags (<<<XML
+<item>
+	<title>&__TITLE__;</title>
+	<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+	<author>&__NAME__;</author>
+	<pubDate>&__DATE__;</pubDate>
+	<description>&__TEXT__;</description>
+</item>
+XML
+		, array (
+			'TITLE'	=> safeHTML ($item->title),
+			'URL'	=> PATH_URL.pathinfo ($thread, PATHINFO_FILENAME),
+			'NAME'	=> safeHTML ($item->author),
+			'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
+			'TEXT'	=> safeHTML ($item->description),
+		));
+	}
+	
+	file_put_contents ('index.rss', template_tags (<<<XML
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<atom:link href="http://${_SERVER['HTTP_HOST']}&__PATH__;index.rss" rel="self" type="application/rss+xml" />
+<title>&__TITLE__;</title>
+<link>http://${_SERVER['HTTP_HOST']}/</link>
+
+&__ITEMS__;
+
+</channel>
+</rss>
+XML
+	, array (
+		'PATH'	=> safeHTML (PATH_URL),
+		'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
+		//if all threads are deleted, there won’t be any <item>s
+		'ITEMS'	=> @$rss ? $rss : ""
+	)));
+	
+	//you saw nothing, right?
+	clearstatcache ();
+}
+
 ?>

@@ -37,7 +37,9 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		
 		//save
 		file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
-		clearstatcache ();
+		
+		//regenerate the folder's RSS file
+		indexRSS ();
 	}
 	
 	//refresh page to see the new post added
@@ -108,10 +110,10 @@ if (FORUM_ENABLED) $FORM = array (
 	'PASS'	=> safeString (PASS),
 	'TEXT'	=> safeString (TEXT),
 	'ERROR'	=> empty ($_POST) ? ERROR_NONE
-		   : (!NAME ? ERROR_NAME
-		   : (!PASS ? ERROR_PASS
-		   : (!TEXT ? ERROR_TEXT
-		   : ERROR_AUTH)))
+		 : (!NAME ? ERROR_NAME
+		 : (!PASS ? ERROR_PASS
+		 : (!TEXT ? ERROR_TEXT
+		 : ERROR_AUTH)))
 );
 
 //all the data prepared, now output the HTML

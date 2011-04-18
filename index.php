@@ -14,9 +14,9 @@ define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, SIZE_TEXT,  'UTF-8'));
 
 /* ====================================================================================================================== */
 
-//has the user the submitted a new thread? (and is the info valid?)
+//has the user submitted a new thread? (and is the info valid?)
 if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
-	//the file on disk is a simplified version of the title
+	//the file on disk is a simplified version of the title:
 	$c = 0; do $file = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
 		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
@@ -57,7 +57,9 @@ XML
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText (TEXT)),
 	)));
-	clearstatcache ();
+	
+	//regenerate the folder's RSS file
+	indexRSS ();
 	
 	//redirect to newley created thread
 	header ('Location: '.FORUM_URL.PATH_URL.$file, true, 303);
@@ -136,11 +138,11 @@ if (FORUM_ENABLED) $FORM = array (
 	'TITLE'	=> safeString (TITLE),
 	'TEXT'	=> safeHTML (TEXT),
 	'ERROR'	=> empty ($_POST) ? ERROR_NONE	//no problem? show default help text
-		   : (!NAME  ? ERROR_NAME	//the name is missing
-		   : (!PASS  ? ERROR_PASS	//the password is missing
-		   : (!TITLE ? ERROR_TITLE	//the title is missing
-		   : (!TEXT  ? ERROR_TEXT	//the message text is missing
-		   : ERROR_AUTH))))		//the name / password pair didn’t match
+		 : (!NAME  ? ERROR_NAME		//the name is missing
+		 : (!PASS  ? ERROR_PASS		//the password is missing
+		 : (!TITLE ? ERROR_TITLE	//the title is missing
+		 : (!TEXT  ? ERROR_TEXT		//the message text is missing
+		 : ERROR_AUTH))))		//the name / password pair didn’t match
 );
 
 //all the data prepared, now output the HTML

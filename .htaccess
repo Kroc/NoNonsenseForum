@@ -64,7 +64,3 @@ RewriteRule ^(?:([^./&]+)/)?$ /?path=$1 [QSA,L]
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?([^./]+)$
 RewriteCond %{DOCUMENT_ROOT}%0.xml -f
 RewriteRule ^(?:([^./&]+)/)?([^./]+)$ /thread.php?path=$1&file=$2 [QSA,L]
-
-# an index RSS feed
-RewriteCond %{REQUEST_URI} ^/([^./&]+/)?index.rss$
-RewriteRule ^(?:([^./&]+)/)?index.rss$ /rss.php?path=$1 [QSA,L]

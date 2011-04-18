@@ -40,8 +40,8 @@ if (
 	//note: this may fail if the file is not owned by the Apache process
 	@touch ("$FILE.xml", strtotime ($xml->channel->item[0]->pubDate));
 	
-	//you saw nothing, right?
-	clearstatcache ();
+	//regenerate the folder's RSS file
+	indexRSS ();
 	
 	//return to the deleted post
 	header ('Location: '.FORUM_URL.PATH_URL."$FILE#".ID, true, 303);
@@ -50,6 +50,9 @@ if (
 } else {
 	//delete the thread for reals
 	@unlink (FORUM_ROOT.PATH_DIR."$FILE.xml");
+	
+	//regenerate the folder's RSS file
+	indexRSS ();
 	
 	//return to the index
 	header ('Location: '.FORUM_URL.PATH_URL, true, 303);
@@ -63,12 +66,12 @@ $HEADER = array (
 );
 
 $FORM = array (
-	'NAME'	=> safeString (NAME),
-	'PASS'	=> safeString (PASS),
-	'ERROR'	=> empty ($_POST) ? ERROR_NONE
-		   : (!NAME ? ERROR_NAME
-		   : (!PASS ? ERROR_PASS
-		   : ERROR_AUTH))
+	'NAME'		=> safeString (NAME),
+	'PASS'		=> safeString (PASS),
+	'ERROR'		=> empty ($_POST) ? ERROR_NONE
+			 : (!NAME ? ERROR_NAME
+			 : (!PASS ? ERROR_PASS
+			 : ERROR_AUTH))
 );
 
 $POST = array (
