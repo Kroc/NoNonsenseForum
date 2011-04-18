@@ -47,14 +47,6 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-ol				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
-li				{margin: 0; border-bottom: 1px dotted #444;
-				 list-style-type: none; color: #888;
-				 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
-				    line of text is 20px so that the bottom border never shifts out of place
-				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
-				 padding: 9.999px 20px 9px; line-height: 20px;}
-
 p				{margin: 0; padding: 0 0 20px;}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
@@ -114,17 +106,34 @@ section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 
 /* page list */
-section nav			{margin-top: -1px; padding: 0 20px; height: 41px; /*< height required for IE6/7 */
+section nav			{margin-top: -1px; padding: 0 1px; height: 41px; /*< height required for IE6/7 */
 				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px; word-spacing: 5px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
-section nav em			{color: #f7f6f7; font-weight: bold; font-style: normal;}
-section nav a			{color: #aaa;}
-section nav a:hover		{color: white;}
+section nav a			{}
+section nav a:hover		{}
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-section h1 + nav		{background: none; float: right; margin-top: -50px;}
+section h1 + nav		{background: none; float: right; margin-top: -50px; padding-right: 10px;}
+
+ol.pages			{float: right; display: block; margin: 0 0 0 10px; padding: 0;}
+ol.pages li			{display: block; float: left; margin: 1px 0 0 0; padding: 0; width: 40px; height: 39px;
+				 text-align: center;}
+ol.pages a			{display: block; width: 40px; height: 39px;
+				 color: #aaa; text-decoration: none;}
+ol.pages a:hover		{color: white; background-color: #888;}
+ol.pages em			{color: white; font-style: normal;}
+
+/* item list (folders / threads) */
+ol.ui				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
+ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
+				 list-style-type: none; color: #888;
+				 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
+				    line of text is 20px so that the bottom border never shifts out of place
+				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
+				 padding: 9.999px 20px 9px; line-height: 20px;}
+
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
@@ -133,17 +142,17 @@ section h1 + nav		{background: none; float: right; margin-top: -50px;}
 #threads h1, #post h1		{background-image: url("icons/threads.png");}
 
 /* folder / thread names: */
-#folders li			{border-bottom: 1px solid #444;}
+#folders ol.ui li		{border-bottom: 1px solid #444;}
 
-#threads li			{padding-left: 60px;}
-#threads li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
+#threads ol.ui li		{padding-left: 60px;}
+#threads ol.ui li i		{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, Tahoma, sans-serif; text-align: right;}
-#threads li img			{margin-left: -20px; vertical-align: top;}
-#threads li b			{float: right; padding-left: 10px; text-align: right;}
+#threads ol.ui li img		{margin-left: -20px; vertical-align: top;}
+#threads ol.ui li b		{float: right; padding-left: 10px; text-align: right;}
 
-#threads li.sticky		{background: #eee;}
+#threads ol.ui li.sticky	{background: #eee;}
 
-#threads li time		{float: right; width: 9.1em; text-align: right;}
+#threads ol.ui li time		{float: right; width: 9.1em; text-align: right;}
 
 
 /* thread page

@@ -1,14 +1,13 @@
 <?php
-//conactenate page links
 if (isset ($PAGES)) {
 	foreach ($PAGES as &$PAGE) if ($PAGE == PAGE) {
-		$PAGE = "<em>$PAGE</em>";
+		$PAGE = "<li><em>$PAGE</em></li>";
 	} elseif ($PAGE) {
-		$PAGE = "<a href=\"?page=$PAGE#threads\">$PAGE</a>";
+		$PAGE = "<li><a href=\"?page=$PAGE#threads\">$PAGE</a></li>";
 	} else {
-		$PAGE = '…';
+		$PAGE = '<li>…</li>';
 	}
-	$PAGES = (implode (', ', $PAGES));
+	$PAGES = (implode ('', $PAGES));
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
@@ -58,7 +57,7 @@ if (isset ($PAGES)) {
 <?php if (isset ($FOLDERS)): ?>
 <section id="folders">
 	<h1>Sub-Forums</h1>
-	<ol>
+	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a></li>
 <?php endforeach; ?>
@@ -69,8 +68,8 @@ if (isset ($PAGES)) {
 <?php if (isset ($THREADS) || isset ($STICKIES)): ?>
 <section id="threads">
 	<h1>Threads</h1>
-	<nav class="pages">Page <?=$PAGES?></nav>
-	<ol>
+	<nav>Page <ol class="pages"><?=$PAGES?></ol></nav>
+	<ol class="ui">
 <?php if (isset ($STICKIES)): ?>
 <?php foreach ($STICKIES as $THREAD): ?>
 		<li class="sticky">
@@ -90,7 +89,7 @@ if (isset ($PAGES)) {
 		</li>
 <?php endforeach; ?>
 	</ol>
-	<nav class="pages">Page <?=$PAGES?></nav>
+	<nav>Page <ol class="pages"><?=$PAGES?><ol></nav>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->

@@ -1,16 +1,15 @@
 <?php
 if (isset ($PAGES)) {
 	foreach ($PAGES as &$PAGE) if ($PAGE == PAGE) {
-		$PAGE = "<em>$PAGE</em>";
+		$PAGE = "<li><em>$PAGE</em></li>";
 	} elseif ($PAGE) {
-		$PAGE = "<a href=\"?page=$PAGE#replies\">$PAGE</a>";
+		$PAGE = "<li><a href=\"?page=$PAGE#replies\">$PAGE</a></li>";
 	} else {
-		$PAGE = '…';
+		$PAGE = '<li>…</li>';
 	}
-	$PAGES = (implode (', ', $PAGES));
+	$PAGES = (implode ('', $PAGES));
 }
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <meta charset="utf-8" />
 <!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
@@ -73,7 +72,7 @@ if (isset ($PAGES)) {
 <?php if (isset ($POSTS)): ?>
 <section id="replies">
 	<h1>Replies</h1>
-	<nav class="pages">Page <?=$PAGES?></nav>
+	<nav>Page <ol class="pages"><?=$PAGES?><ol></nav>
 	
 <?php foreach ($POSTS as $POST): ?>
 	<article id="<?=$POST['ID']?>" class="<?=($POST['DELETED'] ? 'deleted' : ($POST['OP'] ? 'op' : ''))?>">
@@ -87,7 +86,7 @@ if (isset ($PAGES)) {
 	</article>
 <?php endforeach; ?>
 	
-	<nav class="pages">Page <?=$PAGES?></nav>
+	<nav>Page <ol class="pages"><?=$PAGES?></ol></nav>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->
