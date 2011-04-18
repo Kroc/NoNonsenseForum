@@ -68,7 +68,7 @@ if (isset ($PAGES)) {
 <?php if (isset ($THREADS) || isset ($STICKIES)): ?>
 <section id="threads">
 	<h1>Threads</h1>
-	<nav>Page <ol class="pages"><?=$PAGES?></ol></nav>
+	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 	<ol class="ui">
 <?php if (isset ($STICKIES)): ?>
 <?php foreach ($STICKIES as $THREAD): ?>
@@ -89,7 +89,7 @@ if (isset ($PAGES)) {
 		</li>
 <?php endforeach; ?>
 	</ol>
-	<nav>Page <ol class="pages"><?=$PAGES?><ol></nav>
+	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->

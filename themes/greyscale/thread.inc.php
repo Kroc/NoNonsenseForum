@@ -72,7 +72,7 @@ if (isset ($PAGES)) {
 <?php if (isset ($POSTS)): ?>
 <section id="replies">
 	<h1>Replies</h1>
-	<nav>Page <ol class="pages"><?=$PAGES?><ol></nav>
+	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 	
 <?php foreach ($POSTS as $POST): ?>
 	<article id="<?=$POST['ID']?>" class="<?=($POST['DELETED'] ? 'deleted' : ($POST['OP'] ? 'op' : ''))?>">
@@ -86,7 +86,7 @@ if (isset ($PAGES)) {
 	</article>
 <?php endforeach; ?>
 	
-	<nav>Page <ol class="pages"><?=$PAGES?></ol></nav>
+	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->

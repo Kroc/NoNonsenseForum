@@ -106,18 +106,16 @@ section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 
 /* page list */
-section nav			{margin-top: -1px; padding: 0 1px; height: 41px; /*< height required for IE6/7 */
-				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px; word-spacing: 5px;
+section nav			{position: relative; height: 41px; overflow: hidden; margin-top: -1px; padding: 0 1px;
+				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
-section nav a			{}
-section nav a:hover		{}
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-section h1 + nav		{background: none; float: right; margin-top: -50px; padding-right: 10px;}
+section>h1 + nav		{background: none; float: right; margin-top: -50px; padding-right: 10px;}
 
-ol.pages			{float: right; display: block; margin: 0 0 0 10px; padding: 0;}
+ol.pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
 ol.pages li			{display: block; float: left; margin: 1px 0 0 0; padding: 0; width: 40px; height: 39px;
 				 text-align: center;}
 ol.pages a			{display: block; width: 40px; height: 39px;
