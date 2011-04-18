@@ -28,14 +28,14 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] =
 		//if a thread already exsits with that name, append a number until an available filename is found
 		)).($c++ ? '_'.($c-1) : '')
 	);
-	while (file_exists ("$file.xml"));
+	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file
-	file_put_contents ("$file.xml", template_tags (<<<XML
+	file_put_contents ("$file.rss", template_tags (<<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}&__URL__;.xml" rel="self" type="application/rss+xml" />
+<atom:link href="http://${_SERVER['HTTP_HOST']}&__URL__;.rss" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
 <link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
 
@@ -84,7 +84,7 @@ foreach (array_filter (
 );
 
 //get list of threads (if any--could be an empty folder)
-if ($threads = preg_grep ('/\.xml$/', scandir ('.'))) {
+if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//order by last modified date
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	

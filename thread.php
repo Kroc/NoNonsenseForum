@@ -9,7 +9,7 @@ require_once 'shared.php';
 
 //which thread to show
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
-$xml  = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Malformed XML');
+$xml  = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Malformed XML');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
@@ -36,7 +36,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
 		
 		//save
-		file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+		file_put_contents ("$FILE.rss", $xml->asXML (), LOCK_EX);
 		
 		//regenerate the folder's RSS file
 		indexRSS ();
@@ -53,7 +53,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 $HEADER = array (
 	'THREAD'	=> safeHTML ($xml->channel->title),
 	'PAGE'		=> PAGE,
-	'RSS'		=> "$FILE.xml",
+	'RSS'		=> "$FILE.rss",
 	'PATH'		=> safeHTML (PATH),
 	'PATH_URL'	=> PATH_URL
 );

@@ -20,14 +20,17 @@ RewriteRule ^ - [F]
 
 DirectoryIndex index.php
 
-AddType application/rss+xml	.rss .xml
+AddType application/rss+xml	.rss
+<Files "index.xml">
+	ForceType application/rss+xml
+</Files>
 
 AddType font/ttf		.ttf
 AddType font/x-woff		.woff
 
 # force utf-8 for a number of file formats:
 AddDefaultCharset utf-8
-AddCharset utf-8 .css .xml .txt
+AddCharset utf-8 .css .xml .rss .txt
 
 <IfModule mod_deflate.c>
 	AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript text/javascript application/javascript application/json text/xml application/xml application/rss+xml
@@ -62,5 +65,5 @@ RewriteRule ^(?:([^./&]+)/)?$ /?path=$1 [QSA,L]
 
 # a thread
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?([^./]+)$
-RewriteCond %{DOCUMENT_ROOT}%0.xml -f
+RewriteCond %{DOCUMENT_ROOT}%0.rss -f
 RewriteRule ^(?:([^./&]+)/)?([^./]+)$ /thread.php?path=$1&file=$2 [QSA,L]

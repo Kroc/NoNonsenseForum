@@ -40,10 +40,10 @@ Stickying Threads:
 ------------------
 If you would like a thread to always remain at the top of the threads list, also regardless of page number, create a file "sticky.txt" in the webroot or particular folder.
 
-In your sticky.txt file add the filename of each thread you would like to sticky on separate lines, including the ".xml" file extension. For example:
+In your sticky.txt file add the filename of each thread you would like to sticky on separate lines, including the ".rss" file extension. For example:
 
-the_rules.xml
-f_a_q_.xml
+the_rules.rss
+f_a_q_.rss
 
 
 Understanding Name Reservation:

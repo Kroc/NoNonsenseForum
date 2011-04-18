@@ -23,7 +23,7 @@ if (isset ($PAGES)) {
 	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
 <![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
-<link rel="alternate" type="application/rss+xml" href="index.rss" />
+<link rel="alternate" type="application/rss+xml" href="index.xml" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
@@ -49,7 +49,7 @@ if (isset ($PAGES)) {
 	
 	<nav><p>
 		<a id="add" href="#new">Add Thread</a>
-		<a id="rss" href="index.rss">RSS</a>
+		<a id="rss" href="index.xml">RSS</a>
 	</p><p>
 		<a id="index" href="/">Index</a><?php if ($HEADER['PATH']): ?> » <?=$HEADER['PATH']?><?php endif; ?>
 	</p></nav>

@@ -1,6 +1,6 @@
 users/*.txt
+*.rss
 *.xml
 sticky.txt
 mods.txt
 config.php
-index.rss

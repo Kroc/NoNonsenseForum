@@ -16,7 +16,7 @@ $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die
 define ('ID', preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1);
 
 //load the thread to get the post preview
-$xml = simplexml_load_file ("$FILE.xml", 'allow_prepend') or die ('Invalid file');
+$xml  = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Invalid file');
 $post = &$xml->channel->item[count ($xml->channel->item) - ID];
 
 //has the un/pw been submitted to authenticate the delete?
@@ -33,12 +33,12 @@ if (
 	if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 	
 	//commit the data
-	file_put_contents ("$FILE.xml", $xml->asXML (), LOCK_EX);
+	file_put_contents ("$FILE.rss", $xml->asXML (), LOCK_EX);
 	
 	//try set the modified date of the file back to the time of the last comment
 	//(so that deleting does not push the thread back to the top of the list)
 	//note: this may fail if the file is not owned by the Apache process
-	@touch ("$FILE.xml", strtotime ($xml->channel->item[0]->pubDate));
+	@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
@@ -49,7 +49,7 @@ if (
 	
 } else {
 	//delete the thread for reals
-	@unlink (FORUM_ROOT.PATH_DIR."$FILE.xml");
+	@unlink (FORUM_ROOT.PATH_DIR."$FILE.rss");
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
