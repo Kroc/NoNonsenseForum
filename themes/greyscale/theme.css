@@ -47,11 +47,11 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-blockquote			{margin: 0 0 20px 0; padding: 20px 20px 0;
+blockquote			{margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
 				 font-style: italic;}
 
-p				{margin: 0; padding: 0 0 20px;}
+p				{margin: 0; padding: 20px 0 0;}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
 a:hover				{color: #666; text-decoration: underline;}
@@ -159,15 +159,15 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 
 /* thread page
    ====================================================================================================================== */
-article				{padding: 0 20px 0; border: 1px solid #444; border-width: 0 1px;}
+article				{padding: 0 20px 20px; border: 1px solid #444; border-width: 0 1px;}
 
 /* close the border within the 20px rhythm on the initial post */
-#post article			{border-bottom-width: 1px;}
-#post article :last-child	{padding-bottom: 19px;}
+#post article			{padding-bottom: 19px !important; border-bottom-width: 1px;}
+#post article :last-child	{/*padding-bottom: 19px;*/}
 
 #replies h1			{background-image: url("icons/replies.png");}
 
-article header			{line-height: 39px; margin: 0 -20px 20px; padding: 0 20px; border-bottom: 1px dotted #444;
+article header			{line-height: 39px; margin: 0 -20px 0; padding: 0 20px; border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}
@@ -261,7 +261,7 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 20px 0 0; left: 0; right: 0;
+footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 0 0 20px; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
 				 background: #222;}
 
