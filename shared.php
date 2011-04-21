@@ -134,7 +134,7 @@ function pageList ($current, $total) {
 //take the author's message, process bbcode, and encode it safely for the RSS feed
 function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
-	$text = trim (preg_replace ('/\r\n?/', "\n", $text));
+	$text = preg_replace ('/\r\n?/', "\n", $text);
 	
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
@@ -164,7 +164,7 @@ function formatText ($text) {
 	while (preg_match ($regx, $text)) $text = preg_replace ($regx, "\n<blockquote>\n\n$4\n\n</blockquote>\n", $text);
 	
 	//add paragraph tags between blank lines
-	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
+	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		if ($chunk[0] != "<") $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
