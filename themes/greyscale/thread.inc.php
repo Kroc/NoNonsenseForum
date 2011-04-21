@@ -62,7 +62,7 @@ if (isset ($PAGES)) {
 		<header>
 			<a class="delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#<?=$POST['ID']?>">#1.</a> <b><?=$POST['AUTHOR']?></b>
+			<b><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>

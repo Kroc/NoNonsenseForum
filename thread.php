@@ -90,7 +90,7 @@ if (count ($thread)) {
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	//ID of the posts, accounting for which page we are on
-	$no = 2 + ((PAGE-1) * FORUM_POSTS);
+	$no = (PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$post) $POSTS[] = array (
 		'AUTHOR'	=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
@@ -100,7 +100,7 @@ if (count ($thread)) {
 		'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'OP'		=> $post->author == $author,
-		'NO'		=> $no++,
+		'NO'		=> ++$no,
 		'ID'		=> substr (strstr ($post->link, '#'), 1)
 	);
 }

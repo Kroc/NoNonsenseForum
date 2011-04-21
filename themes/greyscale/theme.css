@@ -167,6 +167,8 @@ article header			{line-height: 39px; margin: 0 -20px 20px; padding: 0 20px; bord
 				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}
+#post article header b		{/* the first post doesn’t have a number, only replies */
+				 margin-left: 0;}
 
 article header time,
  article header .delete		{float: right;}
