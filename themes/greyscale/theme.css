@@ -51,6 +51,14 @@ blockquote			{margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
 				 font-style: italic;}
 
+/* in good browsers, do not allow the top-dotted line to appear… */
+header+blockquote,		/* …if the quote is the first thing in a post */
+ blockquote:first-child		{margin-top: 20px; border-top: none;}
+header+blockquote>p:first-child,/* …if a quote is the first thing in another quote */
+ blockquote:first-child		/* (this just makes quotes more compact and subtle) */
+ >p:first-child			{padding-top: 0;}
+
+
 p				{margin: 0; padding: 20px 0 0;}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
