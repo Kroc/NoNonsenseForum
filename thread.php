@@ -20,7 +20,7 @@ define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
 if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//where to?
 	$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-	$url  = PATH_URL."$FILE?page=$page#".(count ($xml->channel->item)+1);
+	$url  = PATH_URL.$FILE.($page > 1 ? "?page=$page" : '')."#".base_convert (microtime (), 10, 36);
 	
 	//ignore a double-post (could be an accident with the back button)
 	if (!(
@@ -71,7 +71,8 @@ $POST = array (
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE",
-	'TEXT'		=> $post->description
+	'TEXT'		=> $post->description,
+	'ID'		=> substr (strstr ($post->link, '#'), 1)
 );
 
 //remember the original poster’s name, for marking replies by the OP
@@ -89,16 +90,18 @@ if (count ($thread)) {
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	//ID of the posts, accounting for which page we are on
-	$id = 2 + ((PAGE-1) * FORUM_POSTS);
+	$no = 2 + ((PAGE-1) * FORUM_POSTS);
 	foreach ($thread as &$post) $POSTS[] = array (
 		'AUTHOR'	=> safeHTML ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
-		'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id=$id",
+		'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+				  .substr (strstr ($post->link, '#'), 1),
 		'OP'		=> $post->author == $author,
-		'ID'		=> $id++
+		'NO'		=> $no++,
+		'ID'		=> substr (strstr ($post->link, '#'), 1)
 	);
 }
 

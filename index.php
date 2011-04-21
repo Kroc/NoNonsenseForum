@@ -41,7 +41,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] =
 
 <item>
 	<title>&__TITLE__;</title>
-	<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+	<link>http://${_SERVER['HTTP_HOST']}&__URL__;#&__ID__;</link>
 	<author>&__NAME__;</author>
 	<pubDate>&__DATE__;</pubDate>
 	<description>&__TEXT__;</description>
@@ -52,10 +52,11 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] =
 XML
 	, array (
 		'TITLE'	=> safeHTML (TITLE),
-		'URL'	=> PATH_URL."$file#1",
+		'URL'	=> PATH_URL.$file,
 		'NAME'	=> safeHTML (NAME),
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText (TEXT)),
+		'ID'	=> base_convert (microtime (), 10, 36)
 	)));
 	
 	//regenerate the folder's RSS file
@@ -114,8 +115,8 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		
 		$thread = array (
 			//link to the thread--go to the last page of replies
-			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page='.(count ($xml->channel->item) > 1
-						? ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : 1
+			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).(count ($xml->channel->item) > FORUM_POSTS+1
+						? '?page='.ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : ''
 					),
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item),

@@ -56,13 +56,13 @@ if (isset ($PAGES)) {
 </header>
 <!-- =================================================================================================================== -->
 <section id="post">
-	<h1><?=$POST['TITLE']?></h1>
+	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
 	
-	<article id="1" class="op">
+	<article class="op">
 		<header>
 			<a class="delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#1">#1.</a> <b><?=$POST['AUTHOR']?></b>
+			<a href="#<?=$POST['ID']?>">#1.</a> <b><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>
@@ -79,7 +79,7 @@ if (isset ($PAGES)) {
 		<header>
 			<?php if (!$POST['DELETED']): ?><a class="delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a><?php endif;?>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#<?=$POST['ID']?>">#<?=$POST['ID']?>.</a> <b><?=$POST['AUTHOR']?></b>
+			<a href="#<?=$POST['ID']?>">#<?=$POST['NO']?>.</a> <b><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>

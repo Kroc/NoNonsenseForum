@@ -14,11 +14,16 @@ if (isset ($_GET['delete'])) {
 	$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 	
 	//if deleting just one post, rather than the thread
-	define ('ID', preg_match ('/^[1-9][0-9]*$/', @$_GET['id']) ? (int) $_GET['id'] : 1);
+	define ('ID', preg_match ('/^[A-Z0-9]+$/i', @$_GET['id']) ? $_GET['id'] : false);
 	
 	//load the thread to get the post preview
 	$xml  = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Invalid file');
-	$post = &$xml->channel->item[count ($xml->channel->item) - ID];
+	//access the particular post. if no ID is provided (deleting the whole thread) use the last item in the RSS file
+	//(the first post), otherwise find the ID of the specific post
+	$post = !ID ? $xml->channel->item[count ($xml->channel->item) - 1] : @reset ($xml->channel->xpath (
+		//this is an xpath 1.0 equivalent of 'ends-with', basically find the permalink with the same ID on the end
+		'//item[substring(link, string-length(link) - '.(strlen (ID)-1).') = "'.ID.'"]')
+	);
 	
 	//has the un/pw been submitted to authenticate the delete?
 	if (
@@ -27,7 +32,7 @@ if (isset ($_GET['delete'])) {
 		&& (isMod (NAME) || NAME == (string) $post->author)
 		
 	//deleting a post?
-	) if (@$_GET['id']) {
+	) if (ID) {
 		//remove the post text
 		$post->description = (NAME == (string) $post->author) ? TEMPLATE_DELETE_USER : TEMPLATE_DELETE_MOD;
 		//add a "deleted" category so we know to no longer allow it to be edited or deleted again
