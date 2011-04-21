@@ -77,15 +77,25 @@ header ('Expires: 0', true);
 
 /* ====================================================================================================================== */
 
-//replace a marker (“&__TAG__;”) in the template with some other text
-function template_tag ($s_template, $s_tag, $s_content) {
-	return str_replace ("&__${s_tag}__;", $s_content , $s_template);
+//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
+//we could of course do all the XML manipulation in DOM proper to save doing this…
+class allow_prepend extends SimpleXMLElement {
+	public function prependChild ($name, $value=null) {
+		$dom = dom_import_simplexml ($this);
+		$new = $dom->insertBefore (
+			$dom->ownerDocument->createElement ($name, $value),
+			$dom->firstChild
+		);
+		return simplexml_import_dom ($new, get_class ($this));
+	}
 }
 
-//replace many markers in one go
-function template_tags ($s_template, $a_values) {
-	foreach ($a_values as $key=>&$value) $s_template = template_tag ($s_template, $key, $value);
-	return $s_template;
+/* ====================================================================================================================== */
+
+//replace markers (“&__TAG__;”) in the template with some other text
+function template_tags ($template, $values) {
+	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
+	return $template;
 }
 
 //santise output:
@@ -95,7 +105,7 @@ function safeHTML ($text) {
 }
 function safeString ($text) {
 	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
-	return htmlspecialchars ($text, ENT_COMPAT, 'UTF-8');
+	return htmlspecialchars ($text, ENT_COMPAT,   'UTF-8');
 }
 
 //produces a truncated list of pages around the current page
@@ -121,44 +131,10 @@ function pageList ($current, $total) {
 	return $PAGES;
 }
 
-/* ====================================================================================================================== */
-
-//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-//we could of course do all the XML manipulation in DOM proper to save doing this…
-class allow_prepend extends SimpleXMLElement {
-	public function prependChild ($name, $value=null) {
-		$dom = dom_import_simplexml ($this);
-		$new = $dom->insertBefore (
-			$dom->ownerDocument->createElement ($name, $value),
-			$dom->firstChild
-		);
-		return simplexml_import_dom ($new, get_class ($this));
-	}
-}
-
-/* ====================================================================================================================== */
-
-//check to see if a name is a known moderator in mods.txt
-function isMod ($name) {
-	//'mods.txt' on webroot defines moderators for the whole forum
-	return (file_exists (FORUM_ROOT.'/mods.txt') && in_array (
-		strtolower ($name),  //(names are case insensitive)
-		array_map ('strtolower', file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-		
-	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
-	//(it is assumed that the current working directory has been changed to the sub-folder in question)
-	)) || (PATH && file_exists ('mods.txt') && in_array (
-		strtolower ($name),
-		array_map ('strtolower', file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-	));
-}
-
-/* ====================================================================================================================== */
-
 //take the author's message, process bbcode, and encode it safely for the RSS feed
 function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
-	$text = preg_replace ('/\r\n?/', "\n", $text);
+	$text = trim (preg_replace ('/\r\n?/', "\n", $text));
 	
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
@@ -183,14 +159,37 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
 	
+	//quotes
+	$regx = '/(?:^\n|\A)(?:(")|(“)|(«))((?>[^"“«]|"(?4)"|“(?4)”|«(?4)»)*?)(?(1)"|(?(2)”|»))(?:\n$|\Z)/msiu';
+	while (preg_match ($regx, $text)) $text = preg_replace ($regx, "\n<blockquote>\n\n$4\n\n</blockquote>\n", $text);
+	
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', $text, -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if ($chunk[0] != "<") $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
 	return $text;
 }
+
+/* ====================================================================================================================== */
+
+//check to see if a name is a known moderator in mods.txt
+function isMod ($name) {
+	//'mods.txt' on webroot defines moderators for the whole forum
+	return (file_exists (FORUM_ROOT.'/mods.txt') && in_array (
+		strtolower ($name),  //(names are case insensitive)
+		array_map ('strtolower', file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+		
+	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
+	//(it is assumed that the current working directory has been changed to the sub-folder in question)
+	)) || (PATH && file_exists ('mods.txt') && in_array (
+		strtolower ($name),
+		array_map ('strtolower', file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
+	));
+}
+
+/* ====================================================================================================================== */
 
 //regenerate a folder's RSS file (all changes happening in a folder)
 function indexRSS () {

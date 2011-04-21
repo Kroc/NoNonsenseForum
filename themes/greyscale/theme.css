@@ -47,6 +47,10 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
+blockquote			{margin: 0 0 20px 0; padding: 20px 20px 0;
+				 border: 1px dotted #222; border-width: 1px 0 0 1px;
+				 font-style: italic;}
+
 p				{margin: 0; padding: 0 0 20px;}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
