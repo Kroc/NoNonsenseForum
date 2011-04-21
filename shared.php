@@ -160,7 +160,7 @@ function formatText ($text) {
 	$text);
 	
 	//quotes
-	$regx = '/(?:^\n|\A)(?:(")|(“)|(«))((?>.|"(?4)"|“(?4)”|«(?4)»)*?)(?(1)"|(?(2)”|»))(?:\n$|\Z)/msiu';
+	$regx = '/(?:^\n|\A)(?:(")|(“)|(«))((?>"(?4)"|“(?4)”|«(?4)»|.)*?)(?(1)"|(?(2)”|»))(?:\n$|\Z)/msiu';
 	while (preg_match ($regx, $text)) $text = preg_replace ($regx, "\n<blockquote>\n\n$4\n\n</blockquote>\n", $text);
 	
 	//add paragraph tags between blank lines
