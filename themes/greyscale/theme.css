@@ -47,7 +47,7 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-blockquote			{margin: 19px 0 0; padding: 0 20px 0 19px;
+blockquote			{position: relative; margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
 				 font-style: italic;}
 
@@ -58,6 +58,10 @@ header+blockquote>p:first-child,/* …if a quote is the first thing in another q
  blockquote:first-child		/* (this just makes quotes more compact and subtle) */
  >p:first-child			{padding-top: 0;}
 
+/* added quote marks within blockquotes */
+.ql, .qr			{padding-right: 5px;
+				 font: normal 40px/0px sans-serif; vertical-align: bottom;}
+.qr				{position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
 
 p				{margin: 0; padding: 20px 0 0;}
 

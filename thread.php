@@ -18,19 +18,19 @@ define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
 
 //was the submit button clicked? (and is the info valid?)
 if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
-	//where to?
-	$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-	$url  = PATH_URL.$FILE.($page > 1 ? "?page=$page" : '')."#".base_convert (microtime (), 10, 36);
-	
 	//ignore a double-post (could be an accident with the back button)
 	if (!(
 		NAME == $xml->channel->item[0]->author &&
 		formatText (TEXT) == $xml->channel->item[0]->description
 	)) {
+		//where to?
+		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
+		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '')."#".base_convert (microtime (), 10, 36);
+		
 		//add the comment to the thread
 		$item = $xml->channel->prependChild ('item');
 		$item->addChild ('title',	safeHTML (TEMPLATE_RE.$xml->channel->title));
-		$item->addChild ('link',	FORUM_URL.$url);
+		$item->addChild ('link',	$url);
 		$item->addChild ('author',	safeHTML (NAME));
 		$item->addChild ('pubDate',	gmdate ('r'));
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
@@ -40,10 +40,13 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		
 		//regenerate the folder's RSS file
 		indexRSS ();
+	} else {
+		//if a double-post, link back to the previous item
+		$url = $xml->channel->item[0]->link;
 	}
 	
 	//refresh page to see the new post added
-	header ('Location: '.FORUM_URL.$url, true, 303);
+	header ('Location: '.$url, true, 303);
 	exit;
 }
 

@@ -136,6 +136,9 @@ function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
 	$text = preg_replace ('/\r\n?/', "\n", $text);
 	
+	//remove leading / trailing whitespace (required for quote detection)
+	$text = preg_replace (array ('/^\s+/m', '/\s+$/m'), "\n", $text);
+	
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
 	
@@ -159,13 +162,30 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
 	
-	//quotes
-	$regx = '/(?:^\n|\A)(?:(")|(“)|(«))((?>.|"(?4)"|“(?4)”|«(?4)»)*?)(?(1)"|(?(2)”|»))(?:\n$|\Z)/msiu';
-	while (preg_match ($regx, $text)) $text = preg_replace ($regx, "\n<blockquote>\n\n$4\n\n</blockquote>\n", $text);
+	//blockquotes
+	do $text = preg_replace (array (
+		//you would think that you could combine these. you really would
+		'/(?:^\n|\A)("((?>(?1)|.)*?)")(?:\n$|\Z)/msu',
+		'/(?:^\n|\A)(“((?>(?1)|.)*?)”)(?:\n$|\Z)/msu',
+		'/(?:^\n|\A)(«((?>(?1)|.)*?)»)(?:\n$|\Z)/msu'
+	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
+		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
+		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
+		"\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
+		$text, -1, $c
+	); while ($c);
+	
+	//remove the extra linebreaks addeded between our theme quotes
+	//(required so that extra `<br />`s don’t get added!)
+	$text = preg_replace (
+		array ('/&ldquo;<\/span>\n/ms', '/\n<span class="qr">/ms'),
+		array ('&ldquo;</span>', 	'<span class="qr">'),
+	$text);
 	
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		if ($chunk[0] != "<") $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		//if not a blockquote, wrap in a paragraph
+		if (!preg_match ('/^<\/?b/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
