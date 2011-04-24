@@ -136,9 +136,6 @@ function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
 	$text = preg_replace ('/\r\n?/', "\n", $text);
 	
-	//remove leading / trailing whitespace (required for quote detection)
-	$text = preg_replace (array ('/^\s+/m', '/\s+$/m'), "\n", $text);
-	
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
 	
@@ -165,9 +162,9 @@ function formatText ($text) {
 	//blockquotes
 	do $text = preg_replace (array (
 		//you would think that you could combine these. you really would
-		'/(?:^\n|\A)("((?>(?1)|.)*?)")(?:\n$|\Z)/msu',
-		'/(?:^\n|\A)(“((?>(?1)|.)*?)”)(?:\n$|\Z)/msu',
-		'/(?:^\n|\A)(«((?>(?1)|.)*?)»)(?:\n$|\Z)/msu'
+		'/(?:^\n|\A)(?-s:\s*)("((?>(?1)|.)*?)")(?-s:\s*)(?:\n?$|\Z)/msu',
+		'/(?:^\n|\A)(?-s:\s*)(“((?>(?1)|.)*?)”)(?-s:\s*)(?:\n?$|\Z)/msu',
+		'/(?:^\n|\A)(?-s:\s*)(«((?>(?1)|.)*?)»)(?-s:\s*)(?:\n?$|\Z)/msu'
 	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
 		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
 		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
