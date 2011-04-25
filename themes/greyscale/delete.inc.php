@@ -3,7 +3,7 @@
 <!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
-<title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! <?=(ID==1) ? "Delete Thread" : "Delete Post"?></title>
+<title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! <?=$ID ? 'Delete Post' : 'Delete Thread'?></title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]>
@@ -37,7 +37,7 @@
 </header>
 <!-- =================================================================================================================== -->
 <section id="delete">
-	<h1>Delete <?=(ID==1) ? "Thread &amp; Replies" : "Post"?>?</h1>
+	<h1>Delete <?=$ID ? "Post" : "Thread &amp; Replies"?>?</h1>
 	<form method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 		<p id="puser">
 			<label for="user">Name:</label>
@@ -54,13 +54,13 @@
 		</p>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
-		if (ID==1): ?>
+		if ($ID): ?>
+		<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
+<?php		else: ?>
 		<p id="ok">
 			To delete this thread, and all replies to it, you must be either the original author
 			or a designated moderator.
 		</p>
-<?php		else: ?>
-		<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
 <?php		endif;
 	break;
 	case ERROR_NAME: ?>
@@ -85,10 +85,10 @@
 <!-- =================================================================================================================== -->
 <section id="post">
 	<h1>Post</h1>
-	<article id="<?=ID?>">
+	<article>
 		<header>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#<?=ID?>">#<?=ID?>.</a> <b><?=$POST['AUTHOR']?></b>
+			<b><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>

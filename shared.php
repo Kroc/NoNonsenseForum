@@ -105,7 +105,7 @@ function safeHTML ($text) {
 }
 function safeString ($text) {
 	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
-	return htmlspecialchars ($text, ENT_COMPAT,   'UTF-8');
+	return htmlspecialchars ($text, ENT_QUOTES,   'UTF-8');
 }
 
 //produces a truncated list of pages around the current page

@@ -55,6 +55,13 @@ The single most important thing to bear in mind is that the name reservation sys
 Whenever a name is reserved a text file is created in the users folder. The filename is a hash of the name and the file contains the hash of the password. Names are not case-sensitive, but passwords are.
 
 
+Appending to a Post:
+--------------------
+There is no ability to edit posts (other than manually editing the RSS feed). This is because the text to HTML conversion, when a post is made, is one-way. NoNonsense Forum allows you only to append to existing posts. Only the original author or a moderator can append to posts (see Adding Moderators further down for details on moderators).
+
+Appending to a post does not change the last-modified date of the thread, and therefore does not bump it to the top of the index list.
+
+
 Deleting a Thread or Post:
 --------------------------
 The person who made a thread (or a moderator) can delete their thread by clicking on the delete button in the first post of a thread. They then have to enter the name and password pair that was originally used to post to delete the thread. The entire thread is then permanently deleted.
@@ -71,3 +78,30 @@ theraje
 SpeedoJoe
 
 The moderators you specify will be able to delete threads and posts in all folders, including root, of the forum. If you would like to set a moderator who can only delete within a certain folder, create a mods.txt file within the folder and specify the desired names. These moderators will not be able delete threads or posts in the forum root, or other folders.
+
+
+Quoting Posts:
+--------------
+NoNonsenseForum has a unique and simple quoting mechanism. To turn any text into a styled blockquote once posted, begin and end a line with speech marks. There must be a blank line between the quote and any other text.
+
+E.g.
+
+	here is some text.
+	
+	"This is a quote."
+	
+	Some more text.
+
+Quotes can be nested. Start a line with a speech mark, and then don’t place the closing speech mark until the end of the block you want quoted.
+
+E.g.
+
+	"Start of first quote.
+	
+	"This is a nested quote."
+	
+	End of the first quote."
+	
+You can simply copy and paste quotes from other posts and the nesting will be retained for you because the blockquotes  include their own quote marks that get copied across. In this case, there may be some whitespace before the quote marks, or some quote marks may be alone on their own line. Don’t worry about this, NoNonsenseForum strips the extra whitespace when processing quotes.
+
+You may use standard ASCII quotes "…", 'curly' quotes “…” and guillemots «…», but you may not start a quote with one style and end it with another.

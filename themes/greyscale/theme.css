@@ -51,12 +51,15 @@ blockquote			{position: relative; margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
 				 font-style: italic;}
 
-/* in good browsers, do not allow the top-dotted line to appear… */
-header+blockquote,		/* …if the quote is the first thing in a post */
- blockquote:first-child		{margin-top: 20px; border-top: none;}
-header+blockquote>p:first-child,/* …if a quote is the first thing in another quote */
- blockquote:first-child		/* (this just makes quotes more compact and subtle) */
- >p:first-child			{padding-top: 0;}
+/* in good browsers, do not allow the blockquote's top-dotted line to appear…
+	…if the quote is the first thing in a post
+	…if a quote is the first thing in another quote
+	…after an appended status message
+   (this just makes quotes more compact and subtle) */
+header+blockquote, blockquote:first-child, p.appended+blockquote
+				{margin-top: 20px; border-top: none;}
+header+blockquote>p:first-child, blockquote:first-child>p:first-child, p.appended+blockquote>p:first-child
+				{padding-top: 0;}
 
 /* added quote marks within blockquotes */
 .ql, .qr			{padding-right: 5px;
@@ -187,15 +190,20 @@ article header b		{margin-left: 10px;}
 				 margin-left: 0;}
 
 article header time,
- article header .delete		{float: right;}
+ article header .ui		{float: right;}
 
-.delete				{overflow: hidden; padding: 0 25px 0 10px; text-indent: -6em; color: #ccc;
-				 background: url("icons/delete.png") no-repeat right center;}
-.delete:hover			{text-indent: 0; text-decoration: none; color: #222;}
-.delete, .delete:hover		{-webkit-transition: all .2s;
+/* the delete / append buttons */
+article header .ui		{overflow: hidden; padding: 0 25px 0 10px;
+				 text-indent: -6em; color: #ccc;}
+article header .ui:hover	{text-indent: 0; text-decoration: none; color: #222;}
+article header .ui,
+ article header .ui:hover	{-webkit-transition: all .2s;
 				    -moz-transition: all .2s;
 				      -o-transition: all .2s;
 				         transition: all .2s;}
+
+.delete				{background: url("icons/delete.png") no-repeat right center;}
+.append				{background: url("icons/add.png") no-repeat right center;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
@@ -203,11 +211,14 @@ article.op header		{background: #888; color: #eee;}
 article.deleted			{color: #aaa;}
 article.deleted header		{background: #f7f6f7; color: #aaa;}
 
+p.appended			{color: #888; padding-top: 19px;
+				 border-bottom: 1px dotted #222;}
+
 
 /* input forms
    ====================================================================================================================== */
 /* title icons */
-#new h1, #reply h1		{background-image: url("icons/new.png");}
+#new h1, #reply h1, #append h1	{background-image: url("icons/new.png");}
 #delete h1			{background-image: url("icons/deletetitle.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */

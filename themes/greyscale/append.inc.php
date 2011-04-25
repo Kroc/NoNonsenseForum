@@ -1,20 +1,9 @@
-<?php
-if (isset ($PAGES)) {
-	foreach ($PAGES as &$PAGE) if ($PAGE == PAGE) {
-		$PAGE = "<li><em>$PAGE</em></li>";
-	} elseif ($PAGE) {
-		$PAGE = "<li><a href=\"?page=$PAGE#replies\">$PAGE</a></li>";
-	} else {
-		$PAGE = '<li>…</li>';
-	}
-	$PAGES = (implode ('', $PAGES));
-}
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <meta charset="utf-8" />
 <!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
-<title><?=safeHTML(FORUM_NAME)?><?=($HEADER['THREAD'] ? ' :: '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
+<title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! Append</title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]>
@@ -22,8 +11,8 @@ if (isset ($PAGES)) {
 	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
 <![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
-<link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+<meta name="robots" content="noindex, nofollow" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?=FORUM_THEME?>/touch.png" />
@@ -40,7 +29,6 @@ if (isset ($PAGES)) {
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
 	<h1><a href="/"><?=safeHTML(FORUM_NAME)?></a></h1>
-	
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?=safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
@@ -48,52 +36,12 @@ if (isset ($PAGES)) {
 	--></form>
 	
 	<nav><p>
-		<a id="add" href="#reply">Reply</a>
-		<a id="rss" href="<?=$HEADER['RSS']?>">RSS</a>
-	</p><p>
 		<a id="index" href="/">Index</a><?php if ($HEADER['PATH']): ?> » <a href="<?=$HEADER['PATH_URL']?>"><?=$HEADER['PATH']?></a><?php endif; ?>
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
-<section id="post">
-	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
-	
-	<article class="op">
-		<header>
-			<a class="ui append" rel="noindex nofollow" href="<?=$POST['APPEND_URL']?>">append</a>
-			<a class="ui delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a>
-			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<b><?=$POST['AUTHOR']?></b>
-		</header>
-		
-		<?=$POST['TEXT']?>
-	</article>
-</section>
-
-<?php if (isset ($POSTS)): ?>
-<section id="replies">
-	<h1>Replies</h1>
-	<nav><ol class="pages"><?=$PAGES?></ol></nav>
-	
-<?php foreach ($POSTS as $POST): ?>
-	<article id="<?=$POST['ID']?>" class="<?=($POST['DELETED'] ? 'deleted' : ($POST['OP'] ? 'op' : ''))?>">
-		<header>
-			<?php if (!$POST['DELETED']): ?><a class="ui append" rel="noindex nofollow" href="<?=$POST['APPEND_URL']?>">append</a>
-			<a class="ui delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a><?php endif;?>
-			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#<?=$POST['ID']?>">#<?=$POST['NO']?>.</a> <b><?=$POST['AUTHOR']?></b>
-		</header>
-		
-		<?=$POST['TEXT']?>
-	</article>
-<?php endforeach; ?>
-	
-	<nav><ol class="pages"><?=$PAGES?></ol></nav>
-</section>
-<?php endif; ?>
-<!-- =================================================================================================================== -->
-<section id="reply">
-	<h1>Reply</h1>
+<section id="append">
+	<h1>Append</h1>
 	<form method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 <?php if (FORUM_ENABLED): ?>
 		<div id="rightcol">
@@ -113,7 +61,7 @@ if (isset ($PAGES)) {
 		</p>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE: ?>
-		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
+		<p id="ok">Only the original author or a moderator can append to this post.</p>
 <?php break;
 	case ERROR_NAME: ?>
 		<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
@@ -125,7 +73,8 @@ if (isset ($PAGES)) {
 		<p id="error">Well, write a message!</p>
 <?php break;
 	case ERROR_AUTH: ?>
-		<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
+		<p id="error">Name / password mismatch! You must enter the name and password of either the original author,
+		or a designated moderator.</p>
 <?php endswitch; ?>
 		
 		</div><div id="leftcol">
@@ -148,6 +97,19 @@ if (isset ($PAGES)) {
 		<p id="error">Sorry, posting is currently disabled.</p>
 <?php endif; ?>
 	</form>
+</section>
+<!-- =================================================================================================================== -->
+<section id="post">
+	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
+	
+	<article class="op">
+		<header>
+			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
+			<b><?=$POST['AUTHOR']?></b>
+		</header>
+		
+		<?=$POST['TEXT']?>
+	</article>
 </section>
 <!-- =================================================================================================================== -->
 <footer><p>

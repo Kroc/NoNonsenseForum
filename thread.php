@@ -74,6 +74,8 @@ $POST = array (
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE",
+	'APPEND_URL'	=> '/action.php?append&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+			  .substr (strstr ($post->link, '#'), 1),
 	'TEXT'		=> $post->description,
 	'ID'		=> substr (strstr ($post->link, '#'), 1)
 );
@@ -101,6 +103,8 @@ if (count ($thread)) {
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
 		'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+				  .substr (strstr ($post->link, '#'), 1),
+		'APPEND_URL'	=> '/action.php?append&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'OP'		=> $post->author == $author,
 		'NO'		=> ++$no,
