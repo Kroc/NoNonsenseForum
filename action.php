@@ -34,10 +34,11 @@ if (isset ($_GET['append'])) {
 		//cannot append to a deleted post
 		&& !(bool) $post->xpath ("category[text()='deleted']")
 	) {
+		$now = time ();
 		$post->description .= "\n".template_tags (TEMPLATE_APPEND, array (
 			'AUTHOR'	=> safeHTML (NAME),
-			'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-			'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate))
+			'DATETIME'	=> gmdate ('r', $now),
+			'TIME'		=> date (DATE_FORMAT, $now)
 		)).formatText (TEXT);
 		
 		//need to know what page this post is on to redirect back to it

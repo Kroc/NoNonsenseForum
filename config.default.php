@@ -37,7 +37,7 @@ define ('DATE_FORMAT',		'd M ’y · H:i');
 define ('TEMPLATE_RE',		'RE: ');
 
 //HTML used when appending to a post
-define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time>:</p>');
+define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
 
 //HTML that replaces a post when it's deleted
 define ('TEMPLATE_DELETE_USER', '<p>This post was deleted by its owner</p>');
