@@ -79,10 +79,28 @@ $HEADER = array (
 foreach (array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
-) as $FOLDER) $FOLDERS[] = array (
-	'URL'	=> '/'.rawurlencode ($FOLDER).'/',
-	'NAME'	=> safeHTML ($FOLDER)
-);
+) as $FOLDER) {
+	chdir ($FOLDER);
+	
+	//get a list of files in the folder to determine which one is newest
+	$threads = preg_grep ('/\.rss$/', scandir ('.'));
+	//order by last modified date
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+	
+	//read the newest thread (folder could be empty though)
+	$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
+	
+	$FOLDERS[] = array (
+		'URL'		=> '/'.rawurlencode ($FOLDER).'/',
+		'NAME'		=> safeHTML ($FOLDER),
+		//can’t include these details if the folder was empty
+		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),
+		'TIME'		=> !$last ? '' : date (DATE_FORMAT, strtotime ($last->pubDate)),
+		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author)
+	);
+	
+	chdir ('..');
+}
 
 //get list of threads (if any--could be an empty folder)
 if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {

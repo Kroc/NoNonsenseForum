@@ -59,7 +59,11 @@ if (isset ($PAGES)) {
 	<h1>Sub-Forums</h1>
 	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
-		<li><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a></li>
+		<li>
+			<?php if ($FOLDER['AUTHOR']): ?><time datetime="<?=$FOLDER['DATETIME']?>"><?=$FOLDER['TIME']?></time>
+			<b><?=$FOLDER['AUTHOR']?></b> <?php endif;
+?><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a>
+		</li>
 <?php endforeach; ?>
 	</ol>
 </section>

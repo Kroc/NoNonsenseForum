@@ -164,12 +164,13 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 #threads ol.ui li		{padding-left: 60px;}
 #threads ol.ui li i		{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, Tahoma, sans-serif; text-align: right;}
-#threads ol.ui li img		{margin-left: -20px; vertical-align: top;}
-#threads ol.ui li b		{float: right; padding-left: 10px; text-align: right;}
 
+#threads ol.ui li img		{margin-left: -20px; vertical-align: top;}
 #threads ol.ui li.sticky	{background: #eee;}
 
-#threads ol.ui li time		{float: right; width: 9.1em; text-align: right;}
+/* these apply to folders and threads */
+ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
+ol.ui li time			{float: right; width: 9.1em; text-align: right;}	/* timestamp */
 
 
 /* thread page
