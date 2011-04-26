@@ -204,7 +204,7 @@ article header .ui,
 				         transition: all .2s;}
 
 .delete				{background: url("icons/delete.png") no-repeat right center;}
-.append				{background: url("icons/add.png") no-repeat right center;}
+.append				{background: url("icons/append.png") no-repeat right center;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
