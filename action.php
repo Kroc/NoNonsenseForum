@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-require_once 'shared.php';
+require_once './shared.php';
 
 /* append to a post?
    ====================================================================================================================== */
@@ -87,7 +87,7 @@ if (isset ($_GET['append'])) {
 	);
 	
 	//all the data prepared, now output the HTML
-	include 'themes/'.FORUM_THEME.'/append.inc.php';
+	include './themes/'.FORUM_THEME.'/append.inc.php';
 	
 /* delete a thread / post?
    ====================================================================================================================== */
@@ -179,7 +179,7 @@ if (isset ($_GET['append'])) {
 	);
 	
 	//all the data prepared, now output the HTML
-	include 'themes/'.FORUM_THEME.'/delete.inc.php';
+	include './themes/'.FORUM_THEME.'/delete.inc.php';
 }
 
 ?>

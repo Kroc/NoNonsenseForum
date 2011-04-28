@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-require_once 'shared.php';
+require_once './shared.php';
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
@@ -165,6 +165,6 @@ if (FORUM_ENABLED) $FORM = array (
 );
 
 //all the data prepared, now output the HTML
-include 'themes/'.FORUM_THEME.'/index.inc.php';
+include './themes/'.FORUM_THEME.'/index.inc.php';
 
 ?>

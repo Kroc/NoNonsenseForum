@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-require_once 'shared.php';
+require_once './shared.php';
 
 //which thread to show
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
@@ -127,6 +127,6 @@ if (FORUM_ENABLED) $FORM = array (
 );
 
 //all the data prepared, now output the HTML
-include 'themes/'.FORUM_THEME.'/thread.inc.php';
+include './themes/'.FORUM_THEME.'/thread.inc.php';
 
 ?>
