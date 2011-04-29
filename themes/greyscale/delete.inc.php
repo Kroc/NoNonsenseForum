@@ -6,10 +6,7 @@
 <title><?=safeHTML(FORUM_NAME)?> :: <?=$HEADER['THREAD']?> ! <?=$ID ? 'Delete Post' : 'Delete Thread'?></title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<!--[if lt IE 9]>
-	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
-<![endif]-->
+<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <meta name="robots" content="noindex, nofollow" />

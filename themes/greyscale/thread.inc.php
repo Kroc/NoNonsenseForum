@@ -17,10 +17,7 @@ if (isset ($PAGES)) {
 <title><?=safeHTML(FORUM_NAME)?><?=($HEADER['THREAD'] ? ' :: '.$HEADER['THREAD'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<!--[if lt IE 9]>
-	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/ie.css" />
-<![endif]-->
+<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="stylesheet" href="/themes/<?=FORUM_THEME?>/theme.css" />
 <link rel="alternate" type="application/rss+xml" href="<?=$HEADER['RSS']?>" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />

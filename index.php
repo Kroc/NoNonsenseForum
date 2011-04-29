@@ -128,7 +128,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) {
 		//read the file, and refer to the last post made (the first item in RSS feed as newest is first)
-		$xml = simplexml_load_file ($file);
+		$xml  = simplexml_load_file ($file);
 		$last = &$xml->channel->item[0];
 		
 		$THREADS[] = array (

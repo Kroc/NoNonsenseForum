@@ -8,7 +8,7 @@
 
 /* current known browser support: (and growing)
 	IE6, 7, 8, 9, 10
-	Firefox 3, 3.5, 3.6, 4
+	Firefox 3.6, 4
 	Chrome Stable, Chrome Dev
 	Safari 3, 4, 5
 	Opera 10, 10.54, 10.6, 11, 11.10
@@ -218,9 +218,7 @@ p.appended			{color: #888; padding-top: 19px;
 
 /* input forms
    ====================================================================================================================== */
-/* title icons */
 #new h1, #reply h1, #append h1	{background-image: url("icons/new.png");}
-#delete h1			{background-image: url("icons/deletetitle.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -250,10 +248,10 @@ input[type=text],
 
 /* the "title" field, only present on the new thread form, index page */
 #ptitle				{display: table; width: 100%;}
-#ptitle label			{display: table-cell; width: 80px; height: 39px;
+#ptitle label			{display: block; float: left; width: 20%; height: 39px; padding: 0; text-indent: 20px;
 				 line-height: 38.999px; /*< Chrome gets this a pixel out, use imprecision to fix */
 				 border-bottom: 1px dotted #444;}
-#title				{display: table-cell; width: 100%;
+#title				{display: block; position: absolute; left: 20%; right: 1px; width: 80%;
 				 -webkit-box-shadow: inset 5px 0 5px -6px black;
 				    -moz-box-shadow: inset 5px 0 5px -6px black;
 				         box-shadow: inset 5px 0 5px -6px black;}
@@ -284,6 +282,8 @@ input[type=text],
 
 /* delete form
    ---------------------------------------------------------------------------------------------------------------------- */
+#delete h1			{background-image: url("icons/deletetitle.png");}
+
 /* no path / rss buttons up top */
 #delete				{margin-top: 40px;}
 /* put the name / password fields side by side since there's no message box taking up the space */
