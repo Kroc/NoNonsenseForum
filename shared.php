@@ -23,7 +23,7 @@ define ('ERROR_TEXT',		4);					//post text is invalid / blank
 define ('ERROR_AUTH',		5);					//name / password did not match
 
 //set the forum owner’s personal config
-if (!@include 'config.php') if (!@include 'config.default.php') die (
+if (!@include './config.php') if (!@include './config.default.php') die (
 	"'config.php' or 'config.default.php' missing."
 );
 
