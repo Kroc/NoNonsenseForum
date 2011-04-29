@@ -282,6 +282,14 @@ input[type=text],
 				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
+/* delete form
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* no path / rss buttons up top */
+#delete				{margin-top: 40px;}
+/* put the name / password fields side by side since there's no message box taking up the space */
+#delete #leftcol		{width: 50%;}
+#delete #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
+
 
 /* site footer
    ====================================================================================================================== */

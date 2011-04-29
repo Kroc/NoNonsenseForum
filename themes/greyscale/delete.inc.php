@@ -39,11 +39,17 @@
 <section id="delete">
 	<h1>Delete <?=$ID ? "Post" : "Thread &amp; Replies"?>?</h1>
 	<form method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+		<div id="leftcol">
+		
 		<p id="puser">
 			<label for="user">Name:</label>
 			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
-		</p><p id="ppass">
+		</p>
+		
+		</div><div id="rightcol">
+		
+		<p id="ppass">
 			<label for="pass">Password:</label>
 			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
@@ -52,6 +58,8 @@
 			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
+		
+		</div>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
 		if ($ID): ?>
