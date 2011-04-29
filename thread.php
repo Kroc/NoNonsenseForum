@@ -127,6 +127,6 @@ if (FORUM_ENABLED) $FORM = array (
 );
 
 //all the data prepared, now output the HTML
-include './themes/'.FORUM_THEME.'/thread.inc.php';
+include FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.inc.php';
 
 ?>
