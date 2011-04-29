@@ -131,10 +131,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$xml = simplexml_load_file ($file);
 		$last = &$xml->channel->item[0];
 		
-		$thread = array (
+		$THREADS[] = array (
+			'STICKY'	=> in_array ($file, $stickies),
 			//link to the thread--go to the last page of replies
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).(count ($xml->channel->item) > FORUM_POSTS+1
-						? '?page='.ceil ((count ($xml->channel->item) -1) / FORUM_POSTS) : ''
+						? '?page='.ceil ((count ($xml->channel->item) - 1) / FORUM_POSTS) : ''
 					),
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item),
@@ -142,9 +143,6 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
 			'AUTHOR'	=> safeHTML ($last->author)
 		);
-		
-		//does this thread fit into the stickies list, or the main thread list?
-		if (in_array ($file, $stickies)): $STICKIES[] = $thread; else: $THREADS[] = $thread; endif;
 	}
 }
 

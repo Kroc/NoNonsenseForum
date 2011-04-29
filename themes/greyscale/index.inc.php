@@ -69,28 +69,26 @@ if (isset ($PAGES)) {
 </section>
 <?php endif; ?>
 
-<?php if (isset ($THREADS) || isset ($STICKIES)): ?>
+<?php if (isset ($THREADS)): ?>
 <section id="threads">
 	<h1>Threads</h1>
 	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 	<ol class="ui">
-<?php if (isset ($STICKIES)): ?>
-<?php foreach ($STICKIES as $THREAD): ?>
+<?php foreach ($THREADS as $THREAD): ?>
+<?php if ($THREAD['STICKY']): ?>
 		<li class="sticky">
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
 			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
 			<img src="/themes/<?=FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
 			<a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a>
 		</li>
-<?php endforeach; ?>
-<?php endif; ?>
-
-<?php foreach ($THREADS as $THREAD): ?>
+<?php else: ?>
 		<li>
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
 			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
 			<a href="<?=$THREAD['URL']?>"><?=$THREAD['TITLE']?></a>
 		</li>
+<?php endif; ?>
 <?php endforeach; ?>
 	</ol>
 	<nav><ol class="pages"><?=$PAGES?></ol></nav>
