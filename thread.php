@@ -58,11 +58,11 @@ $HEADER = array (
 	'PAGE'		=> PAGE,
 	'RSS'		=> "$FILE.rss",
 	'PATH'		=> safeHTML (PATH),
-	'PATH_URL'	=> PATH_URL
+	'PATH_URL'	=> safeHTML (PATH_URL)
 );
 
-/* ---------------------------------------------------------------------------------------------------------------------- */
-
+/* original post
+   ---------------------------------------------------------------------------------------------------------------------- */
 //take the first post from the thread (removing it from the rest)
 $thread = $xml->channel->xpath ('item');
 $post   = array_pop ($thread);
@@ -73,8 +73,8 @@ $POST = array (
 	'AUTHOR'	=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE",
-	'APPEND_URL'	=> '/action.php?append&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+	'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
+	'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 			  .substr (strstr ($post->link, '#'), 1),
 	'TEXT'		=> $post->description,
 	'ID'		=> substr (strstr ($post->link, '#'), 1)
@@ -83,7 +83,8 @@ $POST = array (
 //remember the original poster’s name, for marking replies by the OP
 $author = (string) $post->author;
 
-//any replies?
+/* replies
+   ---------------------------------------------------------------------------------------------------------------------- */
 if (count ($thread)) {
 	//sort the other way around
 	//<stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
@@ -94,7 +95,7 @@ if (count ($thread)) {
 	$PAGES  = pageList (PAGE, ceil (count ($thread) / FORUM_POSTS));
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
-	//ID of the posts, accounting for which page we are on
+	//index number of the replies, accounting for which page we are on
 	$no = (PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$post) $POSTS[] = array (
 		'AUTHOR'	=> safeHTML ($post->author),
@@ -102,9 +103,9 @@ if (count ($thread)) {
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
-		'DELETE_URL'	=> '/action.php?delete&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+		'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
-		'APPEND_URL'	=> '/action.php?append&amp;path='.rawurlencode (PATH)."&amp;file=$FILE&amp;id="
+		'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'OP'		=> $post->author == $author,
 		'NO'		=> ++$no,
@@ -112,9 +113,8 @@ if (count ($thread)) {
 	);
 }
 
-/* ---------------------------------------------------------------------------------------------------------------------- */
-
-//the reply form
+/* reply form
+   ---------------------------------------------------------------------------------------------------------------------- */
 if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),

@@ -55,8 +55,8 @@ XML
 		'URL'	=> PATH_URL.$file,
 		'NAME'	=> safeHTML (NAME),
 		'DATE'	=> gmdate ('r'),
-		'TEXT'	=> safeHTML (formatText (TEXT)),
-		'ID'	=> base_convert (microtime (), 10, 36)
+		'TEXT'	=> safeHTML (formatText (TEXT)),		//process markup
+		'ID'	=> base_convert (microtime (), 10, 36)		//generate a unique ID for the post A-Z/0-9
 	)));
 	
 	//regenerate the folder's RSS file
@@ -71,15 +71,18 @@ XML
 
 //information for the site header:
 $HEADER = array (
-	'PATH'	=> safeHTML (PATH),	//the current sub-folder, if any
+	'PATH'	=> safeHTML (PATH),	//the current sub-forum, if any
 	'PAGE'	=> PAGE			//the current page number
 );
 
+/* sub-forums
+   ---------------------------------------------------------------------------------------------------------------------- */
 //get a list of folders
 foreach (array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 ) as $FOLDER) {
+	//the sorting (below) requires we be in the directory at hand to use `filemtime`
 	chdir ($FOLDER);
 	
 	//get a list of files in the folder to determine which one is newest
@@ -91,9 +94,9 @@ foreach (array_filter (
 	$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 	
 	$FOLDERS[] = array (
-		'URL'		=> '/'.rawurlencode ($FOLDER).'/',
+		'URL'		=> safeURL ("/$FOLDER/"),
 		'NAME'		=> safeHTML ($FOLDER),
-		//can’t include these details if the folder was empty
+		//can’t include these details if the folder was empty (no threads)
 		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),
 		'TIME'		=> !$last ? '' : date (DATE_FORMAT, strtotime ($last->pubDate)),
 		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author)
@@ -102,6 +105,8 @@ foreach (array_filter (
 	chdir ('..');
 }
 
+/* threads
+   ---------------------------------------------------------------------------------------------------------------------- */
 //get list of threads (if any--could be an empty folder)
 if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//order by last modified date
@@ -128,7 +133,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) {
 		//read the file, and refer to the last post made (the first item in RSS feed as newest is first)
-		$xml  = simplexml_load_file ($file);
+		$xml  = simplexml_load_file ($file) or die ("$file is malformed.");
 		$last = &$xml->channel->item[0];
 		
 		$THREADS[] = array (

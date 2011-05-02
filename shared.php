@@ -60,7 +60,7 @@ define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['pa
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? '/' : '/'.rawurlencode (PATH).'/');		//when outputting as part of a URL to HTML
+define ('PATH_URL', !PATH ? '/' : safeURL ('/'.PATH.'/', false));	//when outputting as part of a URL
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
@@ -107,6 +107,13 @@ function safeString ($text) {
 	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
 	return htmlspecialchars ($text, ENT_QUOTES,   'UTF-8');
 }
+function safeURL ($text, $is_HTML=true) {
+	//encode a string to be used in a URL, keeping path separators
+	$text = str_replace ('%2F', '/', rawurlencode ($text));
+	//will the URL be output into HTML? (rather than, say, the HTTP headers)
+	//if so, encode for HTML too, e.g. "&" must be "&amp;" within URLs when in HTML
+	return $is_HTML ? safeHTML ($text) : $text;
+}
 
 //produces a truncated list of pages around the current page
 function pageList ($current, $total) {
@@ -131,7 +138,7 @@ function pageList ($current, $total) {
 	return $PAGES;
 }
 
-//take the author's message, process bbcode, and encode it safely for the RSS feed
+//take the author's message, process markup, and encode it safely for the RSS feed
 function formatText ($text) {
 	//unify carriage returns between Windows / UNIX
 	$text = preg_replace ('/\r\n?/', "\n", $text);
@@ -159,7 +166,7 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
 	$text);
 	
-	//blockquotes
+	//blockquotes:
 	do $text = preg_replace (array (
 		//you would think that you could combine these. you really would
 		'/(?:^\n|\A)(?-s:\s*)("((?>(?1)|.)*?)")(?-s:\s*)(?:\n?$|\Z)/msu',
@@ -216,7 +223,7 @@ function indexRSS () {
 	
 	//get the last post made in each thread as an RSS item
 	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) {
-		$xml  = simplexml_load_file ($thread);
+		$xml  = simplexml_load_file ($thread) or die ("$thread is malformed.");
 		$item = $xml->channel->item[0];
 		
 		@$rss .= template_tags (<<<XML
@@ -251,7 +258,7 @@ XML
 </rss>
 XML
 	, array (
-		'PATH'	=> safeHTML (PATH_URL),
+		'PATH'	=> PATH_URL,
 		'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
 		//if all threads are deleted, there won’t be any <item>s
 		'ITEMS'	=> @$rss ? $rss : ""
@@ -284,7 +291,7 @@ XML
 
 XML
 		, array (
-			'FILE'	=> $folder ? '/'.safeHTML (rawurlencode ($folder)) : '',
+			'FILE'	=> $folder ? safeURL ("/$folder", false)) : '',
 			'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
 		));
 	}

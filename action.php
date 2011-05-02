@@ -65,7 +65,7 @@ if (isset ($_GET['append'])) {
 	$HEADER = array (
 		'THREAD'	=> safeHTML ($xml->channel->title),
 		'PATH'		=> safeHTML (PATH),
-		'PATH_URL'	=> PATH_URL
+		'PATH_URL'	=> safeHTML (PATH_URL)
 	);
 	
 	$FORM = array (
@@ -88,6 +88,7 @@ if (isset ($_GET['append'])) {
 	
 	//all the data prepared, now output the HTML
 	include FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.inc.php';
+	
 	
 /* delete a thread / post?
    ====================================================================================================================== */

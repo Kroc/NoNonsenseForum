@@ -114,5 +114,5 @@
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
 <div id="grid"></div>
-<!-- page generated in: <?=round (microtime(true) - START, 3)?>s -->
+<!-- page generated in: <?=round (microtime (true) - START, 3)?>s -->
 </body>
