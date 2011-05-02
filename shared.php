@@ -291,7 +291,7 @@ XML
 
 XML
 		, array (
-			'FILE'	=> $folder ? safeURL ("/$folder", false)) : '',
+			'FILE'	=> $folder ? safeURL ("/$folder", false) : '',
 			'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
 		));
 	}

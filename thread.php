@@ -25,7 +25,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 	)) {
 		//where to?
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '')."#".base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '').'#'.base_convert (microtime (), 10, 36);
 		
 		//add the comment to the thread
 		$item = $xml->channel->prependChild ('item');
@@ -46,7 +46,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 	}
 	
 	//refresh page to see the new post added
-	header ('Location: '.$url, true, 303);
+	header ("Location: $url", true, 303);
 	exit;
 }
 
