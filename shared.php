@@ -149,7 +149,7 @@ function formatText ($text) {
 	//find raw URLs and replace with a hyperlinked version
 	$text = preg_replace (
 		'/(?:
-			((?:http|ftp)s?:\/\/)					# $1 = protocol
+			((?:(?:http|ftp)s|irc)?:\/\/)				# $1 = protocol
 			(?:www\.)?						# ignore www in friendly URL
 			(							# $2 = friendly URL (no protocol)
 				[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+		# domain name
@@ -270,13 +270,13 @@ XML
 	
 	//we’re going to use the RSS files as sitemaps
 	$folders = array ('');
-	//find all RSS files in the site
+	//get list of sub-forums
 	foreach (array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 		preg_grep ('/^(\.|users$|themes$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
 	) as $folder) $folders[] = $folder;
 	
-	//generate a sitemap index file, to point to each RSS file in the forum:
+	//generate a sitemap index file, to point to each index RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
 	foreach ($folders as $folder) {
 		//get the time of the latest item in the RSS feed
