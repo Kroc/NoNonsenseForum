@@ -149,8 +149,7 @@ function formatText ($text) {
 	//find raw URLs and replace with a hyperlinked version
 	$text = preg_replace (
 		'/(?:
-			((?:(?:http|ftp)s|irc)?:\/\/)				# $1 = protocol
-			(?:www\.)?						# ignore www in friendly URL
+			((?:(?:http|ftp)s?|irc)?:\/\/)				# $1 = protocol
 			(							# $2 = friendly URL (no protocol)
 				[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+		# domain name
 			)(\/)?							# $3 = slash is excluded from friendly URL
@@ -163,7 +162,7 @@ function formatText ($text) {
 		|
 			([a-z0-9\._%+\-]+@[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+)	# $5 = e-mail
 		)/exi',
-		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$2$5".("$4"?"/…":"")."</a>"',
+		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$0</a>"',
 	$text);
 	
 	//blockquotes:
