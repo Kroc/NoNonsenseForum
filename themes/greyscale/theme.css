@@ -19,8 +19,7 @@
 	Opera 9.6
 
    absolutely will not work with: (because it’s HTML5)
-	Firefox 2 or earlier
-	Camino 1
+	Firefox 2 or earlier, Camino 1
 	IE5.5 and below
 */
 
@@ -228,8 +227,9 @@ input, textarea			{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;}
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
 form p				{padding: 0; color: #888;}
-#ok, #error			{padding: 20px !important;}
+#ok, #error, #markup		{padding: 20px !important;}
 #error				{color: #d11;}
+#markup				{padding-top: 0 !important;}
 
 input[type=text],
  input[type=password], textarea	{-webkit-box-shadow: inset 0 5px 5px -6px black;

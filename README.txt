@@ -80,28 +80,6 @@ SpeedoJoe
 The moderators you specify will be able to delete threads and posts in all folders, including root, of the forum. If you would like to set a moderator who can only delete within a certain folder, create a mods.txt file within the folder and specify the desired names. These moderators will not be able delete threads or posts in the forum root, or other folders.
 
 
-Quoting Posts:
---------------
-NoNonsenseForum has a unique and simple quoting mechanism. To turn any text into a styled blockquote once posted, begin and end a line with speech marks. There must be a blank line between the quote and any other text.
-
-E.g.
-
-	here is some text.
-	
-	"This is a quote."
-	
-	Some more text.
-
-Quotes can be nested. Start a line with a speech mark, and then don’t place the closing speech mark until the end of the block you want quoted.
-
-E.g.
-
-	"Start of first quote.
-	
-	"This is a nested quote."
-	
-	End of the first quote."
-	
-You can simply copy and paste quotes from other posts and the nesting will be retained for you because the blockquotes  include their own quote marks that get copied across. In this case, there may be some whitespace before the quote marks, or some quote marks may be alone on their own line. Don’t worry about this, NoNonsenseForum strips the extra whitespace when processing quotes.
-
-You may use standard ASCII quotes "…", 'curly' quotes “…” and guillemots «…», but you may not start a quote with one style and end it with another.
+Markup:
+-------
+Some simple markup is provided for hyperlinks and quotes, see markup.txt for details.

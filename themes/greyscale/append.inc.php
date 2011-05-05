@@ -73,6 +73,9 @@
 		<p id="error">Name / password mismatch! You must enter the name and password of either the original author,
 		or a designated moderator.</p>
 <?php endswitch; ?>
+		<p id="markup">
+			Pro tip: Use <a href="/markup.txt">markup</a> to add links and quotes.
+		</p>
 		
 		</div><div id="leftcol">
 		
