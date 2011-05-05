@@ -29,7 +29,10 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		
 		//add the comment to the thread
 		$item = $xml->channel->prependChild ('item');
-		$item->addChild ('title',	safeHTML (TEMPLATE_RE.$xml->channel->title));
+		$item->addChild ('title',	safeHTML (
+			//add the "RE:" prefix, and reply number to the title
+			template_tags (TEMPLATE_RE, array ('NO' => count ($xml->channel->item))).$xml->channel->title
+		));
 		$item->addChild ('link',	$url);
 		$item->addChild ('author',	safeHTML (NAME));
 		$item->addChild ('pubDate',	gmdate ('r'));

@@ -64,7 +64,7 @@ define ('PATH_URL', !PATH ? '/' : safeURL ('/'.PATH.'/', false));	//when outputt
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
-//being in the right directory is also assumed for reading 'mods.txt' and in 'rss.php'
+//being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 chdir (FORUM_ROOT.PATH_DIR);
 

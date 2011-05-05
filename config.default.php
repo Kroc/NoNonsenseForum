@@ -34,7 +34,8 @@ define ('SIZE_TEXT',		50000);		//post message
 define ('DATE_FORMAT',		'd M ’y · H:i');
 
 //prepended to the thread title for each reply (like in e-mail)
-define ('TEMPLATE_RE',		'RE: ');
+//(the "&__NO__;" template tag is for the number of the reply)
+define ('TEMPLATE_RE',		'RE[&__NO__;]: ');
 
 //HTML used when appending to a post
 define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
