@@ -361,6 +361,44 @@ footer p			{margin-left: 5% !important; padding-left: 0 !important;}
 
 }
 
+
+/* printing
+   ====================================================================================================================== */
+@media print {
+
+/* fix page width */
+section				{width: 100% !important;}
+
+/* things to hide from printer: */
+#mast nav, #search,		/* - nav */
+ #new, #reply, #delete,		/* - input forms */
+ a.ui,				/* - delete / append buttons */
+ footer				{display: none;}
+
+/* remove background colours, set text-colour */
+html, h1, h1 a, section,
+ nav, li.sticky, header,
+ ol.pages em			{color: black !important; background: none !important;}
+
+/* remove padding added to hold background images */
+h1, h1 a			{padding-left: 0 !important;}
+h1 a				{margin-left: 0 !important;}
+
+/* remove left and right borders */
+ol.ui, article			{border: none;}
+
+/* remove left/right padding from page egde */
+article, ol.ui li		{padding-left: 0; padding-right: 0;}
+section>h1 + nav		{padding-right: 0;}
+
+/* page links */
+ol.pages li			{text-align: right;}
+ol.pages a			{font-weight: normal; font-style: italic;}
+ol.pages em			{font-weight: bold; text-decoration: underline;}
+
+}
+
+
 /* debugging */
 body>#grid			{position: absolute; width: 100%; height: 6000px; top: 0; left: 0; opacity: 0.25;
 				 background: transparent url("/themes/greyscale/grid.png") top left;
