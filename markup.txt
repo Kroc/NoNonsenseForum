@@ -10,8 +10,6 @@ NO:	www.google.com
 NO:	google.com
 NO:	readme.txt
 
-The protocol ("http://") and "www." will not be visible in the output.
-
 Email addresses will be turned into clickable links for you.
 
 YES:	email@email.com

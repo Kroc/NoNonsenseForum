@@ -29,6 +29,26 @@ Optional:
 	Available options are explained within 'config.example.php'.
 
 
+Browser support:
+----------------
+*	IE6, 7, 8, 9, 10
+*	Firefox 3.6+
+*	Chrome Stable, Chrome Dev
+*	Safari 3+
+*	Opera 10+
+*	Camino 2.1
+
+*	iOS 4.0+ (iOS 3 untested yet)
+
+Buggy:
+*	Firefox 3, 3.5, Camino 2
+*	Opera 9.6
+
+Unsupported:
+*	Firefox 2 or earlier, Camino 1
+*	IE5.5 and below
+
+
 Creating Sub-Forums:
 --------------------
 If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server’s OS except for "." and "&" -- ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.

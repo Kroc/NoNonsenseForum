@@ -6,27 +6,10 @@
    greyscale theme by Kroc Camen, please modify to suit your needs
 */
 
-/* current known browser support: (and growing)
-	IE6, 7, 8, 9, 10
-	Firefox 3.6, 4
-	Chrome Stable, Chrome Dev
-	Safari 3, 4, 5
-	Opera 10, 10.54, 10.6, 11, 11.10
-	Camino 2.1
-
-   buggy
-	Firefox 3, 3.5, Camino 2
-	Opera 9.6
-
-   absolutely will not work with: (because it’s HTML5)
-	Firefox 2 or earlier, Camino 1
-	IE5.5 and below
-*/
-
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
-html, body			{width: 100%; margin: 0; padding: 0; border: 0; /*< remove inset window edge in IE6 */}
+html, body			{width: 100%; margin: 0; padding: 0; border: 0;}
 html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 				 background: white url("bg.png") fixed repeat-x bottom center;
 				 /* CSS3 gradients for browsers that support it: */
@@ -91,8 +74,8 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 
 #add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
 #add				{margin-right: 20px;
-				 background: url("icons/add.png") no-repeat 0 3px;}
-#rss				{background: url("icons/rss.png") no-repeat 0 3px;}
+				 background: url("icons/add.png") no-repeat 0 50%;}
+#rss				{background: url("icons/rss.png") no-repeat 0 50%;}
 
 /* Google search box: */
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
@@ -111,8 +94,8 @@ time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 				 background: white url("icons/search.png") no-repeat 5px 50%;}
 ::-webkit-search-decoration,	/* reset Safari custom search-box design */
  ::-webkit-search-cancel-button	{display: none;}
-input[type=search]		{-webkit-appearance:textfield;
-				 -webkit-box-sizing:content-box;}
+input[type=search]		{-webkit-appearance: textfield;
+				 -webkit-box-sizing: content-box;}
 input[type=search]:focus	{outline: none;}
 
 #go				{position: relative; margin-left: -20px; top: -20px;}
@@ -174,11 +157,12 @@ ol.ui li time			{float: right; width: 9.1em; text-align: right;}	/* timestamp */
 
 /* thread page
    ====================================================================================================================== */
-article				{padding: 0 20px 20px; border: 1px solid #444; border-width: 0 1px;}
+article				{padding: 0 20px 19px; border: 1px solid #444; border-width: 0 1px;
+				 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
+				 _border-bottom: 1px;}
 
 /* close the border within the 20px rhythm on the initial post */
 #post article			{padding-bottom: 19px !important; border-bottom-width: 1px;}
-#post article :last-child	{/*padding-bottom: 19px;*/}
 
 #replies h1			{background-image: url("icons/replies.png");}
 
@@ -188,7 +172,6 @@ article header			{line-height: 39px; margin: 0 -20px 0; padding: 0 20px; border-
 article header b		{margin-left: 10px;}
 #post article header b		{/* the first post doesn’t have a number, only replies */
 				 margin-left: 0;}
-
 article header time,
  article header .ui		{float: right;}
 
@@ -301,38 +284,71 @@ footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f
 footer p a			{color: #888;}
 
 
-/* mobile
+/* ======================================================================================================================
+   mobile / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
    ====================================================================================================================== */
 @media screen and (max-width: 640px) {
 
-html, body			{/* prevent iPhone from zooming in when rotating */
-				 width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
+/* prevent iPhone from zooming in when rotating */
+html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 
+/* page width */
+#mast nav, section		{width: 95%;}
+
+/* header
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* reduce the title size */
 #mast				{padding: 0;}
-#mast h1			{/* reduce the title size */
-				 position: static; padding: 5px 0 0; font-size: 20px; line-height: 20px;}
+#mast h1			{position: static; padding: 5px 0 0; font-size: 20px; line-height: 20px;}
 #mast h1 a			{/* fit the logo in tighter */
 				 position: static; display: block; height: 30px; margin: 0; padding: 10px 0 0 55px;
 				 background-position: 10px 50%;}
-#search				{/* re-position the search field below the title */
-				 width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px; border: none; text-align: right;
+
+/* re-position the search field below the title */
+#search				{width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px;
 				 -webkit-box-sizing: border-box;
+				    -moz-box-sizing: border-box;
+				         box-sizing: border-box;
+				 border: none; text-align: right;
 				 background: #222;}
 #query				{width: 100%; padding: 4px 0; text-indent: 15px; font-size: 18px;
 				 -webkit-box-sizing: padding-box;
-				 -webkit-border-radius: 14px;}
-#go				{left: -5px; top: -22px;}
+				    -mox-box-sizing: padding-box;
+				         box-sizing: padding-box;
+				 -webkit-border-radius: 14px;
+				    -moz-border-radius: 14px;
+				         border-radius: 14px;}
+#go				{left: -5px; top: -23px;}
 
-#mast nav			{margin-top: 20px; overflow: hidden;}
-#mast nav p:last-child		{display: none;}
+/* fit the rss / add buttons into one line */
+#mast nav			{height: 40px; line-height: 40px; margin: 20px 0 -20px;
+				 overflow: hidden; /*< strange behaviour in webkit */}
+#mast nav p:last-child		{/* hide location marker */
+				 display: none;}
+#add				{margin-right: 0;}
 
-#mast nav, section		{width: 95%;}
+/* index page
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* the meta items can’t fit in one line. add them below the titles */
+ol.ui li			{position: relative; padding-bottom: 30px;}
+#threads ol.ui li		{padding-left: 40px !important;}
+ol.ui li b, ol.ui li time	{float: none; position: absolute; bottom: 5px; font-size: 14px;}
+ol.ui li b			{right: 10px;}
+ol.ui li time			{left: 40px; text-align: left;}
+#folders ol.ui li time		{left: 20px;}
 
-#threads ol li			{padding-left: 10px;}
-#threads ol li i,
- #threads ol li b,
- #threads ol li time		{display: none;}
+ol.ui li i			{/* position the post-count closer */
+				 width: 20px !important; margin: 0 10px 0 -30px !important;
+				 font-size: 14px;}
+ol.ui li img			{/* put the sticky icon underneath the post count instead of next to it */
+				 position: absolute; top: 35px;}
 
+
+footer p			{margin-left: 5% !important; padding-left: 0 !important;}
+
+/* input forms
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* single column */
 #rightcol, #leftcol		{position: static; width: 100%;}
 
 #ptitle, #puser, #ppass,
@@ -341,28 +357,29 @@ html, body			{/* prevent iPhone from zooming in when rotating */
 
 #ptitle label, #puser label,
  #ppass label,
- #delete > form > p > label	{display: table-cell; width: 80px; height: 39px; line-height: 37px;
-				 border-bottom: 1px dotted #444;}
-#title, #user, #pass		{display: table-cell; width: 100%;}
+ #delete > form > p > label	{float: none; display: table-cell; width: 80px; height: 39px; padding: 0 20px;
+				 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0;}
+#title, #user, #pass		{position: static; display: table-cell; width: 100%;}
 #text 				{border: none;}
-
-footer p			{margin-left: 5% !important; padding-left: 0 !important;}
 
 }
 
 @media screen and (max-width: 640px) and (orientation: landscape) {
 
 /* when landscape, shrink the size of the search field, and place the RSS / New Thread links in the header */
-/*
-#search				{width: 50%;}
+#search				{width: 50%; float: left;}
 
-#mast nav			{margin-top: -35px; background: #222;}
-*/
+#mast nav			{width: 100%; margin-top: -5px; margin-bottom: 0; background: #222;}
+#mast nav a			{color: white;}
+#add				{padding-right: 5%;
+				 background-image: url("icons/add_white.png");}
+#rss				{background-image: url("icons/rss_white.png");}
 
 }
 
 
-/* printing
+/* ======================================================================================================================
+   printing / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
    ====================================================================================================================== */
 @media print {
 
