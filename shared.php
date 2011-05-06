@@ -5,8 +5,8 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-error_reporting (-1);			//let me know when I’m being stupid
-date_default_timezone_set ('UTC');	//PHP 5.3 issues a warning if the timezone is not set when using date commands
+//let me know when I’m being stupid
+error_reporting (-1);
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -26,6 +26,9 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 if (!@include './config.php') if (!@include './config.default.php') die (
 	"'config.php' or 'config.default.php' missing."
 );
+
+//PHP 5.3 issues a warning if the timezone is not set when using date commands
+date_default_timezone_set (FORUM_TIMEZONE);
 
 
 /* get input

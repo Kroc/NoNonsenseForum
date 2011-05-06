@@ -8,6 +8,13 @@
 
 /* --- rename this file 'config.php' and customise to your liking --- */
 
+//timezone to use for all datetimes
+//this must be a string from this list: <php.net/manual/en/timezones.php>, e.g. "Europe/London"
+define ('FORUM_TIMEZONE',	'UTC');
+
+//the `date` format code used to print human readable dates into the HTML,
+//see <php.net/manual/en/function.date.php> for documentation
+define ('DATE_FORMAT',		'd M ’y · H:i');
 
 //if posting is allowed. change to false and nobody will be able to post new threads or reply
 define ('FORUM_ENABLED',	true);
@@ -29,15 +36,14 @@ define ('SIZE_PASS',		20);		//password
 define ('SIZE_TITLE',		100);		//post title
 define ('SIZE_TEXT',		50000);		//post message
 
-//the `date` format code used to print human readable dates into the HTML,
-//see <php.net/manual/en/function.date.php> for documentation
-define ('DATE_FORMAT',		'd M ’y · H:i');
-
 //prepended to the thread title for each reply (like in e-mail)
 //(the "&__NO__;" template tag is for the number of the reply)
 define ('TEMPLATE_RE',		'RE[&__NO__;]: ');
 
-//HTML used when appending to a post
+//HTML used when appending to a post:
+//"&__AUTHOR__;"	- username of who posted
+//"&__DATETIME__;"	- timestamp formatted for use with HTML5 `<time>`
+//"&__TIME__;"		- human-readable time, as per `DATE_FORMAT`
 define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
 
 //HTML that replaces a post when it's deleted
