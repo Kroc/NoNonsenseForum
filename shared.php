@@ -23,9 +23,32 @@ define ('ERROR_TEXT',		4);					//post text is invalid / blank
 define ('ERROR_AUTH',		5);					//name / password did not match
 
 //set the forum owner’s personal config
-if (!@include './config.php') if (!@include './config.default.php') die (
-	"'config.php' or 'config.default.php' missing."
-);
+@include './config.php';
+
+/* default config:
+   ---------------------------------------------------------------------------------------------------------------------- */
+//*don’t* change these values here, instead rename 'config.example.php' to 'config.php' and customise
+//these are here so that if I add a new value, the forum won’t break if you don’t update your config file
+
+//see 'config.example.php' for description of these
+defined ('FORUM_TIMEZONE')	or define ('FORUM_TIMEZONE',	'UTC');
+defined ('DATE_FORMAT')		or define ('DATE_FORMAT',	'd M ’y · H:i');
+defined ('FORUM_ENABLED')	or define ('FORUM_ENABLED',	true);
+defined ('FORUM_THEME')		or define ('FORUM_THEME',	'greyscale');
+defined ('FORUM_NAME')		or define ('FORUM_NAME',	'NoNonsense Forum');
+defined ('FORUM_THREADS')	or define ('FORUM_THREADS',	50);
+defined ('FORUM_POSTS')		or define ('FORUM_POSTS',	25);
+defined ('SIZE_NAME')		or define ('SIZE_NAME',		20);
+defined ('SIZE_PASS')		or define ('SIZE_PASS',		20);
+defined ('SIZE_TITLE')		or define ('SIZE_TITLE',	100);
+defined ('SIZE_TEXT')		or define ('SIZE_TEXT',		50000);
+defined ('TEMPLATE_RE')		or define ('TEMPLATE_RE',	'RE[&__NO__;]: ');
+defined ('TEMPLATE_APPEND')	or define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
+defined ('TEMPLATE_DEL_USER')	or define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
+defined ('TEMPLATE_DEL_MOD')	or define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+
+
+/* ====================================================================================================================== */
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);

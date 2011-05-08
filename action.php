@@ -122,7 +122,7 @@ if (isset ($_GET['append'])) {
 	//deleting a post?
 	) if ($ID) {
 		//remove the post text
-		$post->description = (NAME == (string) $post->author) ? TEMPLATE_DELETE_USER : TEMPLATE_DELETE_MOD;
+		$post->description = (NAME == (string) $post->author) ? TEMPLATE_DEL_USER : TEMPLATE_DEL_MOD;
 		//add a "deleted" category so we know to no longer allow it to be edited or deleted again
 		if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 		
