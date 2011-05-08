@@ -309,8 +309,9 @@ html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 /* header
    ---------------------------------------------------------------------------------------------------------------------- */
 /* reduce the title size */
+h1				{font-size: 20px !important;}
 #mast				{padding: 0;}
-#mast h1			{position: static; padding: 5px 0 0; font-size: 20px; line-height: 20px;}
+#mast h1			{position: static; padding: 5px 0 0; line-height: 20px;}
 #mast h1 a			{/* fit the logo in tighter */
 				 position: static; display: block; height: 30px; margin: 0; padding: 10px 0 0 55px;
 				 background-position: 10px 50%;}

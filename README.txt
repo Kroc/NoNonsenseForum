@@ -32,21 +32,17 @@ Optional:
 Browser support:
 ----------------
 *	IE6, 7, 8, 9, 10
-*	Firefox 3.6+
+*	Firefox 3+
 *	Chrome Stable, Chrome Dev
 *	Safari 3+
-*	Opera 10+
+*	Opera 9+
 *	Camino 2.1
 
 *	iOS 4.0+ (iOS 3 untested yet)
 
-Buggy:
-*	Firefox 3, 3.5, Camino 2
-*	Opera 9.6
-
 Unsupported:
 *	Firefox 2 or earlier, Camino 1
-*	IE5.5 and below
+*	IE5.5 and below (including IE:Mac)
 
 
 Creating Sub-Forums:

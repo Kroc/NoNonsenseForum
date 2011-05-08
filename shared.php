@@ -180,11 +180,7 @@ function formatText ($text) {
 	//find code blocks:
 	while (preg_match ('/^(?-s:\s*%(.*?)?)\n(.*?)\n(?-s:\s*)%(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$code[] = '<pre><span class="ct">%'.@$m[1][0]."</span>\n"
-			//(if a language name is provided, include `<code>` in the HTML)
-			.(@$m[1][0] ? '<code>' : '').$m[2][0].(@$m[1][0] ? '</code>' : '')
-			."\n<span class=\"cb\">%</span></pre>"
-		;
+		$code[] = '<pre><span class="ct">%'.@$m[1][0]."</span>\n".$m[2][0]."\n<span class=\"cb\">%</span></pre>";
 		//replace the code block with a placeholder
 		$text = substr_replace ($text, "\n&__CODE__;".$m[3][0], $m[0][1], strlen ($m[0][0]));
 	}
