@@ -74,7 +74,7 @@
 		or a designated moderator.</p>
 <?php endswitch; ?>
 		<p id="markup">
-			Pro tip: Use <a href="/markup.txt">markup</a> to add links and quotes.
+			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
 		</p>
 		
 		</div><div id="leftcol">

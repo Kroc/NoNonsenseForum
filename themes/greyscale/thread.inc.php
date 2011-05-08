@@ -125,7 +125,7 @@ if (isset ($PAGES)) {
 		<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
 <?php endswitch; ?>
 		<p id="markup">
-			Pro tip: Use <a href="/markup.txt">markup</a> to add links and quotes.
+			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
 		</p>
 		
 		</div><div id="leftcol">

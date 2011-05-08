@@ -1,6 +1,5 @@
 Links:
 ======
-
 Clickable links will be created automatically on any web addresses in your text that begin with
 "http://", "https://", "ftp://" or "irc://".
 
@@ -60,7 +59,8 @@ YES:	This is my text
 	"The quick brown fox
 	jumped over the lazy dog
 	
-	apparently"
+	Jackdaws love my big
+	sphinx of quartz"
 	
 	This is my text
 
@@ -91,4 +91,48 @@ YES:	"This is the first quote
 	“This is the second quote
 	
 	«This is a third quote»”"
+
+
+Pre-formatted (Monospace) Text and Code:
+========================================
+When posting, all unnecessary whitespace is automatically removed.
+If you have some text that you need to present "as-is", or relies upon a
+monospace font (such as ASCII art), you can use a "code block", like so:
+
+%
+      __...--~~~~~-._   _.-~~~~~--...__
+    //               `V'               \\ 
+   //                 |                 \\ 
+  //__...--~~~~~~-._  |  _.-~~~~~~--...__\\ 
+ //__.....----~~~~._\ | /_.~~~~----.....__\\
+====================\\|//====================
+                dwb `---`
+%
+
+The code block begins with a percent sign, then your text (starting the next line),
+and then the ending percent sign on the next line.
+
+There should be a blank line between the code block and any other text before or after.
+
+NO:	Fish!
+	%
+	<*###><
+	%
+	
+YES:	Fish!
+
+	%
+	<*###><
+	%
+
+You can include a title, or in the instance of inserting source code snippets,
+the programming language used after the first percent sign:
+
+% CSS
+div	{color: red;}
+%
+
+% Fish!
+<*###><
+%
 

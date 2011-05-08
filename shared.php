@@ -149,7 +149,26 @@ function formatText ($text) {
 	//sanitise HTML against injection
 	$text = safeHTML ($text);
 	
-	//find raw URLs and replace with a hyperlinked version
+	/* preformatted text (code spans / blocks):
+	   -------------------------------------------------------------------------------------------------------------- */
+	//we will have to remove the code chunks from the source text to avoid the other markup processing from munging it
+	//and then restore the chunks back later
+	$code = array ();
+	//find code blocks:
+	while (preg_match ('/^(?-s:\s*%(.*?)?)\n(.*?)\n(?-s:\s*)%(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
+		//format the code block
+		$code[] = '<pre><span class="ct">%'.@$m[1][0]."</span>\n"
+			//(if a language name is provided, include `<code>` in the HTML)
+			.(@$m[1][0] ? '<code>' : '').$m[2][0].(@$m[1][0] ? '</code>' : '')
+			."\n<span class=\"cb\">%</span></pre>"
+		;
+		//replace the code block with a placeholder
+		$text = substr_replace ($text, "\n&__CODE__;".$m[3][0], $m[0][1], strlen ($m[0][0]));
+	}
+	
+	/* hyperlinks:
+	   -------------------------------------------------------------------------------------------------------------- */
+	//find full URLs and turn into HTML hyperlinks. we also detect e-mail addresses automatically
 	$text = preg_replace (
 		'/(?:
 			((?:(?:http|ftp)s?|irc)?:\/\/)				# $1 = protocol
@@ -168,7 +187,8 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$0</a>"',
 	$text);
 	
-	//blockquotes:
+	/* blockquotes:
+	   -------------------------------------------------------------------------------------------------------------- */
 	do $text = preg_replace (array (
 		//you would think that you could combine these. you really would
 		'/(?:^\n|\A)(?-s:\s*)("((?>(?1)|.)*?)")(?-s:\s*)(?:\n?$|\Z)/msu',
@@ -188,12 +208,17 @@ function formatText ($text) {
 		array ('&ldquo;</span>', 	'<span class="qr">'),
 	$text);
 	
+	/* finalise:
+	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, wrap in a paragraph
-		if (!preg_match ('/^<\/?b/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if (!preg_match ('/^<\/?b|^&/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
+	
+	//restore code blocks
+	foreach (array_reverse ($code, true) as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
 }

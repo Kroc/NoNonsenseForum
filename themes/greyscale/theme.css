@@ -29,6 +29,13 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
+p				{margin: 0; padding: 20px 0 0;}
+
+a				{color: #222; text-decoration: none; font-weight: bold;}
+a:hover				{color: #666; text-decoration: underline;}
+
+time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
+
 blockquote			{position: relative; margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
 				 font-style: italic;}
@@ -48,12 +55,13 @@ header+blockquote>p:first-child, blockquote:first-child>p:first-child, p.appende
 				 font: normal 40px/0px sans-serif; vertical-align: bottom;}
 .qr				{position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
 
-p				{margin: 0; padding: 20px 0 0;}
+pre				{overflow: auto; margin: 20px 0 0;}
+pre, code			{font: 12.5px/20px Monaco, Consolas, monospace, monospace;}
 
-a				{color: #222; text-decoration: none; font-weight: bold;}
-a:hover				{color: #666; text-decoration: underline;}
-
-time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
+/* code delimiters., top and bottom */
+.ct, .cb			{display: block; line-height: 19px;}
+.ct				{border-bottom: 1px dotted #222;}
+.cb				{margin-top: 20px; border-top: 1px dotted #222;}
 
 
 /* site header
@@ -107,17 +115,20 @@ section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 
 /* page list */
-section nav			{position: relative; height: 41px; overflow: hidden; margin-top: -1px; padding: 0 1px;
+section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
 				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
 
+/* cover over the dotted line at the bottom */
+#threads nav			{margin-top: -1px;}
+
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-section>h1 + nav		{background: none; float: right; margin-top: -50px; padding-right: 10px;}
+section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
 
 ol.pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
-ol.pages li			{display: block; float: left; margin: 1px 0 0 0; padding: 0; width: 40px; height: 39px;
+ol.pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
 				 text-align: center;}
 ol.pages a			{display: block; width: 40px; height: 39px;
 				 color: #aaa; text-decoration: none;}
@@ -157,16 +168,16 @@ ol.ui li time			{float: right; width: 9.1em; text-align: right;}	/* timestamp */
 
 /* thread page
    ====================================================================================================================== */
-article				{padding: 0 20px 19px; border: 1px solid #444; border-width: 0 1px;
+article				{padding: 0 20px 19px; border: 1px solid #444;
 				 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
-				 _border-bottom: 1px;}
+				 border-width: 0 1px 1px;}
 
 /* close the border within the 20px rhythm on the initial post */
 #post article			{padding-bottom: 19px !important; border-bottom-width: 1px;}
 
 #replies h1			{background-image: url("icons/replies.png");}
 
-article header			{line-height: 39px; margin: 0 -20px 0; padding: 0 20px; border-bottom: 1px dotted #444;
+article header			{line-height: 38px; margin: -1px -20px 0; padding: 1px 20px; border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}
