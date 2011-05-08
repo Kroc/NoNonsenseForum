@@ -18,7 +18,6 @@
 <meta name="msapplication-starturl" content="<?=FORUM_URL?>" />
 <meta name="msapplication-window" content="width=1024;height=600" />
 <meta name="msapplication-navbutton-color" content="#222" />
-<link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
 
 <body>
 <!-- =================================================================================================================== -->
