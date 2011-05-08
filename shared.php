@@ -213,7 +213,7 @@ function formatText ($text) {
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, wrap in a paragraph
-		if (!preg_match ('/^<\/?b|^&/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if (!preg_match ('/^<\/?b|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
