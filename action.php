@@ -19,6 +19,9 @@ if (isset ($_GET['append'])) {
 	//get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 	define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
 	
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	
 	//load the thread to get the post preview
 	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
 	//find the post using the ID
@@ -33,7 +36,7 @@ if (isset ($_GET['append'])) {
 		&& (isMod (NAME) || NAME == (string) $post->author)
 		//cannot append to a deleted post
 		&& !(bool) $post->xpath ("category[text()='deleted']")
-	) {
+	) {	
 		$now = time ();
 		$post->description .= "\n".template_tags (TEMPLATE_APPEND, array (
 			'AUTHOR'	=> safeHTML (NAME),
@@ -45,7 +48,9 @@ if (isset ($_GET['append'])) {
 		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
 		
 		//commit the data
-		file_put_contents ("$FILE.rss", $xml->asXML (), LOCK_EX);
+		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		//close the lock / file
+		flock ($f, LOCK_UN); fclose ($f);
 		
 		//try set the modified date of the file back to the time of the last comment
 		//(appending to a post does not push the thread back to the top of the list)
@@ -59,6 +64,9 @@ if (isset ($_GET['append'])) {
 		header ('Location: '.FORUM_URL.PATH_URL."$FILE?page=$page#$ID", true, 303);
 		exit;
 	}
+	
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
 	
 	/* -------------------------------------------------------------------------------------------------------------- */
 	//prepare the template
@@ -98,8 +106,11 @@ if (isset ($_GET['append'])) {
 	//if deleting just one post, rather than the thread
 	$ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['id']) ? $_GET['id'] : false);
 	
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	
 	//load the thread to get the post preview
-	$xml  = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
+	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
 	//access the particular post. if no ID is provided (deleting the whole thread) use the last item in the RSS file
 	//(the first post), otherwise find the ID of the specific post
 	if (!$ID) {
@@ -129,7 +140,9 @@ if (isset ($_GET['append'])) {
 		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
 		
 		//commit the data
-		file_put_contents ("$FILE.rss", $xml->asXML (), LOCK_EX);
+		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		//close the lock / file
+		flock ($f, LOCK_UN); fclose ($f);
 		
 		//try set the modified date of the file back to the time of the last comment
 		//(so that deleting does not push the thread back to the top of the list)
@@ -144,6 +157,9 @@ if (isset ($_GET['append'])) {
 		exit;
 	
 	} else {
+		//close the lock / file
+		flock ($f, LOCK_UN); fclose ($f);
+		
 		//delete the thread for reals
 		@unlink (FORUM_ROOT.PATH_DIR."$FILE.rss");
 		
@@ -154,6 +170,9 @@ if (isset ($_GET['append'])) {
 		header ('Location: '.FORUM_URL.PATH_URL, true, 303);
 		exit;
 	}
+	
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
 	
 	/* -------------------------------------------------------------------------------------------------------------- */
 	

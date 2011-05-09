@@ -9,7 +9,6 @@ require_once './shared.php';
 
 //which thread to show
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
-$xml  = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Malformed XML');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
@@ -18,6 +17,12 @@ define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
 
 //was the submit button clicked? (and is the info valid?)
 if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	
+	//read the file (not dependent on the lock)
+	$xml = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Malformed XML');
+	
 	//ignore a double-post (could be an accident with the back button)
 	if (!(
 		NAME == $xml->channel->item[0]->author &&
@@ -39,14 +44,17 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
 		
 		//save
-		file_put_contents ("$FILE.rss", $xml->asXML (), LOCK_EX);
-		
-		//regenerate the folder's RSS file
-		indexRSS ();
+		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 	} else {
 		//if a double-post, link back to the previous item
 		$url = $xml->channel->item[0]->link;
 	}
+	
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
+	
+	//regenerate the folder's RSS file
+	indexRSS ();
 	
 	//refresh page to see the new post added
 	header ("Location: $url", true, 303);
@@ -54,6 +62,9 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 }
 
 /* ====================================================================================================================== */
+
+//load the thread
+$xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 
 //info for the site header
 $HEADER = array (

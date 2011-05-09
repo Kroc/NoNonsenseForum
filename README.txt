@@ -5,8 +5,8 @@ A simple forum that focuses on discussion and simplicity
 
 Requirements:
 -------------
-*	An up to date Apache installation, 2.2 or above
-*	PHP 5.2.1 or above
+*	An up to date Apache installation, 2.1 or above
+*	PHP 5.2.6 or above
 *	A sub domain (like 'forum.---.com'), virtual host or otherwise dedicated web-root for the forum.
 	it will not run in a sub-folder
 
