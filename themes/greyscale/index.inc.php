@@ -58,7 +58,7 @@ if (isset ($PAGES)) {
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li>
 			<?php if ($FOLDER['AUTHOR']): ?><time datetime="<?=$FOLDER['DATETIME']?>"><?=$FOLDER['TIME']?></time>
-			<b><?=$FOLDER['AUTHOR']?></b> <?php endif;
+			<b<?=$FOLDER['MOD']?' class="mod"':''?>><?=$FOLDER['AUTHOR']?></b> <?php endif;
 ?><a href="<?=$FOLDER['URL']?>"><?=$FOLDER['NAME']?></a>
 		</li>
 <?php endforeach; ?>
@@ -75,14 +75,14 @@ if (isset ($PAGES)) {
 <?php if ($THREAD['STICKY']): ?>
 		<li class="sticky">
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
-			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
+			<i><?=$THREAD['COUNT']?></i> <b<?=$THREAD['MOD']?' class="mod"':''?>><?=$THREAD['AUTHOR']?></b>
 			<img src="/themes/<?=FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
 			<a href="<?=$THREAD['URL']?>" class="sticky"><?=$THREAD['TITLE']?></a>
 		</li>
 <?php else: ?>
 		<li>
 			<time datetime="<?=$THREAD['DATETIME']?>"><?=$THREAD['TIME']?></time>
-			<i><?=$THREAD['COUNT']?></i> <b><?=$THREAD['AUTHOR']?></b>
+			<i><?=$THREAD['COUNT']?></i> <b<?=$THREAD['MOD']?' class="mod"':''?>><?=$THREAD['AUTHOR']?></b>
 			<a href="<?=$THREAD['URL']?>"><?=$THREAD['TITLE']?></a>
 		</li>
 <?php endif; ?>
@@ -98,7 +98,8 @@ if (isset ($PAGES)) {
 <?php if (FORUM_ENABLED): ?>
 		<p id="ptitle">
 			<label for="title">Title:</label>
-			<input name="title" id="title" type="text" size="28" maxlength="<?=SIZE_TITLE?>" required autocomplete="off"
+			<input name="title" id="title" type="text" size="28" tabindex="1"
+			       maxlength="<?=SIZE_TITLE?>" required autocomplete="off"
 			       placeholder="Type thread title here…" value="<?=$FORM['TITLE']?>" />
 		</p>
 		
@@ -106,15 +107,17 @@ if (isset ($PAGES)) {
 		
 		<p id="puser">
 			<label for="user">Name:</label>
-			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
+			<input name="username" id="user" type="text" size="28" tabindex="3"
+			       maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 		</p><p id="ppass">
 			<label for="pass">Password:</label>
-			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
+			<input name="password" id="pass" type="password" size="28" tabindex="4"
+			       maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 		</p><p id="pemail">
 			<label class="email">Email:</label>
-			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+			<input name="email" type="text" value="example@abc.com" tabindex="0" required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
 <?php switch ($FORM['ERROR']):
@@ -145,8 +148,9 @@ if (isset ($PAGES)) {
 		<p id="ptext">
 			<label for="text">Message:</label>
 			<div id="wtext">
-				<textarea name="text" id="text" cols="40" rows="14" maxlength="<?=SIZE_TEXT?>" required
-					  placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
+				<textarea name="text" id="text" cols="40" rows="14" tabindex="2"
+				          maxlength="<?=SIZE_TEXT?>" required placeholder="Type your message here…"
+				><?=$FORM['TEXT']?></textarea>
 			</div>
 		</p>
 		
@@ -154,7 +158,7 @@ if (isset ($PAGES)) {
 		
 		<p id="psubmit"><label for="submit">Submit
 			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
-			       width="40" height="40" value="&gt;" />
+			       width="40" height="40" tabindex="5" value="&gt;" />
 		</label></p>
 <?php else: ?>
 		<p id="error">Sorry, posting is currently disabled.</p>
@@ -162,6 +166,20 @@ if (isset ($PAGES)) {
 	</form>
 </section>
 <!-- =================================================================================================================== -->
+<div id="mods">
+<?php if (!empty ($MODS['LOCAL'])): ?>
+<p>
+	Moderators for this sub-forum:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+</p>
+<?php endif; ?>
+<?php if (!empty ($MODS['GLOBAL'])): ?>
+<p>
+	Your friendly neighbourhood moderators:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+</p>
+<?php endif; ?>
+</div>
 <footer><p>
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>

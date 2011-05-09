@@ -22,7 +22,7 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 
 
 /* page centering / width */
-#mast nav, section		{width: 80%; max-width: 1024px;}
+#mast nav, section, #mods	{width: 80%; max-width: 1024px;}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 line-height: 20px; font-size: 22px; font-weight: bold; color: #f7f6f7;
@@ -33,6 +33,9 @@ p				{margin: 0; padding: 20px 0 0;}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
 a:hover				{color: #666; text-decoration: underline;}
+
+b.mod				{/* all moderators have underlined names */
+				 /*text-decoration: underline;*/}
 
 time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
 
@@ -287,7 +290,10 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-footer				{position: absolute; height: 60px; margin: 40px 0 0; padding: 0 0 20px; left: 0; right: 0;
+#mods				{margin: 0 auto; padding-top: 20px;}
+#mods p				{padding: 0 20px 0; color: #888;}
+
+footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
 				 background: #222;}
 
@@ -304,7 +310,7 @@ footer p a			{color: #888;}
 html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
 
 /* page width */
-#mast nav, section		{width: 95%;}
+#mast nav, section, #mods	{width: 95%;}
 
 /* header
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -374,6 +380,10 @@ footer p			{margin-left: 5% !important; padding-left: 0 !important;}
 #title, #user, #pass		{position: static; display: table-cell; width: 100%;}
 #text 				{border: none;}
 
+/* footer */
+#mods p				{padding-left: 0; padding-right: 0;
+				 font-size: 13px;}
+
 }
 
 @media screen and (max-width: 640px) and (orientation: landscape) {
@@ -402,7 +412,7 @@ section				{width: 100% !important;}
 #mast nav, #search,		/* - nav */
  #new, #reply, #delete,		/* - input forms */
  a.ui,				/* - delete / append buttons */
- footer				{display: none;}
+ #mods, footer			{display: none;}
 
 /* remove background colours, set text-colour */
 html, h1, h1 a, section,

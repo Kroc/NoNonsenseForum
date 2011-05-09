@@ -77,6 +77,7 @@ $POST = array (
 	'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 			  .substr (strstr ($post->link, '#'), 1),
 	'TEXT'		=> $post->description,
+	'MOD'		=> isMod ($post->author),
 	'ID'		=> substr (strstr ($post->link, '#'), 1)
 );
 
@@ -99,16 +100,17 @@ if (count ($thread)) {
 	$no = (PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$post) $POSTS[] = array (
 		'AUTHOR'	=> safeHTML ($post->author),
-		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),		//HTML5 `<time>` datetime attribute
+		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),	//human readable time
 		'TEXT'		=> $post->description,
-		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']"),
+		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']") ? 'deleted' : '',
 		'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
-		'OP'		=> $post->author == $author,
-		'NO'		=> ++$no,
+		'OP'		=> $post->author == $author ? 'op' : '',		//if author is the original poster
+		'MOD'		=> isMod ($post->author) ? 'mod' : '',			//if the author is a moderator
+		'NO'		=> ++$no,						//number of the reply
 		'ID'		=> substr (strstr ($post->link, '#'), 1)
 	);
 }

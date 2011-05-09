@@ -47,9 +47,6 @@ defined ('TEMPLATE_APPEND')	or define ('TEMPLATE_APPEND',	'<p class="appended"><
 defined ('TEMPLATE_DEL_USER')	or define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
 defined ('TEMPLATE_DEL_MOD')	or define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
 
-
-/* ====================================================================================================================== */
-
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
 
@@ -93,6 +90,19 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 chdir (FORUM_ROOT.PATH_DIR);
+
+//get the list of moderators:
+$MODS = array (
+	//mods.txt on root for mods on all sub-forums
+	'GLOBAL'=> file_exists (FORUM_ROOT.'/mods.txt')
+		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		: array (),
+	//if in a sub-forum, the local mods.txt
+	'LOCAL'	=> PATH && file_exists ('mods.txt')
+		? file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		: array ()
+);
+
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
@@ -246,17 +256,8 @@ function formatText ($text) {
 
 //check to see if a name is a known moderator in mods.txt
 function isMod ($name) {
-	//'mods.txt' on webroot defines moderators for the whole forum
-	return (file_exists (FORUM_ROOT.'/mods.txt') && in_array (
-		strtolower ($name),  //(names are case insensitive)
-		array_map ('strtolower', file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-		
-	//a 'mods.txt' can also exist in sub-folders for per-folder moderators
-	//(it is assumed that the current working directory has been changed to the sub-folder in question)
-	)) || (PATH && file_exists ('mods.txt') && in_array (
-		strtolower ($name),
-		array_map ('strtolower', file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES))
-	));
+	global $MODS;
+	return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
 }
 
 /* ====================================================================================================================== */

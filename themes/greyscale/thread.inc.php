@@ -54,12 +54,12 @@ if (isset ($PAGES)) {
 <section id="post">
 	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
 	
-	<article class="op">
+	<article class="op<?=$POST['MOD'] ? ' mod' : ''?>">
 		<header>
 			<a class="ui append" rel="noindex nofollow" href="<?=$POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<b><?=$POST['AUTHOR']?></b>
+			<b<?=$POST['MOD']?' class="mod"':''?>><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>
@@ -72,12 +72,13 @@ if (isset ($PAGES)) {
 	<nav><ol class="pages"><?=$PAGES?></ol></nav>
 	
 <?php foreach ($POSTS as $POST): ?>
-	<article id="<?=$POST['ID']?>" class="<?=($POST['DELETED'] ? 'deleted' : ($POST['OP'] ? 'op' : ''))?>">
+	<article id="<?=$POST['ID']?>" class="<?=implode(' ',array_filter(array($POST['DELETED'],$POST['OP'],$POST['MOD'])))?>">
 		<header>
 			<?php if (!$POST['DELETED']): ?><a class="ui append" rel="noindex nofollow" href="<?=$POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?=$POST['DELETE_URL']?>">delete</a><?php endif;?>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<a href="#<?=$POST['ID']?>">#<?=$POST['NO']?>.</a> <b><?=$POST['AUTHOR']?></b>
+			<a href="#<?=$POST['ID']?>">#<?=$POST['NO']?>.</a>
+			<b<?=$POST['MOD']?' class="mod"':''?>><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>
@@ -96,15 +97,18 @@ if (isset ($PAGES)) {
 		
 		<p id="puser">
 			<label for="user">Name:</label>
-			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
+			<input name="username" id="user" type="text" size="28" tabindex="2"
+			       maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 		</p><p id="ppass">
 			<label for="pass">Password:</label>
-			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
+			<input name="password" id="pass" type="password" size="28" tabindex="3"
+			       maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 		</p><p id="pemail">
 			<label class="email">Email:</label>
-			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+			<input name="email" type="text" value="example@abc.com" tabindex="0"
+			       required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
 <?php switch ($FORM['ERROR']):
@@ -132,8 +136,9 @@ if (isset ($PAGES)) {
 		<p id="ptext">
 			<label for="text">Message:</label>
 			<div id="wtext">
-				<textarea name="text" id="text" cols="40" rows="14" maxlength="<?=SIZE_TEXT?>" required
-					  placeholder="Type your message here…"><?=$FORM['TEXT']?></textarea>
+				<textarea name="text" id="text" cols="40" rows="14" tabindex="1"
+				          maxlength="<?=SIZE_TEXT?>" required placeholder="Type your message here…"
+				><?=$FORM['TEXT']?></textarea>
 			</div>
 		</p>
 		
@@ -141,7 +146,7 @@ if (isset ($PAGES)) {
 		
 		<p id="psubmit"><label for="submit">Submit
 			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
-			       width="40" height="40" value="&gt;" />
+			       width="40" height="40" tabindex="4" value="&gt;" />
 		</label></p>
 <?php else: ?>
 		<p id="error">Sorry, posting is currently disabled.</p>
@@ -149,6 +154,20 @@ if (isset ($PAGES)) {
 	</form>
 </section>
 <!-- =================================================================================================================== -->
+<div id="mods">
+<?php if (!empty ($MODS['LOCAL'])): ?>
+<p>
+	Moderators for this sub-forum:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+</p>
+<?php endif; ?>
+<?php if (!empty ($MODS['GLOBAL'])): ?>
+<p>
+	Your friendly neighbourhood moderators:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+</p>
+<?php endif; ?>
+</div>
 <footer><p>
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>

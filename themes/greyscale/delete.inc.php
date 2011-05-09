@@ -39,7 +39,8 @@
 		
 		<p id="puser">
 			<label for="user">Name:</label>
-			<input name="username" id="user" type="text" size="28" maxlength="<?=SIZE_NAME?>" required autocomplete="on"
+			<input name="username" id="user" type="text" size="28" tabindex="1"
+			       maxlength="<?=SIZE_NAME?>" required autocomplete="on"
 			       placeholder="Your name" value="<?=$FORM['NAME']?>" />
 		</p>
 		
@@ -47,11 +48,13 @@
 		
 		<p id="ppass">
 			<label for="pass">Password:</label>
-			<input name="password" id="pass" type="password" size="28" maxlength="<?=SIZE_PASS?>" required autocomplete="on"
+			<input name="password" id="pass" type="password" size="28" tabindex="2"
+			       maxlength="<?=SIZE_PASS?>" required autocomplete="on"
 			       placeholder="A password to keep your name" value="<?=$FORM['PASS']?>" />
 		</p><p id="pemail">
 			<label class="email">Email:</label>
-			<input name="email" type="text" value="example@abc.com" required autocomplete="off" />
+			<input name="email" type="text" value="example@abc.com" tabindex="0"
+			       required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
 		
@@ -82,7 +85,7 @@
 		
 		<p id="psubmit"><label for="submit">Delete
 			<input id="submit" name="submit" type="image" src="/themes/<?=FORUM_THEME?>/icons/submit.png"
-			       width="40" height="40" value="&gt;" />
+			       width="40" height="40" tabindex="3" value="&gt;" />
 		</label></p>
 	</form>
 </section>
@@ -92,13 +95,27 @@
 	<article>
 		<header>
 			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<b><?=$POST['AUTHOR']?></b>
+			<b<?=$POST['MOD']?' class="mod"':''?>><?=$POST['AUTHOR']?></b>
 		</header>
 		
 		<?=$POST['TEXT']?>
 	</article>
 </section>
 <!-- =================================================================================================================== -->
+<div id="mods">
+<?php if (!empty ($MODS['LOCAL'])): ?>
+<p>
+	Moderators for this sub-forum:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+</p>
+<?php endif; ?>
+<?php if (!empty ($MODS['GLOBAL'])): ?>
+<p>
+	Your friendly neighbourhood moderators:
+	<b class="mod"><?=implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+</p>
+<?php endif; ?>
+</div>
 <footer><p>
 	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>

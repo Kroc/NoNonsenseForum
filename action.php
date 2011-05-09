@@ -79,6 +79,7 @@ if (isset ($_GET['append'])) {
 	$POST = array (
 		'TITLE'		=> safeHTML ($post->title),
 		'AUTHOR'	=> safeHTML ($post->author),
+		'MOD'		=> isMod ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description
@@ -172,6 +173,7 @@ if (isset ($_GET['append'])) {
 	
 	$POST = array (
 		'AUTHOR'	=> safeHTML ($post->author),
+		'MOD'		=> isMod ($post->author),
 		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'TEXT'		=> $post->description

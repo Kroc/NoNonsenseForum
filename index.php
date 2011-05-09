@@ -92,7 +92,8 @@ foreach (array_filter (
 		//can’t include these details if the folder was empty (no threads)
 		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),
 		'TIME'		=> !$last ? '' : date (DATE_FORMAT, strtotime ($last->pubDate)),
-		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author)
+		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author),
+		'MOD'		=> !$last ? '' : isMod ($last->author)
 	);
 	
 	chdir ('..');
@@ -136,10 +137,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 						? '?page='.ceil ((count ($xml->channel->item) - 1) / FORUM_POSTS) : ''
 					),
 			'TITLE'		=> safeHTML ($xml->channel->title),
-			'COUNT'		=> count ($xml->channel->item),
+			'COUNT'		=> count ($xml->channel->item) - 1,
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr
 			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
-			'AUTHOR'	=> safeHTML ($last->author)
+			'AUTHOR'	=> safeHTML ($last->author),
+			'MOD'		=> isMod ($last->author)
 		);
 	}
 }
