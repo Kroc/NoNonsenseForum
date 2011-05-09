@@ -57,11 +57,8 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 
 //info for the site header
 $HEADER = array (
-	'THREAD'	=> safeHTML ($xml->channel->title),
-	'PAGE'		=> PAGE,
-	'RSS'		=> "$FILE.rss",
-	'PATH'		=> safeHTML (PATH),
-	'PATH_URL'	=> safeHTML (PATH_URL)
+	'TITLE'	=> safeHTML ($xml->channel->title),
+	'RSS'	=> "$FILE.rss"
 );
 
 /* original post

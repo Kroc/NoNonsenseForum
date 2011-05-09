@@ -63,9 +63,7 @@ if (isset ($_GET['append'])) {
 	/* -------------------------------------------------------------------------------------------------------------- */
 	//prepare the template
 	$HEADER = array (
-		'THREAD'	=> safeHTML ($xml->channel->title),
-		'PATH'		=> safeHTML (PATH),
-		'PATH_URL'	=> safeHTML (PATH_URL)
+		'TITLE'		=> safeHTML ($xml->channel->title)
 	);
 	
 	$FORM = array (
@@ -160,7 +158,7 @@ if (isset ($_GET['append'])) {
 	
 	//prepare template
 	$HEADER = array (
-		'THREAD'	=> safeHTML ($xml->channel->title)
+		'TITLE'		=> safeHTML ($xml->channel->title)
 	);
 	
 	$FORM = array (

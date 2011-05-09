@@ -68,13 +68,6 @@ XML
 }
 
 /* ====================================================================================================================== */
-
-//information for the site header:
-$HEADER = array (
-	'PATH'	=> safeHTML (PATH),	//the current sub-forum, if any
-	'PAGE'	=> PAGE			//the current page number
-);
-
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
 //get a list of folders
@@ -151,9 +144,9 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	}
 }
 
-/* ---------------------------------------------------------------------------------------------------------------------- */
-
-//the new thread input form (exclude if posting has been disabled)
+/* new thread form
+   ---------------------------------------------------------------------------------------------------------------------- */
+//(exclude if posting has been disabled)
 if (FORUM_ENABLED) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),

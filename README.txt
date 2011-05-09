@@ -47,7 +47,7 @@ Unsupported:
 
 Creating Sub-Forums:
 --------------------
-If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server’s OS except for "." and "&" -- ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.
+If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server’s OS except for ".", "<", ">" and "&" -- ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.
 
 Second-level sub-folders are not supported. (E.g. '/Music/Techno/')
 
@@ -98,4 +98,4 @@ The moderators you specify will be able to delete threads and posts in all folde
 
 Markup:
 -------
-Some simple markup is provided for hyperlinks and quotes, see markup.txt for details.
+Some simple markup is provided for hyperlinks, quotes and more; see markup.txt for details.

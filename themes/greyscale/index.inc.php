@@ -14,7 +14,7 @@ if (isset ($PAGES)) {
 <!-- NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
-<title><?=safeHTML(FORUM_NAME)?><?=($HEADER['PATH'] ? ' :: '.$HEADER['PATH'] : '').($HEADER['PAGE']>1 ? ' # '.$HEADER['PAGE'] : '')?></title>
+<title><?=(PATH ? PATH : safeHTML(FORUM_NAME)).(PAGE>1 ? ' # '.PAGE : '')?></title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
@@ -25,8 +25,8 @@ if (isset ($PAGES)) {
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?=FORUM_THEME?>/favicon.ico" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?=FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
-<meta name="application-name" content="<?=safeString (FORUM_NAME)?>" />
-<meta name="msapplication-starturl" content="<?=FORUM_URL?>" />
+<meta name="application-name" content="<?=PATH ? safeString(PATH) : safeString (FORUM_NAME)?>" />
+<meta name="msapplication-starturl" content="<?=FORUM_URL.PATH_URL?>" />
 <meta name="msapplication-window" content="width=1024;height=600" />
 <meta name="msapplication-navbutton-color" content="#222" />
 
@@ -47,7 +47,7 @@ if (isset ($PAGES)) {
 		<a id="add" href="#new">Add Thread</a>
 		<a id="rss" href="index.xml">RSS</a>
 	</p><p>
-		<a id="index" href="/">Index</a><?php if ($HEADER['PATH']): ?> » <?=$HEADER['PATH']?><?php endif; ?>
+		<a id="index" href="/">Index</a><?php if (PATH): ?> » <?=PATH?><?php endif; ?>
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
