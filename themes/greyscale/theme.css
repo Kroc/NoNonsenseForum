@@ -10,7 +10,7 @@ header, nav, section, article,	/* this doesn’t get set on browsers without an 
  footer				{display: block;}
 
 html, body			{width: 100%; margin: 0; padding: 0; border: 0;}
-html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
+html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
 				 background: white url("bg.png") fixed repeat-x bottom center;
 				 /* CSS3 gradients for browsers that support it: */
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
@@ -25,11 +25,14 @@ html				{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;
 #mast nav, section, #mods	{width: 80%; max-width: 1024px;}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
-				 line-height: 20px; font-size: 22px; font-weight: bold; color: #f7f6f7;
+				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
 				 background: #222;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-p				{margin: 0; padding: 20px 0 0;}
+p				{margin: 0; padding: 20px 0 0;
+				 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
+				    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
+				 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
 
 a				{color: #222; text-decoration: none; font-weight: bold;}
 a:hover				{color: #666; text-decoration: underline;}
@@ -37,7 +40,7 @@ a:hover				{color: #666; text-decoration: underline;}
 b.mod				{/* all moderators have underlined names */
 				 /*text-decoration: underline;*/}
 
-time				{font-family: Calibri, Tahoma, sans-serif; text-transform: uppercase;}
+time				{font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-transform: uppercase;}
 
 blockquote			{position: relative; margin: 19px 0 0; padding: 0 20px 0 19px;
 				 border: 1px dotted #222; border-width: 1px 0 0 1px;
@@ -55,11 +58,11 @@ header+blockquote>p:first-child, blockquote:first-child>p:first-child, p.appende
 
 /* added quote marks within blockquotes */
 .ql, .qr			{padding-right: 5px;
-				 font: normal 40px/0px sans-serif; vertical-align: bottom;}
+				 font: normal 40px/0px "Liberation Sans", sans-serif; vertical-align: bottom;}
 .qr				{position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
 
 pre				{overflow: auto; margin: 20px 0 0;}
-pre, code			{font: 12.5px/20px Monaco, Consolas, monospace, monospace;}
+pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, monospace;}
 
 /* code delimiters., top and bottom */
 .ct, .cb			{display: block; line-height: 19px;}
@@ -119,7 +122,7 @@ section				{margin: 20px auto 0;
 
 /* page list */
 section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
-				 font-family: Calibri, Tahoma, sans-serif; line-height: 40px;
+				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; line-height: 40px;
 				 text-align: right; text-transform: uppercase; color: #aaa;
 				 background-color: #444;}
 
@@ -159,7 +162,7 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 
 #threads ol.ui li		{padding-left: 60px;}
 #threads ol.ui li i		{float: left; width: 25px; margin: 0 10px 0 -50px;
-				 font-family: Calibri, Tahoma, sans-serif; text-align: right;}
+				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
 
 #threads ol.ui li img		{margin-left: -20px; vertical-align: top;}
 #threads ol.ui li.sticky	{background: #eee;}
@@ -219,7 +222,7 @@ p.appended			{color: #888; padding-top: 19px;
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
-input, textarea			{font: normal 16px/20px Corbel, "Trebuchet MS", sans-serif;}
+input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sans-serif;}
 
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
