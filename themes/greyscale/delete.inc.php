@@ -117,7 +117,7 @@
 <?php endif; ?>
 </div>
 <footer><p>
-	Powered by <a href="https://github.com/Kroc/NoNonsenseForum">NoNonsenseForum</a><br />
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
 <div id="grid"></div>
