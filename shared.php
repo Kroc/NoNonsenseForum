@@ -247,7 +247,7 @@ function formatText ($text) {
 	}
 	
 	//restore code blocks
-	foreach (array_reverse ($code, true) as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	foreach ($code as &$html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
 }
