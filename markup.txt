@@ -136,3 +136,14 @@ div	{color: red;}
 <*###><
 %
 
+Should you need to quote something that has percent symbols as the first character on a line, such as the LaTeX programming language, you can simply use the dollar sign "$" as a delimiter instead.
+
+$ LaTeX
+\begin{document}
+%
+% Written by Jon Gjengset
+%
+\section{Hello}
+World
+\end{document}
+$
