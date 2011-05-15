@@ -206,13 +206,13 @@ function formatText ($text) {
 			)(\/)?							# $3 = slash is excluded from friendly URL
 			(?(3)(							# $4 = folders and filename, relative URL
 				(?>						# folders and filename
-					[:)\.](?!\s|$)|				# ignore a colon, bracket or dot on the end
-					[^\s":)\.]				# the rest, including bookmark
+					[:)\."”»](?!\s|$)|			# ignore various characters on the end
+					[^\s:)\."”»]				# the rest, including bookmark
 				)*
 			)?)
 		|
 			([a-z0-9\._%+\-]+@[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+)	# $5 = e-mail
-		)/exi',
+		)/exiu',
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$0</a>"',
 	$text);
 	
