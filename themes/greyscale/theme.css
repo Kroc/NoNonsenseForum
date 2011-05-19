@@ -42,19 +42,9 @@ b.mod				{/* all moderators have underlined names */
 
 time				{font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-transform: uppercase;}
 
-blockquote			{position: relative; margin: 19px 0 0; padding: 0 20px 0 19px;
-				 border: 1px dotted #222; border-width: 1px 0 0 1px;
-				 font-style: italic;}
-
-/* in good browsers, do not allow the blockquote's top-dotted line to appear…
-	…if the quote is the first thing in a post
-	…if a quote is the first thing in another quote
-	…after an appended status message
-   (this just makes quotes more compact and subtle) */
-header+blockquote, blockquote:first-child, p.appended+blockquote
-				{margin-top: 20px; border-top: none;}
-header+blockquote>p:first-child, blockquote:first-child>p:first-child, p.appended+blockquote>p:first-child
-				{padding-top: 0;}
+blockquote			{position: relative; margin: 20px 0 0; padding: 0 20px 0 19px;
+				 border-left: 1px dotted #222; font-style: italic;}
+blockquote p:first-child	{padding-top: 0;}
 
 /* added quote marks within blockquotes */
 .ql, .qr			{padding-right: 5px;
