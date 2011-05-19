@@ -276,7 +276,7 @@ function indexRSS () {
 		@$rss .= template_tags (<<<XML
 <item>
 	<title>&__TITLE__;</title>
-	<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+	<link>&__URL__;</link>
 	<author>&__NAME__;</author>
 	<pubDate>&__DATE__;</pubDate>
 	<description>&__TEXT__;</description>
@@ -284,7 +284,7 @@ function indexRSS () {
 XML
 		, array (
 			'TITLE'	=> safeHTML ($item->title),
-			'URL'	=> PATH_URL.pathinfo ($thread, PATHINFO_FILENAME),
+			'URL'	=> $item->link,
 			'NAME'	=> safeHTML ($item->author),
 			'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
 			'TEXT'	=> safeHTML ($item->description),
