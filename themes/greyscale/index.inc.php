@@ -185,5 +185,14 @@ if (isset ($PAGES)) {
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
 <div id="grid"></div>
+<script>
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){
+		document.getElementById (this.getAttribute ("for")).click ();
+	}
+}
+</script>
 <!-- page generated in: <?=round (microtime (true) - START, 3)?>s -->
 </body>
