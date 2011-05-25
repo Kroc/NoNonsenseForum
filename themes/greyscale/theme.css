@@ -302,7 +302,7 @@ footer p a			{color: #888;}
 html				{font-size: 14px;}
 
 /* prevent iPhone from zooming in when rotating */
-html, body			{width: 100%; -webkit-text-size-adjust: none; overflow: hidden;}
+html, body			{width: 100%; -webkit-text-size-adjust: none;}
 
 /* page width */
 #mast nav, section, #mods	{width: 95%;}
