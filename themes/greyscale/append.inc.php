@@ -36,6 +36,19 @@
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
+<section id="post">
+	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
+	
+	<article>
+		<header>
+			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
+			<b<?=$POST['MOD']?' class="mod"':''?>><?=$POST['AUTHOR']?></b>
+		</header>
+		
+		<?=$POST['TEXT']?>
+	</article>
+</section>
+<!-- =================================================================================================================== -->
 <section id="append">
 	<h1>Append</h1>
 	<form method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
@@ -100,19 +113,6 @@
 		<p id="error">Sorry, posting is currently disabled.</p>
 <?php endif; ?>
 	</form>
-</section>
-<!-- =================================================================================================================== -->
-<section id="post">
-	<h1 id="<?=$POST['ID']?>"><?=$POST['TITLE']?></h1>
-	
-	<article>
-		<header>
-			<time datetime="<?=$POST['DATETIME']?>" pubdate><?=$POST['TIME']?></time>
-			<b<?=$POST['MOD']?' class="mod"':''?>><?=$POST['AUTHOR']?></b>
-		</header>
-		
-		<?=$POST['TEXT']?>
-	</article>
 </section>
 <!-- =================================================================================================================== -->
 <div id="mods">

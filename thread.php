@@ -86,7 +86,7 @@ $POST = array (
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
 	'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-			  .substr (strstr ($post->link, '#'), 1),
+			  .substr (strstr ($post->link, '#'), 1).'#append',
 	'TEXT'		=> $post->description,
 	'MOD'		=> isMod ($post->author),
 	'ID'		=> substr (strstr ($post->link, '#'), 1)
@@ -118,7 +118,7 @@ if (count ($thread)) {
 		'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-				  .substr (strstr ($post->link, '#'), 1),
+				  .substr (strstr ($post->link, '#'), 1).'#append',
 		'OP'		=> $post->author == $author ? 'op' : '',		//if author is the original poster
 		'MOD'		=> isMod ($post->author) ? 'mod' : '',			//if the author is a moderator
 		'NO'		=> ++$no,						//number of the reply
