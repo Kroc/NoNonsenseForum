@@ -206,7 +206,8 @@ function formatText ($text) {
 			)(\/)?							# $3 = slash is excluded from friendly URL
 			(?(3)(							# $4 = folders and filename, relative URL
 				(?>						# folders and filename
-					[:)\.,"”»](?!\s|$)|			# ignore various characters on the end
+					\)(?![\.,]?(?:\s|$))|			# ignore brackets on end with dot or comma
+					[:\.,"”»](?!\s|$)|			# ignore various characters on the end
 					[^\s:)\.,"”»]				# the rest, including bookmark
 				)*
 			)?)
