@@ -299,7 +299,7 @@ footer p a			{color: #888;}
    ====================================================================================================================== */
 @media screen and (max-width: 640px) {
 
-html				{font-size: 14px;}
+html				{font-size: 14px; background: #ddd; /* mobile devices don't like fixed backgrounds */}
 
 /* prevent iPhone from zooming in when rotating */
 html, body			{width: 100%; -webkit-text-size-adjust: none;}
