@@ -3,8 +3,6 @@ RewriteEngine	On
 
 # stop automagically adding slashes to input forms
 php_flag magic_quotes_gpc off
-# # allow `<?=…?>`
-# php_flag short_open_tags  on
 
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
