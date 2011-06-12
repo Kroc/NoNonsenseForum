@@ -17,7 +17,7 @@ define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, SIZE_TEXT,  'UTF-8'));
 //has the user submitted a new thread? (and is the info valid?)
 if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//the file on disk is a simplified version of the title:
-	$c = 0; do $file = preg_replace (
+	$translit = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
 		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
 		//remove the additional characters added by transliteration, e.g. "ñ" = "~n",
@@ -25,9 +25,15 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] =
 		str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
 			//unaccent: <php.net/manual/en/function.iconv.php>
 			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
-		//if a thread already exsits with that name, append a number until an available filename is found
-		)).($c++ ? '_'.($c-1) : '')
+		))
 	);
+	
+	//old iconv versions and certain inputs may cause a nullstring. don't allow a blank filename
+	if (!$translit) $translit = '_';
+	
+	//if a thread already exsits with that name, append a number until an available filename is found
+	$c = 0;
+	do $file = $translit.($c++ ? '_'.($c-1) : '');
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file
