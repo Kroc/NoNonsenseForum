@@ -22,7 +22,7 @@ This applies even if the quoted text is more than one paragraph, or contains quo
 
 Examples:
 
-There must be a blank line between any quote and other text
+There must be a blank line between any quote and other text:
 
 YES:	This is my text
 	
@@ -30,19 +30,19 @@ YES:	This is my text
 	
 	This is my text
 
-A single line-break does not work.
+A single line-break does not work:
 
 NO:	This is my text
 	"This is your text"
 	
 	This is my text
 
-There must be no text before or after the quote marks.
+There must be no text before or after the quote marks:
 
 NO:	"This is your text".
 	
 However, spaces before or after are allowed. When you copy and paste someone else's quote,
-extra spaces might be added, just ignore these.
+extra spaces might be included, just ignore these.
 
 YES:	This is my text
 
@@ -52,7 +52,7 @@ YES:	This is my text
 	
 	This is my text
 
-A quote may span more than one line or paragraph
+A quote may span more than one line or paragraph:
 
 YES:	This is my text
 	
@@ -64,7 +64,7 @@ YES:	This is my text
 	
 	This is my text
 
-Quotes can contain quotes
+Quotes can contain quotes:
 
 YES:	"This is the first quote
 	
@@ -72,7 +72,7 @@ YES:	"This is the first quote
 	
 	This is the first quote"
 	
-You may use three different kinds of quote marks
+You may use three different kinds of quote marks:
 
 YES:	"Plain speech marks"
 
@@ -84,7 +84,7 @@ But you can’t mismatch the ends:
 
 NO	“this won’t work»
 
-Different kinds of quotes can be nested however
+Different kinds of quotes can be nested however:
 
 YES:	"This is the first quote
 
@@ -95,7 +95,7 @@ YES:	"This is the first quote
 
 Pre-formatted (Monospace) Text and Code:
 ========================================
-When posting, all unnecessary whitespace is automatically removed.
+When posting, all unnecessary white-space is automatically removed.
 If you have some text that you need to present "as-is", or relies upon a
 monospace font (such as ASCII art), you can use a "code block", like so:
 
@@ -112,7 +112,7 @@ monospace font (such as ASCII art), you can use a "code block", like so:
 The code block begins with a percent sign, then your text (starting the next line),
 and then the ending percent sign on the next line.
 
-There should be a blank line between the code block and any other text before or after.
+There should be a blank line between the code block and any other text before or after:
 
 NO:	Fish!
 	%
@@ -125,8 +125,8 @@ YES:	Fish!
 	<*###><
 	%
 
-You can include a title, or in the instance of inserting source code snippets,
-the programming language used after the first percent sign:
+You can include a title, or in the instance of inserting source code snippets
+the programming language used, after the first percent sign:
 
 % CSS
 div	{color: red;}

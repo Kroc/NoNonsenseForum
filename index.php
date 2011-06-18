@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -131,11 +131,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	//generate the list of threads with data, for the template
-	foreach ($threads as $file) {
+	foreach ($threads as $file) if (
 		//read the file, and refer to the last post made (the first item in RSS feed as newest is first)
-		$xml  = simplexml_load_file ($file) or die ("$file is malformed.");
+		$xml  = @simplexml_load_file ($file)
+	) {
 		$last = &$xml->channel->item[0];
-		
 		$THREADS[] = array (
 			'STICKY'	=> in_array ($file, $stickies),
 			//link to the thread--go to the last page of replies

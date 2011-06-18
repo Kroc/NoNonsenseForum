@@ -1,6 +1,6 @@
-NoNonsense Forum © Copyright CC-BY 3.0 Kroc Camen of Camen Design
-=================================================================
-A simple forum that focuses on discussion and simplicity
+NoNonsense Forum v2 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+====================================================================
+A simple forum that focuses on discussion and simplicity.
 
 
 Requirements:
@@ -15,48 +15,56 @@ Install:
 --------
 1.	Copy this directory and all files to the web-root
 
-2.	Create a folder named "users" on webroot
+	NOTE: On some platforms, the ".htaccess" file may be invisible. Please search the Internet for
+	      instructions on how to show hidden files on your operating system if you cannot see the
+	      ".htaccess" file. It must be included with the other files for NoNonsense Forum to work
 
-3.	Ensure the webroot and all sub-folders (especially "users") have write permission for PHP,
-	the code will save new threads directly to webroot
+2.	Create a folder named "users" on web-root
 
-4.	Visit the site in your browser. if all is well, you should have an empty, but functional forum
-	If you’re having problems you can ask for help on the forums: <forum.camendesign.com>
+3.	Ensure the web-root and all sub-folders (especially "users") have write permission for PHP,
+	the code will save new threads directly to web-root
+
+4.	Visit the site in your browser. If all is well, you should have an empty, but functional forum.
+	If you're having problems you can ask for help on the forums: <forum.camendesign.com>
 
 Optional:
 
 5.	Rename the 'config.example.php' file to 'config.php' and customise the options within to your liking.
-	Available options are explained within 'config.example.php'.
+	Available options are explained within 'config.example.php'
 
 
 Browser support:
 ----------------
 *	IE6, 7, 8, 9, 10
-*	Firefox 3+
+*	Firefox 3+, Camino 2+
 *	Chrome Stable, Chrome Dev
 *	Safari 3+
 *	Opera 9+
-*	Camino 2.1
+*	Lynx
 
 *	iOS 4.0+ (iOS 3 untested yet)
+*	Android (all versions AFAIK)
+*	Firefox Mobile
+*	Opera Mobile & Mini
 
 Unsupported:
 *	Firefox 2 or earlier, Camino 1
 *	IE5.5 and below (including IE:Mac)
+*	IE7/Mobile (Windows Phone 7)
 
 
 Creating Sub-Forums:
 --------------------
-If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server’s OS except for ".", "<", ">" and "&" -- ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.
+If you would like to organise your forum into sub-forums for different topics just create a folder on webroot with the desired name (it can contain any letters allowed by your server's OS except for ".", "<", ">" and "&" -- ampersand due to this bug: <shauninman.com/archive/2005/05/11/unexpected_get_contents>). Make sure the folder has write-permissions.
 
-Second-level sub-folders are not supported. (E.g. '/Music/Techno/')
+Second-level sub-folders are not supported. (E.g. '/Music/Techno/').
 
 
 Stickying Threads:
 ------------------
 If you would like a thread to always remain at the top of the threads list, also regardless of page number, create a file "sticky.txt" in the webroot or particular folder.
 
-In your sticky.txt file add the filename of each thread you would like to sticky on separate lines, including the ".rss" file extension. For example:
+In your "sticky.txt" file add the filename of each thread you would like to sticky on separate lines, including the ".rss" file extension. For example:
 
 the_rules.rss
 f_a_q_.rss
@@ -64,7 +72,7 @@ f_a_q_.rss
 
 Understanding Name Reservation:
 -------------------------------
-There is no login or registration of the traditional kind. In order to prevent someone's desired name / nickname / alias / handle being reused by the wrong person, you enter your desired name and a password whenever you post. This name and password form a pair that have to match in order to use that name again in the future. Therefore you don’t have to log in beforehand, or pre-register before posting.
+There is no login or registration of the traditional kind. In order to prevent someone's desired name / nickname / alias / handle being reused by the wrong person, you enter your desired name and a password whenever you post. This name and password form a pair that have to match in order to use that name again in the future. Therefore you don't have to log in beforehand, or pre-register before posting.
 
 The single most important thing to bear in mind is that the name reservation system is not the same as authentication. Any person can enter any name they want and one person could just as easily use many names. It in no way ties one person to one browser session like a login does.
 
@@ -73,7 +81,7 @@ Whenever a name is reserved a text file is created in the users folder. The file
 
 Appending to a Post:
 --------------------
-There is no ability to edit posts (other than manually editing the RSS feed). This is because the text to HTML conversion, when a post is made, is one-way. NoNonsense Forum allows you only to append to existing posts. Only the original author or a moderator can append to posts (see Adding Moderators further down for details on moderators).
+There is no ability to edit posts (other than manually editing the RSS feed). This is because the text to HTML conversion when a post is made is one-way. NoNonsense Forum allows you only to append to existing posts. Only the original author or a moderator can append to posts (see Adding Moderators further down for details on moderators).
 
 Appending to a post does not change the last-modified date of the thread, and therefore does not bump it to the top of the index list.
 
@@ -99,3 +107,13 @@ The moderators you specify will be able to delete threads and posts in all folde
 Markup:
 -------
 Some simple markup is provided for hyperlinks, quotes and more; see markup.txt for details.
+
+
+Acknowledgements:
+=================
+*	Jon Gjengset		-	Original theme / mobile theme
+*	"JJ"			-	Quote syntax
+*	"Martijn"		-	Lynx support
+*	"Temukki"		-	Bugs
+
+*	The users of Camen Design Forum <forum.camendesign.com> for testing and support

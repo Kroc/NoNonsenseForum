@@ -1,6 +1,6 @@
-NoNonsense Forum:
-=================
-The PHP / HTML / CSS and other resources of this project are licensed under a Creative Commons 3.0 Attribution Unported licence, viewable here: http://creativecommons.org/licenses/by/3.0/deed.en_GB
+NoNonsense Forum v2 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+====================================================================
+The PHP / HTML / CSS and other resources of this project are licensed under a Creative Commons 3.0 Attribution Unported licence (unless otherwise stated), viewable here: http://creativecommons.org/licenses/by/3.0/deed.en_GB
 
 What does this mean? This means that you may do anything you want with this code, as long as you give credit. How you decide to give credit is up to you, it can be visible in the web browser or just a comment in the HTML. An example attribution could be:
 
@@ -10,7 +10,7 @@ What does this mean? This means that you may do anything you want with this code
 Warranty:
 =========
 Or lack there-of. No warranty is provided. Once you download this code, it's yours and your responsibility.
-The authors are not liable for any damage, loss of time, money or for security breaches. You are expected to test the code yourself in the environment you are deploying it.
+The authors are not liable for any damage, loss of time, money or security breaches. You are expected to test the code yourself in the environment you are deploying it.
 
 
 Licence Text:

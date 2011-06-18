@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -270,10 +270,10 @@ function indexRSS () {
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);	//look ma, no loop!
 	
 	//get the last post made in each thread as an RSS item
-	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) {
-		$xml  = simplexml_load_file ($thread) or die ("$thread is malformed.");
+	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if (
+		$xml  = @simplexml_load_file ($thread)
+	) {
 		$item = $xml->channel->item[0];
-		
 		@$rss .= template_tags (<<<XML
 <item>
 	<title>&__TITLE__;</title>
