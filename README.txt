@@ -19,17 +19,18 @@ Install:
 	      instructions on how to show hidden files on your operating system if you cannot see the
 	      ".htaccess" file. It must be included with the other files for NoNonsense Forum to work
 
-2.	Create a folder named "users" on web-root
-
-3.	Ensure the web-root and all sub-folders (especially "users") have write permission for PHP,
+2.	Ensure the web-root and all sub-folders (especially "users") have write permission for PHP,
 	the code will save new threads directly to web-root
 
-4.	Visit the site in your browser. If all is well, you should have an empty, but functional forum.
+3.	Visit the site in your browser. If all is well, you should have an empty, but functional forum.
 	If you're having problems you can ask for help on the forums: <forum.camendesign.com>
+	
+	NOTE: Please ensure htaccess files are enabled on your webserver. For example, XAMPP does not
+	      execute htaccess files by deafult
 
 Optional:
 
-5.	Rename the 'config.example.php' file to 'config.php' and customise the options within to your liking.
+4.	Rename the 'config.example.php' file to 'config.php' and customise the options within to your liking.
 	Available options are explained within 'config.example.php'
 
 
