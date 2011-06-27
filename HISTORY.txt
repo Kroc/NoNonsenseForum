@@ -1,0 +1,9 @@
+v2	18.JUN.11
+	Ignore invalid XML files when generating index page / RSS
+	Prevent null filenames for threads with only non-ASCII titles
+	Better compatibility with PHP 5.3 (still works with 5.2)
+
+v1	01.JUN.11
+	Initial release
+
+For full change list and changes prior to v1, see the GitHub project page <github.com/Kroc/NoNonsenseForum/commits/master>
