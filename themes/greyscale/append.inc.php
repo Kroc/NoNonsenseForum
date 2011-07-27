@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <meta name="robots" content="noindex, nofollow" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
-<link rel="shortcut icon" type="image/x-icon" href="/themes/<?php echo FORUM_THEME?>/favicon.ico" />
+<link rel="shortcut icon" type="image/x-icon" href="/themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?php echo FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 <meta name="application-name" content="<?php echo PATH ? safeString(PATH) : safeString (FORUM_NAME)?>" />
