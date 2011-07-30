@@ -1,11 +1,14 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 require_once './shared.php';
+
+//get page number
+define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
@@ -139,9 +142,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$THREADS[] = array (
 			'STICKY'	=> in_array ($file, $stickies),
 			//link to the thread--go to the last page of replies
-			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).(count ($xml->channel->item) > FORUM_POSTS+1
-						? '?page='.ceil ((count ($xml->channel->item) - 1) / FORUM_POSTS) : ''
-					),
+			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item) - 1,
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr

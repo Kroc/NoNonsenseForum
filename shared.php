@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -75,10 +75,6 @@ if (
 } else {
 	define ('AUTH', false);
 }
-
-//whilst page number is not used everywhere (like 'action.php'), it does no harm to get it here because it can simply be
-//ignored on 'action.php' &c. whilst avoiding duplicated code on the scripts that do use it
-define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
 
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');

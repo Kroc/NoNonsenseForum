@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -29,6 +29,7 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 		formatText (TEXT) == $xml->channel->item[0]->description
 	)) {
 		//where to?
+		//(we won’t use `page=last` here as we are effecitvely handing the user a permalink here)
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
 		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '').'#'.base_convert (microtime (), 10, 36);
 		
@@ -97,6 +98,13 @@ $author = (string) $post->author;
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
+//determine the page number (for threads the page number can be given as "last")
+define ('PAGE',
+	@$_GET['page'] == 'last'
+	? ceil (count ($thread) / FORUM_POSTS)
+	: (preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1)
+);
+
 if (count ($thread)) {
 	//sort the other way around
 	//<stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>

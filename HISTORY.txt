@@ -1,3 +1,7 @@
+v3	30.JUL.11
+	Links to threads now use "page=last"
+	"Users" folder now included in the download for simpler setup
+
 v2	18.JUN.11
 	Ignore invalid XML files when generating index page / RSS
 	Prevent null filenames for threads with only non-ASCII titles

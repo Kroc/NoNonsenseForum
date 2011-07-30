@@ -11,7 +11,7 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v2 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $HEADER['TITLE'].(PAGE>1 ? ' # '.PAGE : '')?></title>
@@ -77,7 +77,7 @@ if (isset ($PAGES)) {
 			<?php if (!$POST['DELETED']): ?><a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a><?php endif;?>
 			<time datetime="<?php echo $POST['DATETIME']?>" pubdate><?php echo $POST['TIME']?></time>
-			<a href="#<?php echo $POST['ID']?>">#<?php echo $POST['NO']?>.</a>
+			<a href="?page=<?php echo PAGE?>#<?php echo $POST['ID']?>">#<?php echo $POST['NO']?>.</a>
 			<b<?php echo $POST['MOD']?' class="mod"':''?>><?php echo $POST['AUTHOR']?></b>
 		</header>
 		
