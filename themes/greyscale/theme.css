@@ -1,4 +1,4 @@
-/* NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -159,7 +159,9 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 
 /* these apply to folders and threads */
 ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
-ol.ui li time			{float: right; width: 9.1em; text-align: right;}	/* timestamp */
+ol.ui li time			{float: right; width: 9.1em;				/* timestamp */
+				 font-weight: normal; text-align: right; color: #888;}
+ol.ui li a:hover time		{text-decoration: underline;}
 
 
 /* thread page
@@ -173,7 +175,8 @@ article				{padding: 0 20px 19px; border: 1px solid #444;
 
 #replies h1			{background-image: url("icons/replies.png");}
 
-article header			{line-height: 38px; margin: -1px -20px 0; padding: 1px 20px; border-bottom: 1px dotted #444;
+article header			{height: 38px; line-height: 38px; margin: -1px -20px 0; padding: 1px 20px;
+				 border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}

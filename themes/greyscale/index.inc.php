@@ -11,7 +11,7 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo (PATH ? PATH : safeHTML(FORUM_NAME)).(PAGE>1 ? ' # '.PAGE : '')?></title>
@@ -57,7 +57,7 @@ if (isset ($PAGES)) {
 	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li>
-			<?php if ($FOLDER['AUTHOR']): ?><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time>
+			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php echo $FOLDER['POSTLINK']?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
 			<b<?php echo $FOLDER['MOD']?' class="mod"':''?>><?php echo $FOLDER['AUTHOR']?></b> <?php endif;
 ?><a href="<?php echo $FOLDER['URL']?>"><?php echo $FOLDER['NAME']?></a>
 		</li>
@@ -74,14 +74,14 @@ if (isset ($PAGES)) {
 <?php foreach ($THREADS as $THREAD): ?>
 <?php if ($THREAD['STICKY']): ?>
 		<li class="sticky">
-			<time datetime="<?php echo $THREAD['DATETIME']?>"><?php echo $THREAD['TIME']?></time>
+			<a href="<?php echo $THREAD['POSTLINK']?>"><time datetime="<?php echo $THREAD['DATETIME']?>"><?php echo $THREAD['TIME']?></time></a>
 			<i><?php echo $THREAD['COUNT']?></i> <b<?php echo $THREAD['MOD']?' class="mod"':''?>><?php echo $THREAD['AUTHOR']?></b>
 			<img src="/themes/<?php echo FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
 			<a href="<?php echo $THREAD['URL']?>" class="sticky"><?php echo $THREAD['TITLE']?></a>
 		</li>
 <?php else: ?>
 		<li>
-			<time datetime="<?php echo $THREAD['DATETIME']?>"><?php echo $THREAD['TIME']?></time>
+			<a href="<?php echo $THREAD['POSTLINK']?>"><time datetime="<?php echo $THREAD['DATETIME']?>"><?php echo $THREAD['TIME']?></time></a>
 			<i><?php echo $THREAD['COUNT']?></i> <b<?php echo $THREAD['MOD']?' class="mod"':''?>><?php echo $THREAD['AUTHOR']?></b>
 			<a href="<?php echo $THREAD['URL']?>"><?php echo $THREAD['TITLE']?></a>
 		</li>

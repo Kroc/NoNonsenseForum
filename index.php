@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v3 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -102,7 +102,8 @@ foreach (array_filter (
 		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),
 		'TIME'		=> !$last ? '' : date (DATE_FORMAT, strtotime ($last->pubDate)),
 		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author),
-		'MOD'		=> !$last ? '' : isMod ($last->author)
+		'MOD'		=> !$last ? '' : isMod ($last->author),
+		'POSTLINK'	=> !$last ? '' : substr ($last->link, strpos ($last->link, '/', 9))
 	);
 	
 	chdir ('..');
@@ -129,7 +130,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	}
 	
 	//paging (stickies are not included in the count as they appear on all pages)
-	$PAGES   = pageList (PAGE, ceil ((count ($threads) - count ($stickies)) / FORUM_THREADS));
+	$PAGES   = pageList (PAGE, ceil (count ($threads) / FORUM_THREADS));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
@@ -145,10 +146,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			'TITLE'		=> safeHTML ($xml->channel->title),
 			'COUNT'		=> count ($xml->channel->item) - 1,
+			//info of last post made to thread
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr
 			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
 			'AUTHOR'	=> safeHTML ($last->author),
-			'MOD'		=> isMod ($last->author)
+			'MOD'		=> isMod ($last->author),
+			'POSTLINK'	=> substr ($last->link, strpos ($last->link, '/', 9))	//link to the last post
 		);
 	}
 }
