@@ -86,6 +86,7 @@
 			or a designated moderator.
 		</p>
 <?php endswitch; ?>
+<?php if ($ID): ?>
 		<p><label for="remove">
 			<input id="remove" name="remove" type="checkbox" value="yes" />
 			Remove completely (moderators only)
@@ -95,6 +96,7 @@
 			<li>Only posts on the last page of the thread can be removed completely
 			    (so as to not break permalinks)</li>
 		</ul>
+<?php endif; ?>
 		
 		<p id="psubmit"><label for="submit">Delete
 			<input id="submit" name="submit" type="image" src="/themes/<?php echo FORUM_THEME?>/icons/submit.png"
