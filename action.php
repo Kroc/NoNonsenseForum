@@ -1,6 +1,6 @@
 <?php  //commit actions on posts, like delete, edit &c.
 /* ====================================================================================================================== */
-/* NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -30,6 +30,8 @@ if (isset ($_GET['append'])) {
 	) break;
 	$post = $xml->channel->item[$i];
 	
+	/* has the un/pw been submitted to authenticate the append?
+	   -------------------------------------------------------------------------------------------------------------- */
 	if (
 		NAME && PASS && AUTH
 		//only a moderator, or the post originator can append to a post
@@ -68,8 +70,8 @@ if (isset ($_GET['append'])) {
 	//close the lock / file
 	flock ($f, LOCK_UN); fclose ($f);
 	
-	/* -------------------------------------------------------------------------------------------------------------- */
-	//prepare the template
+	/* prepare template
+	   -------------------------------------------------------------------------------------------------------------- */
 	$HEADER = array (
 		'TITLE'		=> safeHTML ($xml->channel->title)
 	);
@@ -123,7 +125,8 @@ if (isset ($_GET['append'])) {
 		$post = $xml->channel->item[$i];
 	}
 	
-	//has the un/pw been submitted to authenticate the delete?
+	/* has the un/pw been submitted to authenticate the delete?
+	   -------------------------------------------------------------------------------------------------------------- */
 	if (
 		NAME && PASS && AUTH
 		//only a moderator, or the post originator can delete a post/thread
@@ -131,13 +134,23 @@ if (isset ($_GET['append'])) {
 		
 	//deleting a post?
 	) if ($ID) {
-		//remove the post text
-		$post->description = (NAME == (string) $post->author) ? TEMPLATE_DEL_USER : TEMPLATE_DEL_MOD;
-		//add a "deleted" category so we know to no longer allow it to be edited or deleted again
-		if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
-		
-		//need to know what page this post is on to redirect back to it
-		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
+		//full delete? (option ticked, is moderator, and post is on the last page)
+		if (isset ($_POST['remove']) && isMod (NAME) && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) {
+			//remove the post from the thread entirely
+			unset ($xml->channel->item[$i]);
+			
+			//we’ll redirect to the last page (which may have changed when the post was deleted)
+			$url = FORUM_URL.PATH_URL."$FILE?page=last#replies";
+			
+		} else {
+			//remove the post text
+			$post->description = (NAME == (string) $post->author) ? TEMPLATE_DEL_USER : TEMPLATE_DEL_MOD;
+			//add a "deleted" category so we know to no longer allow it to be edited or deleted again
+			if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
+			
+			//need to know what page this post is on to redirect back to it
+			$url = FORUM_URL.PATH_URL."$FILE?page=".ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS)."#$ID";
+		}
 		
 		//commit the data
 		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
@@ -152,8 +165,8 @@ if (isset ($_GET['append'])) {
 		//regenerate the folder's RSS file
 		indexRSS ();
 		
-		//return to the deleted post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE?page=$page#$ID", true, 303);
+		//return to the deleted post / last page
+		header ("Location: $url", true, 303);
 		exit;
 	
 	} else {
@@ -174,9 +187,8 @@ if (isset ($_GET['append'])) {
 	//close the lock / file
 	flock ($f, LOCK_UN); fclose ($f);
 	
-	/* -------------------------------------------------------------------------------------------------------------- */
-	
-	//prepare template
+	/* prepare template
+	   -------------------------------------------------------------------------------------------------------------- */
 	$HEADER = array (
 		'TITLE'		=> safeHTML ($xml->channel->title)
 	);

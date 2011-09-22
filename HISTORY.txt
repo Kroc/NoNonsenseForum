@@ -1,3 +1,8 @@
+v5	22.AUG.11
+	Fully remove post option on delete page -- now deletes the post completely rather than blanking it
+	(can only be used by moderators, and only on the last page of a thread)
+	IE6 & iOS CSS fixes
+	
 v4	19.AUG.11
 	Last post date now links to the post
 	Index page count was incorrect

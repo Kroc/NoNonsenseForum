@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $ID ? 'Delete Post?' : 'Delete Thread?'?> <?php echo $HEADER['TITLE']?></title>
@@ -62,7 +62,11 @@
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
 		if ($ID): ?>
-		<p id="ok">To delete this post you must be either the original author or a designated moderator.</p>
+		<p id="ok">
+			To delete this post you must be either the original author or a designated moderator.<br />
+			The content of the post will be removed and replaced with a deletion message but the name and date
+			will remain.
+		</p>
 <?php		else: ?>
 		<p id="ok">
 			To delete this thread, and all replies to it, you must be either the original author
@@ -82,6 +86,15 @@
 			or a designated moderator.
 		</p>
 <?php endswitch; ?>
+		<p><label for="remove">
+			<input id="remove" name="remove" type="checkbox" value="yes" />
+			Remove completely (moderators only)
+		</label></p>
+		<ul>
+			<li>The post will be removed completely from the thread, rather than blanked</li>
+			<li>Only posts on the last page of the thread can be removed completely
+			    (so as to not break permalinks)</li>
+		</ul>
 		
 		<p id="psubmit"><label for="submit">Delete
 			<input id="submit" name="submit" type="image" src="/themes/<?php echo FORUM_THEME?>/icons/submit.png"
@@ -125,9 +138,8 @@
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
 	var labels = document.getElementsByTagName ("label");
-	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){
-		document.getElementById (this.getAttribute ("for")).click ();
-	}
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 </script>
 <!-- page generated in: <?php echo round (microtime (true) - START, 3)?>s -->

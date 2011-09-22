@@ -1,4 +1,4 @@
-/* NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -186,9 +186,10 @@ article header time,
  article header .ui		{float: right;}
 
 /* the delete / append buttons */
-article header .ui		{overflow: hidden; padding: 0 25px 0 10px;
+article header .ui		{/* ie6 makes these invisible, has to have width toggled */
+				 _width: 0; overflow: hidden; padding: 0 25px 0 10px;
 				 text-indent: -6em; color: #ccc;}
-article header .ui:hover	{text-indent: 0; text-decoration: none; color: #222;}
+article header .ui:hover	{_width: auto; text-indent: 0; text-decoration: none; color: #222;}
 article header .ui,
  article header .ui:hover	{-webkit-transition: all .2s;
 				    -moz-transition: all .2s;
@@ -381,6 +382,9 @@ article header time		{/* don’t show the post time in portrait */
 				 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0;}
 #title, #user, #pass		{position: static; display: table-cell; width: 100%;}
 #text 				{border: none;}
+
+#delete #leftcol,		/* side-by-side of delete form doesn’t apply to iOS */
+ #delete #rightcol		{width: 100%;}
 
 /* footer */
 #mods p				{padding-left: 0; padding-right: 0;

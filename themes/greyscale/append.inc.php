@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v4 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title>Append to <?php echo $HEADER['TITLE']?></title>
@@ -138,9 +138,8 @@
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
 	var labels = document.getElementsByTagName ("label");
-	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){
-		document.getElementById (this.getAttribute ("for")).click ();
-	}
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 </script>
 <!-- page generated in: <?php echo round (microtime (true) - START, 3)?>s -->
