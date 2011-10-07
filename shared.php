@@ -184,11 +184,15 @@ function formatText ($text) {
 	//and then restore the chunks back later
 	$code = array ();
 	//find code blocks:
-	while (preg_match ('/^(?-s:\s*([%$])(.*?))\n(.*?)\n(?-s:\s*)\1(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
+	while (preg_match ('/^(?-s:(\s*)([%$])(.*?))\n(.*?)\n(?-s:\s*)\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$code[] = "<pre><span class=\"ct\">{$m[1][0]}{$m[2][0]}</span>\n{$m[3][0]}\n<span class=\"cb\">{$m[1][0]}</span></pre>";
+		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
+			 //unindent code blocks that have been quoted
+		         .preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0])
+		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
+		;
 		//replace the code block with a placeholder
-		$text = substr_replace ($text, "\n&__CODE__;".$m[4][0], $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, "\n&__CODE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* hyperlinks:
