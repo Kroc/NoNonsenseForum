@@ -1,7 +1,7 @@
 Links:
 ======
-Clickable links will be created automatically on any web addresses in your text that begin with
-"http://", "https://", "ftp://" or "irc://".
+Clickable links will be created automatically on any web addresses in
+your text that begin with "http://", "https://", "ftp://" or "irc://".
 
 YES:	http://www.google.com
 YES:	http://google.com
@@ -17,8 +17,9 @@ NO:	@twitter
 
 Quotes:
 =======
-To quote somebody else's text, place it on its own line with quote marks at the beginning and end.
-This applies even if the quoted text is more than one paragraph, or contains quotes itself.
+To quote somebody else's text, place it on its own line with quote
+marks at the beginning and end. This applies even if the quoted text is
+more than one paragraph, or contains quotes itself.
 
 Examples:
 
@@ -41,8 +42,8 @@ There must be no text before or after the quote marks:
 
 NO:	"This is your text".
 	
-However, spaces before or after are allowed. When you copy and paste someone else's quote,
-extra spaces might be included, just ignore these.
+However, spaces before or after are allowed. When you copy and paste
+someone else's quote extra spaces might be included, just ignore these.
 
 YES:	This is my text
 
@@ -96,8 +97,9 @@ YES:	"This is the first quote
 Pre-formatted (Monospace) Text and Code:
 ========================================
 When posting, all unnecessary white-space is automatically removed.
-If you have some text that you need to present "as-is", or relies upon a
-monospace font (such as ASCII art), you can use a "code block", like so:
+If you have some text that you need to present "as-is", or relies upon
+a monospace font (such as ASCII art), you can use a "code block", like
+so:
 
 %
       __...--~~~~~-._   _.-~~~~~--...__
@@ -109,10 +111,11 @@ monospace font (such as ASCII art), you can use a "code block", like so:
                 dwb `---`
 %
 
-The code block begins with a percent sign, then your text (starting the next line),
-and then the ending percent sign on the next line.
+The code block begins with a percent sign, then your text (starting the
+next line), and then the ending percent sign on the next line.
 
-There should be a blank line between the code block and any other text before or after:
+There should be a blank line between the code block and any other text
+before or after:
 
 NO:	Fish!
 	%
@@ -125,8 +128,8 @@ YES:	Fish!
 	<*###><
 	%
 
-You can include a title, or in the instance of inserting source code snippets
-the programming language used, after the first percent sign:
+You can include a title, or in the instance of inserting source code
+snippets the programming language used, after the first percent sign:
 
 % CSS
 div	{color: red;}
@@ -136,8 +139,9 @@ div	{color: red;}
 <*###><
 %
 
-Should you need to quote something that has percent symbols as the first character on a line,
-such as the LaTeX programming language, you can simply use the dollar sign "$" as a delimiter instead.
+Should you need to quote something that has percent symbols as the
+first character on a line, such as the LaTeX programming language,
+you can simply use the dollar sign "$" as a delimiter instead.
 
 $ LaTeX
 \begin{document}
