@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $ID ? 'Delete Post?' : 'Delete Thread?'?> <?php echo $HEADER['TITLE']?></title>
@@ -14,7 +14,7 @@
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?php echo FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
-<meta name="application-name" content="<?php echo PATH ? safeString(PATH) : safeString (FORUM_NAME)?>" />
+<meta name="application-name" content="<?php echo PATH ? safeString (PATH) : safeString (FORUM_NAME)?>" />
 <meta name="msapplication-starturl" content="<?php echo FORUM_URL.PATH_URL?>" />
 <meta name="msapplication-window" content="width=1024;height=600" />
 <meta name="msapplication-navbutton-color" content="#222" />

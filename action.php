@@ -1,6 +1,6 @@
 <?php  //commit actions on posts, like delete, edit &c.
 /* ====================================================================================================================== */
-/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -38,6 +38,8 @@ if (isset ($_GET['append'])) {
 		&& (isMod (NAME) || NAME == (string) $post->author)
 		//cannot append to a deleted post
 		&& !(bool) $post->xpath ("category[text()='deleted']")
+		//cannot append to a locked thread
+		&& !$xml->channel->xpath ("category[text()='locked']")
 	) {	
 		$now = time ();
 		$post->description .= "\n".template_tags (TEMPLATE_APPEND, array (
@@ -131,6 +133,8 @@ if (isset ($_GET['append'])) {
 		NAME && PASS && AUTH
 		//only a moderator, or the post originator can delete a post/thread
 		&& (isMod (NAME) || NAME == (string) $post->author)
+		//cannot delete a locked thread
+		&& !$xml->channel->xpath ("category[text()='locked']")
 		
 	//deleting a post?
 	) if ($ID) {
@@ -212,6 +216,70 @@ if (isset ($_GET['append'])) {
 	
 	//all the data prepared, now output the HTML
 	include FORUM_ROOT.'/themes/'.FORUM_THEME.'/delete.inc.php';
-}
 
+
+/* un/lock a thread?
+   ====================================================================================================================== */
+} elseif (isset ($_GET['lock'])) {
+	//thread to deal with
+	$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+	
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
+	
+	//what’s the current status?
+	$LOCKED = (bool) $xml->channel->xpath ("category[text()='locked']");
+	
+	/* has the un/pw been submitted to authenticate the un/lock? (only a moderator can un/lock a thread)
+	   -------------------------------------------------------------------------------------------------------------- */
+	if (NAME && PASS && AUTH && isMod (NAME)) {
+		if ($LOCKED) {
+			//if there’s a "locked" category, remove it
+			//note: for simplicity this removes *all* channel categories as NNF only uses one atm,
+			//      in the future the specific "locked" category needs to be removed
+			unset ($xml->channel->category);
+			//when unlocking, go to the thread
+			$url = FORUM_URL.PATH_URL."$FILE?page=last#reply";
+		} else {
+			//if no "locked" category, add it
+			$xml->channel->category[] = 'locked';
+			//if locking return to the index
+			//(todo: could return to the particular page in the index the thread is on--complex!)
+			$url = FORUM_URL.PATH_URL;
+		}
+		
+		//commit the data
+		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		//close the lock / file
+		flock ($f, LOCK_UN); fclose ($f);
+		
+		//regenerate the folder's RSS file
+		indexRSS ();
+		
+		header ("Location: $url", true, 303);
+		exit;
+	}
+	
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
+	
+	/* prepare template
+	   -------------------------------------------------------------------------------------------------------------- */
+	$HEADER = array (
+		'TITLE'	=> safeHTML ($xml->channel->title)
+	);
+	
+	$FORM = array (
+		'NAME'	=> safeString (NAME),
+		'PASS'	=> safeString (PASS),
+		'ERROR'	=> empty ($_POST) ? ERROR_NONE
+			 : (!NAME ? ERROR_NAME
+			 : (!PASS ? ERROR_PASS
+			 : ERROR_AUTH))
+	);
+	
+	//all the data prepared, now output the HTML
+	include FORUM_ROOT.'/themes/'.FORUM_THEME.'/lock.inc.php';
+}
 ?>

@@ -11,7 +11,7 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $HEADER['TITLE'].(PAGE>1 ? ' # '.PAGE : '')?></title>
@@ -25,7 +25,7 @@ if (isset ($PAGES)) {
 <link rel="shortcut icon" type="image/x-icon" href="/themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
 <link rel="apple-touch-icon-precomposed" href="/themes/<?php echo FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
-<meta name="application-name" content="<?php echo PATH ? safeString(PATH) : safeString(FORUM_NAME)?>" />
+<meta name="application-name" content="<?php echo PATH ? safeString (PATH) : safeString(FORUM_NAME)?>" />
 <meta name="msapplication-starturl" content="<?php echo FORUM_URL?>" />
 <meta name="msapplication-window" content="width=1024;height=600" />
 <meta name="msapplication-navbutton-color" content="#222" />
@@ -44,7 +44,7 @@ if (isset ($PAGES)) {
 	--></form>
 	
 	<nav><p>
-		<a id="add" href="#reply">Reply</a>
+		<?php if (!$HEADER['LOCKED']): ?><a id="add" href="#reply">Reply</a><?php endif;?>
 		<a id="rss" href="<?php echo $HEADER['RSS']?>">RSS</a>
 	</p><p>
 		<a id="index" href="/">Index</a><?php if (PATH): ?> » <a href="<?php echo PATH_URL?>"><?php echo PATH?></a><?php endif; ?>
@@ -56,8 +56,10 @@ if (isset ($PAGES)) {
 	
 	<article class="op<?php echo $POST['MOD'] ? ' mod' : ''?>">
 		<header>
+<?php if (!$HEADER['LOCKED']): ?>
 			<a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a>
+<?php endif; ?>
 			<time datetime="<?php echo $POST['DATETIME']?>" pubdate><?php echo $POST['TIME']?></time>
 			<b<?php echo $POST['MOD']?' class="mod"':''?>><?php echo $POST['AUTHOR']?></b>
 		</header>
@@ -74,8 +76,10 @@ if (isset ($PAGES)) {
 <?php foreach ($POSTS as $POST): ?>
 	<article id="<?php echo $POST['ID']?>" class="<?php echo implode(' ',array_filter(array($POST['DELETED'],$POST['OP'],$POST['MOD'])))?>">
 		<header>
+<?php if (!$HEADER['LOCKED']): ?>
 			<?php if (!$POST['DELETED']): ?><a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a><?php endif;?>
+<?php endif; ?>
 			<time datetime="<?php echo $POST['DATETIME']?>" pubdate><?php echo $POST['TIME']?></time>
 			<a href="?page=<?php echo PAGE?>#<?php echo $POST['ID']?>">#<?php echo $POST['NO']?>.</a>
 			<b<?php echo $POST['MOD']?' class="mod"':''?>><?php echo $POST['AUTHOR']?></b>
@@ -89,6 +93,7 @@ if (isset ($PAGES)) {
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->
+<?php if (!$HEADER['LOCKED']): ?>
 <section id="reply">
 	<h1>Reply</h1>
 	<form method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
@@ -150,11 +155,16 @@ if (isset ($PAGES)) {
 		</label></p>
 <?php else: ?>
 		<p id="error">Sorry, posting is currently disabled.</p>
+		<p id="psubmit">
 <?php endif; ?>
 	</form>
 </section>
+<?php endif; ?>
 <!-- =================================================================================================================== -->
 <div id="mods">
+<p id="admin">
+	<a id="<?php echo $HEADER['LOCKED'] ? 'unlock' : 'lock';?>" href="<?php echo $HEADER['LOCK_URL'];?>" rel="noindex nofollow"><?php echo $HEADER['LOCKED'] ? 'Unlock' : 'Lock';?></a>
+</p>
 <?php if (!empty ($MODS['LOCAL'])): ?>
 <p>
 	Moderators for this sub-forum:

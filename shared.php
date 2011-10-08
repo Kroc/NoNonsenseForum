@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -31,21 +31,21 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 //these are here so that if I add a new value, the forum won’t break if you don’t update your config file
 
 //see 'config.example.php' for description of these
-defined ('FORUM_TIMEZONE')	or define ('FORUM_TIMEZONE',	'UTC');
-defined ('DATE_FORMAT')		or define ('DATE_FORMAT',	'd M ’y · H:i');
-defined ('FORUM_ENABLED')	or define ('FORUM_ENABLED',	true);
-defined ('FORUM_THEME')		or define ('FORUM_THEME',	'greyscale');
-defined ('FORUM_NAME')		or define ('FORUM_NAME',	'NoNonsense Forum');
-defined ('FORUM_THREADS')	or define ('FORUM_THREADS',	50);
-defined ('FORUM_POSTS')		or define ('FORUM_POSTS',	25);
-defined ('SIZE_NAME')		or define ('SIZE_NAME',		20);
-defined ('SIZE_PASS')		or define ('SIZE_PASS',		20);
-defined ('SIZE_TITLE')		or define ('SIZE_TITLE',	100);
-defined ('SIZE_TEXT')		or define ('SIZE_TEXT',		50000);
-defined ('TEMPLATE_RE')		or define ('TEMPLATE_RE',	'RE[&__NO__;]: ');
-defined ('TEMPLATE_APPEND')	or define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
-defined ('TEMPLATE_DEL_USER')	or define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
-defined ('TEMPLATE_DEL_MOD')	or define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+@define ('FORUM_TIMEZONE',	'UTC');
+@define ('DATE_FORMAT',		'd M ’y · H:i');
+@define ('FORUM_ENABLED',	true);
+@define ('FORUM_THEME',		'greyscale');
+@define ('FORUM_NAME',		'NoNonsense Forum');
+@define ('FORUM_THREADS',	50);
+@define ('FORUM_POSTS',		25);
+@define ('SIZE_NAME',		20);
+@define ('SIZE_PASS',		20);
+@define ('SIZE_TITLE',		100);
+@define ('SIZE_TEXT',		50000);
+@define ('TEMPLATE_RE',		'RE[&__NO__;]: ');
+@define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
+@define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
+@define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
@@ -62,7 +62,7 @@ if (
 	NAME && PASS &&
 	//the email check is a fake hidden field in the form to try and fool spam bots
 	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
-	//I wonder what this does? ...
+	//I wonder what this does...?
 	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
 ) {
 	//users are stored as text files based on the hash of the given name
@@ -243,7 +243,7 @@ function formatText ($text) {
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, wrap in a paragraph
-		if (!preg_match ('/^<\/?b|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if (!preg_match ('/^<\/?bl|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
@@ -270,9 +270,7 @@ function indexRSS () {
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);	//look ma, no loop!
 	
 	//get the last post made in each thread as an RSS item
-	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if (
-		$xml  = @simplexml_load_file ($thread)
-	) {
+	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if ($xml  = @simplexml_load_file ($thread)) {
 		$item = $xml->channel->item[0];
 		@$rss .= template_tags (<<<XML
 <item>
@@ -309,7 +307,7 @@ XML
 		'PATH'	=> PATH_URL,
 		'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
 		//if all threads are deleted, there won’t be any <item>s
-		'ITEMS'	=> @$rss ? $rss : ""
+		'ITEMS'	=> @$rss ? $rss : ''
 	)));
 	
 	/* sitemap
@@ -326,26 +324,24 @@ XML
 	
 	//generate a sitemap index file, to point to each index RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
-	foreach ($folders as $folder) {
+	foreach ($folders as $folder) if (
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		if (
-			@$xml = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
-		) @$sitemaps .= template_tags (<<<XML
+		@$xml = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
+	) @$sitemaps .= template_tags (<<<XML
 <sitemap>
 	<loc>http://${_SERVER['HTTP_HOST']}&__FILE__;/index.xml</loc>
 	<lastmod>&__DATE__;</lastmod>
 </sitemap>
 
 XML
-		, array (
-			'FILE'	=> $folder ? safeURL ("/$folder", false) : '',
-			'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
-		));
-	}
+	, array (
+		'FILE'	=> $folder ? safeURL ("/$folder", false) : '',
+		'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
+	));
 	
 	file_put_contents (
-		FORUM_ROOT."/sitemap.xml",
+		FORUM_ROOT.'/sitemap.xml',
 		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
 		"<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n".
 		@$sitemaps.

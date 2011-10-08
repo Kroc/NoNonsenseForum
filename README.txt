@@ -1,4 +1,4 @@
-NoNonsense Forum v5 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum v6 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ====================================================================
 A simple forum that focuses on discussion and simplicity.
 
@@ -160,6 +160,14 @@ moderator who can only delete within a certain folder, create a
 'mods.txt' file within the folder and specify the desired names.
 These moderators will not be able delete threads or posts in the forum
 root, or other folders.
+
+
+Locking / Unlocking Threads:
+----------------------------
+Moderators can lock threads to prevent any further replies (as well as
+post appends and deletes). Simply visit the thread, click the "Lock"
+button and enter the name / password. Visit the thread again and click
+"Unlock" to allow replies once more.
 
 
 Markup:

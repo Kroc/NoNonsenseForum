@@ -1,4 +1,4 @@
-/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -71,14 +71,13 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 /* the breadcrumb and rss / new buttons: */
 #mast nav			{margin: 40px auto 0;
 				 text-transform: uppercase; color: #888;}
-#mast nav p			{display: block; padding: 0 0 0 60px;}
+#mast nav p			{display: block; padding: 0 20px 0 60px;}
 
 #index				{display: inline-block; padding-left: 36px; margin-left: -36px;
 				 background: url("icons/here.png") no-repeat 0 50%;}
 
 #add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
-#add				{margin-right: 20px;
-				 background: url("icons/add.png") no-repeat 0 50%;}
+#add				{background: url("icons/add.png") no-repeat 0 50%;}
 #rss				{background: url("icons/rss.png") no-repeat 0 50%;}
 
 /* Google search box: */
@@ -154,7 +153,7 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 #threads ol.ui li i		{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
 
-#threads ol.ui li img		{margin-left: -20px; vertical-align: top;}
+#threads ol.ui li img		{margin-left: -20px; vertical-align: -2px;}
 #threads ol.ui li.sticky	{background: #eee;}
 
 /* these apply to folders and threads */
@@ -274,21 +273,33 @@ input[type=text],
 				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
-/* delete form
+/* delete, un/lock form
    ---------------------------------------------------------------------------------------------------------------------- */
 #delete h1			{background-image: url("icons/deletetitle.png");}
+#lock h1, #unlock h1		{background-image: url("icons/threads.png");}
 
 /* no path / rss buttons up top */
-#delete				{margin-top: 40px;}
+#delete, #lock, #unlock		{margin-top: 40px;}
 /* put the name / password fields side by side since there's no message box taking up the space */
-#delete #leftcol		{width: 50%;}
-#delete #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
+#delete #leftcol,
+ #lock #leftcol,
+ #unlock #leftcol		{width: 50%;}
+#delete #rightcol,
+ #lock #rightcol,
+ #unlock #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
 
 
 /* site footer
    ====================================================================================================================== */
 #mods				{margin: 0 auto; padding-top: 20px;}
 #mods p				{padding: 0 20px 0; color: #888;}
+
+#admin				{float: right;}
+a#lock, a#unlock		{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
+/* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
+   <creativecommons.org/licenses/by-sa/3.0/> */
+a#lock				{background: url("icons/security_closed_16.png") no-repeat 0 50%;}
+a#unlock			{background: url("icons/security_open_16.png") no-repeat 0 50%;}
 
 footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */

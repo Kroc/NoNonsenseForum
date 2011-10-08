@@ -1,23 +1,27 @@
+v6	08.OCT.11
+*	Thread locking / Unlocking
+*	Copying a code block inside a quote and posting now correctly indents the code block
+
 v5	22.AUG.11
-	Fully remove post option on delete page -- now deletes the post completely rather than blanking it
+*	Fully remove post option on delete page -- now deletes the post completely rather than blanking it
 	(can only be used by moderators, and only on the last page of a thread)
-	IE6 & iOS CSS fixes
+*	IE6 & iOS CSS fixes
 	
 v4	19.AUG.11
-	Last post date now links to the post
-	Index page count was incorrect
-	CSS fix for IE 6 & 7
+*	Last post date now links to the post
+*	Index page count was incorrect
+*	CSS fix for IE 6 & 7
 
 v3	30.JUL.11
-	Links to threads now use "page=last"
-	"Users" folder now included in the download for simpler setup
+*	Links to threads now use "page=last"
+*	"Users" folder now included in the download for simpler setup
 
 v2	18.JUN.11
-	Ignore invalid XML files when generating index page / RSS
-	Prevent null filenames for threads with only non-ASCII titles
-	Better compatibility with PHP 5.3 (still works with 5.2)
+*	Ignore invalid XML files when generating index page / RSS
+*	Prevent null filenames for threads with only non-ASCII titles
+*	Better compatibility with PHP 5.3 (still works with 5.2)
 
 v1	01.JUN.11
-	Initial release
+*	Initial release
 
 For full change list and changes prior to v1, see the GitHub project page <github.com/Kroc/NoNonsenseForum/commits/master>

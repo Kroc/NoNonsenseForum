@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -142,6 +142,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$last = &$xml->channel->item[0];
 		$THREADS[] = array (
 			'STICKY'	=> in_array ($file, $stickies),
+			'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
 			//link to the thread--go to the last page of replies
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			'TITLE'		=> safeHTML ($xml->channel->title),

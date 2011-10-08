@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v5 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -23,10 +23,12 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 	//read the file (not dependent on the lock)
 	$xml = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Malformed XML');
 	
-	//ignore a double-post (could be an accident with the back button)
 	if (!(
+		//ignore a double-post (could be an accident with the back button)
 		NAME == $xml->channel->item[0]->author &&
-		formatText (TEXT) == $xml->channel->item[0]->description
+		formatText (TEXT) == $xml->channel->item[0]->description &&
+		//can’t post if the thread is locked
+		!$xml->channel->xpath ("category[text()='locked']")
 	)) {
 		//where to?
 		//(we won’t use `page=last` here as we are effecitvely handing the user a permalink here)
@@ -69,8 +71,10 @@ $xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 
 //info for the site header
 $HEADER = array (
-	'TITLE'	=> safeHTML ($xml->channel->title),
-	'RSS'	=> "$FILE.rss"
+	'TITLE'		=> safeHTML ($xml->channel->title),
+	'RSS'		=> "$FILE.rss",
+	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
+	'LOCK_URL'	=> '/action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
 );
 
 /* original post
