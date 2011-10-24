@@ -234,8 +234,8 @@ function formatText ($text) {
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
-		array ('/&ldquo;<\/span>\n/ms', '/\n<span class="qr">/ms'),
-		array ('&ldquo;</span>', 	'<span class="qr">'),
+		array ('/&ldquo;<\/span>\n/',	'/\n<span class="qr">/'),
+		array ('&ldquo;</span>',	'<span class="qr">'),
 	$text);
 	
 	/* finalise:
