@@ -46,6 +46,8 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 @define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
 @define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
 @define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+//if you're messing with RewriteRules, change the root in config.php
+@define ('ROOT_PATH',		substr (dirname (__FILE__).'/', strlen ($_SERVER['DOCUMENT_ROOT'])));
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
