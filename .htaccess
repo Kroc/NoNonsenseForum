@@ -2,7 +2,9 @@ ServerSignature	Off
 RewriteEngine	On
 
 # stop automagically adding slashes to input forms
-php_flag magic_quotes_gpc off
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc off
+</IfModule>
 
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
@@ -59,9 +61,9 @@ AddCharset utf-8 .css .xml .rss .txt
 # a folder
 RewriteCond %{REQUEST_URI} ^/[^./&]+/$
 RewriteCond %{DOCUMENT_ROOT}%0 -d
-RewriteRule ^(?:([^./&]+)/)?$ /?path=$1 [QSA,L]
+RewriteRule ^(?:([^./&]+)/)?$ ?path=$1 [QSA,L]
 
 # a thread
 RewriteCond %{REQUEST_URI} ^/([^./&]+/)?([^./]+)$
 RewriteCond %{DOCUMENT_ROOT}%0.rss -f
-RewriteRule ^(?:([^./&]+)/)?([^./]+)$ /thread.php?path=$1&file=$2 [QSA,L]
+RewriteRule ^(?:([^./&]+)/)?([^./]+)$ thread.php?path=$1&file=$2 [QSA,L]
