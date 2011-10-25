@@ -72,9 +72,9 @@ $xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 //info for the site header
 $HEADER = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
-	'RSS'		=> ROOT_PATH . "$FILE.rss",
+	'RSS'		=> FORUM_PATH . "$FILE.rss",
 	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-	'LOCK_URL'	=> ROOT_PATH . 'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
+	'LOCK_URL'	=> FORUM_PATH . 'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
 );
 
 /* original post
@@ -89,8 +89,8 @@ $POST = array (
 	'AUTHOR'	=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'DELETE_URL'	=> ROOT_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
-	'APPEND_URL'	=> ROOT_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+	'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
+	'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 			  .substr (strstr ($post->link, '#'), 1).'#append',
 	'TEXT'		=> $post->description,
 	'MOD'		=> isMod ($post->author),
@@ -127,9 +127,9 @@ if (count ($thread)) {
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),	//human readable time
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']") ? 'deleted' : '',
-		'DELETE_URL'	=> ROOT_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+		'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
-		'APPEND_URL'	=> ROOT_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+		'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1).'#append',
 		'OP'		=> $post->author == $author ? 'op' : '',		//if author is the original poster
 		'MOD'		=> isMod ($post->author) ? 'mod' : '',			//if the author is a moderator

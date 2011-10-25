@@ -11,7 +11,10 @@ error_reporting (-1);
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('START', 		microtime (true));			//record how long the page takes to generate
-define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
+define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
+define ('FORUM_PATH',							//relative from webroot--if running in a folder
+	str_replace ('//', '/', dirname ($_SERVER['SCRIPT_NAME']).'/')	//(always starts with a slash and ends in one)
+);
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
 //these are just some enums for templates to react to
@@ -27,7 +30,7 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 
 /* default config:
    ---------------------------------------------------------------------------------------------------------------------- */
-//*don’t* change these values here, instead rename 'config.example.php' to 'config.php' and customise
+//*don’t* change these values here, copy 'config.example.php' into a 'config.php' file and customise.
 //these are here so that if I add a new value, the forum won’t break if you don’t update your config file
 
 //see 'config.example.php' for description of these
@@ -46,8 +49,6 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 @define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
 @define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
 @define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
-//if you're messing with RewriteRules, change the root in config.php
-@define ('ROOT_PATH',		substr (dirname (__FILE__).'/', strlen ($_SERVER['DOCUMENT_ROOT'])));
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
@@ -81,7 +82,7 @@ if (
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? ROOT_PATH : safeURL (ROOT_PATH.PATH.'/', false));	//when outputting as part of a URL
+define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH.'/', false));	//when outputting as part of a URL
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>

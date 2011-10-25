@@ -18,12 +18,12 @@ if (isset ($PAGES)) {
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-<link rel="stylesheet" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/theme.css" />
-<link rel="alternate" type="application/rss+xml" href="<?php echo ROOT_PATH?>index.xml" />
+<link rel="stylesheet" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/theme.css" />
+<link rel="alternate" type="application/rss+xml" href="<?php echo FORUM_PATH?>index.xml" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
-<link rel="shortcut icon" type="image/x-icon" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
-<link rel="apple-touch-icon-precomposed" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/touch.png" />
+<link rel="shortcut icon" type="image/x-icon" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
+<link rel="apple-touch-icon-precomposed" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 <meta name="application-name" content="<?php echo PATH ? safeString (PATH) : safeString (FORUM_NAME)?>" />
 <meta name="msapplication-starturl" content="<?php echo FORUM_URL.PATH_URL?>" />
@@ -35,19 +35,19 @@ if (isset ($PAGES)) {
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
-	<h1><a href="<?php echo ROOT_PATH?>"><?php echo safeHTML(FORUM_NAME)?></a></h1>
+	<h1><a href="<?php echo FORUM_PATH?>"><?php echo safeHTML(FORUM_NAME)?></a></h1>
 	
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
 	--></form>
 	
 	<nav><p>
 		<a id="add" href="#new">Add Thread</a>
-		<a id="rss" href="<?php echo ROOT_PATH?>index.xml">RSS</a>
+		<a id="rss" href="<?php echo FORUM_PATH?>index.xml">RSS</a>
 	</p><p>
-		<a id="index" href="<?php echo ROOT_PATH?>">Index</a><?php if (PATH): ?> » <?php echo PATH?><?php endif; ?>
+		<a id="index" href="<?php echo FORUM_PATH?>">Index</a><?php if (PATH): ?> » <?php echo PATH?><?php endif; ?>
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
@@ -57,7 +57,7 @@ if (isset ($PAGES)) {
 	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li>
-			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php echo $FOLDER['POSTLINK']?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
+			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php $FOLDER['POSTLINK']?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
 			<b<?php echo $FOLDER['MOD']?' class="mod"':''?>><?php echo $FOLDER['AUTHOR']?></b> <?php endif;
 ?><a href="<?php echo $FOLDER['URL']?>"><?php echo $FOLDER['NAME']?></a>
 		</li>
@@ -76,9 +76,9 @@ if (isset ($PAGES)) {
 			<a href="<?php echo $THREAD['POSTLINK']?>"><time datetime="<?php echo $THREAD['DATETIME']?>"><?php echo $THREAD['TIME']?></time></a>
 			<i><?php echo $THREAD['COUNT']?></i> <b<?php echo $THREAD['MOD']?' class="mod"':''?>><?php echo $THREAD['AUTHOR']?></b>
 <?php if ($THREAD['LOCKED']): ?>
-			<img src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/security_closed_16.png" width="16" height="16" alt="Locked:" />
+			<img src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/security_closed_16.png" width="16" height="16" alt="Locked:" />
 <?php elseif ($THREAD['STICKY']): ?>
-			<img src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
+			<img src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/sticky.png" width="16" height="16" alt="Announcement:" />
 <?php endif;?>
 			<a href="<?php echo $THREAD['URL']?>"><?php echo $THREAD['TITLE']?></a>
 		</li>
@@ -136,7 +136,7 @@ if (isset ($PAGES)) {
 		<p id="error">That name is taken. Provide the password for it, or choose another name. (password typo?)</p>
 <?php endswitch; ?>
 		<p id="markup">
-			Pro tip: Use <a href="<?php echo ROOT_PATH?>markup.txt">markup</a> to add links, quotes and more.
+			Pro tip: Use <a href="<?php echo FORUM_PATH?>markup.txt">markup</a> to add links, quotes and more.
 		</p>
 		
 		</div><div id="leftcol">
@@ -153,7 +153,7 @@ if (isset ($PAGES)) {
 		</div>
 		
 		<p id="psubmit"><label for="submit">Submit
-			<input id="submit" name="submit" type="image" src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/submit.png"
+			<input id="submit" name="submit" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/submit.png"
 			       width="40" height="40" tabindex="5" value="&gt;" />
 		</label></p>
 <?php else: ?>

@@ -96,7 +96,7 @@ foreach (array_filter (
 	$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 	
 	$FOLDERS[] = array (
-		'URL'		=> safeURL ("/$FOLDER/"),
+		'URL'		=> safeURL (FORUM_PATH."$FOLDER/"),
 		'NAME'		=> safeHTML ($FOLDER),
 		//can’t include these details if the folder was empty (no threads)
 		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),

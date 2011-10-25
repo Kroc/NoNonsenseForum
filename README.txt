@@ -6,24 +6,33 @@ A simple forum that focuses on discussion and simplicity.
 Requirements:
 -------------
 *	An up to date Apache installation, 2.1 or above
-*	PHP 5.2.6 or above
-*	A sub domain (like 'forum.---.com'), virtual host or dedicated
-	web-root for the forum. it will not run in a sub-folder
+*	PHP 5.2.6 or above (5.3+ preferred)
 
 
 Install:
 --------
-1.	Copy this directory and all files to the web-root
-
+1.	NoNonsense Forum can run on it’s own domain / sub-domain
+	(preferred), or within a sub-folder (e.g. '/forum/')
+	
+	Copy this directory and all files to the web-root of a
+	sub-domain (like 'forum.---.com'), virtual host or other
+	dedicated web-root for the forum, or as a sub-folder therein
+	
 	NOTE: On some platforms, the ".htaccess" file may be invisible.
 	      Please search the Internet for instructions on how to
 	      show hidden files on your operating system if you cannot
 	      see the ".htaccess" file. It must be included with the
 	      other files for NoNonsense Forum to work
+	
+	NOTE: If you run NoNonsense Forum in a sub-folder of a domain,
+	      any existing ".htaccess" rules might 'leak' into the 
+	      folder and prevent the forum from working correctly.
+	      It is recommended to use a sub-domain if you are not sure
+	      how to manually edit ".htaccess" rules
 
-2.	Ensure the web-root and all sub-folders (especially "users")
-	have write permission for PHP, the code will save new threads
-	directly to web-root
+2.	Ensure the web-root / folder and all sub-folders (especially
+	"users") have write permission for PHP, the code will save new
+	threads directly to web-root
 
 3.	Visit the site in your browser. If all is well, you should have
 	an empty, but functional forum. If you're having problems you
@@ -178,10 +187,11 @@ see 'markup.txt' for details.
 
 Acknowledgements:
 =================
-*	Jon Gjengset	-	Original theme / mobile theme
-*	"JJ"		-	Quote syntax
-*	"Martijn"	-	Lynx support
-*	"Temukki"	-	Bugs
+*	Jon Gjengset		-	Original theme / mobile theme
+*	"JJ"			-	Quote syntax
+*	"Martijn"		-	Lynx support
+*	"Temukki"		-	Bugs
+*	Richard van Velzen	-	Running NNF from a folder
 
 *	The users of Camen Design Forum <forum.camendesign.com>
 	for testing and support
