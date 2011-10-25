@@ -11,7 +11,7 @@ require_once './shared.php';
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
-define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
+define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 /* ====================================================================================================================== */
 
@@ -72,9 +72,9 @@ $xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 //info for the site header
 $HEADER = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
-	'RSS'		=> "$FILE.rss",
+	'RSS'		=> FORUM_PATH . "$FILE.rss",
 	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-	'LOCK_URL'	=> '/action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
+	'LOCK_URL'	=> FORUM_PATH . 'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
 );
 
 /* original post
@@ -89,8 +89,8 @@ $POST = array (
 	'AUTHOR'	=> safeHTML ($post->author),
 	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
-	'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+	'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
+	'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 			  .substr (strstr ($post->link, '#'), 1).'#append',
 	'TEXT'		=> $post->description,
 	'MOD'		=> isMod ($post->author),
@@ -127,9 +127,9 @@ if (count ($thread)) {
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),	//human readable time
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']") ? 'deleted' : '',
-		'DELETE_URL'	=> '/action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+		'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
-		'APPEND_URL'	=> '/action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
+		'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1).'#append',
 		'OP'		=> $post->author == $author ? 'op' : '',		//if author is the original poster
 		'MOD'		=> isMod ($post->author) ? 'mod' : '',			//if the author is a moderator

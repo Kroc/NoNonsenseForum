@@ -12,8 +12,8 @@ define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['pa
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
-define ('TITLE', mb_substr (trim (@$_POST['title']), 0, SIZE_TITLE, 'UTF-8'));
-define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, SIZE_TEXT,  'UTF-8'));
+define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
+define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
 /* ====================================================================================================================== */
 
@@ -96,7 +96,7 @@ foreach (array_filter (
 	$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 	
 	$FOLDERS[] = array (
-		'URL'		=> safeURL ("/$FOLDER/"),
+		'URL'		=> safeURL (FORUM_PATH."$FOLDER/"),
 		'NAME'		=> safeHTML ($FOLDER),
 		//can’t include these details if the folder was empty (no threads)
 		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),

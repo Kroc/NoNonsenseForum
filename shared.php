@@ -11,7 +11,10 @@ error_reporting (-1);
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('START', 		microtime (true));			//record how long the page takes to generate
-define ('FORUM_ROOT',		dirname (__FILE__));			//full path for absolute references
+define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
+define ('FORUM_PATH',							//relative from webroot--if running in a folder
+	str_replace ('//', '/', dirname ($_SERVER['SCRIPT_NAME']).'/')	//(always starts with a slash and ends in one)
+);
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
 //these are just some enums for templates to react to
@@ -27,7 +30,7 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 
 /* default config:
    ---------------------------------------------------------------------------------------------------------------------- */
-//*don’t* change these values here, instead rename 'config.example.php' to 'config.php' and customise
+//*don’t* change these values here, copy 'config.example.php' into a 'config.php' file and customise.
 //these are here so that if I add a new value, the forum won’t break if you don’t update your config file
 
 //see 'config.example.php' for description of these
@@ -54,8 +57,8 @@ date_default_timezone_set (FORUM_TIMEZONE);
 /* get input
    ====================================================================================================================== */
 //all pages can accept a name / password when committing actions (new thread / post &c.)
-define ('NAME', mb_substr (trim (@$_POST['username']), 0, SIZE_NAME, 'UTF-8'));
-define ('PASS', mb_substr (      @$_POST['password'],  0, SIZE_PASS, 'UTF-8'));
+define ('NAME', safeGet (@$_POST['username'], SIZE_NAME));
+define ('PASS', safeGet (@$_POST['password'], SIZE_PASS, false));
 
 //if name & password are provided, validate them
 if (
@@ -79,8 +82,8 @@ if (
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? '/' : safeURL ('/'.PATH.'/', false));	//when outputting as part of a URL
-define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
+define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH.'/', false));	//when outputting as part of a URL
+define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
@@ -124,13 +127,17 @@ class allow_prepend extends SimpleXMLElement {
 
 /* ====================================================================================================================== */
 
-//replace markers (“&__TAG__;”) in the template with some other text
-function template_tags ($template, $values) {
-	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
-	return $template;
+//sanitise input:
+function safeGet ($data, $len=0, $trim=true) {
+	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
+	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
+	//remove useless whitespace. can be skipped (i.e for passwords)
+	if ($trim) $data = trim ($data);
+	//clip the length in case of a fake crafted request
+	return $len ? mb_substr ($data, 0, $len, 'UTF-8') : $data;
 }
 
-//santise output:
+//sanitise output:
 function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
 	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
@@ -145,6 +152,12 @@ function safeURL ($text, $is_HTML=true) {
 	//will the URL be output into HTML? (rather than, say, the HTTP headers)
 	//if so, encode for HTML too, e.g. "&" must be "&amp;" within URLs when in HTML
 	return $is_HTML ? safeHTML ($text) : $text;
+}
+
+//replace markers (“&__TAG__;”) in the template with some other text
+function template_tags ($template, $values) {
+	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
+	return $template;
 }
 
 //produces a truncated list of pages around the current page
@@ -234,8 +247,8 @@ function formatText ($text) {
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
-		array ('/&ldquo;<\/span>\n/ms', '/\n<span class="qr">/ms'),
-		array ('&ldquo;</span>', 	'<span class="qr">'),
+		array ('/&ldquo;<\/span>\n/',	'/\n<span class="qr">/'),
+		array ('&ldquo;</span>',	'<span class="qr">'),
 	$text);
 	
 	/* finalise:

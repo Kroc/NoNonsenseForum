@@ -17,7 +17,7 @@ if (isset ($_GET['append'])) {
 	$ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['id']) ? $_GET['id'] : '') or die ('Malformed request');
 	
 	//get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
-	define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
+	define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
 	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
