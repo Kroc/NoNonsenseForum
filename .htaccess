@@ -10,7 +10,7 @@ Options -MultiViews -Indexes
 RewriteRule ^users/.*$ - [NC,F]
 
 # don’t allow forum access to users / themes folder
-RewriteCond %{QUERY_STRING} path=(?:themes|users) [NC]
+RewriteCond %{QUERY_STRING} path=/*(?:themes|users) [NC]
 RewriteRule ^ - [F]
 
 DirectoryIndex index.php
@@ -54,11 +54,11 @@ AddCharset utf-8 .css .xml .rss .txt
 </FilesMatch>
 
 # a folder
-RewriteCond %{REQUEST_URI} ^/[^./&]+/$
+RewriteCond %{REQUEST_URI} ^/(?:[^./&]+/)+$
 RewriteCond %{DOCUMENT_ROOT}%0 -d
 RewriteRule ^(?:([^./&]+)/)?$ ?path=$1 [QSA,L]
 
 # a thread
-RewriteCond %{REQUEST_URI} ^/([^./&]+/)?([^./]+)$
+RewriteCond %{REQUEST_URI} ^/((?:[^./&]+/)*)([^./]+)$
 RewriteCond %{DOCUMENT_ROOT}%0.rss -f
 RewriteRule ^(?:([^./&]+)/)?([^./]+)$ thread.php?path=$1&file=$2 [QSA,L]
