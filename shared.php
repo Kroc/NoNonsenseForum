@@ -81,7 +81,7 @@ if (
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? '/' : safeURL ('/'.PATH.'/', false));	//when outputting as part of a URL
+define ('PATH_URL', !PATH ? ROOT_PATH : safeURL (ROOT_PATH.PATH.'/', false));	//when outputting as part of a URL
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
