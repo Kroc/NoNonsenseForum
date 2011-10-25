@@ -12,8 +12,8 @@ define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['pa
 
 //submitted info for making a new thread
 //(name / password already handled in 'shared.php')
-define ('TITLE', mb_substr (trim (@$_POST['title']), 0, SIZE_TITLE, 'UTF-8'));
-define ('TEXT',  mb_substr (trim (@$_POST['text'] ), 0, SIZE_TEXT,  'UTF-8'));
+define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
+define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
 /* ====================================================================================================================== */
 

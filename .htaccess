@@ -1,11 +1,6 @@
 ServerSignature	Off
 RewriteEngine	On
 
-# stop automagically adding slashes to input forms
-<IfModule mod_php5.c>
-	php_flag magic_quotes_gpc off
-</IfModule>
-
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
 # <webmasterworld.com/apache/3808792.htm>

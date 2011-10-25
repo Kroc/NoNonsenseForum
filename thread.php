@@ -11,7 +11,7 @@ require_once './shared.php';
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
-define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT, 'UTF-8'));
+define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 /* ====================================================================================================================== */
 

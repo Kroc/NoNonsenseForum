@@ -56,8 +56,8 @@ date_default_timezone_set (FORUM_TIMEZONE);
 /* get input
    ====================================================================================================================== */
 //all pages can accept a name / password when committing actions (new thread / post &c.)
-define ('NAME', mb_substr (trim (@$_POST['username']), 0, SIZE_NAME, 'UTF-8'));
-define ('PASS', mb_substr (      @$_POST['password'],  0, SIZE_PASS, 'UTF-8'));
+define ('NAME', safeGet (@$_POST['username'], SIZE_NAME));
+define ('PASS', safeGet (@$_POST['password'], SIZE_PASS, false));
 
 //if name & password are provided, validate them
 if (
@@ -82,7 +82,7 @@ if (
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
 define ('PATH_URL', !PATH ? ROOT_PATH : safeURL (ROOT_PATH.PATH.'/', false));	//when outputting as part of a URL
-define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
+define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
@@ -126,13 +126,17 @@ class allow_prepend extends SimpleXMLElement {
 
 /* ====================================================================================================================== */
 
-//replace markers (“&__TAG__;”) in the template with some other text
-function template_tags ($template, $values) {
-	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
-	return $template;
+//sanitise input:
+function safeGet ($data, $len=0, $trim=true) {
+	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
+	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
+	//remove useless whitespace. can be skipped (i.e for passwords)
+	if ($trim) $data = trim ($data);
+	//clip the length in case of a fake crafted request
+	return $len ? mb_substr ($data, 0, $len, 'UTF-8') : $data;
 }
 
-//santise output:
+//sanitise output:
 function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
 	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
@@ -147,6 +151,12 @@ function safeURL ($text, $is_HTML=true) {
 	//will the URL be output into HTML? (rather than, say, the HTTP headers)
 	//if so, encode for HTML too, e.g. "&" must be "&amp;" within URLs when in HTML
 	return $is_HTML ? safeHTML ($text) : $text;
+}
+
+//replace markers (“&__TAG__;”) in the template with some other text
+function template_tags ($template, $values) {
+	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
+	return $template;
 }
 
 //produces a truncated list of pages around the current page
