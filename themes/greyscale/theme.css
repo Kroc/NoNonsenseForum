@@ -291,7 +291,7 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-#mods				{margin: 0 auto; padding-top: 20px;}
+#mods				{margin: 0 auto; padding-top: 20px; overflow: hidden;}
 #mods p				{padding: 0 20px 0; color: #888;}
 
 #admin				{float: right;}
