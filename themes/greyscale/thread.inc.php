@@ -40,7 +40,7 @@ if (isset ($PAGES)) {
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="<?php echo FORUM_PATH?>/themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
 	--></form>
 	
 	<nav><p>

@@ -10,7 +10,7 @@ Options -MultiViews -Indexes
 RewriteRule ^users/.*$ - [NC,F]
 
 # don’t allow forum access to users / themes folder
-RewriteCond %{QUERY_STRING} path=(?:themes|users) [NC]
+RewriteCond %{QUERY_STRING} path=/*(?:themes|users) [NC]
 RewriteRule ^ - [F]
 
 DirectoryIndex index.php
