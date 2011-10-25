@@ -7,12 +7,12 @@
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-<link rel="stylesheet" href="/themes/<?php echo FORUM_THEME?>/theme.css" />
+<link rel="stylesheet" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <meta name="robots" content="noindex, nofollow" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
-<link rel="shortcut icon" type="image/x-icon" href="/themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
-<link rel="apple-touch-icon-precomposed" href="/themes/<?php echo FORUM_THEME?>/touch.png" />
+<link rel="shortcut icon" type="image/x-icon" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
+<link rel="apple-touch-icon-precomposed" href="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/touch.png" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 <meta name="application-name" content="<?php echo PATH ? safeString(PATH) : safeString (FORUM_NAME)?>" />
 <meta name="msapplication-starturl" content="<?php echo FORUM_URL.PATH_URL?>" />
@@ -24,15 +24,15 @@
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
-	<h1><a href="/"><?php echo safeHTML(FORUM_NAME)?></a></h1>
+	<h1><a href="<?php echo ROOT_PATH?>"><?php echo safeHTML(FORUM_NAME)?></a></h1>
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
 	--></form>
 	
 	<nav><p>
-		<a id="index" href="/">Index</a><?php if (PATH): ?> » <a href="<?php echo PATH_URL?>"><?php echo PATH?></a><?php endif; ?>
+		<a id="index" href="<?php echo ROOT_PATH?>">Index</a><?php if (PATH): ?> » <a href="<?php echo PATH_URL?>"><?php echo PATH?></a><?php endif; ?>
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
@@ -89,7 +89,7 @@
 		or a designated moderator.</p>
 <?php endswitch; ?>
 		<p id="markup">
-			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
+			Pro tip: Use <a href="<?php echo ROOT_PATH?>markup.txt">markup</a> to add links, quotes and more.
 		</p>
 		
 		</div><div id="leftcol">
@@ -106,7 +106,7 @@
 		</div>
 		
 		<p id="psubmit"><label for="submit">Submit
-			<input id="submit" name="submit" type="image" src="/themes/<?php echo FORUM_THEME?>/icons/submit.png"
+			<input id="submit" name="submit" type="image" src="<?php echo ROOT_PATH?>themes/<?php echo FORUM_THEME?>/icons/submit.png"
 			       width="40" height="40" tabindex="4" value="&gt;" />
 		</label></p>
 <?php else: ?>

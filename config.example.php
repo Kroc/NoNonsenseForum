@@ -50,5 +50,7 @@ define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <ti
 define ('TEMPLATE_DEL_USER', '<p>This post was deleted by its owner</p>');
 define ('TEMPLATE_DEL_MOD',  '<p>This post was deleted by a moderator</p>');
 
+//only redefine if your directory structure is different
+//define ('ROOT_PATH', '/');
 
 ?>

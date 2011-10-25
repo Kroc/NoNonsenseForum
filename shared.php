@@ -46,6 +46,8 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 @define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
 @define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
 @define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+//if you're messing with RewriteRules, change the root in config.php
+@define ('ROOT_PATH',		substr (dirname (__FILE__).'/', strlen ($_SERVER['DOCUMENT_ROOT'])));
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
@@ -79,7 +81,7 @@ if (
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? '/' : safeURL ('/'.PATH.'/', false));	//when outputting as part of a URL
+define ('PATH_URL', !PATH ? ROOT_PATH : safeURL (ROOT_PATH.PATH.'/', false));	//when outputting as part of a URL
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');			//when using serverside, like `chdir` / `unlink`
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
@@ -234,8 +236,8 @@ function formatText ($text) {
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
-		array ('/&ldquo;<\/span>\n/ms', '/\n<span class="qr">/ms'),
-		array ('&ldquo;</span>', 	'<span class="qr">'),
+		array ('/&ldquo;<\/span>\n/',	'/\n<span class="qr">/'),
+		array ('&ldquo;</span>',	'<span class="qr">'),
 	$text);
 	
 	/* finalise:
