@@ -11,7 +11,7 @@ if (isset ($PAGES)) {
 }
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $HEADER['TITLE'].(PAGE>1 ? ' # '.PAGE : '')?></title>
@@ -40,7 +40,7 @@ if (isset ($PAGES)) {
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="<?php echo FORUM_PATH?>/themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--
 	--></form>
 	
 	<nav><p>

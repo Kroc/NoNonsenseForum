@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $ID ? 'Delete Post?' : 'Delete Thread?'?> <?php echo $HEADER['TITLE']?></title>
