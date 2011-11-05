@@ -191,7 +191,7 @@ Acknowledgements:
 *	"JJ"			-	Quote syntax
 *	"Martijn"		-	Lynx support
 *	"Temukki"		-	Bugs
-*	Richard van Velzen	-	Running NNF from a folder
+*	Richard van Velzen	-	subfolder support / other fixes
 
 *	The users of Camen Design Forum <forum.camendesign.com>
 	for testing and support

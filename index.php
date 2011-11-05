@@ -79,8 +79,9 @@ XML
 /* ====================================================================================================================== */
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
-//get a list of folders
-foreach (array_filter (
+//don’t all sub-sub-forums
+if (!PATH) foreach (array_filter (
+	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 ) as $FOLDER) {
