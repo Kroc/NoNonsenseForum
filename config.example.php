@@ -23,6 +23,8 @@ define ('FORUM_ENABLED',	true);
 define ('FORUM_THEME',		'greyscale');
 
 //forum’s title. used in theme, and in RSS feeds
+//WARNING: changing this won’t update the index RSS feed containing this name; delete 'index.xml' and then post/delete
+//         a thread to regenerate the 'index.xml' file so as to see the change
 define ('FORUM_NAME',		'NoNonsense Forum');
 
 //number of threads and posts to show per page
