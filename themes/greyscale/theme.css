@@ -18,7 +18,11 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 	/* FF3.6+ */		 background-image:    -moz-linear-gradient(white, #ddd);
 	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
 	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
-	/* future? */		 background-image:         linear-gradient(white, #ddd);}
+	/* future? */		 background-image:         linear-gradient(white, #ddd);
+				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
+				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
+				    manually insert a background colour for IE6 into the 32-bit PNGs) */
+				_background: #eee;}
 
 
 /* page centering / width */
