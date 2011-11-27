@@ -1,6 +1,7 @@
 NoNonsense Forum v7 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ====================================================================
 A simple forum that focuses on discussion and simplicity.
+http://camendesign.com/nononsense_forum
 
 
 Requirements:
@@ -23,16 +24,10 @@ Install:
 	      show hidden files on your operating system if you cannot
 	      see the ".htaccess" file. It must be included with the
 	      other files for NoNonsense Forum to work
-	
-	NOTE: If you run NoNonsense Forum in a sub-folder of a domain,
-	      any existing ".htaccess" rules might 'leak' into the 
-	      folder and prevent the forum from working correctly.
-	      It is recommended to use a sub-domain if you are not sure
-	      how to manually edit ".htaccess" rules
 
 2.	Ensure the web-root / folder and all sub-folders (especially
 	"users") have write permission for PHP, the code will save new
-	threads directly to web-root
+	threads in the same folder as the installation
 
 3.	Visit the site in your browser. If all is well, you should have
 	an empty, but functional forum. If you're having problems you
@@ -41,12 +36,21 @@ Install:
 	NOTE: Please ensure ".htaccess" files are enabled on your
 	      web-server. For example, XAMPP does not execute
 	      ".htaccess" files by deafult
+	
+	NOTE: If you run NoNonsense Forum in a sub-folder, any existing
+	      ".htaccess" rules from the web-root might 'leak' into the
+	      folder and prevent the forum from working correctly.
+	      It is recommended to use a sub-domain if you are not sure
+	      how to manually edit ".htaccess" rules
 
 Optional:
 
-4.	Rename the 'config.example.php' file to 'config.php' and
+4.	Copy the 'config.example.php' file to a 'config.php' file and
 	customise the options within to your liking. Available options
-	are explained within 'config.example.php'
+	are explained within 'config.example.php'.
+	
+	You should leave the 'config.example.php' as-is to avoid
+	conflicts with future updates
 
 
 Browser support:
@@ -56,12 +60,13 @@ Browser support:
 *	Chrome Stable, Chrome Dev
 *	Safari 3+
 *	Opera 9+
-*	Lynx
+*	Lynx, other text browsers
 
 *	iOS 4.0+ (iOS 3 untested yet)
 *	Android (all versions AFAIK)
 *	Firefox Mobile
 *	Opera Mobile & Mini
+*	Amazon Kindle
 
 Unsupported:
 *	Firefox 2 or earlier, Camino 1
@@ -129,18 +134,17 @@ thread, and therefore does not bump it to the top of the index list.
 Deleting a Thread or Post:
 --------------------------
 The person who made a thread (or a moderator) can delete their thread
-by clicking on the delete button in the first post of a thread.
-They then have to enter the name and password pair that was originally
-used to post to delete the thread. The entire thread is then
+by clicking on the delete button in the first post of a thread and
+entering their name / password pair. The entire thread is then
 permanently deleted.
 
 Deleting a post works the same way, by clicking the delete button on
 the particular post. Either the original author of the post or a
 moderator can delete the post, however individual posts are not
-permanently removed like threads. Upon deletion the post entry will
+permanently removed like threads. Upon deletion, the post entry will
 remain but its text content will be stripped out and a message along
-the lines of "This post was deleted by the original poster"
-(or "a moderator") will replace it.
+the lines of "This post was deleted by its owner" (or "a moderator")
+will replace it.
 
 A tick box on the delete page, usually labelled "remove completely",
 will allow moderators to remove the post from the thread without
@@ -153,11 +157,12 @@ post is blanked out as usual.
 
 Adding Moderators:
 ------------------
-Moderators can delete threads that were not originally made by them.
-To add moderators to your website, first have them post at least once
-in order to reserve the name. Then create a "mods.txt" file in web-root
-and populate it with the reserved names to allow moderator rights,
-one on each line. E.g.
+Moderators can delete threads that were not originally made by them,
+append to existing posts by other other users and lock and unlock
+threads. To add moderators to your website, first have them post at
+least once in order to reserve the name. Then create a "mods.txt" file
+in web-root and populate it with the reserved names to allow moderator
+rights, one on each line. E.g.
 
 Kroc
 theraje
@@ -166,7 +171,7 @@ SpeedoJoe
 The moderators you specify will be able to delete threads and posts in
 all folders, including root, of the forum. If you would like to set a
 moderator who can only delete within a certain folder, create a
-'mods.txt' file within the folder and specify the desired names.
+"mods.txt" file within that folder and specify the desired names.
 These moderators will not be able delete threads or posts in the forum
 root, or other folders.
 
@@ -182,7 +187,8 @@ button and enter the name / password. Visit the thread again and click
 Markup:
 -------
 Some simple markup is provided for hyperlinks, quotes and more;
-see 'markup.txt' for details.
+see "markup.txt" for details.
+
 
 
 Acknowledgements:
