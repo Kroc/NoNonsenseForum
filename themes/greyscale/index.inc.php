@@ -117,9 +117,13 @@ if (isset ($PAGES)) {
 			(Leave this as-is, it’s a trap!)
 		</p>
 <?php switch ($FORM['ERROR']):
-	case ERROR_NONE: ?>
+	case ERROR_NONE:
+	if (FORUM_NEWBIES): ?>
 		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
-<?php break;
+<?php	else :?>
+		<p id="error">Only registered users can post.<br />No new registrations are allowed.</p>
+<?php	endif;
+	break;
 	case ERROR_NAME: ?>
 		<p id="error">Enter a name. You’ll need to use this with the password each time.</p>
 <?php break;

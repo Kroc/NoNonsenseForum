@@ -37,12 +37,13 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 //*don’t* change these values here, copy 'config.example.php' into a 'config.php' file and customise.
 //these are here so that if I add a new value, the forum won’t break if you don’t update your config file
 
-//see 'config.example.php' for description of these
+//see 'config.example.php' for descriptions of these
+@define ('FORUM_NAME',		'NoNonsense Forum');
 @define ('FORUM_TIMEZONE',	'UTC');
 @define ('DATE_FORMAT',		'd M ’y · H:i');
-@define ('FORUM_ENABLED',	true);
 @define ('FORUM_THEME',		'greyscale');
-@define ('FORUM_NAME',		'NoNonsense Forum');
+@define ('FORUM_ENABLED',	true);
+@define ('FORUM_NEWBIES',	true);
 @define ('FORUM_THREADS',	50);
 @define ('FORUM_POSTS',		25);
 @define ('SIZE_NAME',		20);
@@ -75,10 +76,10 @@ if (
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
 	$user = FORUM_ROOT."/users/$name.txt";
-	//create the user, if new
-	if (!file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
+	//create the user, if new (if registrations are allowed)
+	if (FORUM_NEWBIES && !file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
 	//does password match?
-	define ('AUTH', file_get_contents ($user) == hash ('sha512', $name.PASS));
+	define ('AUTH', @file_get_contents ($user) == hash ('sha512', $name.PASS));
 } else {
 	define ('AUTH', false);
 }

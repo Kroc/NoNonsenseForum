@@ -6,26 +6,27 @@
 */
 
 
-/* --- rename this file 'config.php' and customise to your liking --- */
-
-//timezone to use for all datetimes
-//this must be a string from this list: <php.net/manual/en/timezones.php>, e.g. "Europe/London"
-define ('FORUM_TIMEZONE',	'UTC');
-
-//the `date` format code used to print human readable dates into the HTML,
-//see <php.net/manual/en/function.date.php> for documentation
-define ('DATE_FORMAT',		'd M ’y · H:i');
-
-//if posting is allowed. change to false and nobody will be able to post new threads or reply
-define ('FORUM_ENABLED',	true);
-
-//folder name of the theme to use, in "/themes/*"
-define ('FORUM_THEME',		'greyscale');
+/* --- copy this file as 'config.php' and customise to your liking --- */
 
 //forum’s title. used in theme, and in RSS feeds
 //WARNING: changing this won’t update the index RSS feed containing this name; delete 'index.xml' and then post/delete
 //         a thread to regenerate the 'index.xml' file so as to see the change
 define ('FORUM_NAME',		'NoNonsense Forum');
+
+//timezone to use for all datetimes
+//this must be a string from this list: <php.net/manual/en/timezones.php>, e.g. "Europe/London"
+define ('FORUM_TIMEZONE',	'UTC');
+//the `date` format code used to print human readable dates into the HTML,
+//see <php.net/manual/en/function.date.php> for documentation
+define ('DATE_FORMAT',		'd M ’y · H:i');
+
+//folder name of the theme to use, in "/themes/*"
+define ('FORUM_THEME',		'greyscale');
+
+//if posting is allowed. change to false and nobody will be able to post new threads or reply
+define ('FORUM_ENABLED',	true);
+//if new users are allowed to register. set to false and only existing registered users will be allowed to post
+define ('FORUM_NEWBIES',	true);
 
 //number of threads and posts to show per page
 //WARNING: changing these will inadvertadely invalidate post permalinks, decide on these numbers in the beginning

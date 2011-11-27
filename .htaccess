@@ -20,9 +20,6 @@ AddType application/rss+xml	.rss
 	ForceType application/rss+xml
 </Files>
 
-AddType font/ttf		.ttf
-AddType font/x-woff		.woff
-
 # force utf-8 for a number of file formats:
 AddDefaultCharset utf-8
 AddCharset utf-8 .css .xml .rss .txt
