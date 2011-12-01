@@ -1,3 +1,14 @@
+v8
+*	Access control: Major new feature! You can lock forums and limit posting / access to certain users:
+	(Members can be specified in a 'members.txt' file)
+	- 'threads':	Only moderators / members can start threads, but anybody can reply
+	- 'posts':	Only moderators / members can start threads or reply
+	- 'private':	Only moderators / members can access and participate in the forum (hidden to the public)
+*	Moderators can sign-in to do moderator actions
+*	Moderators can now reply to and append/delete in locked threads
+*	Moderators can now fully remove previously deleted (blanked-out) comments
+*	Config option to disable new user registrations site-wide (`FORUM_NEWBIES`)
+
 v7	05.NOV.11
 *	NNF can now be run from a folder, with thanks to Richard van Velzen
 	(this requires theme changes: URLs must be prepended with `FORUM_PATH`)

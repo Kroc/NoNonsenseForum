@@ -7,16 +7,28 @@
 
 require_once './shared.php';
 
-//which thread to show
-$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
-
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
+
+//which thread to show
+$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+//load the thread (have to read lock status from the file)
+$xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
+
+//access rights for the current user
+define ('CAN_REPLY', FORUM_ENABLED && (
+	//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
+	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
+	//- if the thread is locked, but you are a moderator (signed in)
+	((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+	//- if the forum is post-locked, but you are a moderator (signed in) or member
+	(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+));
 
 /* ====================================================================================================================== */
 
 //was the submit button clicked? (and is the info valid?)
-if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
+if (CAN_REPLY && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//get a write lock on the file so that between now and saving, no other posts could slip in
 	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
 	
@@ -66,9 +78,6 @@ if (FORUM_ENABLED && NAME && PASS && AUTH && TEXT && @$_POST['email'] == 'exampl
 
 /* ====================================================================================================================== */
 
-//load the thread
-$xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
-
 //info for the site header
 $HEADER = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
@@ -102,7 +111,7 @@ $author = (string) $post->author;
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
-//determine the page number (for threads the page number can be given as "last")
+//determine the page number (for threads, the page number can be given as "last")
 define ('PAGE',
 	@$_GET['page'] == 'last'
 	? ceil (count ($thread) / FORUM_POSTS)
@@ -112,8 +121,8 @@ define ('PAGE',
 if (count ($thread)) {
 	//sort the other way around
 	//<stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
-	foreach ($thread as &$node) $sort_proxy[] = strtotime ($node->pubDate);
-	array_multisort ($sort_proxy, SORT_ASC, $thread);
+	foreach ($thread as &$node) $sort[] = strtotime ($node->pubDate);
+	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//paging
 	$PAGES  = pageList (PAGE, ceil (count ($thread) / FORUM_POSTS));
@@ -127,6 +136,19 @@ if (count ($thread)) {
 		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),	//human readable time
 		'TEXT'		=> $post->description,
 		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']") ? 'deleted' : '',
+		//if the current user in the curent forum can append/delete the current post:
+		'CAN_ACTION'	=> CAN_REPLY && (
+			//moderators can always see append/delete links on all posts
+			CAN_MOD ||
+			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
+			//if you are signed in, then only links on posts with your name will show
+			!HTTP_AUTH ||
+			//if this post is the by the owner (they can append/delete to their own posts)
+			(strtolower (NAME) == strtolower ($post->author) && (
+				//if the forum is post-locked, they must be a member to append/delete their own posts
+				(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+			))
+		),
 		'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
 				  .substr (strstr ($post->link, '#'), 1),
 		'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
@@ -140,7 +162,7 @@ if (count ($thread)) {
 
 /* reply form
    ---------------------------------------------------------------------------------------------------------------------- */
-if (FORUM_ENABLED) $FORM = array (
+if (CAN_REPLY) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TEXT'	=> safeString (TEXT),

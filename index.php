@@ -18,7 +18,7 @@ define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 /* ====================================================================================================================== */
 
 //has the user submitted a new thread? (and is the info valid?)
-if (FORUM_ENABLED && NAME && PASS && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
+if (CAN_POST && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
 	//the file on disk is a simplified version of the title:
 	$translit = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
@@ -79,7 +79,7 @@ XML
 /* ====================================================================================================================== */
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
-//don’t all sub-sub-forums
+//don’t allow sub-sub-forums (yet)
 if (!PATH) foreach (array_filter (
 	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
@@ -161,7 +161,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 /* new thread form
    ---------------------------------------------------------------------------------------------------------------------- */
 //(exclude if posting has been disabled)
-if (FORUM_ENABLED) $FORM = array (
+if (CAN_POST) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),
 	'TITLE'	=> safeString (TITLE),

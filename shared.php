@@ -5,21 +5,21 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//let me know when I’m being stupid
-error_reporting (-1);
-
 //default UTF-8 throughout
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('START', 		microtime (true));			//record how long the page takes to generate
 define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
 define ('FORUM_PATH',							//relative from webroot--if running in a folder
 	str_replace ('//', '/', dirname ($_SERVER['SCRIPT_NAME']).'/')	//(always starts with a slash and ends in one)
 );
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
+
+//for HTTP authentication (private forums)
+define ('HTTP_AUTH_UN',		@$_SERVER['PHP_AUTH_USER']);		//username if using HTTP authentication
+define ('HTTP_AUTH_PW',		@$_SERVER['PHP_AUTH_PW']);		//password if using HTTP authentication
 
 //these are just some enums for templates to react to
 define ('ERROR_NONE',		0);
@@ -59,31 +59,8 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 date_default_timezone_set (FORUM_TIMEZONE);
 
 
-/* get input
+/* common input
    ====================================================================================================================== */
-//all pages can accept a name / password when committing actions (new thread / post &c.)
-define ('NAME', safeGet (@$_POST['username'], SIZE_NAME));
-define ('PASS', safeGet (@$_POST['password'], SIZE_PASS, false));
-
-//if name & password are provided, validate them
-if (
-	NAME && PASS &&
-	//the email check is a fake hidden field in the form to try and fool spam bots
-	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
-	//I wonder what this does...?
-	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
-) {
-	//users are stored as text files based on the hash of the given name
-	$name = hash ('sha512', strtolower (NAME));
-	$user = FORUM_ROOT."/users/$name.txt";
-	//create the user, if new (if registrations are allowed)
-	if (FORUM_NEWBIES && !file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
-	//does password match?
-	define ('AUTH', @file_get_contents ($user) == hash ('sha512', $name.PASS));
-} else {
-	define ('AUTH', false);
-}
-
 //all our pages use path (often optional) so this is done here
 define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
@@ -95,40 +72,101 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ("Invalid path");
 
+
+/* access control
+   ====================================================================================================================== */
+/* name / password authorisation:
+   ---------------------------------------------------------------------------------------------------------------------- */
+//all pages can accept a name / password when committing actions (new thread / post &c.)
+//in the case of HTTP authentication (sign in / private forums), these are provided in the request header
+define ('NAME', HTTP_AUTH_UN ? HTTP_AUTH_UN : safeGet (@$_POST['username'], SIZE_NAME));
+define ('PASS', HTTP_AUTH_PW ? HTTP_AUTH_PW : safeGet (@$_POST['password'], SIZE_PASS, false));
+
+if ((
+	//if any HTTP authentication is given, we don’t need to validate form fields
+	HTTP_AUTH_UN && HTTP_AUTH_PW
+) || (
+	//if an input form was submitted:
+	NAME && PASS &&
+	//the email check is a fake hidden field in the form to try and fool spam bots
+	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
+	//I wonder what this does...?
+	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
+)) {
+	//users are stored as text files based on the hash of the given name
+	$name = hash ('sha512', strtolower (NAME));
+	$user = FORUM_ROOT."/users/$name.txt";
+	
+	//create the user, if new:
+	//- if registrations are allowed (`FORUM_NEWBIES`)
+	//- you can’t create new users with the HTTP_AUTH sign in
+	if (FORUM_NEWBIES && !HTTP_AUTH_UN && !file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
+	
+	//does password match?
+	define ('AUTH', @file_get_contents ($user) == hash ('sha512', $name.PASS));
+	
+	//if signed in with HTTP_AUTH, confirm that it’s okay to use
+	//(e.g. the user could still have given the wrong password with HTTP_AUTH)
+	define ('HTTP_AUTH', HTTP_AUTH_UN ? AUTH : false);
+} else {
+	define ('AUTH',      false);
+	define ('HTTP_AUTH', false);
+}
+
+//get the lock status of the current forum we’re in:
+//"threads"	- only users in "mods.txt" / "members.txt" can start threads, but anybody can reply
+//"posts"	- only users in "mods.txt" / "members.txt" can start threads or reply
+//"private"	- only users in "mods.txt" / "members.txt" can enter and use the forum, it is hidden from everybody else
+define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
+
+//if the sign-in link was clicked, invoke a HTTP_AUTH request in the browser
+if (!HTTP_AUTH && isset ($_GET['login'])) {
+	header ('WWW-Authenticate: Basic');
+	header ('HTTP/1.0 401 Unauthorized');
+}
+
+/* access rights
+   ---------------------------------------------------------------------------------------------------------------------- */
 //get the list of moderators:
 $MODS = array (
-	//mods.txt on root for mods on all sub-forums
+	//'mods.txt' on root for mods on all sub-forums
 	'GLOBAL'=> file_exists (FORUM_ROOT.'/mods.txt')
 		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
 		: array (),
-	//if in a sub-forum, the local mods.txt
+	//if in a sub-forum, the local 'mods.txt'
 	'LOCAL'	=> PATH && file_exists ('mods.txt')
 		? file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
 		: array ()
 );
 
+//get the list (if any) of users allowed to access this current forum
+$MEMBERS = file_exists ('members.txt') ? file ('members.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES) : array ();
+
+//can the current user moderate in this forum?
+define ('CAN_MOD', HTTP_AUTH ? isMod (NAME) : false);
+
+//can the current user post new threads in the current forum?
+//(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
+define ('CAN_POST', FORUM_ENABLED && (
+	//- if the user is a moderator or member of the current forum, they can post
+	CAN_MOD || isMember (NAME) ||
+	//- if the forum is unlocked (mods will have to log in to see the form)
+	!FORUM_LOCK
+));
+
+//if the forum is private, check the current user and issue an auth request if not signed in or allowed
+if (FORUM_LOCK == 'private' && !(CAN_MOD || isMember (NAME))) {
+	header ('WWW-Authenticate: Basic');
+	header ('HTTP/1.0 401 Unauthorized');
+	//todo: a proper error page, if I make a splash/login screen for a private root-forum
+	die ("Authorisation required.");
+}
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 header ('Cache-Control: no-cache', true);
 header ('Expires: 0', true);
-
-
-/* ====================================================================================================================== */
-
-//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-//we could of course do all the XML manipulation in DOM proper to save doing this…
-class allow_prepend extends SimpleXMLElement {
-	public function prependChild ($name, $value=null) {
-		$dom = dom_import_simplexml ($this);
-		$new = $dom->insertBefore (
-			$dom->ownerDocument->createElement ($name, $value),
-			$dom->firstChild
-		);
-		return simplexml_import_dom ($new, get_class ($this));
-	}
-}
 
 /* ====================================================================================================================== */
 
@@ -165,7 +203,7 @@ function template_tags ($template, $values) {
 	return $template;
 }
 
-//produces a truncated list of pages around the current page
+//produces a truncated list of page numbers around the current page
 function pageList ($current, $total) {
 	//always include the first page
 	$PAGES[] = 1;
@@ -273,10 +311,15 @@ function formatText ($text) {
 
 /* ====================================================================================================================== */
 
-//check to see if a name is a known moderator in mods.txt
+//check to see if a name is a known moderator in 'mods.txt'
 function isMod ($name) {
 	global $MODS;
 	return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
+}
+
+function isMember ($name) {
+	global $MEMBERS;
+	return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
 }
 
 /* ====================================================================================================================== */
@@ -330,11 +373,11 @@ XML
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
+	//we’re going to use the RSS files as sitemaps
 	chdir (FORUM_ROOT);
 	
-	//we’re going to use the RSS files as sitemaps
-	$folders = array ('');
 	//get list of sub-forums
+	$folders = array ('');
 	foreach (array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 		preg_grep ('/^(\.|users$|themes$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
@@ -368,6 +411,21 @@ XML
 	
 	//you saw nothing, right?
 	clearstatcache ();
+}
+
+/* ====================================================================================================================== */
+
+//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
+//we could of course do all the XML manipulation in DOM proper to save doing this…
+class allow_prepend extends SimpleXMLElement {
+	public function prependChild ($name, $value=null) {
+		$dom = dom_import_simplexml ($this);
+		$new = $dom->insertBefore (
+			$dom->ownerDocument->createElement ($name, $value),
+			$dom->firstChild
+		);
+		return simplexml_import_dom ($new, get_class ($this));
+	}
 }
 
 ?>

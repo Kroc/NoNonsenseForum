@@ -44,7 +44,9 @@ if (isset ($PAGES)) {
 	--></form>
 	
 	<nav><p>
-		<?php if (!$HEADER['LOCKED']): ?><a id="add" href="#reply">Reply</a><?php endif;?>
+<?php if (CAN_REPLY): ?>
+		<a id="add" href="#reply">Reply</a>
+<?php endif;?>
 		<a id="rss" href="<?php echo $HEADER['RSS']?>">RSS</a>
 	</p><p>
 		<a id="index" href="<?php echo FORUM_PATH?>">Index</a><?php if (PATH): ?> » <a href="<?php echo PATH_URL?>"><?php echo PATH?></a><?php endif; ?>
@@ -56,7 +58,7 @@ if (isset ($PAGES)) {
 	
 	<article class="op<?php echo $POST['MOD'] ? ' mod' : ''?>">
 		<header>
-<?php if (!$HEADER['LOCKED']): ?>
+<?php if (CAN_REPLY): ?>
 			<a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
 			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a>
 <?php endif; ?>
@@ -68,6 +70,16 @@ if (isset ($PAGES)) {
 	</article>
 </section>
 
+<?php if (FORUM_LOCK == 'posts'): ?>
+<p id="rights">
+	Only <a href="#mods">moderators or members</a> can reply to this thread.
+</p>
+<?php elseif (FORUM_LOCK == 'private'): ?>
+<p id="rights">
+	Only <a href="#mods">moderators or members</a> can access and reply to this thread.
+</p>
+<?php endif;?>
+
 <?php if (isset ($POSTS)): ?>
 <section id="replies">
 	<h1>Replies</h1>
@@ -76,10 +88,17 @@ if (isset ($PAGES)) {
 <?php foreach ($POSTS as $POST): ?>
 	<article id="<?php echo $POST['ID']?>" class="<?php echo implode(' ',array_filter(array($POST['DELETED'],$POST['OP'],$POST['MOD'])))?>">
 		<header>
-<?php if (!$HEADER['LOCKED']): ?>
-			<?php if (!$POST['DELETED']): ?><a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
-			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a><?php endif;?>
-<?php endif; ?>
+<?php //visibility of the append/delete links:
+      if ($POST['CAN_ACTION']):
+      //append link not available when the post has been deleted
+      if (!$POST['DELETED']): ?>
+			<a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
+<?php endif;
+      //delete link not available when the post has been deleted, except to mods
+      if (!$POST['DELETED'] || CAN_MOD): ?>
+			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a>
+<?php endif;
+      endif;?>
 			<time datetime="<?php echo $POST['DATETIME']?>" pubdate><?php echo $POST['TIME']?></time>
 			<a href="?page=<?php echo PAGE?>#<?php echo $POST['ID']?>">#<?php echo $POST['NO']?>.</a>
 			<b<?php echo $POST['MOD']?' class="mod"':''?>><?php echo $POST['AUTHOR']?></b>
@@ -92,14 +111,19 @@ if (isset ($PAGES)) {
 	<nav><ol class="pages"><?php echo $PAGES?></ol></nav>
 </section>
 <?php endif; ?>
+<?php if (CAN_REPLY): ?>
 <!-- =================================================================================================================== -->
-<?php if (!$HEADER['LOCKED']): ?>
 <section id="reply">
 	<h1>Reply</h1>
 	<form method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-<?php if (FORUM_ENABLED): ?>
 		<div id="rightcol">
-		
+<?php if (HTTP_AUTH): ?>
+		<label for="user">You are signed in as:</label>
+		<p id="puser">
+			<input name="username" id="user" type="text" size="28" maxlength="<?php echo SIZE_NAME ?>"
+			       disabled value="<?php echo HTTP_AUTH_UN ?>" />
+		</p>
+<?php else: ?>
 		<p id="puser">
 			<label for="user">Name:</label>
 			<input name="username" id="user" type="text" size="28" tabindex="2"
@@ -116,12 +140,17 @@ if (isset ($PAGES)) {
 			       required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
+<?php endif; ?>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
-	if (FORUM_NEWBIES): ?>
-		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
-<?php	else :?>
+	//if signed in, there's no password field
+	if (HTTP_AUTH): ?>
+		<p id="ok">(Quit your browser or clear the browser cache to sign out.)</p>
+<?php	//if new users are not allowed
+	elseif (!FORUM_NEWBIES): ?>
 		<p id="error">Only registered users can post.<br />No new registrations are allowed.</p>
+<?php	else: ?>
+		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
 <?php	endif;
 	break;
 	case ERROR_NAME: ?>
@@ -157,36 +186,45 @@ if (isset ($PAGES)) {
 			<input id="submit" name="submit" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/submit.png"
 			       width="40" height="40" tabindex="4" value="&gt;" />
 		</label></p>
-<?php else: ?>
-		<p id="error">Sorry, posting is currently disabled.</p>
-		<p id="psubmit">
-<?php endif; ?>
 	</form>
 </section>
 <?php endif; ?>
 <!-- =================================================================================================================== -->
 <div id="mods">
-<p id="admin">
-	<a id="<?php echo $HEADER['LOCKED'] ? 'unlock' : 'lock';?>" href="<?php echo $HEADER['LOCK_URL'];?>" rel="noindex nofollow"><?php echo $HEADER['LOCKED'] ? 'Unlock' : 'Lock';?></a>
-</p>
-<?php if (!empty ($MODS['LOCAL'])): ?>
-<p>
-	Moderators for this sub-forum:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
-</p>
-<?php endif; ?>
-<?php if (!empty ($MODS['GLOBAL'])): ?>
-<p>
-	Your friendly neighbourhood moderators:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
-</p>
+<?php if (CAN_MOD): ?>
+	<p id="admin">
+		<a id="<?php echo $HEADER['LOCKED'] ? 'unlock' : 'lock';?>" href="<?php echo $HEADER['LOCK_URL'];?>" rel="noindex nofollow"><?php echo $HEADER['LOCKED'] ? 'Unlock' : 'Lock';?></a>
+	</p>
+<?php endif;
+      if (!empty ($MODS['LOCAL'])): ?>
+	<p>
+		Moderators for this sub-forum:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MODS['GLOBAL'])): ?>
+	<p>
+		Your friendly neighbourhood moderators:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MEMBERS)): ?>
+	<p>
+		Members of this forum:
+		<b><?php echo implode ('</b>, <b>', array_map ('safeHTML', $MEMBERS))?></b>
+	</p>
 <?php endif; ?>
 </div>
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p><p id="login">
+<?php if (HTTP_AUTH): ?>
+	Signed in as: <b><?php echo safeHTML (HTTP_AUTH_UN); ?></b>
+<?php else: ?>
+	<a href="?login">Sign in</a>
+<?php endif; ?>
 </p></footer>
-<div id="grid"></div>
 <script>
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
@@ -195,5 +233,4 @@ if (document.getElementsByTagName !== undefined) {
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 </script>
-<!-- page generated in: <?php echo round (microtime (true) - START, 3)?>s -->
 </body>

@@ -44,10 +44,13 @@ if (isset ($PAGES)) {
 	--></form>
 	
 	<nav><p>
+<?php if (CAN_POST):?>
 		<a id="add" href="#new">Add Thread</a>
+<?php endif;?>
 		<a id="rss" href="<?php echo FORUM_PATH?>index.xml">RSS</a>
 	</p><p>
 		<a id="index" href="<?php echo FORUM_PATH?>">Index</a><?php if (PATH): ?> » <?php echo PATH?><?php endif; ?>
+
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
@@ -65,6 +68,20 @@ if (isset ($PAGES)) {
 	</ol>
 </section>
 <?php endif; ?>
+
+<?php if (FORUM_LOCK == 'threads'): ?>
+<p id="rights">
+	Only <a href="#mods">moderators or members</a> can start new threads here, but anybody can reply to existing threads.
+</p>
+<?php elseif (FORUM_LOCK == 'posts'): ?>
+<p id="rights">
+	Only <a href="#mods">moderators or members</a> can participate here.
+</p>
+<?php elseif (FORUM_LOCK == 'private'): ?>
+<p id="rights">
+	Only <a href="#mods">moderators or members</a> can access and participate here.
+</p>
+<?php endif;?>
 
 <?php if (isset ($THREADS)): ?>
 <section id="threads">
@@ -87,11 +104,11 @@ if (isset ($PAGES)) {
 	<nav><ol class="pages"><?php echo $PAGES?></ol></nav>
 </section>
 <?php endif; ?>
+<?php if (CAN_POST): ?>
 <!-- =================================================================================================================== -->
 <section id="new">
 	<h1>Add Thread</h1>
 	<form method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
-<?php if (FORUM_ENABLED): ?>
 		<p id="ptitle">
 			<label for="title">Title:</label>
 			<input name="title" id="title" type="text" size="28" tabindex="1"
@@ -100,7 +117,13 @@ if (isset ($PAGES)) {
 		</p>
 		
 		<div id="rightcol">
-		
+<?php if (HTTP_AUTH): ?>
+		<label for="user">You are signed in as:</label>
+		<p id="puser">
+			<input name="username" id="user" type="text" size="28" maxlength="<?php echo SIZE_NAME ?>"
+			       disabled value="<?php echo HTTP_AUTH_UN ?>" />
+		</p>
+<?php else: ?>
 		<p id="puser">
 			<label for="user">Name:</label>
 			<input name="username" id="user" type="text" size="28" tabindex="3"
@@ -116,12 +139,17 @@ if (isset ($PAGES)) {
 			<input name="email" type="text" value="example@abc.com" tabindex="0" required autocomplete="off" />
 			(Leave this as-is, it’s a trap!)
 		</p>
+<?php endif; ?>
 <?php switch ($FORM['ERROR']):
 	case ERROR_NONE:
-	if (FORUM_NEWBIES): ?>
-		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
-<?php	else :?>
+	//if signed in, there's no password field
+	if (HTTP_AUTH): ?>
+		<p id="ok">(Quit your browser or clear the browser cache to sign out.)</p>
+<?php	//if new users are not allowed
+	elseif (!FORUM_NEWBIES): ?>
 		<p id="error">Only registered users can post.<br />No new registrations are allowed.</p>
+<?php	else: ?>
+		<p id="ok">There is no need to “register”, just enter the same name + password of your choice every time.</p>
 <?php	endif;
 	break;
 	case ERROR_NAME: ?>
@@ -160,31 +188,40 @@ if (isset ($PAGES)) {
 			<input id="submit" name="submit" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/submit.png"
 			       width="40" height="40" tabindex="5" value="&gt;" />
 		</label></p>
-<?php else: ?>
-		<p id="error">Sorry, posting is currently disabled.</p>
-<?php endif; ?>
 	</form>
 </section>
+<?php endif; ?>
 <!-- =================================================================================================================== -->
 <div id="mods">
 <?php if (!empty ($MODS['LOCAL'])): ?>
-<p>
-	Moderators for this sub-forum:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
-</p>
-<?php endif; ?>
-<?php if (!empty ($MODS['GLOBAL'])): ?>
-<p>
-	Your friendly neighbourhood moderators:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
-</p>
+	<p>
+		Moderators for this sub-forum:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MODS['GLOBAL'])): ?>
+	<p>
+		Your friendly neighbourhood moderators:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MEMBERS)): ?>
+	<p>
+		Members of this forum:
+		<b><?php echo implode ('</b>, <b>', array_map ('safeHTML', $MEMBERS))?></b>
+	</p>
 <?php endif; ?>
 </div>
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p><p id="login">
+<?php if (HTTP_AUTH): ?>
+	Signed in as: <b><?php echo safeHTML (HTTP_AUTH_UN); ?></b>
+<?php else: ?>
+	<a href="?login">Sign in</a>
+<?php endif; ?>
 </p></footer>
-<div id="grid"></div>
 <script>
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
@@ -193,5 +230,4 @@ if (document.getElementsByTagName !== undefined) {
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 </script>
-<!-- page generated in: <?php echo round (microtime (true) - START, 3)?>s -->
 </body>

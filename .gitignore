@@ -1,5 +1,7 @@
 *.rss
 *.xml
 sticky.txt
+locked.txt
 mods.txt
+members.txt
 config.php

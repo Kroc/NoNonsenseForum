@@ -26,7 +26,8 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 
 
 /* page centering / width */
-#mast nav, section, #mods	{width: 80%; max-width: 1024px;}
+#mast nav, section, #mods,
+ #rights			{width: 80%; max-width: 1024px;}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
@@ -106,6 +107,9 @@ input[type=search]		{-webkit-appearance: textfield;
 input[type=search]:focus	{outline: none;}
 
 #go				{position: relative; margin-left: -20px; top: -20px;}
+
+#rights				{margin: 0 auto; text-align: center; color: #888;}
+#rights a			{color: #666;}
 
 
 /* index page
@@ -224,9 +228,9 @@ input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sa
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
 form p				{padding: 0; color: #888;}
-#ok, #error, #markup		{padding: 20px !important;}
+#ok, #error, #markup		{padding: 20px 20px 0 !important;}
 #error				{color: #d11;}
-#markup				{padding-top: 0 !important;}
+
 
 input[type=text],
  input[type=password], textarea	{-webkit-box-shadow: inset 0 5px 5px -6px black;
@@ -311,6 +315,9 @@ footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px
 
 footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
+
+p#login				{margin: -40px 10% 0 auto; padding-right: 20px; text-align: right;}
+p#login a			{text-transform: uppercase;}
 
 
 /* ======================================================================================================================

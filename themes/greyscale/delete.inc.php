@@ -119,23 +119,28 @@
 <!-- =================================================================================================================== -->
 <div id="mods">
 <?php if (!empty ($MODS['LOCAL'])): ?>
-<p>
-	Moderators for this sub-forum:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
-</p>
-<?php endif; ?>
-<?php if (!empty ($MODS['GLOBAL'])): ?>
-<p>
-	Your friendly neighbourhood moderators:
-	<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
-</p>
+	<p>
+		Moderators for this sub-forum:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['LOCAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MODS['GLOBAL'])): ?>
+	<p>
+		Your friendly neighbourhood moderators:
+		<b class="mod"><?php echo implode ('</b>, <b class="mod">', array_map ('safeHTML', $MODS['GLOBAL']))?></b>
+	</p>
+<?php endif;
+      if (!empty ($MEMBERS)): ?>
+	<p>
+		Members of this forum:
+		<b><?php echo implode ('</b>, <b>', array_map ('safeHTML', $MEMBERS))?></b>
+	</p>
 <?php endif; ?>
 </div>
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsenseForum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
 </p></footer>
-<div id="grid"></div>
 <script>
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
@@ -144,5 +149,4 @@ if (document.getElementsByTagName !== undefined) {
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 </script>
-<!-- page generated in: <?php echo round (microtime (true) - START, 3)?>s -->
 </body>

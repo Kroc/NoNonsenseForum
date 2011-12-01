@@ -8,6 +8,9 @@
 
 /* --- copy this file as 'config.php' and customise to your liking --- */
 
+//uncomment this if you want to show PHP errors in the browser
+#error_reporting (-1);
+
 //forum’s title. used in theme, and in RSS feeds
 //WARNING: changing this won’t update the index RSS feed containing this name; delete 'index.xml' and then post/delete
 //         a thread to regenerate the 'index.xml' file so as to see the change

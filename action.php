@@ -32,15 +32,22 @@ if (isset ($_GET['append'])) {
 	
 	/* has the un/pw been submitted to authenticate the append?
 	   -------------------------------------------------------------------------------------------------------------- */
-	if (
-		NAME && PASS && AUTH
-		//only a moderator, or the post originator can append to a post
-		&& (isMod (NAME) || NAME == (string) $post->author)
-		//cannot append to a deleted post
-		&& !(bool) $post->xpath ("category[text()='deleted']")
-		//cannot append to a locked thread
-		&& !$xml->channel->xpath ("category[text()='locked']")
-	) {	
+	if (AUTH && TEXT && FORUM_ENABLED && (
+		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
+		//- if the thread is locked, but you are a moderator (signed in)
+		((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+		//- if the forum is post-locked, but you are a moderator (signed in) or member
+		(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+	) && (
+		//a moderator can always append
+		isMod (NAME) ||
+		//the owner of a post can append
+		(strtolower (NAME) == strtolower ($post->author) && (
+			//if the forum is post-locked, they must be a member to append to their own posts
+			(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+		))
+	)) {
 		$now = time ();
 		$post->description .= "\n".template_tags (TEMPLATE_APPEND, array (
 			'AUTHOR'	=> safeHTML (NAME),
@@ -129,17 +136,29 @@ if (isset ($_GET['append'])) {
 	
 	/* has the un/pw been submitted to authenticate the delete?
 	   -------------------------------------------------------------------------------------------------------------- */
-	if (
-		NAME && PASS && AUTH
-		//only a moderator, or the post originator can delete a post/thread
-		&& (isMod (NAME) || NAME == (string) $post->author)
-		//cannot delete a locked thread
-		&& !$xml->channel->xpath ("category[text()='locked']")
-		
+	if (AUTH && FORUM_ENABLED && (
+		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
+		//- if the thread is locked, but you are a moderator (signed in)
+		((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+		//- if the forum is post-locked, but you are a moderator (signed in) or member
+		(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+	) && (
+		//a moderator can always delete
+		isMod (NAME) ||
+		//the owner of a post can delete
+		(strtolower (NAME) == strtolower ($post->author) && (
+			//if the forum is post-locked, they must be a member to delete their own posts
+			(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+		))
 	//deleting a post?
-	) if ($ID) {
+	)) if ($ID) {
 		//full delete? (option ticked, is moderator, and post is on the last page)
-		if (isset ($_POST['remove']) && isMod (NAME) && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) {
+		if (
+			(isMod (NAME) && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
+			//if the post has already been blanked, delete it fully
+			(isset ($_POST['remove']) || $post->xpath ("category[text()='deleted']"))
+		) {
 			//remove the post from the thread entirely
 			unset ($xml->channel->item[$i]);
 			
@@ -225,7 +244,7 @@ if (isset ($_GET['append'])) {
 	$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	$f   = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
 	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
 	
 	//what’s the current status?
@@ -233,7 +252,7 @@ if (isset ($_GET['append'])) {
 	
 	/* has the un/pw been submitted to authenticate the un/lock? (only a moderator can un/lock a thread)
 	   -------------------------------------------------------------------------------------------------------------- */
-	if (NAME && PASS && AUTH && isMod (NAME)) {
+	if (CAN_MOD && AUTH) {
 		if ($LOCKED) {
 			//if there’s a "locked" category, remove it
 			//note: for simplicity this removes *all* channel categories as NNF only uses one atm,
