@@ -17,7 +17,11 @@ define ('FORUM_PATH',							//relative from webroot--if running in a folder
 );
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
-//for HTTP authentication (private forums)
+//for HTTP authentication (private forums):
+//CGI workaround <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
+if (isset ($_SERVER['HTTP_AUTHORIZATION'])) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
+	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
+);
 define ('HTTP_AUTH_UN',		@$_SERVER['PHP_AUTH_USER']);		//username if using HTTP authentication
 define ('HTTP_AUTH_PW',		@$_SERVER['PHP_AUTH_PW']);		//password if using HTTP authentication
 

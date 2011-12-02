@@ -6,6 +6,10 @@ RewriteEngine	On
 # <webmasterworld.com/apache/3808792.htm>
 Options -MultiViews -Indexes
 
+# HTTP_AUTH workaround for CGI
+# <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]
 
