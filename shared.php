@@ -142,20 +142,22 @@ $MODS = array (
 //get the list (if any) of users allowed to access this current forum
 $MEMBERS = file_exists ('members.txt') ? file ('members.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES) : array ();
 
-//can the current user moderate in this forum?
-define ('CAN_MOD', HTTP_AUTH ? isMod (NAME) : false);
+//is the current user a moderator in this forum?
+define ('IS_MOD',    HTTP_AUTH ? isMod (NAME)    : false);
+//is the current user a member of this forum?
+define ('IS_MEMBER', HTTP_AUTH ? isMember (NAME) : false);
 
 //can the current user post new threads in the current forum?
 //(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
 define ('CAN_POST', FORUM_ENABLED && (
 	//- if the user is a moderator or member of the current forum, they can post
-	CAN_MOD || isMember (NAME) ||
+	IS_MOD || IS_MEMBER ||
 	//- if the forum is unlocked (mods will have to log in to see the form)
 	!FORUM_LOCK
 ));
 
 //if the forum is private, check the current user and issue an auth request if not signed in or allowed
-if (FORUM_LOCK == 'private' && !(CAN_MOD || isMember (NAME))) {
+if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 	//todo: a proper error page, if I make a splash/login screen for a private root-forum

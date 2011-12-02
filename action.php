@@ -36,16 +36,16 @@ if (isset ($_GET['append'])) {
 		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
 		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
 		//- if the thread is locked, but you are a moderator (signed in)
-		((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+		((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
 		//- if the forum is post-locked, but you are a moderator (signed in) or member
-		(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+		(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
 	) && (
 		//a moderator can always append
 		isMod (NAME) ||
 		//the owner of a post can append
 		(strtolower (NAME) == strtolower ($post->author) && (
 			//if the forum is post-locked, they must be a member to append to their own posts
-			(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 		))
 	)) {
 		$now = time ();
@@ -140,16 +140,16 @@ if (isset ($_GET['append'])) {
 		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
 		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
 		//- if the thread is locked, but you are a moderator (signed in)
-		((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+		((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
 		//- if the forum is post-locked, but you are a moderator (signed in) or member
-		(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+		(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
 	) && (
 		//a moderator can always delete
 		isMod (NAME) ||
 		//the owner of a post can delete
 		(strtolower (NAME) == strtolower ($post->author) && (
 			//if the forum is post-locked, they must be a member to delete their own posts
-			(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 		))
 	//deleting a post?
 	)) if ($ID) {
@@ -252,7 +252,7 @@ if (isset ($_GET['append'])) {
 	
 	/* has the un/pw been submitted to authenticate the un/lock? (only a moderator can un/lock a thread)
 	   -------------------------------------------------------------------------------------------------------------- */
-	if (CAN_MOD && AUTH) {
+	if (IS_MOD && AUTH) {
 		if ($LOCKED) {
 			//if there’s a "locked" category, remove it
 			//note: for simplicity this removes *all* channel categories as NNF only uses one atm,

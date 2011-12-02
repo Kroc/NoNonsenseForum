@@ -20,9 +20,9 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 	//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
 	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
 	//- if the thread is locked, but you are a moderator (signed in)
-	((bool) $xml->channel->xpath ("category[text()='locked']") && CAN_MOD) ||
+	((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
 	//- if the forum is post-locked, but you are a moderator (signed in) or member
-	(FORUM_LOCK == 'posts' && (CAN_MOD || isMember (NAME)))
+	(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
 ));
 
 /* ====================================================================================================================== */
@@ -139,14 +139,14 @@ if (count ($thread)) {
 		//if the current user in the curent forum can append/delete the current post:
 		'CAN_ACTION'	=> CAN_REPLY && (
 			//moderators can always see append/delete links on all posts
-			CAN_MOD ||
+			IS_MOD ||
 			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
 			//if you are signed in, then only links on posts with your name will show
 			!HTTP_AUTH ||
 			//if this post is the by the owner (they can append/delete to their own posts)
 			(strtolower (NAME) == strtolower ($post->author) && (
 				//if the forum is post-locked, they must be a member to append/delete their own posts
-				(!FORUM_LOCK || FORUM_LOCK == 'threads') || isMember (NAME)
+				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
 		),
 		'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="

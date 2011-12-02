@@ -139,7 +139,8 @@ re-download and install it. From the command line / terminal, enter:
 git pull
 
 GIT will download and apply new features and fixes, without touching
-your configuration or existing threads. This will not work if you have modified any NoNonsense Forum files.
+your configuration or existing threads. This will not work if you have
+modified any NoNonsense Forum files.
 
 You should *always* check the change log before you update in case you
 are required to alter your configuration or be aware of the impact of
@@ -156,7 +157,7 @@ Because threads are RSS feeds, the text to HTML conversion that happens
 when you post is one-way. You cannot edit posts, other than manually
 editing the RSS file. Instead, text can be appended to the end of posts.
 
-*       Users can append to posts their own posts
+*       Users can append to their own posts
 
 *       Moderators can append to any posts
 

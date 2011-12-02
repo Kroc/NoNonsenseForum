@@ -95,7 +95,7 @@ if (isset ($PAGES)) {
 			<a class="ui append" rel="noindex nofollow" href="<?php echo $POST['APPEND_URL']?>">append</a>
 <?php endif;
       //delete link not available when the post has been deleted, except to mods
-      if (!$POST['DELETED'] || CAN_MOD): ?>
+      if (!$POST['DELETED'] || IS_MOD): ?>
 			<a class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL']?>">delete</a>
 <?php endif;
       endif;?>
@@ -191,7 +191,7 @@ if (isset ($PAGES)) {
 <?php endif; ?>
 <!-- =================================================================================================================== -->
 <div id="mods">
-<?php if (CAN_MOD): ?>
+<?php if (IS_MOD): ?>
 	<p id="admin">
 		<a id="<?php echo $HEADER['LOCKED'] ? 'unlock' : 'lock';?>" href="<?php echo $HEADER['LOCK_URL'];?>" rel="noindex nofollow"><?php echo $HEADER['LOCKED'] ? 'Unlock' : 'Lock';?></a>
 	</p>
