@@ -12,8 +12,9 @@ mb_regex_encoding    ('UTF-8');
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
 define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
-define ('FORUM_PATH',							//relative from webroot--if running in a folder
-	str_replace ('//', '/', dirname ($_SERVER['SCRIPT_NAME']).'/')	//(always starts with a slash and ends in one)
+define ('FORUM_PATH', str_replace (					//relative from webroot--if running in a folder
+	array ('\\', '//'), '/',					//- replace Windows forward-slash with backslash
+	dirname ($_SERVER['SCRIPT_NAME']).'/')				//- always starts with a slash and ends in one
 );
 define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
 
