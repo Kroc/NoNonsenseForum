@@ -3,11 +3,13 @@ v8
 	(Members can be specified in a 'members.txt' file)
 	- 'threads':	Only moderators / members can start threads, but anybody can reply
 	- 'posts':	Only moderators / members can start threads or reply
-	- 'private':	Only moderators / members can access and participate in the forum (hidden to the public)
+	- 'private':	Only moderators / members can access and participate in the forum (no access for the public)
 *	Moderators can sign-in to do moderator actions
-*	Moderators can now reply to and append/delete in locked threads
+*	Moderators can now reply to and append / delete in locked threads
 *	Moderators can now fully remove previously deleted (blanked-out) comments
 *	Config option to disable new user registrations site-wide (`FORUM_NEWBIES`)
+*	HTTPS support. Enable `FORUM_HTTPS` in your config to force HTTPS
+*	Fix for Windows servers (forward slashes breaking `FORUM_PATH`)
 
 v7	05.NOV.11
 *	NNF can now be run from a folder, with thanks to Richard van Velzen

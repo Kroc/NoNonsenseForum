@@ -44,7 +44,8 @@ define ('FORUM_PATH', 		str_replace (				//relative from webroot--if running in 
 	dirname ($_SERVER['SCRIPT_NAME']).'/'				//- always starts with a slash and ends in one
 ));
 define ('FORUM_URL',
-	'http'.(FORUM_HTTPS ? 's' : '').'://'.$_SERVER['HTTP_HOST']	//base URL
+	'http'.(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//base URL
+	'://'.$_SERVER['HTTP_HOST']
 );
 
 //these are just some enums for templates to react to
