@@ -11,6 +11,13 @@
 //uncomment this if you want to show PHP errors in the browser
 #error_reporting (-1);
 
+//if the forum should use--and force--HTTPS connections and URLs:
+//if set to true, RSS feeds will be saved with HTTPS URLs, and HTTP connections will automatically be redirect to HTTPS.
+//"HSTS" <en.wikipedia.org/wiki/HTTP_Strict_Transport_Security> will be used to tell clients to use HTTPS by default
+//NOTE: If you change this setting, old RSS feeds will still contain HTTP URLs, but this won’t pose a problem as the HSTS
+//      header will tell browsers to automatically redirect these to HTTPS
+define ('FORUM_HTTPS',		false);
+
 //forum’s title. used in theme, and in RSS feeds
 //WARNING: changing this won’t update the index RSS feed containing this name; delete 'index.xml' and then post/delete
 //         a thread to regenerate the 'index.xml' file so as to see the change

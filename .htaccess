@@ -8,7 +8,7 @@ Options -MultiViews -Indexes
 
 # HTTP_AUTH workaround for CGI
 # <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]

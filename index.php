@@ -18,7 +18,7 @@ define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 /* ====================================================================================================================== */
 
 //has the user submitted a new thread? (and is the info valid?)
-if (CAN_POST && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') {
+if (CAN_POST && AUTH && TITLE && TEXT) {
 	//the file on disk is a simplified version of the title:
 	$translit = preg_replace (
 		//replace non alphanumerics with underscores and don’t use more than 2 in a row
@@ -44,13 +44,13 @@ if (CAN_POST && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') 
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}&__URL__;.rss" rel="self" type="application/rss+xml" />
+<atom:link href="&__URL__;.rss" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
-<link>http://${_SERVER['HTTP_HOST']}&__URL__;</link>
+<link>&__URL__;</link>
 
 <item>
 	<title>&__TITLE__;</title>
-	<link>http://${_SERVER['HTTP_HOST']}&__URL__;#&__ID__;</link>
+	<link>&__URL__;#&__ID__;</link>
 	<author>&__NAME__;</author>
 	<pubDate>&__DATE__;</pubDate>
 	<description>&__TEXT__;</description>
@@ -61,7 +61,7 @@ if (CAN_POST && AUTH && TITLE && TEXT && @$_POST['email'] == 'example@abc.com') 
 XML
 	, array (
 		'TITLE'	=> safeHTML (TITLE),
-		'URL'	=> PATH_URL.$file,
+		'URL'	=> FORUM_URL.PATH_URL.$file,
 		'NAME'	=> safeHTML (NAME),
 		'DATE'	=> gmdate ('r'),
 		'TEXT'	=> safeHTML (formatText (TEXT)),		//process markup

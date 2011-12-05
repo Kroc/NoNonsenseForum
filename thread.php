@@ -28,7 +28,7 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 /* ====================================================================================================================== */
 
 //was the submit button clicked? (and is the info valid?)
-if (CAN_REPLY && AUTH && TEXT && @$_POST['email'] == 'example@abc.com') {
+if (CAN_REPLY && AUTH && TEXT) {
 	//get a write lock on the file so that between now and saving, no other posts could slip in
 	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
 	

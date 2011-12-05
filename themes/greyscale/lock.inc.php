@@ -6,7 +6,7 @@
 <title><?php echo $LOCKED ? 'Unlock Thread?' : 'Lock Thread?';?> <?php echo $HEADER['TITLE']?></title>
 <!-- get rid of IE site compatibility button -->
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="stylesheet" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/theme.css" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <meta name="robots" content="noindex, nofollow" />
@@ -25,7 +25,7 @@
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
 	<h1><a href="<?php echo FORUM_PATH?>"><?php echo safeHTML(FORUM_NAME)?></a></h1>
-	<form id="search" method="get" action="http://google.com/search"><!--
+	<form id="search" method="get" action="<?php echo FORUM_HTTPS ? "https://encrypted.google.com/search" : "http://google.com/search";?>"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST'])?>" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
 		--><input id="go" type="image" src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/go.png" value="Search" width="20" height="20" /><!--

@@ -9,40 +9,16 @@
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
-/* constants: some stuff we don’t expect to change
-   ---------------------------------------------------------------------------------------------------------------------- */
-define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
-define ('FORUM_PATH', str_replace (					//relative from webroot--if running in a folder
-	array ('\\', '//'), '/',					//- replace Windows forward-slash with backslash
-	dirname ($_SERVER['SCRIPT_NAME']).'/')				//- always starts with a slash and ends in one
-);
-define ('FORUM_URL',		'http://'.$_SERVER['HTTP_HOST']);	//todo: https support
-
-//for HTTP authentication (private forums):
-//CGI workaround <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
-if (isset ($_SERVER['HTTP_AUTHORIZATION'])) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
-	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
-);
-define ('HTTP_AUTH_UN',		@$_SERVER['PHP_AUTH_USER']);		//username if using HTTP authentication
-define ('HTTP_AUTH_PW',		@$_SERVER['PHP_AUTH_PW']);		//password if using HTTP authentication
-
-//these are just some enums for templates to react to
-define ('ERROR_NONE',		0);
-define ('ERROR_NAME',		1);					//name entered is invalid / blank
-define ('ERROR_PASS',		2);					//password is invalid / blank
-define ('ERROR_TITLE',		3);					//the title is invalid / blank
-define ('ERROR_TEXT',		4);					//post text is invalid / blank
-define ('ERROR_AUTH',		5);					//name / password did not match
-
-//set the forum owner’s personal config
-@include './config.php';
-
 /* default config:
    ---------------------------------------------------------------------------------------------------------------------- */
+//try set the forum owner’s personal config ('config.php') if it exists
+@include './config.php';
+
 //*don’t* change these values here, copy 'config.example.php' into a 'config.php' file and customise.
 //these are here so that if I add a new value, the forum won’t break if you don’t update your config file
 
 //see 'config.example.php' for descriptions of these
+@define ('FORUM_HTTPS',		false);
 @define ('FORUM_NAME',		'NoNonsense Forum');
 @define ('FORUM_TIMEZONE',	'UTC');
 @define ('DATE_FORMAT',		'd M ’y · H:i');
@@ -60,14 +36,44 @@ define ('ERROR_AUTH',		5);					//name / password did not match
 @define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
 @define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
 
+/* constants: some stuff we don’t expect to change
+   ---------------------------------------------------------------------------------------------------------------------- */
+define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
+define ('FORUM_PATH', 		str_replace (				//relative from webroot--if running in a folder
+	array ('\\', '//'), '/',					//- replace Windows forward-slash with backslash
+	dirname ($_SERVER['SCRIPT_NAME']).'/'				//- always starts with a slash and ends in one
+));
+define ('FORUM_URL',
+	'http'.(FORUM_HTTPS ? 's' : '').'://'.$_SERVER['HTTP_HOST']	//base URL
+);
+
+//these are just some enums for templates to react to
+define ('ERROR_NONE',		0);
+define ('ERROR_NAME',		1);					//name entered is invalid / blank
+define ('ERROR_PASS',		2);					//password is invalid / blank
+define ('ERROR_TITLE',		3);					//the title is invalid / blank
+define ('ERROR_TEXT',		4);					//post text is invalid / blank
+define ('ERROR_AUTH',		5);					//name / password did not match
+
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 date_default_timezone_set (FORUM_TIMEZONE);
+
+//if enabled, enforce HTTPS
+if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] != 'off') {
+	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
+	//see <en.wikipedia.org/wiki/Strict_Transport_Security> for more details
+	header ('Strict-Transport-Security: max-age=2592000');
+} else {
+	//if forced-HTTPS is on and a HTTPS connection is not being used, redirect to the HTTPS version of the current page
+	//(we don’t die here so that should the redirect be ignored, the HTTP version of the page will still be given)
+	header ('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
+}
 
 
 /* common input
    ====================================================================================================================== */
 //all our pages use path (often optional) so this is done here
-define ('PATH', preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
+define ('PATH',     preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
 define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH.'/', false));	//when outputting as part of a URL
 define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` / `unlink`
@@ -82,6 +88,14 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
    ====================================================================================================================== */
 /* name / password authorisation:
    ---------------------------------------------------------------------------------------------------------------------- */
+//for HTTP authentication (sign-in / private forums):
+//- CGI workaround <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
+if (isset ($_SERVER['HTTP_AUTHORIZATION'])) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
+	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
+);
+define ('HTTP_AUTH_UN',		@$_SERVER['PHP_AUTH_USER']);		//username if using HTTP authentication
+define ('HTTP_AUTH_PW',		@$_SERVER['PHP_AUTH_PW']);		//password if using HTTP authentication
+
 //all pages can accept a name / password when committing actions (new thread / post &c.)
 //in the case of HTTP authentication (sign in / private forums), these are provided in the request header
 define ('NAME', HTTP_AUTH_UN ? HTTP_AUTH_UN : safeGet (@$_POST['username'], SIZE_NAME));
@@ -362,9 +376,9 @@ XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="http://${_SERVER['HTTP_HOST']}&__PATH__;index.xml" rel="self" type="application/rss+xml" />
+<atom:link href="&__FORUM_URL__;&__PATH__;index.xml" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
-<link>http://${_SERVER['HTTP_HOST']}/</link>
+<link>&__FORUM_URL__;</link>
 
 &__ITEMS__;
 
@@ -372,6 +386,7 @@ XML
 </rss>
 XML
 	, array (
+		'URL'	=> FORUM_URL,
 		'PATH'	=> PATH_URL,
 		'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
 		//if all threads are deleted, there won’t be any <item>s
@@ -398,12 +413,13 @@ XML
 		@$xml = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
 	) @$sitemaps .= template_tags (<<<XML
 <sitemap>
-	<loc>http://${_SERVER['HTTP_HOST']}&__FILE__;/index.xml</loc>
+	<loc>&__URL__;&__FILE__;/index.xml</loc>
 	<lastmod>&__DATE__;</lastmod>
 </sitemap>
 
 XML
 	, array (
+		'URL'	=> FORUM_URL,
 		'FILE'	=> $folder ? safeURL ("/$folder", false) : '',
 		'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
 	));
