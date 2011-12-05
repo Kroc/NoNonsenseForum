@@ -316,8 +316,8 @@ footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px
 footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-p#login				{margin: -40px 10% 0 auto; padding-right: 20px; text-align: right;}
-p#login a			{text-transform: uppercase;}
+p#signin				{margin: -40px 10% 0 auto; padding-right: 20px; text-align: right;}
+p#signin a			{text-transform: uppercase;}
 
 
 /* ======================================================================================================================

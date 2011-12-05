@@ -218,11 +218,11 @@ if (isset ($PAGES)) {
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
-</p><p id="login">
+</p><p id="signin">
 <?php if (HTTP_AUTH): ?>
 	Signed in as: <b><?php echo safeHTML (HTTP_AUTH_UN); ?></b>
 <?php else: ?>
-	<a href="?login">Sign in</a>
+	<a href="?signin">Sign in</a>
 <?php endif; ?>
 </p></footer>
 <script>

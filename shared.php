@@ -93,8 +93,8 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
 if (isset ($_SERVER['HTTP_AUTHORIZATION'])) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
 	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
 );
-define ('HTTP_AUTH_UN',		@$_SERVER['PHP_AUTH_USER']);		//username if using HTTP authentication
-define ('HTTP_AUTH_PW',		@$_SERVER['PHP_AUTH_PW']);		//password if using HTTP authentication
+define ('HTTP_AUTH_UN', @$_SERVER['PHP_AUTH_USER']);	//username if using HTTP authentication
+define ('HTTP_AUTH_PW', @$_SERVER['PHP_AUTH_PW']);	//password if using HTTP authentication
 
 //all pages can accept a name / password when committing actions (new thread / post &c.)
 //in the case of HTTP authentication (sign in / private forums), these are provided in the request header
@@ -132,20 +132,20 @@ if ((
 	define ('HTTP_AUTH', false);
 }
 
-//get the lock status of the current forum we’re in:
-//"threads"	- only users in "mods.txt" / "members.txt" can start threads, but anybody can reply
-//"posts"	- only users in "mods.txt" / "members.txt" can start threads or reply
-//"private"	- only users in "mods.txt" / "members.txt" can enter and use the forum, it is hidden from everybody else
-define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
-
 //if the sign-in link was clicked, invoke a HTTP_AUTH request in the browser
-if (!HTTP_AUTH && isset ($_GET['login'])) {
+if (!HTTP_AUTH && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 }
 
 /* access rights
    ---------------------------------------------------------------------------------------------------------------------- */
+//get the lock status of the current forum we’re in:
+//"threads"	- only users in "mods.txt" / "members.txt" can start threads, but anybody can reply
+//"posts"	- only users in "mods.txt" / "members.txt" can start threads or reply
+//"private"	- only users in "mods.txt" / "members.txt" can enter and use the forum, it is hidden from everybody else
+define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
+
 //get the list of moderators:
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
@@ -166,6 +166,14 @@ define ('IS_MOD',    HTTP_AUTH ? isMod (NAME)    : false);
 //is the current user a member of this forum?
 define ('IS_MEMBER', HTTP_AUTH ? isMember (NAME) : false);
 
+//if the forum is private, check the current user and issue an auth request if not signed in or allowed
+if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
+	header ('WWW-Authenticate: Basic');
+	header ('HTTP/1.0 401 Unauthorized');
+	//todo: a proper error page, if I make a splash/login screen for a private root-forum
+	die ("Authorisation required.");
+}
+
 //can the current user post new threads in the current forum?
 //(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
 define ('CAN_POST', FORUM_ENABLED && (
@@ -174,14 +182,6 @@ define ('CAN_POST', FORUM_ENABLED && (
 	//- if the forum is unlocked (mods will have to log in to see the form)
 	!FORUM_LOCK
 ));
-
-//if the forum is private, check the current user and issue an auth request if not signed in or allowed
-if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
-	header ('WWW-Authenticate: Basic');
-	header ('HTTP/1.0 401 Unauthorized');
-	//todo: a proper error page, if I make a splash/login screen for a private root-forum
-	die ("Authorisation required.");
-}
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
