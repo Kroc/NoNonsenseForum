@@ -1,7 +1,24 @@
-*.rss
-*.xml
-sticky.txt
-locked.txt
-mods.txt
-members.txt
-config.php
+*
+!.gitignore
+
+# server
+!.htaccess
+!apple-touch-icon*
+!favicon.ico
+!robots.txt
+
+# code
+!action.php
+!config.example.php
+!index.php
+!shared.php
+!thread.php
+!themes/
+!users/
+
+# documentation
+!HISTORY.txt
+!LICENCE.txt
+!markup.txt
+!README.txt
+
