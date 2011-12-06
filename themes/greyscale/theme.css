@@ -375,17 +375,16 @@ h1				{font-size: 20px !important;}
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
 /* the meta items can’t fit in one line. add them below the titles */
-ol.ui li			{position: relative; padding-bottom: 30px;}
-#threads ol.ui li		{padding-left: 40px !important;}
+ol.ui li			{position: relative; padding-bottom: 30px; padding-left: 40px !important;}
 ol.ui li b, ol.ui li time	{float: none; position: absolute; bottom: 5px;}
 ol.ui li b			{right: 10px;}
-ol.ui li time			{left: 40px; text-align: left;}
-#folders ol.ui li time		{left: 20px;}
+ol.ui li time			{left: 40px !important; text-align: left;}
 
 ol.ui li i			{/* position the post-count closer */
 				 width: 20px !important; margin: 0 10px 0 -30px !important;
 				 font-size: 14px;}
-ol.ui li img			{/* put the sticky icon underneath the post count instead of next to it */
+#folders ol.ui li img		{margin-left: -30px;}
+#threads ol.ui li img		{/* put the sticky icon underneath the post count instead of next to it */
 				 position: absolute; top: 35px;}
 
 
