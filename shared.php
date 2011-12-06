@@ -91,7 +91,7 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
    ---------------------------------------------------------------------------------------------------------------------- */
 //for HTTP authentication (sign-in / private forums):
 //- CGI workaround <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
-if (isset ($_SERVER['HTTP_AUTHORIZATION'])) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
+if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
 	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
 );
 define ('HTTP_AUTH_UN', @$_SERVER['PHP_AUTH_USER']);	//username if using HTTP authentication
