@@ -98,11 +98,11 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
 $MODS = array (
 	//mods.txt on root for mods on all sub-forums
 	'GLOBAL'=> file_exists (FORUM_ROOT.'/mods.txt')
-		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
 		: array (),
 	//if in a sub-forum, the local mods.txt
 	'LOCAL'	=> PATH && file_exists ('mods.txt')
-		? file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		? file ('mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
 		: array ()
 );
 
