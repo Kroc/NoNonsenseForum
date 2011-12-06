@@ -73,6 +73,7 @@ if (isset ($PAGES)) {
 <?php if (FORUM_LOCK == 'posts'): ?>
 <p id="rights">
 	Only <a href="#mods">moderators or members</a> can reply to this thread.
+	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
 </p>
 <?php elseif (FORUM_LOCK == 'private'): ?>
 <p id="rights">

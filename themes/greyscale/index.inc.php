@@ -71,11 +71,13 @@ if (isset ($PAGES)) {
 
 <?php if (FORUM_LOCK == 'threads'): ?>
 <p id="rights">
-	Only <a href="#mods">moderators or members</a> can start new threads here, but anybody can reply to existing threads.
+	Only <a href="#mods">moderators or members</a> can start new threads here [<a href="?signin">sign-in</a>],
+	but <em>anybody</em> can reply to existing threads.
 </p>
 <?php elseif (FORUM_LOCK == 'posts'): ?>
 <p id="rights">
 	Only <a href="#mods">moderators or members</a> can participate here.
+	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
 </p>
 <?php elseif (FORUM_LOCK == 'private'): ?>
 <p id="rights">

@@ -285,6 +285,7 @@ input[type=text],
    ---------------------------------------------------------------------------------------------------------------------- */
 #delete h1			{background-image: url("icons/deletetitle.png");}
 #lock h1, #unlock h1		{background-image: url("icons/threads.png");}
+#delete #psubmit		{margin-top: 20px !important;}
 
 /* no path / rss buttons up top */
 #delete, #lock, #unlock		{margin-top: 40px;}
