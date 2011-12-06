@@ -60,7 +60,7 @@ if (isset ($PAGES)) {
 	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li>
-			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php $FOLDER['POSTLINK']?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
+			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php echo $FOLDER['POSTLINK'];?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
 			<b<?php echo $FOLDER['MOD']?' class="mod"':''?>><?php echo $FOLDER['AUTHOR']?></b> <?php endif;
 ?><a href="<?php echo $FOLDER['URL']?>"><?php echo $FOLDER['NAME']?></a>
 		</li>

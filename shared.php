@@ -377,9 +377,9 @@ XML
 <?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<atom:link href="&__FORUM_URL__;&__PATH__;index.xml" rel="self" type="application/rss+xml" />
+<atom:link href="&__URL__;&__PATH__;index.xml" rel="self" type="application/rss+xml" />
 <title>&__TITLE__;</title>
-<link>&__FORUM_URL__;</link>
+<link>&__URL__;</link>
 
 &__ITEMS__;
 
