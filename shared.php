@@ -1,12 +1,16 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 //let me know when I’m being stupid
 error_reporting (-1);
+
+//default UTF-8 throughout
+mb_internal_encoding ('UTF-8');
+mb_regex_encoding    ('UTF-8');
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -134,17 +138,17 @@ function safeGet ($data, $len=0, $trim=true) {
 	//remove useless whitespace. can be skipped (i.e for passwords)
 	if ($trim) $data = trim ($data);
 	//clip the length in case of a fake crafted request
-	return $len ? mb_substr ($data, 0, $len, 'UTF-8') : $data;
+	return $len ? mb_substr ($data, 0, $len) : $data;
 }
 
 //sanitise output:
 function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
-	return htmlspecialchars ($text, ENT_NOQUOTES, 'UTF-8');
+	return htmlspecialchars ($text, ENT_NOQUOTES);
 }
 function safeString ($text) {
 	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
-	return htmlspecialchars ($text, ENT_QUOTES,   'UTF-8');
+	return htmlspecialchars ($text, ENT_QUOTES);
 }
 function safeURL ($text, $is_HTML=true) {
 	//encode a string to be used in a URL, keeping path separators

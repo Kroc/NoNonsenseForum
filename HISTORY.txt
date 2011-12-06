@@ -1,3 +1,8 @@
+v7	05.NOV.11
+*	NNF can now be run from a folder, with thanks to Richard van Velzen
+	(this requires theme changes: URLs must be prepended with `FORUM_PATH`)
+*	Sub-folders within sub-folders are not shown (not supported yet)
+
 v6	08.OCT.11
 *	Thread locking / Unlocking
 *	Copying a code block inside a quote and posting now correctly indents the code block

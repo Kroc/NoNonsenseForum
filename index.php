@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -79,8 +79,9 @@ XML
 /* ====================================================================================================================== */
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
-//get a list of folders
-foreach (array_filter (
+//don’t all sub-sub-forums
+if (!PATH) foreach (array_filter (
+	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 ) as $FOLDER) {

@@ -1,6 +1,6 @@
 <?php  //commit actions on posts, like delete, edit &c.
 /* ====================================================================================================================== */
-/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */

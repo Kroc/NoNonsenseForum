@@ -1,6 +1,6 @@
 <?php //configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v6 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v7 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -23,6 +23,8 @@ define ('FORUM_ENABLED',	true);
 define ('FORUM_THEME',		'greyscale');
 
 //forum’s title. used in theme, and in RSS feeds
+//WARNING: changing this won’t update the index RSS feed containing this name; delete 'index.xml' and then post/delete
+//         a thread to regenerate the 'index.xml' file so as to see the change
 define ('FORUM_NAME',		'NoNonsense Forum');
 
 //number of threads and posts to show per page
