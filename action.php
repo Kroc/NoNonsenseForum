@@ -33,15 +33,16 @@ if (isset ($_GET['append'])) {
 	/* has the un/pw been submitted to authenticate the append?
 	   -------------------------------------------------------------------------------------------------------------- */
 	if (AUTH && TEXT && FORUM_ENABLED && (
-		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
-		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
-		//- if the thread is locked, but you are a moderator (signed in)
-		((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
-		//- if the forum is post-locked, but you are a moderator (signed in) or member
-		(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
+		//- if you are a moderator (doesn’t matter if the forum or thread is locked)
+		IS_MOD ||
+		//- if you are a member, the forum lock doesn’t matter, but you can’t reply to locked threads (only mods can)
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && IS_MEMBER) ||
+		//- if you are neither a mod nor a member, then as long as: 1. the thread is not locked, and
+		//  2. the forum is such that anybody can reply (unlocked or thread-locked), then you can reply
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 	) && (
 		//a moderator can always append
-		isMod (NAME) ||
+		IS_MOD ||
 		//the owner of a post can append
 		(strtolower (NAME) == strtolower ($post->author) && (
 			//if the forum is post-locked, they must be a member to append to their own posts
@@ -137,15 +138,16 @@ if (isset ($_GET['append'])) {
 	/* has the un/pw been submitted to authenticate the delete?
 	   -------------------------------------------------------------------------------------------------------------- */
 	if (AUTH && FORUM_ENABLED && (
-		//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
-		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
-		//- if the thread is locked, but you are a moderator (signed in)
-		((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
-		//- if the forum is post-locked, but you are a moderator (signed in) or member
-		(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
+		//- if you are a moderator (doesn’t matter if the forum or thread is locked)
+		IS_MOD ||
+		//- if you are a member, the forum lock doesn’t matter, but you can’t reply to locked threads (only mods can)
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && IS_MEMBER) ||
+		//- if you are neither a mod nor a member, then as long as: 1. the thread is not locked, and
+		//  2. the forum is such that anybody can reply (unlocked or thread-locked), then you can reply
+		(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 	) && (
 		//a moderator can always delete
-		isMod (NAME) ||
+		IS_MOD ||
 		//the owner of a post can delete
 		(strtolower (NAME) == strtolower ($post->author) && (
 			//if the forum is post-locked, they must be a member to delete their own posts
@@ -155,7 +157,7 @@ if (isset ($_GET['append'])) {
 	)) if ($ID) {
 		//full delete? (option ticked, is moderator, and post is on the last page)
 		if (
-			(isMod (NAME) && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
+			(IS_MOD && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
 			//if the post has already been blanked, delete it fully
 			(isset ($_POST['remove']) || $post->xpath ("category[text()='deleted']"))
 		) {

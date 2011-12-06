@@ -17,12 +17,13 @@ $xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 
 //access rights for the current user
 define ('CAN_REPLY', FORUM_ENABLED && (
-	//- if the thread is unlocked and the forum is either unlocked or thread-locked (anybody can reply)
-	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads')) ||
-	//- if the thread is locked, but you are a moderator (signed in)
-	((bool) $xml->channel->xpath ("category[text()='locked']") && IS_MOD) ||
-	//- if the forum is post-locked, but you are a moderator (signed in) or member
-	(FORUM_LOCK == 'posts' && (IS_MOD || IS_MEMBER))
+	//- if you are a moderator (doesn’t matter if the forum or thread is locked)
+	IS_MOD ||
+	//- if you are a member, the forum lock doesn’t matter, but you can’t reply to locked threads (only mods can)
+	(!(bool) $xml->channel->xpath ("category[text()='locked']") && IS_MEMBER) ||
+	//- if you are neither a mod nor a member, then as long as: 1. the thread is not locked, and
+	//  2. the forum is such that anybody can reply (unlocked or thread-locked), then you can reply
+	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 ));
 
 /* ====================================================================================================================== */

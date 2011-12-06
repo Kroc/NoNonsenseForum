@@ -163,9 +163,9 @@ $MODS = array (
 $MEMBERS = file_exists ('members.txt') ? file ('members.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES) : array ();
 
 //is the current user a moderator in this forum?
-define ('IS_MOD',    HTTP_AUTH ? isMod (NAME)    : false);
+define ('IS_MOD',    isMod (NAME)    : false);
 //is the current user a member of this forum?
-define ('IS_MEMBER', HTTP_AUTH ? isMember (NAME) : false);
+define ('IS_MEMBER', isMember (NAME) : false);
 
 //if the forum is private, check the current user and issue an auth request if not signed in or allowed
 if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
@@ -350,10 +350,10 @@ function isMember ($name) {
 function indexRSS () {
 	//get list of threads
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));
-	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);	//look ma, no loop!
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
 	//get the last post made in each thread as an RSS item
-	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if ($xml  = @simplexml_load_file ($thread)) {
+	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if ($xml = @simplexml_load_file ($thread)) {
 		$item = $xml->channel->item[0];
 		@$rss .= template_tags (<<<XML
 <item>
