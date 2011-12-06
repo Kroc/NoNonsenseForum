@@ -205,7 +205,7 @@ function formatText ($text) {
 		//format the code block
 		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
-		         .preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0])
+		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
 		;
 		//replace the code block with a placeholder
@@ -265,7 +265,7 @@ function formatText ($text) {
 	}
 	
 	//restore code blocks
-	foreach ($code as &$html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
 }
