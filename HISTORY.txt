@@ -1,4 +1,4 @@
-v8
+v8	06.DEC.11
 *	Access control: Major new feature! You can lock forums and limit posting / access to certain users:
 	(Members can be specified in a 'members.txt' file)
 	- 'threads':	Only moderators / members can start threads, but anybody can reply

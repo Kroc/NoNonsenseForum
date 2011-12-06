@@ -1,4 +1,4 @@
-NoNonsense Forum v7 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum v8 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -39,6 +39,7 @@ Contents:
 [5.1]   Sign-in
 [6]     Forum locking
 [6.1]   Members
+[6.2]	A note on private forums
 [7]     Acknowledgements
 ------------------------------------------------------------------------
 
@@ -281,6 +282,23 @@ have moderator powers; they are your participants in restricted forums.
         
 *       Members must sign-in to be able to post in locked forums,
         or to access private forums
+
+[6.2]	A note on private forums
+------------------------------------------------------------------------
+If you make a forum / sub-forum private, whilst visitors to the site
+will not be able to access the forum, the files within are not directly
+protected, such that if someone were to know the exact file name of a
+thread, they would be able to view it without being a moderator or
+member.
+
+Though that is generally unlikely, you can increase the security of
+private forums by setting up ".htpasswd" access in the private forum /
+sub-forum. The users defined in the ".htpasswd" file will have to have
+the same password as their NoNonsense Forum username.
+
+Instructions are not provided here on how to configure ".htpasswd"
+protection as it requires basic server admin skills and some knowledge
+of using "htaccess" files.
 
 
 [7]     Acknowledgements:
