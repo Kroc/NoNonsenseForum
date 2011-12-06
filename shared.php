@@ -163,9 +163,9 @@ $MODS = array (
 $MEMBERS = file_exists ('members.txt') ? file ('members.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES) : array ();
 
 //is the current user a moderator in this forum?
-define ('IS_MOD',    isMod (NAME)    : false);
+define ('IS_MOD',    isMod (NAME));
 //is the current user a member of this forum?
-define ('IS_MEMBER', isMember (NAME) : false);
+define ('IS_MEMBER', isMember (NAME));
 
 //if the forum is private, check the current user and issue an auth request if not signed in or allowed
 if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
