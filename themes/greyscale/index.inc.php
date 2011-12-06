@@ -60,9 +60,19 @@ if (isset ($PAGES)) {
 	<ol class="ui">
 <?php foreach ($FOLDERS as $FOLDER): ?>
 		<li>
-			<?php if ($FOLDER['AUTHOR']): ?><a href="<?php echo $FOLDER['POSTLINK'];?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
-			<b<?php echo $FOLDER['MOD']?' class="mod"':''?>><?php echo $FOLDER['AUTHOR']?></b> <?php endif;
-?><a href="<?php echo $FOLDER['URL']?>"><?php echo $FOLDER['NAME']?></a>
+<?php if ($FOLDER['LOCK'] == 'threads'): ?>
+			<img src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/security_open_16.png" width="16" height="16" alt="Replies-only:" title="Replies-only" />
+<?php elseif ($FOLDER['LOCK'] == 'posts'): ?>
+			<img src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/security_closed_16.png" width="16" height="16" alt="Read-only:" title="Read-only" />
+<?php elseif ($FOLDER['LOCK'] == 'private'): ?>
+			<img src="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/icons/security_closed_16.png" width="16" height="16" alt="" title="Private—members only" />
+			<span class="private">Private:</span>
+<?php endif;
+      if ($FOLDER['HAS_POST']): ?>
+			<a href="<?php echo $FOLDER['POSTLINK'];?>"><time datetime="<?php echo $FOLDER['DATETIME']?>"><?php echo $FOLDER['TIME']?></time></a>
+			<b<?php echo $FOLDER['MOD']?' class="mod"':''?>><?php echo $FOLDER['AUTHOR']?></b>
+<?php endif;?>
+			<a href="<?php echo $FOLDER['URL']?>"><?php echo $FOLDER['NAME']?></a>
 		</li>
 <?php endforeach; ?>
 	</ol>

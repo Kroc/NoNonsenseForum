@@ -88,6 +88,9 @@ if (!PATH) foreach (array_filter (
 	//the sorting (below) requires we be in the directory at hand to use `filemtime`
 	chdir ($FOLDER);
 	
+	//check if / how the forum is locked
+	$lock = trim (@file_get_contents ('locked.txt'));
+	
 	//get a list of files in the folder to determine which one is newest
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));
 	//order by last modified date
@@ -99,13 +102,17 @@ if (!PATH) foreach (array_filter (
 	$FOLDERS[] = array (
 		'URL'		=> safeURL (FORUM_PATH."$FOLDER/"),
 		'NAME'		=> safeHTML ($FOLDER),
-		//can’t include these details if the folder was empty (no threads)
-		'DATETIME'	=> !$last ? '' : date ('c', strtotime ($last->pubDate)),
-		'TIME'		=> !$last ? '' : date (DATE_FORMAT, strtotime ($last->pubDate)),
-		'AUTHOR'	=> !$last ? '' : safeHTML ($last->author),
-		'MOD'		=> !$last ? '' : isMod ($last->author),
-		'POSTLINK'	=> !$last ? '' : substr ($last->link, strpos ($last->link, '/', 9))
-	);
+		'LOCK'		=> $lock,
+		'HAS_POST'	=> $lock != 'private' && (bool) $last	//if there is any last-post info for this sub-forum
+		
+	//don’t include last-post info if no threads in sub-forum, or sub-forum is private
+	) + ($lock != 'private' && (bool) $last ? array (
+		'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
+		'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+		'AUTHOR'	=> safeHTML ($last->author),
+		'MOD'		=> isMod ($last->author),
+		'POSTLINK'	=> substr ($last->link, strpos ($last->link, '/', 9))
+	) : array ());
 	
 	chdir ('..');
 }

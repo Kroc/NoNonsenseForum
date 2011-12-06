@@ -155,20 +155,25 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 #threads h1, #post h1		{background-image: url("icons/threads.png");}
 
 /* folder / thread names: */
+ol.ui li			{padding-left: 60px;}
 #folders ol.ui li		{border-bottom: 1px solid #444;}
 
-#threads ol.ui li		{padding-left: 60px;}
-#threads ol.ui li i		{float: left; width: 25px; margin: 0 10px 0 -50px;
+
+ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
 
-#threads ol.ui li img		{margin-left: -20px; vertical-align: -2px;}
-#threads ol.ui li.sticky	{background: #eee;}
+ol.ui li img			{margin-left: -20px; margin-top: 2px;  position: absolute;}
+#folders ol.ui li img		{margin-left: -40px;}
+
+ol.ui li.sticky			{background: #eee;}
 
 /* these apply to folders and threads */
 ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
 ol.ui li time			{float: right; width: 9.1em;				/* timestamp */
 				 font-weight: normal; text-align: right; color: #888;}
 ol.ui li a:hover time		{text-decoration: underline;}
+
+ol.ui li span.private		{text-transform: uppercase;}
 
 
 /* thread page
