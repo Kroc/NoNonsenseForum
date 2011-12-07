@@ -151,11 +151,11 @@ define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
 	'GLOBAL'=> file_exists (FORUM_ROOT.'/mods.txt')
-		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
 		: array (),
 	//if in a sub-forum, the local 'mods.txt'
 	'LOCAL'	=> PATH && file_exists ('mods.txt')
-		? file ('mods.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES)
+		? file ('mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
 		: array ()
 );
 
@@ -266,7 +266,7 @@ function formatText ($text) {
 		//format the code block
 		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
-		         .preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0])
+		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
 		;
 		//replace the code block with a placeholder
@@ -326,7 +326,7 @@ function formatText ($text) {
 	}
 	
 	//restore code blocks
-	foreach ($code as &$html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
 }
