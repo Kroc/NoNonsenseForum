@@ -123,11 +123,11 @@ NOTE:   If you run NoNonsense Forum in a sub-folder, any existing
 
 Optional:
 
-*       Copy the 'config.example.php' file to a 'config.php' file and
+*       Copy the 'config.default.php' file to a 'config.php' file and
         customise the options within to your liking. Available options
-        are explained within 'config.example.php'.
+        are explained within 'config.default.php'.
         
-        You should leave the 'config.example.php' as-is to avoid
+        You should leave the 'config.default.php' as-is to avoid
         conflicts with future updates
 
 

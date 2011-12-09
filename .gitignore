@@ -9,7 +9,7 @@
 
 # code
 !action.php
-!config.example.php
+!config.default.php
 !index.php
 !shared.php
 !thread.php

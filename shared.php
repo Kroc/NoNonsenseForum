@@ -5,62 +5,43 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+/* configuration:
+   ---------------------------------------------------------------------------------------------------------------------- */
 //default UTF-8 throughout
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
-/* default config:
-   ---------------------------------------------------------------------------------------------------------------------- */
-//try set the forum owner’s personal config ('config.php') if it exists
+//try set the forum owner’s personal config ('config.php'), if it exists
 @include './config.php';
+//include the defaults (for anything missing from the user’s config)
+@include './config.default.php' or die ("config.default.php missing!");
 
-//*don’t* change these values here, copy 'config.example.php' into a 'config.php' file and customise.
-//these are here so that if I add a new value, the forum won’t break if you don’t update your config file
-
-//see 'config.example.php' for descriptions of these
-@define ('FORUM_HTTPS',		false);
-@define ('FORUM_NAME',		'NoNonsense Forum');
-@define ('FORUM_TIMEZONE',	'UTC');
-@define ('DATE_FORMAT',		'd M ’y · H:i');
-@define ('FORUM_THEME',		'greyscale');
-@define ('FORUM_ENABLED',	true);
-@define ('FORUM_NEWBIES',	true);
-@define ('FORUM_THREADS',	50);
-@define ('FORUM_POSTS',		25);
-@define ('SIZE_NAME',		20);
-@define ('SIZE_PASS',		20);
-@define ('SIZE_TITLE',		100);
-@define ('SIZE_TEXT',		50000);
-@define ('TEMPLATE_RE',		'RE[&__NO__;]: ');
-@define ('TEMPLATE_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
-@define ('TEMPLATE_DEL_USER',	'<p>This post was deleted by its owner</p>');
-@define ('TEMPLATE_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+//PHP 5.3 issues a warning if the timezone is not set when using date commands
+//(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
+date_default_timezone_set (FORUM_TIMEZONE);
 
 /* constants: some stuff we don’t expect to change
    ---------------------------------------------------------------------------------------------------------------------- */
-define ('FORUM_ROOT',		dirname (__FILE__));			//full server-path for absolute references
-define ('FORUM_PATH', 		str_replace (				//relative from webroot--if running in a folder
-	array ('\\', '//'), '/',					//- replace Windows forward-slash with backslash
-	dirname ($_SERVER['SCRIPT_NAME']).'/'				//- always starts with a slash and ends in one
+define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
+define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
+	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
+	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
 ));
-define ('FORUM_URL',
-	'http'.(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//base URL
+define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
+	(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//- if HTTPS is enforced, links in RSS will use it
 	'://'.$_SERVER['HTTP_HOST']
 );
 
 //these are just some enums for templates to react to
 define ('ERROR_NONE',		0);
-define ('ERROR_NAME',		1);					//name entered is invalid / blank
-define ('ERROR_PASS',		2);					//password is invalid / blank
-define ('ERROR_TITLE',		3);					//the title is invalid / blank
-define ('ERROR_TEXT',		4);					//post text is invalid / blank
-define ('ERROR_AUTH',		5);					//name / password did not match
-
-//PHP 5.3 issues a warning if the timezone is not set when using date commands
-date_default_timezone_set (FORUM_TIMEZONE);
+define ('ERROR_NAME',		1);				//name entered is invalid / blank
+define ('ERROR_PASS',		2);				//password is invalid / blank
+define ('ERROR_TITLE',		3);				//the title is invalid / blank
+define ('ERROR_TEXT',		4);				//post text is invalid / blank
+define ('ERROR_AUTH',		5);				//name / password did not match
 
 //if enabled, enforce HTTPS
-if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] != 'off') {
+if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
 	//see <en.wikipedia.org/wiki/Strict_Transport_Security> for more details
 	header ('Strict-Transport-Security: max-age=2592000');
@@ -73,7 +54,7 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] != 'off') {
 
 /* common input
    ====================================================================================================================== */
-//all our pages use path (often optional) so this is done here
+//all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
 define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH.'/', false));	//when outputting as part of a URL
@@ -97,16 +78,15 @@ if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['
 define ('HTTP_AUTH_UN', @$_SERVER['PHP_AUTH_USER']);	//username if using HTTP authentication
 define ('HTTP_AUTH_PW', @$_SERVER['PHP_AUTH_PW']);	//password if using HTTP authentication
 
-//all pages can accept a name / password when committing actions (new thread / post &c.)
-//in the case of HTTP authentication (sign in / private forums), these are provided in the request header
+//all pages can accept a name / password when committing actions (new thread / reply &c.)
+//in the case of HTTP authentication (sign in / private forums), these are provided in the request header instead
 define ('NAME', HTTP_AUTH_UN ? HTTP_AUTH_UN : safeGet (@$_POST['username'], SIZE_NAME));
 define ('PASS', HTTP_AUTH_PW ? HTTP_AUTH_PW : safeGet (@$_POST['password'], SIZE_PASS, false));
 
-if ((
-	//if any HTTP authentication is given, we don’t need to validate form fields
+if ((	//if HTTP authentication is used, we don’t need to validate the form fields
 	HTTP_AUTH_UN && HTTP_AUTH_PW
-) || (
-	//if an input form was submitted:
+) || (	//if an input form was submitted:
+	//are the name and password non-blank?
 	NAME && PASS &&
 	//the email check is a fake hidden field in the form to try and fool spam bots
 	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
@@ -118,7 +98,7 @@ if ((
 	$user = FORUM_ROOT."/users/$name.txt";
 	
 	//create the user, if new:
-	//- if registrations are allowed (`FORUM_NEWBIES`)
+	//- if registrations are allowed (`FORUM_NEWBIES` is true)
 	//- you can’t create new users with the HTTP_AUTH sign in
 	if (FORUM_NEWBIES && !HTTP_AUTH_UN && !file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
 	
@@ -133,12 +113,6 @@ if ((
 	define ('HTTP_AUTH', false);
 }
 
-//if the sign-in link was clicked, invoke a HTTP_AUTH request in the browser
-if (!HTTP_AUTH && isset ($_GET['signin'])) {
-	header ('WWW-Authenticate: Basic');
-	header ('HTTP/1.0 401 Unauthorized');
-}
-
 /* access rights
    ---------------------------------------------------------------------------------------------------------------------- */
 //get the lock status of the current forum we’re in:
@@ -148,32 +122,23 @@ if (!HTTP_AUTH && isset ($_GET['signin'])) {
 define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 
 //get the list of moderators:
+//(`file` returns NULL if the file doesn’t exist; casting that to an array creates an array with a blank element, and
+//`array_filter` removes blank elements, including blank lines in the text file; we could use the `FILE_SKIP_EMPTY_LINES`
+//flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
-	'GLOBAL'=> file_exists (FORUM_ROOT.'/mods.txt')
-		? file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
-		: array (),
+	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES)),
 	//if in a sub-forum, the local 'mods.txt'
-	'LOCAL'	=> PATH && file_exists ('mods.txt')
-		? file ('mods.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
-		: array ()
+	'LOCAL'	=> PATH ? array_filter ((array) @file ('mods.txt', FILE_IGNORE_NEW_LINES)) : array ()
 );
 
 //get the list (if any) of users allowed to access this current forum
-$MEMBERS = file_exists ('members.txt') ? file ('members.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES) : array ();
+$MEMBERS = array_filter ((array) @file ('members.txt', FILE_IGNORE_NEW_LINES));
 
 //is the current user a moderator in this forum?
 define ('IS_MOD',    isMod (NAME));
 //is the current user a member of this forum?
 define ('IS_MEMBER', isMember (NAME));
-
-//if the forum is private, check the current user and issue an auth request if not signed in or allowed
-if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
-	header ('WWW-Authenticate: Basic');
-	header ('HTTP/1.0 401 Unauthorized');
-	//todo: a proper error page, if I make a splash/login screen for a private root-forum
-	die ("Authorisation required.");
-}
 
 //can the current user post new threads in the current forum?
 //(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
@@ -184,7 +149,24 @@ define ('CAN_POST', FORUM_ENABLED && (
 	!FORUM_LOCK
 ));
 
-/* ---------------------------------------------------------------------------------------------------------------------- */
+/* send HTTP headers
+   ---------------------------------------------------------------------------------------------------------------------- */
+//if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
+//the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
+//(these are trapped higher up as HTTP_AUTH_UN and HTTP_AUTH_PW and are authenticated the same as the regular post form)
+if (!HTTP_AUTH && isset ($_GET['signin'])) {
+	header ('WWW-Authenticate: Basic');
+	header ('HTTP/1.0 401 Unauthorized');
+	//we don't die here so that if they cancel the login prompt, they won't get a blank page
+}
+
+//if the forum is private, check the current user and issue an auth request if not signed in or not allowed access
+if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
+	header ('WWW-Authenticate: Basic');
+	header ('HTTP/1.0 401 Unauthorized');
+	//todo: a proper error page, if I make a splash/login screen for a private root-forum
+	die ("Authorisation required.");
+}
 
 //stop browsers caching, so you don’t have to refresh every time to see changes
 header ('Cache-Control: no-cache', true);
@@ -215,7 +197,7 @@ function safeURL ($text, $is_HTML=true) {
 	//encode a string to be used in a URL, keeping path separators
 	$text = str_replace ('%2F', '/', rawurlencode ($text));
 	//will the URL be output into HTML? (rather than, say, the HTTP headers)
-	//if so, encode for HTML too, e.g. "&" must be "&amp;" within URLs when in HTML
+	//if so, encode for HTML too, e.g. "&" should be "&amp;" within URLs when in HTML
 	return $is_HTML ? safeHTML ($text) : $text;
 }
 
@@ -250,16 +232,17 @@ function pageList ($current, $total) {
 
 //take the author's message, process markup, and encode it safely for the RSS feed
 function formatText ($text) {
-	//unify carriage returns between Windows / UNIX
-	$text = preg_replace ('/\r\n?/', "\n", $text);
+	//unify carriage returns between Windows / UNIX, and sanitise HTML against injection
+	$text = safeHTML (preg_replace ('/\r\n?/', "\n", $text));
 	
-	//sanitise HTML against injection
-	$text = safeHTML ($text);
-	
-	/* preformatted text (code spans / blocks):
+	/* preformatted text (code blocks):
 	   -------------------------------------------------------------------------------------------------------------- */
-	//we will have to remove the code chunks from the source text to avoid the other markup processing from munging it
-	//and then restore the chunks back later
+	/* example:		or: (latex in partiular since it uses % as a comment marker)
+	
+		% title 		$ title
+		…			…
+		%			$
+	*/
 	$code = array ();
 	//find code blocks:
 	while (preg_match ('/^(?-s:(\s*)([%$])(.*?))\n(.*?)\n(?-s:\s*)\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
@@ -269,7 +252,9 @@ function formatText ($text) {
 		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
 		;
-		//replace the code block with a placeholder
+		//replace the code block with a placeholder:
+		//(we will have to remove the code chunks from the source text to avoid the other markup processing from
+		//munging it and then restore the chunks back later)
 		$text = substr_replace ($text, "\n&__CODE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
@@ -297,15 +282,23 @@ function formatText ($text) {
 	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
+	/* example:
+	
+		“this is the first quote level.
+		
+		“this is the second quote level.”
+		
+		back to the first quote level.”
+	*/
 	do $text = preg_replace (array (
 		//you would think that you could combine these. you really would
-		'/(?:^\n|\A)(?-s:\s*)("(?!\s+)((?>(?1)|.)*?)")(?-s:\s*)(?:\n?$|\Z)/msu',
-		'/(?:^\n|\A)(?-s:\s*)(“(?!\s+)((?>(?1)|.)*?)”)(?-s:\s*)(?:\n?$|\Z)/msu',
-		'/(?:^\n|\A)(?-s:\s*)(«(?!\s+)((?>(?1)|.)*?)»)(?-s:\s*)(?:\n?$|\Z)/msu'
+		'/(?:\n|\A)(?-s:\s*)("(?!\s+)((?>(?1)|.)*?)\s*")(?-s:\s*)(?:\n?$|\Z)/msu',
+		'/(?:\n|\A)(?-s:\s*)(“(?!\s+)((?>(?1)|.)*?)\s*”)(?-s:\s*)(?:\n?$|\Z)/msu',
+		'/(?:\n|\A)(?-s:\s*)(«(?!\s+)((?>(?1)|.)*?)\s*»)(?-s:\s*)(?:\n?$|\Z)/msu'
 	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
 		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
 		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
-		"\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
+		"\n\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
 		$text, -1, $c
 	); while ($c);
 	
