@@ -47,7 +47,7 @@ Contents:
 [0]     Requirements:
 ========================================================================
 *       An up to date Apache installation, 2.1 or above
-*       PHP 5.2.6 or above (5.3+ preferred)
+*       PHP 5.2.4 or above (5.0.0 works in theory, but untested)
 
 Browser support:
 *       IE6, 7, 8, 9+
