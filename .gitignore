@@ -3,8 +3,8 @@
 
 # server
 !.htaccess
-!apple-touch-icon*
-!favicon.ico
+!apple-touch-icon.default.png
+!favicon.default.ico
 !robots.txt
 
 # code

@@ -10,6 +10,16 @@ Options -MultiViews -Indexes
 # <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+# custom favicon?
+RewriteCond %{DOCUMENT_ROOT}/favicon\.ico !-f [NC]
+RewriteRule ^favicon\.ico$ /favicon.default.ico [L]
+
+# custom apple-touch-icon?
+RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon\.png !-f [NC]
+RewriteRule ^apple-touch-icon\.png$ /apple-touch-icon.default.png [L]
+RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon-precomposed\.png !-f [NC]
+RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [L]
+
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]
 
