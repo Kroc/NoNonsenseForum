@@ -20,10 +20,11 @@ if (isset ($_GET['append'])) {
 	define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	
 	//load the thread to get the post preview
-	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'allow_prepend') or die ('Malformed XML');
+	
 	//find the post using the ID
 	for ($i=0; $i<count ($xml->channel->item); $i++) if (
 		strstr ($xml->channel->item[$i]->link, '#') == "#$ID"
@@ -60,7 +61,7 @@ if (isset ($_GET['append'])) {
 		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
 		
 		//commit the data
-		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
 		
@@ -119,10 +120,11 @@ if (isset ($_GET['append'])) {
 	$ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['id']) ? $_GET['id'] : false);
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	
 	//load the thread to get the post preview
-	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'allow_prepend') or die ('Malformed XML');
+	
 	//access the particular post. if no ID is provided (deleting the whole thread) use the last item in the RSS file
 	//(the first post), otherwise find the ID of the specific post
 	if (!$ID) {
@@ -178,7 +180,7 @@ if (isset ($_GET['append'])) {
 		}
 		
 		//commit the data
-		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
 		
@@ -246,8 +248,8 @@ if (isset ($_GET['append'])) {
 	$FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f   = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
-	$xml = simplexml_load_file ("$FILE.rss") or die ('Invalid file');
+	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'allow_prepend') or die ('Malformed XML');
 	
 	//what’s the current status?
 	$LOCKED = (bool) $xml->channel->xpath ("category[text()='locked']");
@@ -271,7 +273,7 @@ if (isset ($_GET['append'])) {
 		}
 		
 		//commit the data
-		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
 		

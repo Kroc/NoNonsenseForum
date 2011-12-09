@@ -30,11 +30,13 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 
 //was the submit button clicked? (and is the info valid?)
 if (CAN_REPLY && AUTH && TEXT) {
-	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f = fopen ("$FILE.rss", 'c'); flock ($f, LOCK_EX);
+	//get a read/write lock on the file so that between now and saving, no other posts could slip in
+	//normally we could use a write-only lock 'c', but on Windows you can't read the file when write-locked!
+	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	
-	//read the file (not dependent on the lock)
-	$xml = simplexml_load_file ("$FILE.rss", 'allow_prepend') or die ('Malformed XML');
+	//we have to read the XML using the file handle that's locked because in Windows, functions like
+	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'allow_prepend') or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
@@ -60,7 +62,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
 		
 		//save
-		ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 	} else {
 		//if a double-post, link back to the previous item
 		$url = $xml->channel->item[0]->link;
