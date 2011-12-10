@@ -84,9 +84,9 @@ if (CAN_REPLY && AUTH && TEXT) {
 //info for the site header
 $HEADER = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
-	'RSS'		=> FORUM_PATH . "$FILE.rss",
+	'RSS'		=> PATH_URL."$FILE.rss",
 	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-	'LOCK_URL'	=> FORUM_PATH . 'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
+	'LOCK_URL'	=> FORUM_PATH.'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
 );
 
 /* original post
