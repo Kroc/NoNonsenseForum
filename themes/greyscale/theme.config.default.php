@@ -12,15 +12,18 @@
 
 /* required options: (used by NoNonsense Forum itself, all themes must provide these)
    ====================================================================================================================== */
-//prepended to the thread title for each reply (like in e-mail)
-//(the "&__NO__;" template tag is for the number of the reply)
-@define ('THEME_RE',		'RE[&__NO__;]: ');
+//(the template replacements are done using `sprintf`, see <php.net/manual/en/function.sprintf.php> for details)
+
+//title format for each reply (like in e-mail)
+//"%1$u" - number of the reply
+//"%2$s" - the thread title
+@define ('THEME_RE',		'RE[%1$u]: %2$s');
 
 //HTML used when appending to a post:
-//"&__AUTHOR__;"		- username of who posted
-//"&__DATETIME__;"		- timestamp formatted for use with HTML5 `<time>`
-//"&__TIME__;"			- human-readable time, as per `DATE_FORMAT`
-@define ('THEME_APPEND',	'<p class="appended"><b>&__AUTHOR__;</b> added on <time datetime="&__DATETIME__;">&__TIME__;</time></p>');
+//"%1$s" - username of who posted
+//"%2$s" - timestamp formatted for use with HTML5 `<time>`
+//"%3$s" - human-readable time, as per `DATE_FORMAT`
+@define ('THEME_APPEND',	'<p class="appended"><b>%1$s</b> added on <time datetime="%2$s">%3$s</time></p>');
 
 //HTML that replaces a post when it's deleted (this is not rectroactive)
 @define ('THEME_DEL_USER',	'<p>This post was deleted by its owner</p>');

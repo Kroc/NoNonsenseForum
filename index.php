@@ -39,34 +39,20 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	do $file = $translit.($c++ ? '_'.($c-1) : '');
 	while (file_exists ("$file.rss"));
 	
-	//write out the new thread as an RSS file
-	file_put_contents ("$file.rss", template_tags (<<<XML
-<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-<atom:link href="&__URL__;.rss" rel="self" type="application/rss+xml" />
-<title>&__TITLE__;</title>
-<link>&__URL__;</link>
-
-<item>
-	<title>&__TITLE__;</title>
-	<link>&__URL__;#&__ID__;</link>
-	<author>&__NAME__;</author>
-	<pubDate>&__DATE__;</pubDate>
-	<description>&__TEXT__;</description>
-</item>
-
-</channel>
-</rss>
-XML
-	, array (
-		'TITLE'	=> safeHTML (TITLE),
-		'URL'	=> FORUM_URL.PATH_URL.$file,
-		'NAME'	=> safeHTML (NAME),
-		'DATE'	=> gmdate ('r'),
-		'TEXT'	=> safeHTML (formatText (TEXT)),		//process markup
-		'ID'	=> base_convert (microtime (), 10, 36)		//generate a unique ID for the post A-Z/0-9
-	)));
+	//write out the new thread as an RSS file:
+	$rss  = new SimpleXMLElement ('<rss version="2.0" />');
+	$chan = $rss->addChild ('channel');
+	//RSS feed title and URL to this forum / sub-forum
+	$chan->addChild ('title',	safeHTML (TITLE));
+	$chan->addChild ('link',	FORUM_URL.PATH_URL.$file);
+	//the thread's first post
+	$item = $chan->addChild ('item');
+	$item->addChild ('title',	safeHTML (TITLE));
+	$item->addChild ('link',	FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36));
+	$item->addChild ('pubDate',	gmdate ('r'));
+	$item->addChild ('description',	safeHTML (formatText (TEXT)));
+	//save to disk
+	$rss->asXML ("$file.rss");
 	
 	//regenerate the folder's RSS file
 	indexRSS ();

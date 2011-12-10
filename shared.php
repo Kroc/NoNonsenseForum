@@ -43,7 +43,8 @@ define ('ERROR_AUTH',		5);				//name / password did not match
 //load the user’s theme configuration, if it exists
 @include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
 //include the theme defaults
-@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php' or die ("theme.config.default.php missing!");
+//(can’t use `or die` on this otherwise it casts the string concatination to a bool!)
+include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php';
 
 
 /* common input
@@ -437,16 +438,22 @@ XML
 
 /* ====================================================================================================================== */
 
+//this concept modifed from:
 //<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-//we could of course do all the XML manipulation in DOM proper to save doing this…
-class allow_prepend extends SimpleXMLElement {
-	public function prependChild ($name, $value=null) {
+class DXML extends SimpleXMLElement {
+	public function insertBefore ($name, $value=null) {
 		$dom = dom_import_simplexml ($this);
-		$new = $dom->insertBefore (
-			$dom->ownerDocument->createElement ($name, $value),
-			$dom->firstChild
-		);
+		$new = $dom->parentNode->insertBefore ($dom->ownerDocument->createElement ($name, $value), $dom);
 		return simplexml_import_dom ($new, get_class ($this));
+	}
+	
+	public function asXML ($file_name='') {
+		//import the simpleXML representation into DOM proper, so that we can write a clean, formatted output
+		$dom = dom_import_simplexml ($this);
+		$xml = $dom->ownerDocument;
+		$xml->formatOutput = true;
+		//the simpleXML method allows for an optional file name to save to; without, it returns a string
+		return $file_name ? $xml->save ($file_name) : $xml->saveXML ($xml->documentElement);
 	}
 }
 

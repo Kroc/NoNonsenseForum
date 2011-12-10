@@ -36,7 +36,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'allow_prepend') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML', LIBXML_NOBLANKS) or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
@@ -51,17 +51,17 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '').'#'.base_convert (microtime (), 10, 36);
 		
 		//add the comment to the thread
-		$item = $xml->channel->prependChild ('item');
-		$item->addChild ('title',	safeHTML (
-			//add the "RE:" prefix, and reply number to the title
-			template_tags (THEME_RE, array ('NO' => count ($xml->channel->item)-1)).$xml->channel->title
-		));
+		$item = $xml->channel->item[0]->insertBefore ('item');
+		//add the "RE:" prefix, and reply number to the title
+		$item->addChild ('title',	safeHTML (sprintf (THEME_RE,
+			count ($xml->channel->item)-1,	//number of the reply
+			$xml->channel->title		//thread title
+		)));
 		$item->addChild ('link',	$url);
 		$item->addChild ('author',	safeHTML (NAME));
 		$item->addChild ('pubDate',	gmdate ('r'));
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
 		
-		//save
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 	} else {
 		//if a double-post, link back to the previous item
