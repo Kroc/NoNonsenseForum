@@ -19,7 +19,7 @@ if (isset ($PAGES)) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="stylesheet" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/theme.css" />
-<link rel="alternate" type="application/rss+xml" href="<?php echo FORUM_PATH?>index.xml" />
+<link rel="alternate" type="application/rss+xml" href="<?php echo PATH_URL;?>index.xml" />
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <!-- details on using mobile favicons with thanks to <mathiasbynens.be/notes/touch-icons> -->
 <link rel="shortcut icon" type="image/x-icon" href="<?php echo FORUM_PATH?>themes/<?php echo FORUM_THEME?>/favicon.ico" sizes="16x16 24x24 32x32" />
@@ -47,7 +47,7 @@ if (isset ($PAGES)) {
 <?php if (CAN_POST):?>
 		<a id="add" href="#new">Add Thread</a>
 <?php endif;?>
-		<a id="rss" href="<?php echo FORUM_PATH?>index.xml">RSS</a>
+		<a id="rss" href="<?php echo PATH_URL?>index.xml">RSS</a>
 	</p><p>
 		<a id="index" href="<?php echo FORUM_PATH?>">Index</a><?php if (PATH): ?> » <?php echo PATH?><?php endif; ?>
 
