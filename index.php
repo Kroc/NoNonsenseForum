@@ -42,7 +42,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//write out the new thread as an RSS file:
 	$rss  = new SimpleXMLElement (
 		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<rss version="2.0" />', LIBXML_NOBLANKS
+		'<rss version="2.0" />'
 	);
 	$chan = $rss->addChild ('channel');
 	//RSS feed title and URL to this forum / sub-forum
@@ -113,15 +113,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//order by last modified date
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
-	//does this folder have a sticky list?
-	$stickies = array ();
-	if (file_exists ('sticky.txt')) {
-		//get sticky list, trimming any files that no longer exist
-		$stickies = array_intersect (file ('sticky.txt', FILE_IGNORE_NEW_LINES + FILE_SKIP_EMPTY_LINES), $threads);
-		
+	//get sticky list, trimming any files that no longer exist
+	if ($stickies = array_intersect (
+		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), $threads
+	)) {
 		//order the stickies by reverse date order
 		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
-		
 		//remove the stickies from the thread list
 		$threads = array_diff ($threads, $stickies);
 	}

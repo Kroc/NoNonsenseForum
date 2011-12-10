@@ -13,7 +13,7 @@ define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 //which thread to show
 $FILE = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 //load the thread (have to read lock status from the file)
-$xml = simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
+$xml  = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 
 //access rights for the current user
 define ('CAN_REPLY', FORUM_ENABLED && (
@@ -36,7 +36,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML', LIBXML_NOBLANKS) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
@@ -81,12 +81,47 @@ if (CAN_REPLY && AUTH && TEXT) {
 
 /* ====================================================================================================================== */
 
+//lock / unlock the thread? (only a moderator can un/lock a thread)
+if (isset ($_GET['lock']) && IS_MOD && AUTH) {
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	
+	if ((bool) $xml->channel->xpath ("category[text()='locked']")) {
+		//if there’s a "locked" category, remove it
+		//note: for simplicity this removes *all* channel categories as NNF only uses one atm,
+		//      in the future the specific "locked" category needs to be removed
+		unset ($xml->channel->category);
+		//when unlocking, go to the thread
+		$url = FORUM_URL.PATH_URL."$FILE?page=last#reply";
+	} else {
+		//if no "locked" category, add it
+		$xml->channel->category[] = 'locked';
+		//if locking return to the index
+		//(todo: could return to the particular page in the index the thread is on--complex!)
+		$url = FORUM_URL.PATH_URL;
+	}
+	
+	//commit the data
+	rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
+	
+	//regenerate the folder's RSS file
+	indexRSS ();
+	
+	header ("Location: $url", true, 303);
+	exit;
+}
+
+/* ====================================================================================================================== */
+
 //info for the site header
 $HEADER = array (
 	'TITLE'		=> safeHTML ($xml->channel->title),
 	'RSS'		=> PATH_URL."$FILE.rss",
 	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-	'LOCK_URL'	=> FORUM_PATH.'action.php?lock&amp;path='.safeURL (PATH)."&amp;file=$FILE"
+	'LOCK_URL'	=> PATH_URL."$FILE?lock"
 );
 
 /* original post

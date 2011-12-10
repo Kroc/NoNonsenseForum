@@ -345,7 +345,7 @@ function indexRSS () {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$rss  = new SimpleXMLElement (
 		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<rss version="2.0" />', LIBXML_NOBLANKS
+		'<rss version="2.0" />'
 	);
 	$chan = $rss->addChild ('channel');
 	//RSS feed title and URL to this forum / sub-forum
@@ -379,7 +379,7 @@ function indexRSS () {
 	//start the XML file
 	$xml = new SimpleXMLElement (
 		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />', LIBXML_NOBLANKS
+		'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
 	);
 	
 	//get list of sub-forums
