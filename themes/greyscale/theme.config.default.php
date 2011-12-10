@@ -14,6 +14,10 @@
    ====================================================================================================================== */
 //(the template replacements are done using `sprintf`, see <php.net/manual/en/function.sprintf.php> for details)
 
+//the `date` format code used to print human readable dates into the HTML,
+//see <php.net/manual/en/function.date.php> for documentation
+@define ('DATE_FORMAT',		'd M ’y · H:i');
+
 //title format for each reply (like in e-mail)
 //"%1$u" - number of the reply
 //"%2$s" - the thread title

@@ -28,9 +28,6 @@
 //timezone to use for all datetimes
 //this must be a string from this list: <php.net/manual/en/timezones.php>, e.g. "Europe/London"
 @define ('FORUM_TIMEZONE',	'UTC');
-//the `date` format code used to print human readable dates into the HTML,
-//see <php.net/manual/en/function.date.php> for documentation
-@define ('DATE_FORMAT',		'd M ’y · H:i');
 
 //folder name of the theme to use, in "/themes/*"
 @define ('FORUM_THEME',		'greyscale');
