@@ -51,7 +51,7 @@ if (isset ($_GET['append'])) {
 		))
 	)) {
 		$now = time ();
-		$post->description .= "\n".template_tags (TEMPLATE_APPEND, array (
+		$post->description .= "\n".template_tags (THEME_APPEND, array (
 			'AUTHOR'	=> safeHTML (NAME),
 			'DATETIME'	=> gmdate ('r', $now),
 			'TIME'		=> date (DATE_FORMAT, $now)
@@ -171,7 +171,7 @@ if (isset ($_GET['append'])) {
 			
 		} else {
 			//remove the post text
-			$post->description = (NAME == (string) $post->author) ? TEMPLATE_DEL_USER : TEMPLATE_DEL_MOD;
+			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
 			//add a "deleted" category so we know to no longer allow it to be edited or deleted again
 			if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 			

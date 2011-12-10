@@ -54,7 +54,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$item = $xml->channel->prependChild ('item');
 		$item->addChild ('title',	safeHTML (
 			//add the "RE:" prefix, and reply number to the title
-			template_tags (TEMPLATE_RE, array ('NO' => count ($xml->channel->item)-1)).$xml->channel->title
+			template_tags (THEME_RE, array ('NO' => count ($xml->channel->item)-1)).$xml->channel->title
 		));
 		$item->addChild ('link',	$url);
 		$item->addChild ('author',	safeHTML (NAME));

@@ -40,16 +40,10 @@ define ('ERROR_TITLE',		3);				//the title is invalid / blank
 define ('ERROR_TEXT',		4);				//post text is invalid / blank
 define ('ERROR_AUTH',		5);				//name / password did not match
 
-//if enabled, enforce HTTPS
-if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
-	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
-	//see <en.wikipedia.org/wiki/Strict_Transport_Security> for more details
-	header ('Strict-Transport-Security: max-age=2592000');
-} else {
-	//if forced-HTTPS is on and a HTTPS connection is not being used, redirect to the HTTPS version of the current page
-	//(we don’t die here so that should the redirect be ignored, the HTTP version of the page will still be given)
-	header ('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
-}
+//load the user’s theme configuration, if it exists
+@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
+//include the theme defaults
+@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php' or die ("theme.config.default.php missing!");
 
 
 /* common input
@@ -151,6 +145,17 @@ define ('CAN_POST', FORUM_ENABLED && (
 
 /* send HTTP headers
    ---------------------------------------------------------------------------------------------------------------------- */
+//if enabled, enforce HTTPS
+if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
+	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
+	//see <en.wikipedia.org/wiki/Strict_Transport_Security> for more details
+	header ('Strict-Transport-Security: max-age=2592000');
+} else {
+	//if forced-HTTPS is on and a HTTPS connection is not being used, redirect to the HTTPS version of the current page
+	//(we don’t die here so that should the redirect be ignored, the HTTP version of the page will still be given)
+	header ('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
+}
+
 //if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
 //(these are trapped higher up as HTTP_AUTH_UN and HTTP_AUTH_PW and are authenticated the same as the regular post form)
@@ -172,10 +177,12 @@ if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
 header ('Cache-Control: no-cache', true);
 header ('Expires: 0', true);
 
+
+//everything prepared; below are just shared functions
 /* ====================================================================================================================== */
 
 //sanitise input:
-function safeGet ($data, $len=0, $trim=true) {
+function safeGet ($data, $len, $trim=true) {
 	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
 	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
 	//remove useless whitespace. can be skipped (i.e for passwords)
@@ -196,7 +203,7 @@ function safeString ($text) {
 function safeURL ($text, $is_HTML=true) {
 	//encode a string to be used in a URL, keeping path separators
 	$text = str_replace ('%2F', '/', rawurlencode ($text));
-	//will the URL be output into HTML? (rather than, say, the HTTP headers)
+	//will the URL be outputted into HTML? (rather than, say, the HTTP headers)
 	//if so, encode for HTML too, e.g. "&" should be "&amp;" within URLs when in HTML
 	return $is_HTML ? safeHTML ($text) : $text;
 }
@@ -326,15 +333,13 @@ function formatText ($text) {
 
 /* ====================================================================================================================== */
 
-//check to see if a name is a known moderator in 'mods.txt'
+//check to see if a name is a known moderator
 function isMod ($name) {
-	global $MODS;
-	return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
+	global $MODS; return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
 }
 
 function isMember ($name) {
-	global $MEMBERS;
-	return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
+	global $MEMBERS; return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
 }
 
 /* ====================================================================================================================== */
