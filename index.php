@@ -40,7 +40,10 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
-	$rss  = new SimpleXMLElement ('<rss version="2.0" />');
+	$rss  = new SimpleXMLElement (
+		'<?xml version="1.0" encoding="UTF-8"?>'.
+		'<rss version="2.0" />', LIBXML_NOBLANKS
+	);
 	$chan = $rss->addChild ('channel');
 	//RSS feed title and URL to this forum / sub-forum
 	$chan->addChild ('title',	safeHTML (TITLE));

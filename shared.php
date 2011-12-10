@@ -209,12 +209,6 @@ function safeURL ($text, $is_HTML=true) {
 	return $is_HTML ? safeHTML ($text) : $text;
 }
 
-//replace markers (“&__TAG__;”) in the template with some other text
-function template_tags ($template, $values) {
-	foreach ($values as $key=>&$value) $template = str_replace ("&__${key}__;", $value , $template);
-	return $template;
-}
-
 //produces a truncated list of page numbers around the current page
 function pageList ($current, $total) {
 	//always include the first page
@@ -347,56 +341,46 @@ function isMember ($name) {
 
 //regenerate a folder's RSS file (all changes happening in a folder)
 function indexRSS () {
-	//get list of threads
+	/* create an RSS feed
+	   -------------------------------------------------------------------------------------------------------------- */
+	$rss  = new SimpleXMLElement (
+		'<?xml version="1.0" encoding="UTF-8"?>'.
+		'<rss version="2.0" />', LIBXML_NOBLANKS
+	);
+	$chan = $rss->addChild ('channel');
+	//RSS feed title and URL to this forum / sub-forum
+	$chan->addChild ('title',	safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')));
+	$chan->addChild ('link',	FORUM_URL);
+	
+	//get list of threads, sort by date; most recently modified first
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
 	//get the last post made in each thread as an RSS item
-	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread) if ($xml = @simplexml_load_file ($thread)) {
-		$item = $xml->channel->item[0];
-		@$rss .= template_tags (<<<XML
-<item>
-	<title>&__TITLE__;</title>
-	<link>&__URL__;</link>
-	<author>&__NAME__;</author>
-	<pubDate>&__DATE__;</pubDate>
-	<description>&__TEXT__;</description>
-</item>
-XML
-		, array (
-			'TITLE'	=> safeHTML ($item->title),
-			'URL'	=> $item->link,
-			'NAME'	=> safeHTML ($item->author),
-			'DATE'	=> gmdate ('r', strtotime ($item->pubDate)),
-			'TEXT'	=> safeHTML ($item->description),
-		));
+	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread)
+		if ($xml = @simplexml_load_file ($thread))	//if the RSS feed is valid
+		if ($item = $xml->channel->item[0])		//if the feed has any items
+	{
+		$new = $chan->addChild ('item');
+		$new->addChild ('title',	safeHTML ($item->title));
+		$new->addChild ('link',		$item->link);
+		$new->addChild ('author',	safeHTML ($item->author));
+		$new->addChild ('pubDate',	gmdate ('r', strtotime ($item->pubDate)));
+		$new->addChild ('description',	safeHTML ($item->description));
 	}
-	
-	file_put_contents ('index.xml', template_tags (<<<XML
-<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-<atom:link href="&__URL__;&__PATH__;index.xml" rel="self" type="application/rss+xml" />
-<title>&__TITLE__;</title>
-<link>&__URL__;</link>
-
-&__ITEMS__;
-
-</channel>
-</rss>
-XML
-	, array (
-		'URL'	=> FORUM_URL,
-		'PATH'	=> PATH_URL,
-		'TITLE'	=> safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')),
-		//if all threads are deleted, there won’t be any <item>s
-		'ITEMS'	=> @$rss ? $rss : ''
-	)));
+	//save to disk
+	$rss->asXML ('index.xml');
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
 	//we’re going to use the RSS files as sitemaps
 	chdir (FORUM_ROOT);
+	
+	//start the XML file
+	$xml = new SimpleXMLElement (
+		'<?xml version="1.0" encoding="UTF-8"?>'.
+		'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />', LIBXML_NOBLANKS
+	);
 	
 	//get list of sub-forums
 	$folders = array ('');
@@ -410,27 +394,13 @@ XML
 	foreach ($folders as $folder) if (
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		@$xml = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
-	) @$sitemaps .= template_tags (<<<XML
-<sitemap>
-	<loc>&__URL__;&__FILE__;/index.xml</loc>
-	<lastmod>&__DATE__;</lastmod>
-</sitemap>
-
-XML
-	, array (
-		'URL'	=> FORUM_URL,
-		'FILE'	=> $folder ? safeURL ("/$folder", false) : '',
-		'DATE'	=> gmdate ('r', strtotime ($xml->channel->item[0]->pubDate))
-	));
-	
-	file_put_contents (
-		FORUM_ROOT.'/sitemap.xml',
-		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".
-		"<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n".
-		@$sitemaps.
-		"</sitemapindex>"
-	);
+		@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
+	) {
+		$map = $xml->addChild ('sitemap');
+		$map->addChild ('loc',		FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml');
+		$map->addChild ('lastmod',	gmdate ('r', strtotime ($rss->channel->item[0]->pubDate)));
+	}
+	$xml->asXML (FORUM_ROOT.'/sitemap.xml');
 	
 	//you saw nothing, right?
 	clearstatcache ();
@@ -445,15 +415,6 @@ class DXML extends SimpleXMLElement {
 		$dom = dom_import_simplexml ($this);
 		$new = $dom->parentNode->insertBefore ($dom->ownerDocument->createElement ($name, $value), $dom);
 		return simplexml_import_dom ($new, get_class ($this));
-	}
-	
-	public function asXML ($file_name='') {
-		//import the simpleXML representation into DOM proper, so that we can write a clean, formatted output
-		$dom = dom_import_simplexml ($this);
-		$xml = $dom->ownerDocument;
-		$xml->formatOutput = true;
-		//the simpleXML method allows for an optional file name to save to; without, it returns a string
-		return $file_name ? $xml->save ($file_name) : $xml->saveXML ($xml->documentElement);
 	}
 }
 
