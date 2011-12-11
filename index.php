@@ -52,6 +52,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	$item = $chan->addChild ('item');
 	$item->addChild ('title',	safeHTML (TITLE));
 	$item->addChild ('link',	FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36));
+	$item->addChild ('author',	safeHTML (NAME));
 	$item->addChild ('pubDate',	gmdate ('r'));
 	$item->addChild ('description',	safeHTML (formatText (TEXT)));
 	//save to disk
