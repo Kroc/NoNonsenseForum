@@ -166,8 +166,9 @@ if (count ($thread)) {
 	foreach ($thread as &$node) $sort[] = strtotime ($node->pubDate);
 	array_multisort ($sort, SORT_ASC, $thread);
 	
-	//paging
-	$PAGES  = pageList (PAGE, ceil (count ($thread) / FORUM_POSTS));
+	//number of pages (stickies are not included in the count as they appear on all pages)
+	define (PAGES, ceil (count ($thread) / FORUM_POSTS));
+	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	//index number of the replies, accounting for which page we are on
@@ -200,6 +201,8 @@ if (count ($thread)) {
 		'NO'		=> ++$no,						//number of the reply
 		'ID'		=> substr (strstr ($post->link, '#'), 1)
 	);
+} else {
+	define ('PAGES', 1);
 }
 
 /* reply form
