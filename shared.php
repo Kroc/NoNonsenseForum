@@ -257,7 +257,7 @@ function formatText ($text) {
 		|
 			([a-z0-9\._%+\-]+@[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+)	# $5 = e-mail
 		)/exiu',
-		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\">$0</a>"',
+		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\" rel=\"nofollow\">$0</a>"',
 	$text);
 	
 	/* blockquotes:
