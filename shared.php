@@ -13,7 +13,8 @@ mb_regex_encoding    ('UTF-8');
 
 //try set the forum owner’s personal config ('config.php'), if it exists
 @include './config.php';
-//include the defaults (for anything missing from the user’s config)
+//include the defaults: (for anything missing from the user’s config)
+//see that file for descriptions of the different available options
 @include './config.default.php' or die ("config.default.php missing!");
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
@@ -207,29 +208,6 @@ function safeURL ($text, $is_HTML=true) {
 	//will the URL be outputted into HTML? (rather than, say, the HTTP headers)
 	//if so, encode for HTML too, e.g. "&" should be "&amp;" within URLs when in HTML
 	return $is_HTML ? safeHTML ($text) : $text;
-}
-
-//produces a truncated list of page numbers around the current page
-function pageList ($current, $total) {
-	//always include the first page
-	$PAGES[] = 1;
-	//more than one page?
-	if ($total > 1) {
-		//if previous page is not the same as 2, include ellipses
-		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-		if ($current-1 > 2) $PAGES[] = '';
-		//the page before the current page
-		if ($current-1 > 1) $PAGES[] = $current-1;
-		//the current page
-		if ($current != 1) $PAGES[] = $current;
-		//the page after the current page (if not at end)
-		if ($current+1 < $total) $PAGES[] = $current+1;
-		//if there’s a gap between page+1 and the last page
-		if ($current+1 < $total-1) $PAGES[] = '';
-		//last page
-		if ($current != $total) $PAGES[] = $total;
-	}
-	return $PAGES;
 }
 
 //take the author's message, process markup, and encode it safely for the RSS feed

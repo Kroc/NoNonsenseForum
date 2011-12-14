@@ -5,6 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//bootstrap the forum; you should read that file first
 require_once './shared.php';
 
 //get page number
@@ -17,7 +18,8 @@ define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
 /* ====================================================================================================================== */
 
-//has the user submitted a new thread? (and is the info valid?)
+//has the user submitted a new thread?
+//(`AUTH` will be true if username and password submitted and correct, `TITLE` and `TEXT` are checked to not be blank)
 if (CAN_POST && AUTH && TITLE && TEXT) {
 	//the file on disk is a simplified version of the title:
 	$translit = preg_replace (
@@ -115,8 +117,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
 	//get sticky list, trimming any files that no longer exist
+	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
 	if ($stickies = array_intersect (
-		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), $threads
+		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
+		//then `array_filter` removes blank items. this way saves having to check if the file exists first
+		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
 	)) {
 		//order the stickies by reverse date order
 		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
@@ -124,14 +129,14 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$threads = array_diff ($threads, $stickies);
 	}
 	
-	//paging (stickies are not included in the count as they appear on all pages)
-	$PAGES   = pageList (PAGE, ceil (count ($threads) / FORUM_THREADS));
+	//number of pages (stickies are not included in the count as they appear on all pages)
+	define (PAGES, ceil (count ($threads) / FORUM_THREADS));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) if (
-		//read the file, and refer to the last post made (the first item in RSS feed as newest is first)
+		//read the file, and refer to the last post made
 		$xml  = @simplexml_load_file ($file)
 	) {
 		$last = &$xml->channel->item[0];
@@ -141,7 +146,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			//link to the thread--go to the last page of replies
 			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			'TITLE'		=> safeHTML ($xml->channel->title),
-			'COUNT'		=> count ($xml->channel->item) - 1,
+			'COUNT'		=> count ($xml->channel->item) - 1,			//number of replies
 			//info of last post made to thread
 			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr
 			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
@@ -150,11 +155,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			'POSTLINK'	=> substr ($last->link, strpos ($last->link, '/', 9))	//link to the last post
 		);
 	}
+} else {
+	define (PAGES, 1);
 }
 
 /* new thread form
    ---------------------------------------------------------------------------------------------------------------------- */
-//(exclude if posting has been disabled)
 if (CAN_POST) $FORM = array (
 	'NAME'	=> safeString (NAME),
 	'PASS'	=> safeString (PASS),

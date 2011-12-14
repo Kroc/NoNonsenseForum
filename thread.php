@@ -5,6 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//bootstrap the forum; you should read that file first
 require_once './shared.php';
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
@@ -53,6 +54,8 @@ if (CAN_REPLY && AUTH && TEXT) {
 		//add the comment to the thread
 		$item = $xml->channel->item[0]->insertBefore ('item');
 		//add the "RE:" prefix, and reply number to the title
+		//(see 'theme.config.php', if it exists, otherwise 'theme.config.deafult.php',
+		//in the theme's folder for the definition of `THEME_RE`)
 		$item->addChild ('title',	safeHTML (sprintf (THEME_RE,
 			count ($xml->channel->item)-1,	//number of the reply
 			$xml->channel->title		//thread title
@@ -62,16 +65,17 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$item->addChild ('pubDate',	gmdate ('r'));
 		$item->addChild ('description',	safeHTML (formatText (TEXT)));
 		
+		//write the file: first move the write-head to 0, remove the file's contents, and then write new ones
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 	} else {
-		//if a double-post, link back to the previous item
+		//if a double-post, link back to the previous post
 		$url = $xml->channel->item[0]->link;
 	}
 	
 	//close the lock / file
 	flock ($f, LOCK_UN); fclose ($f);
 	
-	//regenerate the folder's RSS file
+	//regenerate the forum / sub-forums's RSS file
 	indexRSS ();
 	
 	//refresh page to see the new post added
