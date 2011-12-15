@@ -303,7 +303,7 @@ of using "htaccess" files.
 
 [7]     Acknowledgements:
 ========================================================================
-See LICENE.txt for licence details
+See LICENCE.txt for licence details
 
 *	Jon Gjengset		-	Original theme / mobile theme
 *	"JJ"			-	Quote syntax
