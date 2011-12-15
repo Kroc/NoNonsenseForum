@@ -55,7 +55,7 @@ if (isset ($_GET['append'])) {
 			safeHTML (NAME),		//author
 			gmdate ('r', $now),		//machine-readable time
 			date (DATE_FORMAT, $now)	//human-readable time
-		).safeHTML (formatText (TEXT));
+		).formatText (TEXT);
 		
 		//need to know what page this post is on to redirect back to it
 		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
