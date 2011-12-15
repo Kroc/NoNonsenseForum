@@ -14,7 +14,7 @@ mb_regex_encoding    ('UTF-8');
 //try set the forum owner’s personal config ('config.php'), if it exists
 @include './config.php';
 //include the defaults (for anything missing from the user’s config)
-@include './config.default.php' or die ("config.default.php missing!");
+@(include './config.default.php') or die ("config.default.php missing!");
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
@@ -249,7 +249,7 @@ function formatText ($text) {
 		//format the code block
 		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
-		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
+		         .trim(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0], "\n")
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
 		;
 		//replace the code block with a placeholder:
@@ -280,6 +280,16 @@ function formatText ($text) {
 		'"<a href=\"".("$5"?"mailto:$5":("$1"?"$1":"http://")."$2$3$4")."\" rel=\"nofollow\">$0</a>"',
 	$text);
 	
+	/* inline formatting:
+	   -------------------------------------------------------------------------------------------------------------- */
+	$text = preg_replace (array(
+		'/(?<!\w)_(?!_)(.*?)(?<!_)_(?!\w)/',
+		'/(?<![*\w])\*(?!\*)(.*?)(?<!\*)\*(?![*\w])/',
+	), array (
+		'<i>_$1_</i>',
+		'<b>*$1*</b>',
+	), $text);
+	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
 	/* example:
@@ -302,6 +312,13 @@ function formatText ($text) {
 		$text, -1, $c
 	); while ($c);
 	
+	/* titles and horizontal lines
+	   -------------------------------------------------------------------------------------------------------------- */
+	$text = preg_replace(
+		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',		'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
+		array ("\n\n<div class=\"title\">$1</div>\n",	"\n\n<div class=\"hr\"/>$1</div>\n"),
+	$text);
+	
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
@@ -313,8 +330,8 @@ function formatText ($text) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		//if not a blockquote, wrap in a paragraph
-		if (!preg_match ('/^<\/?bl|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		//if not a blockquote, title or hr, wrap in a paragraph
+		if (!preg_match ('/^<\/?(?:bl|div|hr)|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
