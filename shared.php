@@ -316,7 +316,7 @@ function formatText ($text) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$text = preg_replace(
 		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
-		array ("\n\n<div class=\"title\">$1</div>\n",	"\n\n<div class=\"hr\"/>$1</div>\n"),
+		array ("\n\n<h2>$1</h2>\n",			"\n\n<div class=\"hr\"/>$1</div>\n"),
 	$text);
 	
 	//remove the extra linebreaks addeded between our theme quotes
@@ -331,7 +331,7 @@ function formatText ($text) {
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, title or hr, wrap in a paragraph
-		if (!preg_match ('/^<\/?(?:bl|div|hr)|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if (!preg_match ('/^<\/?(?:bl|h2|hr)|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
 		$text = @$result .= "\n$chunk";
 	}
 	
