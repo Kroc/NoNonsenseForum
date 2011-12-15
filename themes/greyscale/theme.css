@@ -217,7 +217,7 @@ article.op header		{background: #888; color: #eee;}
 article.deleted			{color: #aaa;}
 article.deleted header		{background: #f7f6f7; color: #aaa;}
 
-article h2	{font-size:1.2em;border-bottom:1px dotted #222;margin-top:1em;}
+article h2	{font-size:1.2em;border-bottom:1px dotted #222;margin:1em 0 0;font-weight:normal}
 article div.hr	{text-indent:-6em;overflow:hidden;border-bottom:1px dotted #222;margin:20px 0;height:1px}
 
 p.appended			{color: #888; padding-top: 19px;
