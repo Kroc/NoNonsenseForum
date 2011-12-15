@@ -315,7 +315,7 @@ function formatText ($text) {
 	/* titles and horizontal lines
 	   -------------------------------------------------------------------------------------------------------------- */
 	$text = preg_replace(
-		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',		'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
+		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
 		array ("\n\n<div class=\"title\">$1</div>\n",	"\n\n<div class=\"hr\"/>$1</div>\n"),
 	$text);
 	
