@@ -245,7 +245,7 @@ function formatText ($text) {
 	*/
 	$code = array ();
 	//find code blocks:
-	while (preg_match ('/^(?-s:(\s*)([%$])(.*?))\n(.*?)\n(?-s:\s*)\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
+	while (preg_match ('/^(?:(\h*)([%$])(.*?))\n(.*?)\n\h*\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
 		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
@@ -256,6 +256,14 @@ function formatText ($text) {
 		//(we will have to remove the code chunks from the source text to avoid the other markup processing from
 		//munging it and then restore the chunks back later)
 		$text = substr_replace ($text, "\n&__CODE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
+	}
+	
+	$inline = array();
+	while (preg_match ('/(?<=\s|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
+		//format the code block
+		$inline[] = '<code>' . $m[1][0] . $m[2][0] . $m[1][0] . '</code>';
+		//same as with normal code blocks, replace them with a placeholder
+		$text = substr_replace ($text, "&__INLINE__;", $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* hyperlinks:
@@ -336,7 +344,8 @@ function formatText ($text) {
 	}
 	
 	//restore code blocks
-	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	foreach ($code as $html)   $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	foreach ($inline as $html) $text = preg_replace ('/&__INLINE__;/', $html, $text, 1);
 	
 	return $text;
 }
