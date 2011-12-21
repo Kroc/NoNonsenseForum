@@ -13,8 +13,8 @@
 !index.php
 !shared.php
 !thread.php
-!themes/
-!users/
+!themes/*
+!users/*
 
 # documentation
 !HISTORY.txt

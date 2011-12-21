@@ -1,2 +1,5 @@
 # ignore the user's personal theme configuration
 theme.config.php
+
+# ignore the user's custom CSS
+custom.css

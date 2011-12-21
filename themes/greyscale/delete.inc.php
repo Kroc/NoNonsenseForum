@@ -8,6 +8,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 <link rel="stylesheet" href="<?php echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/theme.css" />
+<?php if (file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css')):?>
+<link rel="stylesheet" href="<?php echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/custom.css" />
+<?php endif;?>
 <meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
 <meta name="robots" content="noindex, nofollow" />
 <!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
