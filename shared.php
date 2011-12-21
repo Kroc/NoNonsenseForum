@@ -15,7 +15,7 @@ mb_regex_encoding    ('UTF-8');
 @include './config.php';
 //include the defaults: (for anything missing from the user’s config)
 //see that file for descriptions of the different available options
-@include './config.default.php' or die ("config.default.php missing!");
+@(include './config.default.php') or die ("config.default.php missing!");
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
@@ -45,7 +45,7 @@ define ('ERROR_AUTH',		5);				//name / password did not match
 @include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
 //include the theme defaults
 //(can’t use `or die` on this otherwise it casts the string concatination to a bool!)
-include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php';
+@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ("theme.config.default.php missing!");
 
 
 /* common input

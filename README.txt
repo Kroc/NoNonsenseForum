@@ -40,7 +40,13 @@ Contents:
 [6]     Forum locking
 [6.1]   Members
 [6.2]	A note on private forums
-[7]     Acknowledgements
+[7]	Customising
+[7.1]	'config.php'
+[7.2]	'theme.config.php'
+[7.3]	Favicon and touch-icon
+[7.4]	Adding a forum introduction (about.html)
+[7.5]	Custom CSS
+[8]     Acknowledgements
 ------------------------------------------------------------------------
 
 
@@ -102,7 +108,7 @@ current directory.
 Move this folder, or its contents to the desired location (as described
 in "Install from download" above).
 
-[1.3]   Installation (continued)
+[1.3]   Installation (continued):
 ------------------------------------------------------------------------
 *       Ensure the web-root / folder and all sub-folders (especially
         "users") have write permission for PHP, the code will save new
@@ -129,7 +135,6 @@ Optional:
         
         You should leave the 'config.default.php' as-is to avoid
         conflicts with future updates
-
 
 [1.4]   Updating NoNonsense Forum:
 ------------------------------------------------------------------------
@@ -177,7 +182,7 @@ To avoid abuse, users cannot permenantly delete their posts.
         post is on the last page of replies -- so as to not break any
         permalinks by rearranging page boundaries
 
-[2.3]   Markup
+[2.3]   Markup:
 ------------------------------------------------------------------------
 NoNonsense Forum has simple and innovative markup, see "markup.txt"
 for details.
@@ -268,7 +273,7 @@ The root forum and / or sub-forums can be individually restricted:
         members can access and post in the forum. You will be prompted
         to sign-in when trying to access the forum
 
-[6.1]   Members
+[6.1]   Members:
 ------------------------------------------------------------------------
 Members are users who are not restricted in a locked forum, but do not
 have moderator powers; they are your participants in restricted forums.
@@ -283,7 +288,7 @@ have moderator powers; they are your participants in restricted forums.
 *       Members must sign-in to be able to post in locked forums,
         or to access private forums
 
-[6.2]	A note on private forums
+[6.2]	A note on private forums:
 ------------------------------------------------------------------------
 If you make a forum / sub-forum private, whilst visitors to the site
 will not be able to access the forum, the files within are not directly
@@ -301,7 +306,56 @@ protection as it requires basic server admin skills and some knowledge
 of using "htaccess" files.
 
 
-[7]     Acknowledgements:
+[7]	Customising:
+========================================================================
+[7.1]	'config.php':
+------------------------------------------------------------------------
+The 'config.default.php' file contains default settings for the forum,
+make a copy of this file and name it 'config.php' -- DO NOT modify,
+delete or rename 'config.default.php' as it is still required.
+
+Modify your 'config.php' to your liking, the settings are explained
+within.
+
+[7.2]	'theme.config.php':
+------------------------------------------------------------------------
+The `FORUM_THEME` option in 'config.php' (default: "greyscale"), refers
+to the name of the theme in the 'themes' folder. Inside the theme is a
+'theme.config.default.php' file; make a copy of this file and rename to
+'theme.config.php'.
+
+Modify your 'theme.config.php' to your liking, the settings are
+explained within.
+
+DO NOT modify, delete or rename 'theme.config.default.php' as it is
+still required.
+
+[7.3]	Favicon and touch-icon:
+------------------------------------------------------------------------
+The site will use '/favicon.default.ico' as the favicon and
+'/apple-touch-icon.deafult.png' for iOS home-screen icons by default,
+just provide your own 'favicon.ico' and 'apple-touch-icon.png' files
+to override. Each theme will have examples you can use in the theme
+folder, just copy those to webroot to use.
+
+[7.4]	Adding a forum introduction ('about.html'):
+------------------------------------------------------------------------
+You can add a custom message to the top of the forum index / sub-forum
+index pages by creating an 'about.html' file in the folder and
+populating it with HTML code.
+
+This feature is primarily designed for you to add a description at the
+top of each forum to tell visitors what the forum is used for, rules
+etc., but since any HTML can be used you can add whatever you want --
+social buttons, links, images and so forth.
+
+[7.5]	Custom CSS:
+------------------------------------------------------------------------
+Within the theme folder (that is where 'theme.css' is for the chosen
+theme) create a 'custom.css' file and it will be automatically included.
+
+
+[8]     Acknowledgements:
 ========================================================================
 See LICENCE.txt for licence details
 

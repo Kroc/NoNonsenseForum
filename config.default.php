@@ -14,7 +14,7 @@
 #error_reporting (-1);
 
 //if the forum should use--and force--HTTPS connections and URLs:
-//if set to true, RSS feeds will be saved with HTTPS URLs, and HTTP connections will automatically be redirect to HTTPS.
+//if set to true, RSS feeds will be saved with HTTPS URLs, and HTTP connections will automatically be redirected to HTTPS.
 //"HSTS" <en.wikipedia.org/wiki/HTTP_Strict_Transport_Security> will be used to tell clients to use HTTPS by default
 //NOTE: If you change this setting, old RSS feeds will still contain HTTP URLs, but this won’t pose a problem as the HSTS
 //      header will tell browsers to automatically redirect these to HTTPS
