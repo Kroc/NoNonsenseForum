@@ -26,7 +26,10 @@ $PAGES = pageList (PAGE, PAGES);
 <!-- original 'Grayscale' theme by Jon Gjengset <thesquareplanet.com>,
      greyscale theme by Kroc Camen, please modify to suit your needs -->
 <header id="mast">
-	<h1><a href="<?php echo FORUM_PATH;?>"><?php echo safeHTML (FORUM_NAME);?></a></h1>
+	<h1><a href="<?php echo FORUM_PATH;?>">
+		<img src="<?PHP echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/icons/<?PHP echo THEME_LOGO;?>" width="32" height="32" alt="" />
+		<?php echo safeHTML(FORUM_NAME);?>
+	</a></h1>
 	
 	<form id="search" method="get" action="<?php echo FORUM_HTTPS ? "https://encrypted.google.com/search" : "http://google.com/search";?>"><!--
 		--><input type="hidden" name="as_sitesearch" value="<?php echo safeString($_SERVER['HTTP_HOST']);?>" /><!--
