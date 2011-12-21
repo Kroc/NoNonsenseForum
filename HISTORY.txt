@@ -1,3 +1,12 @@
+v9	21.DEC.11
+*	More markup syntax supported: (with thanks to Richard Van Velzen)
+	`:: title`, `---` (divider), `*bold*` & `_italic_`
+*	Please note that 'config.example.php' has been renamed to 'config.default.php'
+*	`rel="nofollow"` added to URLs in user text
+*	Fixed file-locking issue on Windows servers
+*	Fixes to RSS links
+*	Lowered server requirement from PHP v5.2.6 to v5.2.4 (theoretically 5.0)
+
 v8	06.DEC.11
 *	Access control: Major new feature! You can lock forums and limit posting / access to certain users:
 	(Members can be specified in a 'members.txt' file)

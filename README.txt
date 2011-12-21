@@ -1,4 +1,4 @@
-NoNonsense Forum v8 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum v9 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -309,7 +309,8 @@ See LICENCE.txt for licence details
 *	"JJ"			-	Quote syntax
 *	"Martijn"		-	Lynx support
 *	"Temukki"		-	Bugs
-*	Richard van Velzen	-	subfolder support / other fixes
+*	Richard van Velzen	-	subfolder support / other fixes,
+					additional markup implementation
 
 *	The users of Camen Design Forum <forum.camendesign.com>
 	for testing and support
