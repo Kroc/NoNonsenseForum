@@ -117,6 +117,11 @@ input[type=search]:focus	{outline: none;}
 section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 
+#about				{background: none; margin-top: 0; padding: 0 20px;
+				 -webkit-box-sizing: border-box;
+				    -moz-box-sizing: border-box;
+				         box-sizing: border-box;}
+
 /* page list */
 section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; line-height: 40px;
@@ -146,7 +151,6 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 				    line of text is 20px so that the bottom border never shifts out of place
 				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
 				 padding: 9.999px 20px 9px; line-height: 20px;}
-
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
