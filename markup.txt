@@ -15,6 +15,26 @@ YES:	email@email.com
 NO:	@twitter
 
 
+Bold & Italic
+=============
+*Write bold text like this*, and _italic text like this_.
+
+
+Titles
+======
+For a title, start a line with two colons.
+Example:
+
+:: Shopping list
+
+
+Dividers
+========
+To draw a line across your text, use four dashes:
+
+----
+
+
 Quotes:
 =======
 To quote somebody else's text, place it on its own line with quote
@@ -152,3 +172,10 @@ $ LaTeX
 World
 \end{document}
 $
+
+
+Inline Code:
+============
+For small snippets of code / teletype text you want to appear admidst other sentences (rather than in a separate block), you can use backticks to enclose the code (1 or more allowed):
+
+	Use `*bold*` for bold and ``_italic_`` for italics.

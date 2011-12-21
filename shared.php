@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum v8 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v9 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -237,19 +237,18 @@ function formatText ($text) {
 	
 	/* preformatted text (code blocks):
 	   -------------------------------------------------------------------------------------------------------------- */
-	/* example:		or: (latex in partiular since it uses % as a comment marker)
+	/* example:			or: (latex in partiular since it uses % as a comment marker)
 	
 		% title 		$ title
 		…			…
 		%			$
 	*/
 	$code = array ();
-	//find code blocks:
 	while (preg_match ('/^(?-s:(\h*)([%$])(.*?))\n(.*?)\n\h*\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
 		$code[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
-		         .trim(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0], "\n")
+		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
 		;
 		//replace the code block with a placeholder:
@@ -258,12 +257,14 @@ function formatText ($text) {
 		$text = substr_replace ($text, "\n&__CODE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
-	$inline = array();
+	/* inline code / teletype text:
+	   -------------------------------------------------------------------------------------------------------------- */
+	// example: `code` or ``code``
 	while (preg_match ('/(?<=\s|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$inline[] = '<code>' . $m[1][0] . $m[2][0] . $m[1][0] . '</code>';
+		$code[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
 		//same as with normal code blocks, replace them with a placeholder
-		$text = substr_replace ($text, "&__INLINE__;", $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, "&__CODE__;", $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* hyperlinks:
@@ -290,13 +291,22 @@ function formatText ($text) {
 	
 	/* inline formatting:
 	   -------------------------------------------------------------------------------------------------------------- */
-	$text = preg_replace (array(
-		'/(?<!\w)_(?!_)(.*?)(?<!_)_(?!\w)/',
-		'/(?<![*\w])\*(?!\*)(.*?)(?<!\*)\*(?![*\w])/',
-	), array (
-		'<i>_$1_</i>',
-		'<b>*$1*</b>',
-	), $text);
+	$text = preg_replace (
+		//example: _italic_ & *bold*
+		array ('/(?<!\w)_(?!_)(.*?)(?<!_)_(?!\w)/',	'/(?<![*\w])\*(?!\*)(.*?)(?<!\*)\*(?![*\w])/'),
+		array ('<em>_$1_</em>',				'<strong>*$1*</strong>'),
+	$text);
+	
+	/* titles and dividers
+	   -------------------------------------------------------------------------------------------------------------- */
+	/* example: (titles)	/	(dividers)
+		
+		:: title		----
+	*/
+	$text = preg_replace(
+		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
+		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\"/>$1</p>\n"),
+	$text);
 	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -310,23 +320,15 @@ function formatText ($text) {
 	*/
 	do $text = preg_replace (array (
 		//you would think that you could combine these. you really would
-		'/(?:\n|\A)(?-s:\s*)("(?!\s+)((?>(?1)|.)*?)\s*")(?-s:\s*)(?:\n?$|\Z)/msu',
-		'/(?:\n|\A)(?-s:\s*)(“(?!\s+)((?>(?1)|.)*?)\s*”)(?-s:\s*)(?:\n?$|\Z)/msu',
-		'/(?:\n|\A)(?-s:\s*)(«(?!\s+)((?>(?1)|.)*?)\s*»)(?-s:\s*)(?:\n?$|\Z)/msu'
+		'/(?:\n|\A)\h*("(?!\s+)((?>(?1)|.)*?)\s*")\h*(?:\n?$|\Z)/msu',
+		'/(?:\n|\A)\h*(“(?!\s+)((?>(?1)|.)*?)\s*”)\h*(?:\n?$|\Z)/msu',
+		'/(?:\n|\A)\h*(«(?!\s+)((?>(?1)|.)*?)\s*»)\h*(?:\n?$|\Z)/msu'
 	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
 		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
 		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
 		"\n\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
 		$text, -1, $c
 	); while ($c);
-	
-	/* titles and horizontal lines
-	   -------------------------------------------------------------------------------------------------------------- */
-	$text = preg_replace(
-		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
-		array ("\n\n<h2>$1</h2>\n",			"\n\n<div class=\"hr\"/>$1</div>\n"),
-	$text);
-	
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
@@ -339,13 +341,14 @@ function formatText ($text) {
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, title or hr, wrap in a paragraph
-		if (!preg_match ('/^<\/?(?:bl|h2|hr)|^&_/', $chunk)) $chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>";
+		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&_/', $chunk))
+			$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>"
+		;
 		$text = @$result .= "\n$chunk";
 	}
 	
 	//restore code blocks
-	foreach ($code as $html)   $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
-	foreach ($inline as $html) $text = preg_replace ('/&__INLINE__;/', $html, $text, 1);
+	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
 }
