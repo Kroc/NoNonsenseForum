@@ -1,6 +1,6 @@
 <?php //reduce some duplication
 /* ====================================================================================================================== */
-/* NoNonsense Forum v10 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -66,7 +66,7 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
    ====================================================================================================================== */
 /* name / password authorisation:
    ---------------------------------------------------------------------------------------------------------------------- */
-//for HTTP authentication (sign-in / private forums):
+//for HTTP authentication (sign-in):
 //- CGI workaround <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
 if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
 	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
@@ -75,7 +75,7 @@ define ('HTTP_AUTH_UN', @$_SERVER['PHP_AUTH_USER']);	//username if using HTTP au
 define ('HTTP_AUTH_PW', @$_SERVER['PHP_AUTH_PW']);	//password if using HTTP authentication
 
 //all pages can accept a name / password when committing actions (new thread / reply &c.)
-//in the case of HTTP authentication (sign in / private forums), these are provided in the request header instead
+//in the case of HTTP authentication (sign in), these are provided in the request header instead
 define ('NAME', HTTP_AUTH_UN ? HTTP_AUTH_UN : safeGet (@$_POST['username'], SIZE_NAME));
 define ('PASS', HTTP_AUTH_PW ? HTTP_AUTH_PW : safeGet (@$_POST['password'], SIZE_PASS, false));
 
@@ -114,7 +114,6 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 //get the lock status of the current forum we’re in:
 //"threads"	- only users in "mods.txt" / "members.txt" can start threads, but anybody can reply
 //"posts"	- only users in "mods.txt" / "members.txt" can start threads or reply
-//"private"	- only users in "mods.txt" / "members.txt" can enter and use the forum, it is hidden from everybody else
 define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 
 //get the list of moderators:
@@ -165,14 +164,6 @@ if (!HTTP_AUTH && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 	//we don't die here so that if they cancel the login prompt, they won't get a blank page
-}
-
-//if the forum is private, check the current user and issue an auth request if not signed in or not allowed access
-if (FORUM_LOCK == 'private' && !(IS_MOD || IS_MEMBER)) {
-	header ('WWW-Authenticate: Basic');
-	header ('HTTP/1.0 401 Unauthorized');
-	//todo: a proper error page, if I make a splash/login screen for a private root-forum
-	die ("Authorisation required.");
 }
 
 //stop browsers caching, so you don’t have to refresh every time to see changes

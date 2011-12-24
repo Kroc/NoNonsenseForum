@@ -1,3 +1,9 @@
+v11	24.DEC.11
+*	WARNING: Removed "private" forum lock-type due to basic lack of privacy without htpasswd
+	(anybody can just access the "index.xml" file to view posts); will leave this feature
+	up to admins to implement with htpasswd. If you have any existing private forums,
+	please implement htpasswd protection before upgrading!
+
 v10	24.DEC.11
 *	Theme configuration moved to '/themes/*/theme.config.default.php'
 *	Forum description / custom HTML via 'about.html'

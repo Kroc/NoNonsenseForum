@@ -2,7 +2,7 @@
 $PAGES = pageList (PAGE, PAGES);
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v10 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo $HEADER['TITLE'].(PAGE>1 ? ' # '.PAGE : '');?></title>
@@ -68,10 +68,6 @@ $PAGES = pageList (PAGE, PAGES);
 <p id="rights">
 	Only <a href="#mods">moderators or members</a> can reply to this thread.
 	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
-</p>
-<?php elseif (FORUM_LOCK == 'private'): ?>
-<p id="rights">
-	Only <a href="#mods">moderators or members</a> can access and reply to this thread.
 </p>
 <?php endif; ?>
 

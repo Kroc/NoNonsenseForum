@@ -1,4 +1,4 @@
-NoNonsense Forum v10 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum v11 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -231,7 +231,7 @@ theraje
 SpeedoJoe
 
 *       Mods in the root forum ("/mods.txt") can moderate in all
-        sub-forums, including private ones
+        sub-forums, including locked ones
 
 *       Mods in sub-forums ("/news/mods.txt") can only moderate in that
         sub-forum
@@ -268,11 +268,6 @@ The root forum and / or sub-forums can be individually restricted:
         reply. Anybody can view the forum, but won't be able to post
         unless added as a member or moderator
 
-"private"
-*       The forum is not accessible to the public, only moderators or
-        members can access and post in the forum. You will be prompted
-        to sign-in when trying to access the forum
-
 [6.1]   Members:
 ------------------------------------------------------------------------
 Members are users who are not restricted in a locked forum, but do not
@@ -285,25 +280,22 @@ have moderator powers; they are your participants in restricted forums.
 *       Members of the root forum are not automatically members of all
         sub-forums (unlike mods)
         
-*       Members must sign-in to be able to post in locked forums,
-        or to access private forums
+*       Members must sign-in to be able to post in locked forums
 
 [6.2]	A note on private forums:
 ------------------------------------------------------------------------
-If you make a forum / sub-forum private, whilst visitors to the site
-will not be able to access the forum, the files within are not directly
-protected, such that if someone were to know the exact file name of a
-thread, they would be able to view it without being a moderator or
-member.
+NoNonsense Forum does not provide an option for private forums that
+(can only be accessed by members) because the index RSS feed (which
+includes the text of posts being made in the forum) cannot be protected
+without the use of ".htpasswd" based password-protection.
 
-Though that is generally unlikely, you can increase the security of
-private forums by setting up ".htpasswd" access in the private forum /
-sub-forum. The users defined in the ".htpasswd" file will have to have
-the same password as their NoNonsense Forum username.
+If you want a private forum / sub-forum, protect the relevant directory
+using ".htpasswd". Instructions are not provided here on how to
+configure ".htpasswd" protection as it requires basic server admin
+skills and some knowledge of using ".htaccess" files.
 
-Instructions are not provided here on how to configure ".htpasswd"
-protection as it requires basic server admin skills and some knowledge
-of using "htaccess" files.
+The users defined in the ".htpasswd" file will have to have the same
+password as their NoNonsense Forum username.
 
 
 [7]	Customising:

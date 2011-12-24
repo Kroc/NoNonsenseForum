@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v10 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -98,10 +98,10 @@ if (!PATH) foreach (array_filter (
 		'URL'		=> safeURL (FORUM_PATH."$FOLDER/"),
 		'NAME'		=> safeHTML ($FOLDER),
 		'LOCK'		=> $lock,
-		'HAS_POST'	=> $lock != 'private' && (bool) $last	//if there is any last-post info for this sub-forum
+		'HAS_POST'	=> (bool) $last				//if there is any last-post info for this sub-forum
 		
-	//don’t include last-post info if no threads in sub-forum, or sub-forum is private
-	) + ($lock != 'private' && (bool) $last ? array (
+	//don’t include last-post info if no threads in sub-forum
+	) + ((bool) $last ? array (
 		'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
 		'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 		'AUTHOR'	=> safeHTML ($last->author),

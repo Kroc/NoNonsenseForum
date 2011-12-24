@@ -2,7 +2,7 @@
 $PAGES = pageList (PAGE, PAGES);
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
-<!-- NoNonsense Forum v10 © Copyright (CC-BY) Kroc Camen 2011
+<!-- NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
      licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
      you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 <title><?php echo (PATH ? PATH : safeHTML (FORUM_NAME)).(PAGE>1 ? ' # '.PAGE : '');?></title>
@@ -64,9 +64,6 @@ $PAGES = pageList (PAGE, PAGES);
 			<img src="<?php echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/icons/security_open_16.png" width="16" height="16" alt="Replies-only:" title="Replies-only" />
 <?php elseif ($FOLDER['LOCK'] == 'posts'): ?>
 			<img src="<?php echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/icons/security_closed_16.png" width="16" height="16" alt="Read-only:" title="Read-only" />
-<?php elseif ($FOLDER['LOCK'] == 'private'): ?>
-			<img src="<?php echo FORUM_PATH;?>themes/<?php echo FORUM_THEME;?>/icons/security_closed_16.png" width="16" height="16" alt="" title="Private—members only" />
-			<span class="private">Private:</span>
 <?php endif;
       if ($FOLDER['HAS_POST']): ?>
 			<a href="<?php echo $FOLDER['POSTLINK'];?>"><time datetime="<?php echo $FOLDER['DATETIME'];?>"><?php echo $FOLDER['TIME'];?></time></a>
@@ -88,10 +85,6 @@ $PAGES = pageList (PAGE, PAGES);
 <p id="rights">
 	Only <a href="#mods">moderators or members</a> can participate here.
 	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
-</p>
-<?php elseif (FORUM_LOCK == 'private'): ?>
-<p id="rights">
-	Only <a href="#mods">moderators or members</a> can access and participate here.
 </p>
 <?php endif;?>
 

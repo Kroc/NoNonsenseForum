@@ -1,5 +1,5 @@
-NoNonsense Forum v10 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
-====================================================================
+NoNonsense Forum v11 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+=====================================================================
 The PHP / HTML / CSS and other resources of this project are licensed
 under a Creative Commons 3.0 Attribution Unported licence (unless
 otherwise stated), viewable here:
