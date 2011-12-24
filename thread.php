@@ -167,7 +167,7 @@ if (count ($thread)) {
 	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//number of pages (stickies are not included in the count as they appear on all pages)
-	define (PAGES, ceil (count ($thread) / FORUM_POSTS));
+	define ('PAGES', ceil (count ($thread) / FORUM_POSTS));
 	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	

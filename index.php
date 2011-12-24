@@ -133,7 +133,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	}
 	
 	//number of pages (stickies are not included in the count as they appear on all pages)
-	define (PAGES, ceil (count ($threads) / FORUM_THREADS));
+	define ('PAGES', ceil (count ($threads) / FORUM_THREADS));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
@@ -159,7 +159,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		);
 	}
 } else {
-	define (PAGES, 1);
+	define ('PAGES', 1);
 }
 
 /* new thread form
