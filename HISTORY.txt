@@ -1,3 +1,10 @@
+v10	24.DEC.11
+*	Theme configuration moved to '/themes/*/theme.config.default.php'
+*	Forum description / custom HTML via 'about.html'
+*	Custom CSS support via 'custom.css' file
+*	Custom favicon support
+*	Custom logo support in greyscale theme
+
 v9	21.DEC.11
 *	More markup syntax supported: (with thanks to Richard Van Velzen)
 	`:: title`, `---` (divider), `*bold*` & `_italic_`
