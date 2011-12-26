@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:nnf="http://camendesign.com/nononsense_forum"><head>
+	<meta charset="utf-8" />
+	<!-- NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2011
+	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
+	<title>NoNonsense Forum</title>
+	<!-- get rid of IE site compatibility button -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
+	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
+	<link rel="alternate" type="application/rss+xml" href="index.xml" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+	<!-- Microsoft’s insane IE9 pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
+	<meta name="application-name" content="NoNonsense Forum" />
+	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
+	<meta name="msapplication-window" content="width=1024;height=600" />
+	<meta name="msapplication-navbutton-color" content="#222" />
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head><body>
+<!-- =================================================================================================================== -->
+<header id="mast">
+	<h1><a href="/" nnf:template="root">
+		<img nnf:template="logo" src="/themes/greyscale/icons/title.png" width="32" height="32" alt="" /><!--
+		--><nnf:forum-name>NoNonsense Forum</nnf:forum-name>
+	</a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/icons/go.png" value="Search" width="20" height="20" /><!--
+	--></form>
+	
+	<nav><p>
+		<a id="add" href="#new" nnf:template="can_post">Add Thread</a>
+		<a id="rss" href="index.xml">RSS</a>
+	</p><p>
+		<a id="index" href="/" nnf:template="root">Index</a>
+		<span nnf:template="subforum"> » <nnf:subforum-name>Sub-forum</nnf:subforum-name></span>
+	</p></nav>
+</header>
+<section id="about" nnf:template="about"><p>
+	This is <a href="http://camendesign.com">camendesign.com</a>’s forum to discuss technology and all things
+	site-related, particularly <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a> (which this
+	forum uses), and for those interested in Kroc’s work to hang out and to get to know each other better.
+</p></section>
+<!-- =================================================================================================================== -->
+<section id="folders" nnf:template="folders">
+	<h1>Sub-Forums</h1>
+	<ol class="ui"><li nnf:template="folder">
+		<a nnf:template="folder-name" href="/sub-forum/">sub-forum</a>
+		<img nnf:template="lock-threads" src="/themes/greyscale/icons/security_open_16.png" width="16" height="16" alt="Replies-only:" title="Replies-only" /><img nnf:template="lock-posts" src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Read-only:" title="Read-only" />
+		<span nnf:template="subforum-post"><a nnf:template="post-link" href="/forum/thread#postid"><time nnf:template="post-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a> <b nnf:template="post-author">author</b></span>
+	</li></ol>
+</section>
+
+<p id="rights" nnf:template="rights">
+	Only <a href="#mods">moderators or members</a> can participate here.
+	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+</p>
+
+<section id="threads" nnf:template="threads">
+	<h1>Threads</h1>
+	<nav><ol class="pages">
+		<li><em>1</em></li>
+		<li><a href="?page=2#threads">2</a></li>
+		<li>…</li>
+		<li><a href="?page=5#threads">5</a></li>
+	</ol></nav>
+	<ol class="ui">
+		<li class="sticky">
+			<a href="/releases_change_log#14ufwipfts3k"><time datetime="2011-12-24T19:22:46+00:00">24 Dec ’11 · 19:22</time></a>
+			<i>5</i> <b class="mod">Kroc</b>
+			<img src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Locked:" />
+			<a href="releases_change_log?page=last">NoNonsense Forum Release Announcements</a>
+		</li>
+	</ol>
+	<nav><ol class="pages">
+		<li><em>1</em></li>
+		<li><a href="?page=2#threads">2</a></li>
+		<li>…</li>
+		<li><a href="?page=5#threads">5</a></li>
+	</ol></nav>
+</section>
+<!-- =================================================================================================================== -->
+<section id="new" nnf:template="can_post">
+	<h1>Add Thread</h1>
+	<form method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+		<p id="ptitle">
+			<label for="title">Title:</label>
+			<input name="title" id="title" type="text" size="28" tabindex="1"
+			       maxlength="80" required="required" autocomplete="off"
+			       placeholder="Type thread title here…" value="" />
+		</p>
+		
+		<div id="rightcol">
+		<label for="user">You are signed in as:</label>
+		<p id="puser">
+			<input name="username" id="user" type="text" size="28" maxlength="18"
+			       disabled="disabled" value="Kroc" />
+		</p>
+		<p id="ok">(Quit your browser or clear the browser cache to sign out.)</p>
+		<p id="markup">
+			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
+		</p>
+		
+		</div><div id="leftcol">
+		
+		<p id="ptext">
+			<label for="text">Message:</label>
+			<div id="wtext">
+				<textarea name="text" id="text" cols="40" rows="14" tabindex="2"
+				          maxlength="50000" required="required" placeholder="Type your message here…"
+				></textarea>
+			</div>
+		</p>
+		
+		</div>
+		
+		<p id="psubmit"><label for="submit">Submit
+			<input id="submit" name="submit" type="image" src="/themes/greyscale/icons/submit.png"
+			       width="40" height="40" tabindex="5" value="&gt;" />
+		</label></p>
+	</form>
+</section>
+<!-- =================================================================================================================== -->
+<div id="mods">
+	<p>
+		Your friendly neighbourhood moderators:
+		<b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b>
+	</p>
+</div>
+<footer><p>
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p><p id="signin">
+	Signed in as<br /><b>Kroc</b>
+</p></footer>
+<script><!--
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
+}
+--></script>
+</body></html>

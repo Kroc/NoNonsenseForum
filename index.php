@@ -69,8 +69,164 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 }
 
 /* ====================================================================================================================== */
-//the about text for a forum, if present
-$ABOUT = @file_get_contents ('about.html');
+
+//load the template into DOM where we can manipulate it:
+//`NNFDocument` is our customised form of the usual `DOMDocument` with added features for simplicity; see 'shared.php'
+$html = new NNFDocument ();
+$html->load (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html', LIBXML_COMPACT | LIBXML_NONET) or die (
+	"Cannot load template, invalid XHTML"
+);
+//create an xpath object tied to the template's markup, which we will use to do most element-finding
+//this is also a customised version to add extra methods for ease of use, see 'shared.php' for details
+$xpath = new NNFXPath ($html);
+
+//fix all absolute URLs (i.e. if NNF is running in a folder):
+foreach ($xpath->query ('//*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
+	//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
+	$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
+;
+
+/* HTML <head>
+   ---------------------------------------------------------------------------------------------------------------------- */
+//HTML title (= forum / sub-forum name and page number)
+$xpath->setValue ('/html/head/title', (PATH ? PATH : safeHTML (FORUM_NAME)).(PAGE>1 ? ' # '.PAGE : ''));
+//application title (= forum / sub-forum name):
+//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
+$xpath->setValue ('//meta[@name="application-name"]/@content', PATH ? safeString (PATH) : safeString (FORUM_NAME));
+//application URL (where the pinned site opens at)
+$xpath->setValue ('//meta[@name="msapplication-starturl"]/@content', FORUM_URL.PATH_URL);
+
+//remove 'custom.css' stylesheet if 'custom.css' is missing
+if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
+	$xpath->removeNode ('//link[contains(@href,"custom.css")]')
+;
+
+/* site header
+   ---------------------------------------------------------------------------------------------------------------------- */
+//forum name
+$xpath->replaceNode ('//nnf:template',				safeHTML (FORUM_NAME));
+//where the forum logo and index links to, usually just "/", but this will be different if the forum is in a sub-folder
+$xpath->setValue ('//a[@nnf:template="root"]/@href',		FORUM_PATH);
+//the forum logo
+$xpath->setValue ('//img[@nnf:template="logo"]/@src',		FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO);
+
+//if you're using a Google search, change it to HTTPS if enforced
+if (FORUM_HTTPS) $xpath->setValue (
+	'//form/@action["http://google.com/search"]',		'https://encrypted.google.com/search'
+);
+//set the forum URL for Google search-by-site
+$xpath->setValue ('//input[@name="as_sitesearch"]/@value',	safeString ($_SERVER['HTTP_HOST']));
+
+//are we in a sub-folder?
+if (PATH) {
+	//add the sub-forum name to the breadcrumb navigation
+	$xpath->replaceNode ('//nnf:subforum-name', PATH);
+} else {
+	//not in a sub-forum -- remove the breadcrumb navigation
+	$xpath->removeNode ('//*[@nnf:template="subforum"]');
+}
+
+//if threads can't be added (forum is disabled / locked, user is not moderator / member),
+//remove the "add thread" link and anything else (like the input forum) related to posting
+if (!CAN_POST) $xpath->removeNode ('//*[@nnf:template="can_post"]');
+
+//an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
+if (file_exists ('about.html')) {
+	//load the 'about.html' file and insert it into the page
+	$about = $html->createDocumentFragment ();
+	$about->appendXML (file_get_contents ('about.html'));
+	$xpath->setValue ('//*[@nnf:template="about"]', $about);
+} else {
+	//no file? remove the element reserved for it
+	$xpath->removeNode ('//*[@nnf:template="about"]');
+}
+
+/* sub-forums
+   ---------------------------------------------------------------------------------------------------------------------- */
+//don’t allow sub-sub-forums (yet)
+if (!PATH && $folders = array_filter (
+	//get a list of folders:
+	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
+	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+)) {
+	foreach ($folders as $FOLDER) {
+		//the sorting (below) requires we be in the directory at hand to use `filemtime`
+		chdir ($FOLDER);
+		
+		//check if / how the forum is locked
+		$lock = trim (@file_get_contents ('locked.txt'));
+		
+		//get a list of files in the folder to determine which one is newest
+		$threads = preg_grep ('/\.rss$/', scandir ('.'));
+		//order by last modified date
+		array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+		
+		//read the newest thread (folder could be empty though)
+		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
+		
+		//copy the dummy template provided
+		$folder = $xpath->query ('//*[@nnf:template="folder"]')->item (0)->cloneNode (true);
+		
+		//name of sub-forum
+		$xpath->setValue ('//a[@nnf:template="folder-name"]', safeHTML ($FOLDER));
+		//URL to the sub-forum
+		$xpath->setValue ('//a[@nnf:template="folder-name"]/@href', safeURL (FORUM_PATH."$FOLDER/"), $folder);
+		//remove the lock icons if not required
+		if ($lock != 'threads') $xpath->removeNode ('//*[@nnf:template="lock-threads"]', $folder);
+		if ($lock != 'posts')   $xpath->removeNode ('//*[@nnf:template="lock-posts"]',   $folder);
+		//is there a last post in this sub-forum?
+		if ((bool) $last) {
+			//last post author name
+			$xpath->setValue ('//*[@nnf:template="post-author"]', safeHTML ($last->author), $folder);
+			//is the author a mod?
+			if (isMod ($last->author)) $xpath->addClass ('//*[@nnf:template="post-author"]', 'mod');
+			//last post time (human readable)
+			$xpath->setValue ('//*[@nnf:template="post-time"]',
+				date (DATE_FORMAT, strtotime ($last->pubDate)),
+			$folder);
+			//last post time (machine readable)
+			$xpath->setValue ('//*[@nnf:template="post-time"]/@datetime',
+				date ('c', strtotime ($last->pubDate)),
+			$folder);
+			//link to the last post
+			$xpath->setValue ('//*[@nnf:template="post-link"]/@href',
+				substr ($last->link, strpos ($last->link, '/', 9)),
+			$folder);
+		} else {
+			//no last post, remove the template for it
+			$xpath->removeNode ('//*[@nnf:template="subforum-post"]', $folder);
+		}
+		
+		//attach the templated sub-forum item to the list
+		$xpath->query ('//*[@nnf:template="folder"]')->item (0)->parentNode->appendChild ($folder);
+		
+		chdir ('..');
+	}
+	//remove the dummy template
+	$folder->parentNode->removeChild ($folder);
+	
+} else {
+	//no sub-forums, remove the template stuff
+	$xpath->removeNode ('//*[@nnf:template="folders"]');
+}
+
+//remove `nnf:template` attributes
+$xpath->removeAttr ('//@nnf:template');
+
+die ($html->saveXML ());
+
+
+
+
+
+
+
+
+
+
+
+
+/* ====================================================================================================================== */
 
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -133,7 +289,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	}
 	
 	//number of pages (stickies are not included in the count as they appear on all pages)
-	define (PAGES, ceil (count ($threads) / FORUM_THREADS));
+	define ('PAGES', ceil (count ($threads) / FORUM_THREADS));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
@@ -159,7 +315,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		);
 	}
 } else {
-	define (PAGES, 1);
+	define ('PAGES', 1);
 }
 
 /* new thread form

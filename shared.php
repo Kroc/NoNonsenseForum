@@ -411,13 +411,68 @@ function indexRSS () {
 class DXML extends SimpleXMLElement {
 	//this concept modifed from:
 	//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-	public function insertBefore ($name, $value=null) {
+	public function insertBefore ($name, $value=NULL) {
 		//import the SimpleXML into DOM proper, which does have an `insertBefore` method
 		$dom = dom_import_simplexml ($this);
 		//add the item
 		$new = $dom->parentNode->insertBefore ($dom->ownerDocument->createElement ($name, $value), $dom);
 		//convert back to SimpleXML and return
 		return simplexml_import_dom ($new, get_class ($this));
+	}
+}
+
+class NNFDocument extends DOMDocument {
+	public function saveXML ($DOMNode=NULL, $options=0) {
+		return preg_replace (array (
+			'/^<\?xml.*?>\n/',				//1: remove XML prolog
+			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
+			'/<(div|[ou]l|textarea)(.*?) ?\/>/'		//3: fix broken self-closed tags
+		), array (
+			'',
+			'<$1 />',
+			'<$1$2></$1>'
+		), parent::saveXML ($DOMNode, $options));
+	}
+}
+
+class NNFXPath extends DOMXPath {
+	public function setValue ($query, $value, $DOMNode=NULL) {
+		foreach ($this->query ($query, $DOMNode) as $node) if (is_string ($value)) {
+			$node->nodeValue = $value;
+		} else {
+			$node->nodeValue = '';
+			$node->appendChild ($value);
+		}
+	}
+	
+	public function replaceNode ($query, $value, $DOMNode=NULL) {
+		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->replaceChild (
+			//if just raw text is provided, use that, if it’s a node / documentFragment then use that
+			is_string ($value) ? new DOMText ($value) : $value,
+		$node);
+	}
+	
+	public function removeNode ($query, $DOMNode=NULL) {
+		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->removeChild ($node);
+	}
+	
+	public function removeAttr ($query, $DOMNode=NULL) {
+		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->removeAttributeNode ($node); 
+	}
+	
+	public function addClass ($query, $new_class, $DOMNode=NULL) {
+		foreach ($this->query ($query, $DOMNode) as $node) {
+			//first determine if there is a 'class' attribute already?
+			if ($node->hasAttributes () && $class = $node->getAttribute ('class')) {
+				//if the new class is not already in the list, add it in
+				if (!in_array ($new_class, explode (' ', $class)))
+					$node->setAttribute ('class', "$class $new_class")
+				;
+			} else {
+				//no class attribute to begin with, add it
+				$node->setAttribute ('class', $new_class);
+			}
+		};
 	}
 }
 
