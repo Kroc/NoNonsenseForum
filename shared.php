@@ -421,13 +421,35 @@ class DXML extends SimpleXMLElement {
 	}
 }
 
-class NNFDocument extends DOMDocument {
-	public function __construct () {
-		//can define an xpath here and register other NNF classes so that we can do
-		//`DOMElement->xpath (...)` rather than `xpath->query ('...', DOMElement)`
+class NNFTemplate extends DOMDocument {
+	public $xpath;
+	
+	public function __construct ($filepath) {
+		parent::__construct ();
+		//tell DOMDocument / XPath to use our classes instead of its own
+		$this->registerNodeClass ('DOMElement',  'NNFElement');
+		$this->registerNodeClass ('DOMAttr',     'NNFAttr');
+		//load the template file to work with
+		$this->load ($filepath, LIBXML_COMPACT | LIBXML_NONET) or trigger_error (
+			"Template '$filename' is invalid XML", E_USER_ERROR
+		);
+		//create an xpath object linked to this template
+		$this->xpath = new DOMXPath ($this);
 	}
 	
-	public function saveXML ($DOMNode=NULL, $options=0) {
+	public function set ($items) {
+		$this->documentElement->set ($items);
+	}
+	
+	public function setValue ($query, $value, $DOMNode=NULL) {
+		$this->documentElement->setValue ($query, $value);
+	}
+	
+	public function remove ($query) {
+		$this->documentElement->remove ($query);
+	}
+	
+	public function getHTML ($DOMNode=NULL) {
 		return preg_replace (array (
 			'/^<\?xml.*?>\n/',				//1: remove XML prolog
 			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
@@ -436,45 +458,25 @@ class NNFDocument extends DOMDocument {
 			'',
 			'<$1 />',
 			'<$1$2></$1>'
-		), parent::saveXML ($DOMNode, $options));
-	}
-	
-	public function __destruct () {
-		//can do the auto-removal of NNF template attributes here
+		), $this->saveXML ($DOMNode));
 	}
 }
 
-class NNFXPath extends DOMXPath {
-	public function set ($items, $DOMNode=NULL) {
-		foreach ($items as $query => $value) $this->setValue ($query, $value, $DOMNode);
+class NNFElement extends DOMElement {
+	public function xpath ($query) {
+		return $this->ownerDocument->xpath->query ($query, $this);
 	}
 	
-	public function setValue ($query, $value, $DOMNode=NULL) {
-		foreach ($this->query ($query, $DOMNode) as $node) if (is_string ($value)) {
-			$node->nodeValue = $value;
-		} else {
-			$node->nodeValue = '';
-			$node->appendChild ($value);
-		}
+	public function set ($items) {
+		foreach ($items as $query => $value) $this->setValue ($query, $value);
 	}
 	
-	public function replaceNode ($query, $value, $DOMNode=NULL) {
-		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->replaceChild (
-			//if just raw text is provided, use that, if it’s a node / documentFragment then use that
-			is_string ($value) ? new DOMText ($value) : $value,
-		$node);
+	public function setValue ($query, $value) {
+		foreach ($this->xpath ($query) as $node) $node->nodeValue = $value;
 	}
 	
-	public function removeNode ($query, $DOMNode=NULL) {
-		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->removeChild ($node);
-	}
-	
-	public function removeAttr ($query, $DOMNode=NULL) {
-		foreach ($this->query ($query, $DOMNode) as $node) $node->parentNode->removeAttributeNode ($node); 
-	}
-	
-	public function addClass ($query, $new_class, $DOMNode=NULL) {
-		foreach ($this->query ($query, $DOMNode) as $node) {
+	public function addClass ($query, $new_class) {
+		foreach ($this->xpath ($query) as $node) {
 			//first determine if there is a 'class' attribute already?
 			if ($node->hasAttributes () && $class = $node->getAttribute ('class')) {
 				//if the new class is not already in the list, add it in
@@ -486,6 +488,20 @@ class NNFXPath extends DOMXPath {
 				$node->setAttribute ('class', $new_class);
 			}
 		};
+	}
+	
+	public function remove ($query) {
+		foreach ($this->xpath ($query) as $node) $node->removeNode ();
+	}
+	
+	public function removeNode () {
+		$this->parentNode->removeChild ($this);
+	}
+}
+
+class NNFAttr extends DOMAttr {
+	public function removeNode () {
+		$this->parentNode->removeAttributeNode ($this);
 	}
 }
 
