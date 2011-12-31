@@ -88,13 +88,16 @@ foreach ($xpath->query ('//*/@href|//*/@src') as $node) if ($node->nodeValue[0] 
 
 /* HTML <head>
    ---------------------------------------------------------------------------------------------------------------------- */
-//HTML title (= forum / sub-forum name and page number)
-$xpath->setValue ('/html/head/title', (PATH ? PATH : safeHTML (FORUM_NAME)).(PAGE>1 ? ' # '.PAGE : ''));
-//application title (= forum / sub-forum name):
-//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-$xpath->setValue ('//meta[@name="application-name"]/@content', PATH ? safeString (PATH) : safeString (FORUM_NAME));
-//application URL (where the pinned site opens at)
-$xpath->setValue ('//meta[@name="msapplication-starturl"]/@content', FORUM_URL.PATH_URL);
+$xpath->set (array (
+	//HTML title (= forum / sub-forum name and page number)
+	'/html/head/title'					=> (PATH ? PATH : safeHTML (FORUM_NAME)).
+								   (PAGE>1 ? ' # '.PAGE : ''),
+	//application title (= forum / sub-forum name):
+	//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
+	'//meta[@name="application-name"]/@content'		=> PATH ? safeString (PATH) : safeString (FORUM_NAME),
+	//application URL (where the pinned site opens at)
+	'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
+));
 
 //remove 'custom.css' stylesheet if 'custom.css' is missing
 if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
@@ -103,12 +106,14 @@ if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
 
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
-//forum name
-$xpath->replaceNode ('//nnf:template',				safeHTML (FORUM_NAME));
-//where the forum logo and index links to, usually just "/", but this will be different if the forum is in a sub-folder
-$xpath->setValue ('//a[@nnf:template="root"]/@href',		FORUM_PATH);
-//the forum logo
-$xpath->setValue ('//img[@nnf:template="logo"]/@src',		FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO);
+$xpath->set (array (
+	//forum name
+	'//nnf:template'					=> safeHTML (FORUM_NAME),
+	//where the forum logo and index links to, usually just "/", but will be different if the forum is in a sub-folder
+	'//a[@nnf:template="root"]/@href'			=> FORUM_PATH,
+	//the forum logo
+	'//img[@nnf:template="logo"]/@src'			=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
+));
 
 //if you're using a Google search, change it to HTTPS if enforced
 if (FORUM_HTTPS) $xpath->setValue (
@@ -167,31 +172,29 @@ if (!PATH && $folders = array_filter (
 		//copy the dummy template provided
 		$folder = $xpath->query ('//*[@nnf:template="folder"]')->item (0)->cloneNode (true);
 		
-		//name of sub-forum
-		$xpath->setValue ('//a[@nnf:template="folder-name"]', safeHTML ($FOLDER));
-		//URL to the sub-forum
-		$xpath->setValue ('//a[@nnf:template="folder-name"]/@href', safeURL (FORUM_PATH."$FOLDER/"), $folder);
+		$xpath->set (array (
+			'//a[@nnf:template="folder-name"]'	 => safeHTML ($FOLDER),			//name of sub-forum
+			'//a[@nnf:template="folder-name"]/@href' => safeURL (FORUM_PATH."$FOLDER/")	//URL to it
+		), $folder);
+		
 		//remove the lock icons if not required
 		if ($lock != 'threads') $xpath->removeNode ('//*[@nnf:template="lock-threads"]', $folder);
 		if ($lock != 'posts')   $xpath->removeNode ('//*[@nnf:template="lock-posts"]',   $folder);
 		//is there a last post in this sub-forum?
 		if ((bool) $last) {
-			//last post author name
-			$xpath->setValue ('//*[@nnf:template="post-author"]', safeHTML ($last->author), $folder);
 			//is the author a mod?
 			if (isMod ($last->author)) $xpath->addClass ('//*[@nnf:template="post-author"]', 'mod');
-			//last post time (human readable)
-			$xpath->setValue ('//*[@nnf:template="post-time"]',
-				date (DATE_FORMAT, strtotime ($last->pubDate)),
-			$folder);
-			//last post time (machine readable)
-			$xpath->setValue ('//*[@nnf:template="post-time"]/@datetime',
-				date ('c', strtotime ($last->pubDate)),
-			$folder);
-			//link to the last post
-			$xpath->setValue ('//*[@nnf:template="post-link"]/@href',
-				substr ($last->link, strpos ($last->link, '/', 9)),
-			$folder);
+			
+			$xpath->set (array (
+				//last post author name
+				'//*[@nnf:template="post-author"]' => safeHTML ($last->author),
+				//last post time (human readable)
+				'//*[@nnf:template="post-time"]' => date (DATE_FORMAT, strtotime ($last->pubDate)),
+				//last post time (machine readable)
+				'//*[@nnf:template="post-time"]/@datetime' => date ('c', strtotime ($last->pubDate)),
+				//link to the last post
+				'//*[@nnf:template="post-link"]/@href' => substr ($last->link, strpos ($last->link, '/', 9)),
+			), $folder);
 		} else {
 			//no last post, remove the template for it
 			$xpath->removeNode ('//*[@nnf:template="subforum-post"]', $folder);

@@ -422,6 +422,11 @@ class DXML extends SimpleXMLElement {
 }
 
 class NNFDocument extends DOMDocument {
+	public function __construct () {
+		//can define an xpath here and register other NNF classes so that we can do
+		//`DOMElement->xpath (...)` rather than `xpath->query ('...', DOMElement)`
+	}
+	
 	public function saveXML ($DOMNode=NULL, $options=0) {
 		return preg_replace (array (
 			'/^<\?xml.*?>\n/',				//1: remove XML prolog
@@ -433,9 +438,17 @@ class NNFDocument extends DOMDocument {
 			'<$1$2></$1>'
 		), parent::saveXML ($DOMNode, $options));
 	}
+	
+	public function __destruct () {
+		//can do the auto-removal of NNF template attributes here
+	}
 }
 
 class NNFXPath extends DOMXPath {
+	public function set ($items, $DOMNode=NULL) {
+		foreach ($items as $query => $value) $this->setValue ($query, $value, $DOMNode);
+	}
+	
 	public function setValue ($query, $value, $DOMNode=NULL) {
 		foreach ($this->query ($query, $DOMNode) as $node) if (is_string ($value)) {
 			$node->nodeValue = $value;
