@@ -444,6 +444,20 @@ class NNFTemplate extends DOMDocument {
 		;
 	}
 	
+	static public function nnf2xpath ($name) {
+		if (substr ($name, 0, 6) == "xpath:") {
+			return substr ($name, 6);
+		} else {
+			preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $name, $m);
+			return
+				".//".
+				(@$m[1] ? $m[1] : "*").
+				'[@nnf:data="'.$m[2].'"]'.
+				(@$m[3] ? '/'.$m[3] : '')
+			;
+		}
+	}
+	
 	public function set ($items) {
 		$this->documentElement->set ($items);
 	}
@@ -477,7 +491,7 @@ class NNFElement extends DOMElement {
 	//allow you to run an xpath query off of the node (i.e. `DOMNode->xpath ('...')`),
 	//instead of using that annoying backward `DOMXPath->query ('...', DOMNode)` syntax
 	public function xpath ($query) {
-		return $this->ownerDocument->xpath->query ($query, $this);
+		return $this->ownerDocument->xpath->query (NNFTemplate::nnf2xpath ($query), $this);
 	}
 	
 	//run multiple xpath queries and set node values:

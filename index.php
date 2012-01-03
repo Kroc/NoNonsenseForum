@@ -77,64 +77,62 @@ $nnf = new NNFTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
    ---------------------------------------------------------------------------------------------------------------------- */
 $nnf->set (array (
 	//HTML title (= forum / sub-forum name and page number)
-	'/html/head/title'					=> (PATH ? PATH : safeHTML (FORUM_NAME)).
+	'xpath:/html/head/title'				=> (PATH ? PATH : safeHTML (FORUM_NAME)).
 								   (PAGE>1 ? ' # '.PAGE : ''),
 	//application title (= forum / sub-forum name):
 	//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-	'//meta[@name="application-name"]/@content'		=> PATH ? safeString (PATH) : safeString (FORUM_NAME),
+	'xpath://meta[@name="application-name"]/@content'	=> PATH ? safeString (PATH) : safeString (FORUM_NAME),
 	//application URL (where the pinned site opens at)
-	'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
+	'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 ));
 
 //remove 'custom.css' stylesheet if 'custom.css' is missing
 if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-	$nnf->remove ('//link[contains(@href,"custom.css")]')
+	$nnf->remove ('xpath://link[contains(@href,"custom.css")]')
 ;
 
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
 $nnf->set (array (
-	//forum name
-	'//*[@nnf:data="forum-name"]'	=> safeHTML (FORUM_NAME),
-	//the forum logo
-	'//img[@nnf:data="logo"]/@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
+	'forum-name'	=> safeHTML (FORUM_NAME),					//forum name
+	'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO	//the forum logo
 ));
 
 //are we in a sub-folder?
 if (PATH) {
 	//if so, add the sub-forum name to the breadcrumb navigation,
-	$nnf->setValue ('//*[@nnf:data="subforum-name"]', PATH);
+	$nnf->setValue ('subforum-name', PATH);
 } else {
 	//otherwise -- remove the breadcrumb navigation
-	$nnf->remove ('//*[@nnf:data="subforum"]');
+	$nnf->remove ('subforum');
 }
 
 //search form:
 $nnf->set (array (
 	//if you're using a Google search, change it to HTTPS if enforced
-	'//form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-										: 'http://google.com/search',
+	'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
+											: 'http://google.com/search',
 	//set the forum URL for Google search-by-site
-	'//input[@name="as_sitesearch"]/@value'			=> safeString ($_SERVER['HTTP_HOST'])
+	'xpath://input[@name="as_sitesearch"]/@value'			=> safeString ($_SERVER['HTTP_HOST'])
 ));
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
 //remove the "add thread" link and anything else (like the input forum) related to posting
-if (!CAN_POST) $nnf->remove ('//*[@nnf:data="can_post"]');
+if (!CAN_POST) $nnf->remove ('can_post');
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
 	//load the 'about.html' file and insert it into the page
-	$nnf->setHTML ('//*[@nnf:data="about"]', file_get_contents ('about.html'));
+	$nnf->setHTML ('about', file_get_contents ('about.html'));
 } else {
 	//no file? remove the element reserved for it
-	$nnf->remove ('//*[@nnf:data="about"]');
+	$nnf->remove ('about');
 }
 
 //if the forum is not thread-locked (only mods can start new threads, but anybody can reply) then remove the warning message
-if (FORUM_LOCK != 'threads') $nnf->remove ('//*[@nnf:data="forum-lock-threads"]');
+if (FORUM_LOCK != 'threads') $nnf->remove ('forum-lock-threads');
 //if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts')   $nnf->remove ('//*[@nnf:data="forum-lock-posts"]');
+if (FORUM_LOCK != 'posts')   $nnf->remove ('forum-lock-posts');
 
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -166,30 +164,30 @@ if (!PATH && $folders = array_filter (
 		$item = $dummy->cloneNode (true);
 		
 		$item->set (array (
-			'.//a[@nnf:data="folder-name"]'		=> safeHTML ($FOLDER),			//name of sub-forum
-			'.//a[@nnf:data="folder-name"]/@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
+			'a:folder-name'		=> safeHTML ($FOLDER),			//name of sub-forum
+			'a:folder-name@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
 		));
 		
 		//remove the lock icons if not required
-		if ($lock != 'threads') $item->remove ('.//*[@nnf:data="lock-threads"]');
-		if ($lock != 'posts')   $item->remove ('.//*[@nnf:data="lock-posts"]');
+		if ($lock != 'threads') $item->remove ('lock-threads');
+		if ($lock != 'posts')   $item->remove ('lock-posts');
 		//is there a last post in this sub-forum?
 		if ((bool) $last) {
 			$item->set (array (
 				//last post author name
-				'.//*[@nnf:data="post-author"]'		=> safeHTML ($last->author),
+				'post-author'			=> safeHTML ($last->author),
 				//last post time (human readable)
-				'.//*[@nnf:data="post-time"]'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+				'time:post-time'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 				//last post time (machine readable)
-				'.//*[@nnf:data="post-time"]/@datetime'	=> date ('c', strtotime ($last->pubDate)),
+				'time:post-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
 				//link to the last post
-				'.//a[@nnf:data="post-link"]/@href'	=> substr ($last->link, strpos ($last->link, '/', 9)),
+				'a:post-link@href'		=> substr ($last->link, strpos ($last->link, '/', 9)),
 			));
 			//is the last author a mod?
-			if (isMod ($last->author)) $item->addClass ('.//*[@nnf:data="post-author"]', 'mod');
+			if (isMod ($last->author)) $item->addClass ('post-author', 'mod');
 		} else {
 			//no last post, remove the template for it
-			$item->remove ('.//*[@nnf:data="subforum-post"]');
+			$item->remove ('subforum-post');
 		}
 		
 		//attach the templated sub-forum item to the list
@@ -202,7 +200,7 @@ if (!PATH && $folders = array_filter (
 	
 } else {
 	//no sub-forums, remove the template stuff
-	$nnf->remove ('//*[@nnf:data="folders"]');
+	$nnf->remove ('folders');
 }
 
 /* threads
@@ -225,8 +223,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$threads = array_diff ($threads, $stickies);
 	}
 	
-	//number of pages (stickies are not included in the count as they appear on all pages)
-	define ('PAGES', ceil (count ($threads) / FORUM_THREADS));
+	//do the page links
+	//(stickies are not included in the count as they appear on all pages)
+	$nnf->setHTML ('pages', theme_pageList (
+		//page number,	number of pages
+		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
+	));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
@@ -243,46 +245,39 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$item = $dummy->cloneNode (true);
 		
 		//is the thread sticky?
-		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 
+		if (in_array ($file, $stickies)) $item->addClass ('xpath:.', 'sticky'); 
 		//if the thread isn’t locked, remove the lock icon
-		if (!$xml->channel->xpath ("category[text()='locked']")) $item->remove ('.//*[@nnf:data="thread-locked"]');
+		if (!$xml->channel->xpath ("category[text()='locked']")) $item->remove ('thread-locked');
 		
 		$item->set (array (
 			//thread title and URL
-			'.//a[@nnf:data="thread-name"]'			=> safeHTML ($xml->channel->title),
-			'.//a[@nnf:data="thread-name"]/@href'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
+			'a:thread-name'			=> safeHTML ($xml->channel->title),
+			'a:thread-name@href'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			//number of replies
-			'.//*[@nnf:data="thread-replies"]'		=> count ($xml->channel->item) - 1,
+			'thread-replies'		=> count ($xml->channel->item) - 1,
 			
 			//last post info:
 			//link to the last post
-			'.//a[@nnf:data="thread-post"]/@href'		=> substr ($last->link, strpos ($last->link, '/', 9)),
+			'a:thread-post@href'		=> substr ($last->link, strpos ($last->link, '/', 9)),
 			//last post time (human readable)
-			'.//*[@nnf:data="thread-time"]'			=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+			'time:thread-time'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 			//last post time (machine readable)
-			'.//*[@nnf:data="thread-time"]/@datetime'	=> date ('c', strtotime ($last->pubDate)),
+			'time:thread-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
 			//last post author
-			'.//*[@nnf:data="thread-author"]'		=> safeHTML ($last->author)
+			'thread-author'			=> safeHTML ($last->author)
 		));
 		
 		//is the last post author a mod?
-		if (isMod ($last->author)) $item->addClass ('.//*[@nnf:data="thread-author"]', 'mod');
+		if (isMod ($last->author)) $item->addClass ('thread-author', 'mod');
 		
 		//attach the templated sub-forum item to the list
 		$dummy->parentNode->appendChild ($item);
 	}
 	$dummy->removeNode ();
 	
-	//do the page links
-	$nnf->setHTML ('//*[@nnf:data="pages"]', theme_pageList (
-		//page number | number of pages
-		PAGE,		ceil (count ($threads) / FORUM_THREADS))
-	);
-	
 } else {
 	//no threads, remove the template stuff
-	$nnf->remove ('//*[@nnf:data="threads"]');
-	define ('PAGES', 1);
+	$nnf->remove ('threads');
 }
 
 /* new thread form
@@ -290,81 +285,81 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 if (CAN_POST) {
 	//set the field values from what was typed in before
 	$nnf->set (array (
-		'//*[@nnf:data="title-field"]/@value'		=> safeString (TITLE),
-		'//*[@nnf:data="name-field-http"]/@value'	=> safeString (NAME),
-		'//*[@nnf:data="name-field"]/@value'		=> safeString (NAME),
-		'//*[@nnf:data="pass-field"]/@value'		=> safeString (PASS),
-		'//*[@nnf:data="text-field"]'			=> safeHTML (TEXT)
+		'input:title-field@value'	=> safeString (TITLE),
+		'input:name-field-http@value'	=> safeString (NAME),
+		'input:name-field@value'	=> safeString (NAME),
+		'input:pass-field@value'	=> safeString (PASS),
+		'textarea:text-field'		=> safeHTML (TEXT)
 	));
 	
 	//is the user already signed-in?
 	if (HTTP_AUTH) {
 		//don’t need the usual name / password fields
-		$nnf->remove ('//*[@nnf:data="name"]');
-		$nnf->remove ('//*[@nnf:data="pass"]');
-		$nnf->remove ('//*[@nnf:data="email"]');
+		$nnf->remove ('name');
+		$nnf->remove ('pass');
+		$nnf->remove ('email');
 		//remove the deafult message for anonymous users
-		$nnf->remove ('//*[@nnf:data="error-none"]');
+		$nnf->remove ('error-none');
 	} else {
 		//user is not signed in, remove the "you are signed in as:" field
-		$nnf->remove ('//*[@nnf:data="http-auth"]');
+		$nnf->remove ('http-auth');
 		//remove the default message for signed in users
-		$nnf->remove ('//*[@nnf:data="error-none-http"]');
+		$nnf->remove ('error-none-http');
 	}
 	
 	//are new registrations allowed?
 	$nnf->remove (FORUM_NEWBIES
-		? '//*[@nnf:data="error-newbies"]'	//yes: remove the warning message
-		: '//*[@nnf:data="error-none"]'		//no:  remove the default message
+		? 'error-newbies'	//yes: remove the warning message
+		: 'error-none'		//no:  remove the default message
 	);
 	
 	//if there's an error of any sort, remove the default messages
 	if (!empty ($_POST)) {
-		$nnf->remove ('//*[@nnf:data="error-none"]');
-		$nnf->remove ('//*[@nnf:data="error-none-http"]');
-		$nnf->remove ('//*[@nnf:data="error-newbies"]');
+		$nnf->remove ('error-none');
+		$nnf->remove ('error-none-http');
+		$nnf->remove ('error-newbies');
 	}
 	
 	//if the username & password are correct, remove the error message
-	if (empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('//*[@nnf:data="error-auth"]');
+	if (empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('error-auth');
 	//if the password is valid, remove the erorr message
-	if (empty ($_POST) || !TITLE || !TEXT || !NAME || PASS) $nnf->remove ('//*[@nnf:data="error-pass"]');
+	if (empty ($_POST) || !TITLE || !TEXT || !NAME || PASS) $nnf->remove ('error-pass');
 	//if the name is valid, remove the erorr message
-	if (empty ($_POST) || !TITLE || !TEXT || NAME) $nnf->remove ('//*[@nnf:data="error-name"]');
+	if (empty ($_POST) || !TITLE || !TEXT || NAME) $nnf->remove ('error-name');
 	//if the message text is valid, remove the error message
-	if (empty ($_POST) || !TITLE || TEXT) $nnf->remove ('//*[@nnf:data="error-text"]');
+	if (empty ($_POST) || !TITLE || TEXT) $nnf->remove ('error-text');
 	//if the title is valid, remove the erorr message
-	if (empty ($_POST) || TITLE) $nnf->remove ('//*[@nnf:data="error-title"]');
+	if (empty ($_POST) || TITLE) $nnf->remove ('error-title');
 }
 
 /* footer
    ---------------------------------------------------------------------------------------------------------------------- */
 //are there any local mods?	create the list of local mods
-if (!empty ($MODS['LOCAL'])):	$nnf->setHTML ('//*[@nnf:data="mods-local-list"]', theme_nameList ($MODS['LOCAL']));
-                        else:	$nnf->remove ('//*[@nnf:data="mods-local"]');	//remove the local mods list section
+if (!empty ($MODS['LOCAL'])):	$nnf->setHTML ('mods-local-list', theme_nameList ($MODS['LOCAL']));
+                        else:	$nnf->remove ('mods-local');	//remove the local mods list section
 endif;
 //are there any site mods?	create the list of mods
-if (!empty ($MODS['GLOBAL'])):	$nnf->setHTML ('//*[@nnf:data="mods-list"]', theme_nameList ($MODS['GLOBAL']));
-                         else:	$nnf->remove ('//*[@nnf:data="mods"]');		//remove the mods list section
+if (!empty ($MODS['GLOBAL'])):	$nnf->setHTML ('mods-list', theme_nameList ($MODS['GLOBAL']));
+                         else:	$nnf->remove ('mods');		//remove the mods list section
 endif;
 //are there any members?	create the list of members
-if (!empty ($MEMBERS)):		$nnf->setHTML ('//*[@nnf:data="members-list"]', theme_nameList ($MEMBERS));
-                  else:		$nnf->remove ('//*[@nnf:data="members"]');	//remove the members list section
+if (!empty ($MEMBERS)):		$nnf->setHTML ('members-list', theme_nameList ($MEMBERS));
+                  else:		$nnf->remove ('members');	//remove the members list section
 endif;
 
 //is a user signed in?
 if (HTTP_AUTH) {
 	//yes: remove the signed-out section
-	$nnf->remove ('//*[@nnf:data="signed-out"]');
+	$nnf->remove ('signed-out');
 	//set the name of the signed-in user
-	$nnf->setValue ('//*[@nnf:data="signed-in-name"]', HTTP_AUTH_NAME);
+	$nnf->setValue ('signed-in-name', HTTP_AUTH_NAME);
 } else {
 	//no: remove the signed-in section
-	$nnf->remove ('//*[@nnf:data="signed-in"]');
+	$nnf->remove ('signed-in');
 }
 
 //remove `nnf:data` attributes
-$nnf->remove ('//@nnf:data');
+$nnf->remove ('xpath://@nnf:data');
 die ($nnf->saveXML ());
 
 ?>

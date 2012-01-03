@@ -45,7 +45,7 @@
    ====================================================================================================================== */
 //produces a truncated list of page numbers around the current page:
 //(you might want to do something different, like a combo box with a button)
-if (!function_exists ('theme_pageList')) { function theme_pageList ($current, $total) {
+if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $pages) {
 	//always include the first page
 	$list[] = 1;
 	//more than one page?
@@ -66,7 +66,7 @@ if (!function_exists ('theme_pageList')) { function theme_pageList ($current, $t
 	}
 	
 	//turn it into HTML
-	foreach ($list as &$item) if ($item == $current) {
+	foreach ($list as &$item) if ($item == $page) {
 		$item = "<li><em>$item</em></li>";
 	} elseif ($item) {
 		$item = "<li><a href=\"?page=$item#threads\">$item</a></li>";
