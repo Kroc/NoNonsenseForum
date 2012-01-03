@@ -71,17 +71,11 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ====================================================================================================================== */
 
 //load the template into DOM where we can manipulate it:
-$html = new NNFTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
-
-//fix all absolute URLs (i.e. if NNF is running in a folder):
-foreach ($html->xpath->query ('//*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
-	//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
-	$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
-;
+$nnf = new NNFTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
 
 /* HTML <head>
    ---------------------------------------------------------------------------------------------------------------------- */
-$html->set (array (
+$nnf->set (array (
 	//HTML title (= forum / sub-forum name and page number)
 	'/html/head/title'					=> (PATH ? PATH : safeHTML (FORUM_NAME)).
 								   (PAGE>1 ? ' # '.PAGE : ''),
@@ -94,33 +88,31 @@ $html->set (array (
 
 //remove 'custom.css' stylesheet if 'custom.css' is missing
 if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-	$html->remove ('//link[contains(@href,"custom.css")]')
+	$nnf->remove ('//link[contains(@href,"custom.css")]')
 ;
 
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
-$html->set (array (
+$nnf->set (array (
 	//forum name
-	'//*[@nnf:template="forum-name"]'			=> safeHTML (FORUM_NAME),
-	//where the forum logo and index links to, usually just "/", but will be different if the forum is in a sub-folder
-	'//a[@nnf:template="root"]/@href'			=> FORUM_PATH,
+	'//*[@nnf:data="forum-name"]'	=> safeHTML (FORUM_NAME),
 	//the forum logo
-	'//img[@nnf:template="logo"]/@src'			=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
+	'//img[@nnf:data="logo"]/@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
 ));
 
 //are we in a sub-folder?
 if (PATH) {
 	//if so, add the sub-forum name to the breadcrumb navigation,
-	$html->setValue ('//*[@nnf:template="subforum-name"]', PATH);
+	$nnf->setValue ('//*[@nnf:data="subforum-name"]', PATH);
 } else {
 	//otherwise -- remove the breadcrumb navigation
-	$html->remove ('//*[@nnf:template="subforum"]');
+	$nnf->remove ('//*[@nnf:data="subforum"]');
 }
 
 //search form:
-$html->set (array (
+$nnf->set (array (
 	//if you're using a Google search, change it to HTTPS if enforced
-	'//form/@action["http://google.com/search"]'		=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
+	'//form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
 										: 'http://google.com/search',
 	//set the forum URL for Google search-by-site
 	'//input[@name="as_sitesearch"]/@value'			=> safeString ($_SERVER['HTTP_HOST'])
@@ -128,20 +120,21 @@ $html->set (array (
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
 //remove the "add thread" link and anything else (like the input forum) related to posting
-if (!CAN_POST) $html->remove ('//*[@nnf:template="can_post"]');
+if (!CAN_POST) $nnf->remove ('//*[@nnf:data="can_post"]');
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
 	//load the 'about.html' file and insert it into the page
-	$about = $html->createDocumentFragment ();
-	$about->appendXML (file_get_contents ('about.html'));
-	$node = $html->xpath->query ('//*[@nnf:template="about"]')->item (0);
-	$node->nodeValue = '';
-	$node->appendChild ($about);
+	$nnf->setHTML ('//*[@nnf:data="about"]', file_get_contents ('about.html'));
 } else {
 	//no file? remove the element reserved for it
-	$html->remove ('//*[@nnf:template="about"]');
+	$nnf->remove ('//*[@nnf:data="about"]');
 }
+
+//if the forum is not thread-locked (only mods can start new threads, but anybody can reply) then remove the warning message
+if (FORUM_LOCK != 'threads') $nnf->remove ('//*[@nnf:data="forum-lock-threads"]');
+//if the forum is not post-locked (only mods can post / reply) then remove the warning message
+if (FORUM_LOCK != 'posts')   $nnf->remove ('//*[@nnf:data="forum-lock-posts"]');
 
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -151,7 +144,7 @@ if (!PATH && $folders = array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
-	$dummy = $html->xpath->query ('//*[@nnf:template="folder"]')->item (0);
+	$dummy = $nnf->xpath->query ('//*[@nnf:data="folder"]')->item (0);
 	
 	foreach ($folders as $FOLDER) {
 		//the sorting (below) requires we be in the directory at hand to use `filemtime`
@@ -169,34 +162,34 @@ if (!PATH && $folders = array_filter (
 		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 		
 		//copy the dummy template provided
+		//(with thanks to <php.net/manual/en/domxpath.query.php#99760> for spotting the absolute/relative bug)
 		$item = $dummy->cloneNode (true);
 		
 		$item->set (array (
-			'//a[@nnf:template="folder-name"]'	 => safeHTML ($FOLDER),			//name of sub-forum
-			'//a[@nnf:template="folder-name"]/@href' => safeURL (FORUM_PATH."$FOLDER/")	//URL to it
+			'.//a[@nnf:data="folder-name"]'		=> safeHTML ($FOLDER),			//name of sub-forum
+			'.//a[@nnf:data="folder-name"]/@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
 		));
 		
 		//remove the lock icons if not required
-		if ($lock != 'threads') $item->remove ('//*[@nnf:template="lock-threads"]');
-		if ($lock != 'posts')   $item->remove ('//*[@nnf:template="lock-posts"]');
+		if ($lock != 'threads') $item->remove ('.//*[@nnf:data="lock-threads"]');
+		if ($lock != 'posts')   $item->remove ('.//*[@nnf:data="lock-posts"]');
 		//is there a last post in this sub-forum?
 		if ((bool) $last) {
-			//is the author a mod?
-			if (isMod ($last->author)) $item->addClass ('//*[@nnf:template="post-author"]', 'mod');
-			
 			$item->set (array (
 				//last post author name
-				'//*[@nnf:template="post-author"]' => safeHTML ($last->author),
+				'.//*[@nnf:data="post-author"]'		=> safeHTML ($last->author),
 				//last post time (human readable)
-				'//*[@nnf:template="post-time"]' => date (DATE_FORMAT, strtotime ($last->pubDate)),
+				'.//*[@nnf:data="post-time"]'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 				//last post time (machine readable)
-				'//*[@nnf:template="post-time"]/@datetime' => date ('c', strtotime ($last->pubDate)),
+				'.//*[@nnf:data="post-time"]/@datetime'	=> date ('c', strtotime ($last->pubDate)),
 				//link to the last post
-				'//*[@nnf:template="post-link"]/@href' => substr ($last->link, strpos ($last->link, '/', 9)),
+				'.//a[@nnf:data="post-link"]/@href'	=> substr ($last->link, strpos ($last->link, '/', 9)),
 			));
+			//is the last author a mod?
+			if (isMod ($last->author)) $item->addClass ('.//*[@nnf:data="post-author"]', 'mod');
 		} else {
 			//no last post, remove the template for it
-			$item->remove ('//*[@nnf:template="subforum-post"]');
+			$item->remove ('.//*[@nnf:data="subforum-post"]');
 		}
 		
 		//attach the templated sub-forum item to the list
@@ -209,65 +202,7 @@ if (!PATH && $folders = array_filter (
 	
 } else {
 	//no sub-forums, remove the template stuff
-	$html->remove ('//*[@nnf:template="folders"]');
-}
-
-//remove `nnf:template` attributes
-$html->remove ('//@nnf:template');
-
-die ($html->getHTML ());
-
-
-
-
-
-
-
-
-
-
-
-
-/* ====================================================================================================================== */
-
-/* sub-forums
-   ---------------------------------------------------------------------------------------------------------------------- */
-//don’t allow sub-sub-forums (yet)
-if (!PATH) foreach (array_filter (
-	//get a list of folders:
-	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
-) as $FOLDER) {
-	//the sorting (below) requires we be in the directory at hand to use `filemtime`
-	chdir ($FOLDER);
-	
-	//check if / how the forum is locked
-	$lock = trim (@file_get_contents ('locked.txt'));
-	
-	//get a list of files in the folder to determine which one is newest
-	$threads = preg_grep ('/\.rss$/', scandir ('.'));
-	//order by last modified date
-	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
-	
-	//read the newest thread (folder could be empty though)
-	$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
-	
-	$FOLDERS[] = array (
-		'URL'		=> safeURL (FORUM_PATH."$FOLDER/"),
-		'NAME'		=> safeHTML ($FOLDER),
-		'LOCK'		=> $lock,
-		'HAS_POST'	=> (bool) $last				//if there is any last-post info for this sub-forum
-		
-	//don’t include last-post info if no threads in sub-forum
-	) + ((bool) $last ? array (
-		'DATETIME'	=> date ('c', strtotime ($last->pubDate)),
-		'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
-		'AUTHOR'	=> safeHTML ($last->author),
-		'MOD'		=> isMod ($last->author),
-		'POSTLINK'	=> substr ($last->link, strpos ($last->link, '/', 9))
-	) : array ());
-	
-	chdir ('..');
+	$nnf->remove ('//*[@nnf:data="folders"]');
 }
 
 /* threads
@@ -295,47 +230,115 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
+	$dummy = $nnf->xpath->query ('//*[@nnf:data="thread"]')->item (0);
+	
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) if (
 		//read the file, and refer to the last post made
 		$xml  = @simplexml_load_file ($file)
 	) {
 		$last = &$xml->channel->item[0];
-		$THREADS[] = array (
-			'STICKY'	=> in_array ($file, $stickies),
-			'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-			//link to the thread--go to the last page of replies
-			'URL'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
-			'TITLE'		=> safeHTML ($xml->channel->title),
-			'COUNT'		=> count ($xml->channel->item) - 1,			//number of replies
-			//info of last post made to thread
-			'DATETIME'	=> date ('c', strtotime ($last->pubDate)),		//HTML5 datetime attr
-			'TIME'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),	//human readable
-			'AUTHOR'	=> safeHTML ($last->author),
-			'MOD'		=> isMod ($last->author),
-			'POSTLINK'	=> substr ($last->link, strpos ($last->link, '/', 9))	//link to the last post
-		);
+		
+		//copy the dummy template provided
+		$item = $dummy->cloneNode (true);
+		
+		//is the thread sticky?
+		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 
+		//if the thread isn’t locked, remove the lock icon
+		if (!$xml->channel->xpath ("category[text()='locked']")) $item->remove ('.//*[@nnf:data="thread-locked"]');
+		
+		$item->set (array (
+			//thread title and URL
+			'.//a[@nnf:data="thread-name"]'			=> safeHTML ($xml->channel->title),
+			'.//a[@nnf:data="thread-name"]/@href'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
+			//number of replies
+			'.//*[@nnf:data="thread-replies"]'		=> count ($xml->channel->item) - 1,
+			
+			//last post info:
+			//link to the last post
+			'.//a[@nnf:data="thread-post"]/@href'		=> substr ($last->link, strpos ($last->link, '/', 9)),
+			//last post time (human readable)
+			'.//*[@nnf:data="thread-time"]'			=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+			//last post time (machine readable)
+			'.//*[@nnf:data="thread-time"]/@datetime'	=> date ('c', strtotime ($last->pubDate)),
+			//last post author
+			'.//*[@nnf:data="thread-author"]'		=> safeHTML ($last->author)
+		));
+		
+		//is the last post author a mod?
+		if (isMod ($last->author)) $item->addClass ('.//*[@nnf:data="thread-author"]', 'mod');
+		
+		//attach the templated sub-forum item to the list
+		$dummy->parentNode->appendChild ($item);
 	}
+	$dummy->removeNode ();
+	
+	//do the page links
+	$nnf->setHTML ('//*[@nnf:data="pages"]', theme_pageList (
+		//page number | number of pages
+		PAGE,		ceil (count ($threads) / FORUM_THREADS))
+	);
+	
 } else {
+	//no threads, remove the template stuff
+	$nnf->remove ('//*[@nnf:data="threads"]');
 	define ('PAGES', 1);
 }
 
 /* new thread form
    ---------------------------------------------------------------------------------------------------------------------- */
-if (CAN_POST) $FORM = array (
-	'NAME'	=> safeString (NAME),
-	'PASS'	=> safeString (PASS),
-	'TITLE'	=> safeString (TITLE),
-	'TEXT'	=> safeHTML (TEXT),
-	'ERROR'	=> empty ($_POST) ? ERROR_NONE	//no problem? show default help text
-		 : (!NAME  ? ERROR_NAME		//the name is missing
-		 : (!PASS  ? ERROR_PASS		//the password is missing
-		 : (!TITLE ? ERROR_TITLE	//the title is missing
-		 : (!TEXT  ? ERROR_TEXT		//the message text is missing
-		 : ERROR_AUTH))))		//the name / password pair didn’t match
-);
+if (CAN_POST) {
+	//set the field values from what was typed in before
+	$nnf->set (array (
+		'//*[@nnf:data="title-field"]/@value'		=> safeString (TITLE),
+		'//*[@nnf:data="name-field-http"]/@value'	=> safeString (NAME),
+		'//*[@nnf:data="name-field"]/@value'		=> safeString (NAME),
+		'//*[@nnf:data="pass-field"]/@value'		=> safeString (PASS),
+		'//*[@nnf:data="text-field"]'			=> safeHTML (TEXT)
+	));
+	
+	//is the user already signed-in?
+	if (HTTP_AUTH) {
+		//don’t need the usual name / password fields
+		$nnf->remove ('//*[@nnf:data="name"]');
+		$nnf->remove ('//*[@nnf:data="pass"]');
+		$nnf->remove ('//*[@nnf:data="email"]');
+		//remove the deafult message for anonymous users
+		$nnf->remove ('//*[@nnf:data="error-none"]');
+	} else {
+		//user is not signed in, remove the "you are signed in as:" field
+		$nnf->remove ('//*[@nnf:data="http-auth"]');
+		//remove the default message for signed in users
+		$nnf->remove ('//*[@nnf:data="error-none-http"]');
+	}
+	
+	//are new registrations allowed?
+	$nnf->remove (FORUM_NEWBIES
+		? '//*[@nnf:data="error-newbies"]'	//yes: remove the warning message
+		: '//*[@nnf:data="error-none"]'		//no:  remove the default message
+	);
+	
+	//if there's an error of any sort, remove the default messages
+	if (!empty ($_POST)) {
+		$nnf->remove ('//*[@nnf:data="error-none"]');
+		$nnf->remove ('//*[@nnf:data="error-none-http"]');
+		$nnf->remove ('//*[@nnf:data="error-newbies"]');
+	}
+	
+	//if the username & password are correct, remove the error message
+	if (empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('//*[@nnf:data="error-auth"]');
+	//if the password is valid, remove the erorr message
+	if (empty ($_POST) || !TITLE || !TEXT || !NAME || PASS) $nnf->remove ('//*[@nnf:data="error-pass"]');
+	//if the name is valid, remove the erorr message
+	if (empty ($_POST) || !TITLE || !TEXT || NAME) $nnf->remove ('//*[@nnf:data="error-name"]');
+	//if the message text is valid, remove the error message
+	if (empty ($_POST) || !TITLE || TEXT) $nnf->remove ('//*[@nnf:data="error-text"]');
+	//if the title is valid, remove the erorr message
+	if (empty ($_POST) || TITLE) $nnf->remove ('//*[@nnf:data="error-title"]');
+}
 
-//all the data prepared, now output the HTML
-include FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.inc.php';
+//remove `nnf:data` attributes
+$nnf->remove ('//@nnf:data');
+die ($nnf->saveXML ());
 
 ?>

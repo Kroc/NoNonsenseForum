@@ -1,5 +1,5 @@
 <?php
-$PAGES = pageList (PAGE, PAGES);
+$PAGES = theme_pageList (PAGE, PAGES);
 ?><!DOCTYPE html>
 <meta charset="utf-8" />
 <!-- NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011

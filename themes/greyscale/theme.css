@@ -272,9 +272,9 @@ input[type=text],
 				 border-right: 1px solid #f7f6f7; background: #f7f6f7;}
 
 /* we have to use a wrapper because box-sizing is not consistently supported across browsers and missing in IE<8 */
-#wtext				{position: relative; /*< force dotted line above rightcol in Firefox */
-				 _position: static;  /*< that then breaks IE6 :P */
-				 padding: 0 40px 0 0;}
+#wtext				{display: block; padding: 0 40px 0 0;
+				 position: relative; /*< force dotted line above rightcol in Firefox */
+				 _position: static;  /*< that then breaks IE6 :P */}
 #text 				{display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
 				 border: none; border-right: 1px dotted #444;
 				 /* fix width for browsers that allow resizable text-areas */

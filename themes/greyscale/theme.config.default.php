@@ -43,39 +43,41 @@
 
 /* functions: (you might want to do some particular formatting in your theme)
    ====================================================================================================================== */
-//produces a truncated list of page numbers around the current page:
-//(you might want to do something different, like a combo box with a button)
-function pageList ($current, $total) {
-	//always include the first page
-	$PAGES[] = 1;
-	//more than one page?
-	if ($total > 1) {
-		//if previous page is not the same as 2, include ellipses
-		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-		if ($current-1 > 2) $PAGES[] = '';
-		//the page before the current page
-		if ($current-1 > 1) $PAGES[] = $current-1;
-		//the current page
-		if ($current != 1) $PAGES[] = $current;
-		//the page after the current page (if not at end)
-		if ($current+1 < $total) $PAGES[] = $current+1;
-		//if there’s a gap between page+1 and the last page
-		if ($current+1 < $total-1) $PAGES[] = '';
-		//last page
-		if ($current != $total) $PAGES[] = $total;
+if (!function_exists ('theme_pageList')) {
+	//produces a truncated list of page numbers around the current page:
+	//(you might want to do something different, like a combo box with a button)
+	function theme_pageList ($current, $total) {
+		//always include the first page
+		$PAGES[] = 1;
+		//more than one page?
+		if ($total > 1) {
+			//if previous page is not the same as 2, include ellipses
+			//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
+			if ($current-1 > 2) $PAGES[] = '';
+			//the page before the current page
+			if ($current-1 > 1) $PAGES[] = $current-1;
+			//the current page
+			if ($current != 1) $PAGES[] = $current;
+			//the page after the current page (if not at end)
+			if ($current+1 < $total) $PAGES[] = $current+1;
+			//if there’s a gap between page+1 and the last page
+			if ($current+1 < $total-1) $PAGES[] = '';
+			//last page
+			if ($current != $total) $PAGES[] = $total;
+		}
+		
+		//turn it into HTML
+		foreach ($PAGES as &$PAGE) if ($PAGE == $current) {
+			$PAGE = "<li><em>$PAGE</em></li>";
+		} elseif ($PAGE) {
+			$PAGE = "<li><a href=\"?page=$PAGE#threads\">$PAGE</a></li>";
+		} else {
+			$PAGE = '<li>…</li>';
+		}
+		$PAGES = (implode ('', $PAGES));
+		
+		return $PAGES;
 	}
-	
-	//turn it into HTML
-	foreach ($PAGES as &$PAGE) if ($PAGE == $current) {
-		$PAGE = "<li><em>$PAGE</em></li>";
-	} elseif ($PAGE) {
-		$PAGE = "<li><a href=\"?page=$PAGE#threads\">$PAGE</a></li>";
-	} else {
-		$PAGE = '<li>…</li>';
-	}
-	$PAGES = (implode ('', $PAGES));
-	
-	return $PAGES;
 }
 
 ?>

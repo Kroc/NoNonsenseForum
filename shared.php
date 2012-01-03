@@ -435,21 +435,32 @@ class NNFTemplate extends DOMDocument {
 		);
 		//create an xpath object linked to this template
 		$this->xpath = new DOMXPath ($this);
+		
+		//fix all absolute URLs (i.e. if NNF is running in a folder):
+		//(this also fixes the forum-title home link "/" when NNF runs in a folder)
+		foreach ($this->xpath->query ('//*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
+			//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
+			$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
+		;
 	}
 	
 	public function set ($items) {
 		$this->documentElement->set ($items);
 	}
 	
-	public function setValue ($query, $value, $DOMNode=NULL) {
+	public function setValue ($query, $value) {
 		$this->documentElement->setValue ($query, $value);
+	}
+	
+	public function setHTML ($query, $html) {
+		foreach ($this->xpath->query ($query) as $node) $node->innerHTML ($html);
 	}
 	
 	public function remove ($query) {
 		$this->documentElement->remove ($query);
 	}
 	
-	public function getHTML ($DOMNode=NULL) {
+	public function saveXML ($DOMNode=NULL) {
 		return preg_replace (array (
 			'/^<\?xml.*?>\n/',				//1: remove XML prolog
 			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
@@ -458,48 +469,65 @@ class NNFTemplate extends DOMDocument {
 			'',
 			'<$1 />',
 			'<$1$2></$1>'
-		), $this->saveXML ($DOMNode));
+		), parent::saveXML ($DOMNode));
 	}
 }
 
 class NNFElement extends DOMElement {
+	//allow you to run an xpath query off of the node (i.e. `DOMNode->xpath ('...')`),
+	//instead of using that annoying backward `DOMXPath->query ('...', DOMNode)` syntax
 	public function xpath ($query) {
 		return $this->ownerDocument->xpath->query ($query, $this);
 	}
 	
+	//run multiple xpath queries and set node values:
 	public function set ($items) {
+		//the array is in the format of `'xpath' => 'value'`, if an xpath points to multiple nodes,
+		//the value will be set on all of them
 		foreach ($items as $query => $value) $this->setValue ($query, $value);
 	}
 	
+	//run an xpath query and set the value on the resulting nodes:
 	public function setValue ($query, $value) {
 		foreach ($this->xpath ($query) as $node) $node->nodeValue = $value;
 	}
 	
-	public function addClass ($query, $new_class) {
-		foreach ($this->xpath ($query) as $node) {
-			//first determine if there is a 'class' attribute already?
-			if ($node->hasAttributes () && $class = $node->getAttribute ('class')) {
-				//if the new class is not already in the list, add it in
-				if (!in_array ($new_class, explode (' ', $class)))
-					$node->setAttribute ('class', "$class $new_class")
-				;
-			} else {
-				//no class attribute to begin with, add it
-				$node->setAttribute ('class', $new_class);
-			}
-		};
+	//using an xpath query, replace node content with new HTML
+	public function innerHTML ($html) {
+		$frag = $this->ownerDocument->createDocumentFragment ();
+		$frag->appendXML ($html);
+		$this->nodeValue = '';
+		$this->appendChild ($frag);
 	}
 	
+	public function addClass ($query, $new_class) {
+		//first determine if there is a 'class' attribute already?
+		foreach ($this->xpath ($query) as $node) if (
+			$node->hasAttributes () && $class = $node->getAttribute ('class')
+		) {
+			//if the new class is not already in the list, add it in
+			if (!in_array ($new_class, explode (' ', $class)))
+				$node->setAttribute ('class', "$class $new_class")
+			;
+		} else {
+			//no class attribute to begin with, add it
+			$node->setAttribute ('class', $new_class);
+		}
+	}
+	
+	//using an xpath query, remove resulting nodes
 	public function remove ($query) {
 		foreach ($this->xpath ($query) as $node) $node->removeNode ();
 	}
 	
+	//remove a node using the node!
 	public function removeNode () {
 		$this->parentNode->removeChild ($this);
 	}
 }
 
 class NNFAttr extends DOMAttr {
+	//easy attribute removal without that ugly syntax
 	public function removeNode () {
 		$this->parentNode->removeAttributeNode ($this);
 	}
