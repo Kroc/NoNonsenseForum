@@ -337,6 +337,32 @@ if (CAN_POST) {
 	if (empty ($_POST) || TITLE) $nnf->remove ('//*[@nnf:data="error-title"]');
 }
 
+/* footer
+   ---------------------------------------------------------------------------------------------------------------------- */
+//are there any local mods?	create the list of local mods
+if (!empty ($MODS['LOCAL'])):	$nnf->setHTML ('//*[@nnf:data="mods-local-list"]', theme_nameList ($MODS['LOCAL']));
+                        else:	$nnf->remove ('//*[@nnf:data="mods-local"]');	//remove the local mods list section
+endif;
+//are there any site mods?	create the list of mods
+if (!empty ($MODS['GLOBAL'])):	$nnf->setHTML ('//*[@nnf:data="mods-list"]', theme_nameList ($MODS['GLOBAL']));
+                         else:	$nnf->remove ('//*[@nnf:data="mods"]');		//remove the mods list section
+endif;
+//are there any members?	create the list of members
+if (!empty ($MEMBERS)):		$nnf->setHTML ('//*[@nnf:data="members-list"]', theme_nameList ($MEMBERS));
+                  else:		$nnf->remove ('//*[@nnf:data="members"]');	//remove the members list section
+endif;
+
+//is a user signed in?
+if (HTTP_AUTH) {
+	//yes: remove the signed-out section
+	$nnf->remove ('//*[@nnf:data="signed-out"]');
+	//set the name of the signed-in user
+	$nnf->setValue ('//*[@nnf:data="signed-in-name"]', HTTP_AUTH_NAME);
+} else {
+	//no: remove the signed-in section
+	$nnf->remove ('//*[@nnf:data="signed-in"]');
+}
+
 //remove `nnf:data` attributes
 $nnf->remove ('//@nnf:data');
 die ($nnf->saveXML ());

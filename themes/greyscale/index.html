@@ -173,16 +173,24 @@
 </section>
 <!-- =================================================================================================================== -->
 <div id="mods">
-	<p>
+	<p nnf:data="mods-local">
+		Moderators for this sub-forum:
+		<span nnf:data="mods-local-list"><b class="mod">Bob</b></span>
+	</p><p nnf:data="mods">
 		Your friendly neighbourhood moderators:
-		<b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b>
+		<span nnf:data="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
+	</p><p nnf:data="members">
+		Members of this forum:
+		<span nnf:data="members-list"><b>Arthur</b></span>
 	</p>
 </div>
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
-</p><p id="signin">
-	Signed in as<br /><b>Kroc</b>
+</p><p id="signin" nnf:data="signed-in">
+	Signed in as<br /><b nnf:data="signed-in-name">Kroc</b>
+</p><p id="signin" nnf:data="signed-out">
+	<a href="?signin">Sign in</a>
 </p></footer>
 
 <script><!--

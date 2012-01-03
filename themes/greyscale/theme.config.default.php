@@ -43,41 +43,43 @@
 
 /* functions: (you might want to do some particular formatting in your theme)
    ====================================================================================================================== */
-if (!function_exists ('theme_pageList')) {
-	//produces a truncated list of page numbers around the current page:
-	//(you might want to do something different, like a combo box with a button)
-	function theme_pageList ($current, $total) {
-		//always include the first page
-		$PAGES[] = 1;
-		//more than one page?
-		if ($total > 1) {
-			//if previous page is not the same as 2, include ellipses
-			//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
-			if ($current-1 > 2) $PAGES[] = '';
-			//the page before the current page
-			if ($current-1 > 1) $PAGES[] = $current-1;
-			//the current page
-			if ($current != 1) $PAGES[] = $current;
-			//the page after the current page (if not at end)
-			if ($current+1 < $total) $PAGES[] = $current+1;
-			//if there’s a gap between page+1 and the last page
-			if ($current+1 < $total-1) $PAGES[] = '';
-			//last page
-			if ($current != $total) $PAGES[] = $total;
-		}
-		
-		//turn it into HTML
-		foreach ($PAGES as &$PAGE) if ($PAGE == $current) {
-			$PAGE = "<li><em>$PAGE</em></li>";
-		} elseif ($PAGE) {
-			$PAGE = "<li><a href=\"?page=$PAGE#threads\">$PAGE</a></li>";
-		} else {
-			$PAGE = '<li>…</li>';
-		}
-		$PAGES = (implode ('', $PAGES));
-		
-		return $PAGES;
+//produces a truncated list of page numbers around the current page:
+//(you might want to do something different, like a combo box with a button)
+if (!function_exists ('theme_pageList')) { function theme_pageList ($current, $total) {
+	//always include the first page
+	$list[] = 1;
+	//more than one page?
+	if ($pages > 1) {
+		//if previous page is not the same as 2, include ellipses
+		//(there’s a gap between 1, and current-page minus 1, e.g. "1, …, 54, 55, 56, …, 100")
+		if ($page-1 > 2) $list[] = '';
+		//the page before the current page
+		if ($page-1 > 1) $list[] = $page-1;
+		//the current page
+		if ($page != 1) $list[] = $page;
+		//the page after the current page (if not at end)
+		if ($page+1 < $pages) $list[] = $page+1;
+		//if there’s a gap between page+1 and the last page
+		if ($page+1 < $pages-1) $list[] = '';
+		//last page
+		if ($page != $pages) $list[] = $pages;
 	}
-}
+	
+	//turn it into HTML
+	foreach ($list as &$item) if ($item == $current) {
+		$item = "<li><em>$item</em></li>";
+	} elseif ($item) {
+		$item = "<li><a href=\"?page=$item#threads\">$item</a></li>";
+	} else {
+		$item = '<li>…</li>';
+	}
+	return implode ('', $list);
+}}
+
+//produce an HTML list of names. used for the mods/members list
+if (!function_exists ('theme_nameList')) { function theme_nameList ($names) {
+	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="mod"' : '').">$name</b>";
+	return implode (', ', $names);
+}}
 
 ?>
