@@ -142,7 +142,7 @@ if (!PATH && $folders = array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
-	$dummy = $nnf->xpath->query ('//*[@nnf:data="folder"]')->item (0);
+	$item = $nnf->repeat ('folder');
 	
 	foreach ($folders as $FOLDER) {
 		//the sorting (below) requires we be in the directory at hand to use `filemtime`
@@ -158,10 +158,6 @@ if (!PATH && $folders = array_filter (
 		
 		//read the newest thread (folder could be empty though)
 		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
-		
-		//copy the dummy template provided
-		//(with thanks to <php.net/manual/en/domxpath.query.php#99760> for spotting the absolute/relative bug)
-		$item = $dummy->cloneNode (true);
 		
 		$item->set (array (
 			'a:folder-name'		=> safeHTML ($FOLDER),			//name of sub-forum
@@ -191,12 +187,10 @@ if (!PATH && $folders = array_filter (
 		}
 		
 		//attach the templated sub-forum item to the list
-		$dummy->parentNode->appendChild ($item);
+		$item->next ();
 		
 		chdir ('..');
 	}
-	//remove the dummy template
-	$dummy->removeNode ();
 	
 } else {
 	//no sub-forums, remove the template stuff
@@ -232,7 +226,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
-	$dummy = $nnf->xpath->query ('//*[@nnf:data="thread"]')->item (0);
+	$item = $nnf->repeat ('thread');
 	
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) if (
@@ -240,9 +234,6 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$xml  = @simplexml_load_file ($file)
 	) {
 		$last = &$xml->channel->item[0];
-		
-		//copy the dummy template provided
-		$item = $dummy->cloneNode (true);
 		
 		//is the thread sticky?
 		if (in_array ($file, $stickies)) $item->addClass ('xpath:.', 'sticky'); 
@@ -271,9 +262,8 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		if (isMod ($last->author)) $item->addClass ('thread-author', 'mod');
 		
 		//attach the templated sub-forum item to the list
-		$dummy->parentNode->appendChild ($item);
+		$item->next ();
 	}
-	$dummy->removeNode ();
 	
 } else {
 	//no threads, remove the template stuff
@@ -360,6 +350,6 @@ if (HTTP_AUTH) {
 
 //remove `nnf:data` attributes
 $nnf->remove ('xpath://@nnf:data');
-die ($nnf->saveXML ());
+die ($nnf->html ());
 
 ?>

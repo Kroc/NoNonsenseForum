@@ -421,60 +421,39 @@ class DXML extends SimpleXMLElement {
 	}
 }
 
-class NNFTemplate extends DOMDocument {
-	public $xpath;
+//NoNonsense Forum's amazing templating engine. watch as mutating the hideous DOM becomes elegant and simple!
+class NNFTemplate extends NNFTemplateNode {
+	private $DOMDoucment;
 	
 	public function __construct ($filepath) {
-		parent::__construct ();
-		//tell DOMDocument / XPath to use our classes instead of its own
-		$this->registerNodeClass ('DOMElement',  'NNFElement');
-		$this->registerNodeClass ('DOMAttr',     'NNFAttr');
+		$this->DOMDocument = new DOMDocument ();
 		//load the template file to work with
-		$this->load ($filepath, LIBXML_COMPACT | LIBXML_NONET) or trigger_error (
+		$this->DOMDocument->load ($filepath, LIBXML_COMPACT | LIBXML_NONET) or trigger_error (
 			"Template '$filename' is invalid XML", E_USER_ERROR
 		);
-		//create an xpath object linked to this template
-		$this->xpath = new DOMXPath ($this);
+		//set the parent node for all xpath searching
+		//(handled all internally by `NNFTemplateNode`)
+		parent::__construct ($this->DOMDocument->documentElement);
 		
 		//fix all absolute URLs (i.e. if NNF is running in a folder):
 		//(this also fixes the forum-title home link "/" when NNF runs in a folder)
-		foreach ($this->xpath->query ('//*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
+		foreach ($this->xpath ('xpath://*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
 			//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
 			$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
 		;
 	}
 	
-	static public function nnf2xpath ($name) {
-		if (substr ($name, 0, 6) == "xpath:") {
-			return substr ($name, 6);
-		} else {
-			preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $name, $m);
-			return
-				".//".
-				(@$m[1] ? $m[1] : "*").
-				'[@nnf:data="'.$m[2].'"]'.
-				(@$m[3] ? '/'.$m[3] : '')
-			;
-		}
+	//specify an element to repeat (like a list-item):
+	//this will return an NNFTemplateRepeater class that allows you to modify the contents the same as with the base
+	//template but also append the results to the parent and return to the original element's content to go again
+	public function repeat ($query) {
+		//take just the first element found in a query and return a repeating template of the element
+		return new NNFTemplateRepeater ($this->xpath ($query)->item (0));
 	}
 	
-	public function set ($items) {
-		$this->documentElement->set ($items);
-	}
-	
-	public function setValue ($query, $value) {
-		$this->documentElement->setValue ($query, $value);
-	}
-	
-	public function setHTML ($query, $html) {
-		foreach ($this->xpath->query ($query) as $node) $node->innerHTML ($html);
-	}
-	
-	public function remove ($query) {
-		$this->documentElement->remove ($query);
-	}
-	
-	public function saveXML ($DOMNode=NULL) {
+	//output the complete HTML
+	public function html () {
+		//fix and clean DOM's XML output:
 		return preg_replace (array (
 			'/^<\?xml.*?>\n/',				//1: remove XML prolog
 			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
@@ -483,35 +462,106 @@ class NNFTemplate extends DOMDocument {
 			'',
 			'<$1 />',
 			'<$1$2></$1>'
-		), parent::saveXML ($DOMNode));
+		), $this->DOMDocument->saveXML ());
 	}
 }
 
-class NNFElement extends DOMElement {
-	//allow you to run an xpath query off of the node (i.e. `DOMNode->xpath ('...')`),
-	//instead of using that annoying backward `DOMXPath->query ('...', DOMNode)` syntax
-	public function xpath ($query) {
-		return $this->ownerDocument->xpath->query (NNFTemplate::nnf2xpath ($query), $this);
+//using `NNFTemplate->repeat ('xpath');` returns one of these classes that acts as a sub-template that you can modify and
+//then call the `next` method to append it to the parent and return to the template's original HTML code. this makes
+//creating a list stunning simple! e.g.
+/*
+	$item = $NNFTemplate->repeat ('list-item');
+	foreach ($data as $value) {
+		$item->set ('item-name', $value);
+		$item->next ();
+	}
+*/
+class NNFTemplateRepeater extends NNFTemplateNode {
+	private $parent;
+	private $template;
+	
+	public function __construct ($DOMNode) {
+		//add a reference to the parent node, where we will be appending the children
+		$this->parent = $DOMNode->parentNode;
+		//take the original node to use as the template for reuse
+		//and remove the source node from the original document
+		$this->template = $DOMNode->cloneNode (true);
+		$DOMNode->parentNode->removeChild ($DOMNode);
+		
+		//intitialise the repeater with a copy of the template
+		parent::__construct ($this->template->cloneNode (true));
 	}
 	
-	//run multiple xpath queries and set node values:
-	public function set ($items) {
-		//the array is in the format of `'xpath' => 'value'`, if an xpath points to multiple nodes,
-		//the value will be set on all of them
-		foreach ($items as $query => $value) $this->setValue ($query, $value);
+	public function next () {
+		//attach the node to the parent
+		$this->parent->appendChild ($this->DOMNode);
+		//reset the template
+		$this->DOMNode = $this->template->cloneNode (true);
+	}
+}
+
+//these functions are shared between the base `NNFTemplate` and the repeater `NNFTemplateRepeater`,
+//the DOM/XPATH voodoo is encapsulated here
+class NNFTemplateNode {
+	protected $DOMNode;
+	private $DOMXPath;
+	
+	//templating works by putting `nnf:data="xyz"` attributes on the HTML elements in your templates, and then using
+	//xpath to refer to these elements and change their values and contents, this means that the vast majority of xpath
+	//queries are in the format of `.//*[@nnf:data="xyz"]`. because of this, a shorthand format is provided by default:
+	//
+	//	element:template-name@attribute
+	//	
+	//for eaxmple "a:xyz@href" would be translated to `.//a[@nnf:data="xyz"]/@href`.
+	//the "element:" and "@attribute" parts are optional.
+	//
+	//since this type of syntax is default, prefix the query with "xpath:" to use a full, real XPath query
+	private function nnf2xpath ($query) {
+		//is this a full xpath query?
+		if (substr ($query, 0, 6) == "xpath:") {
+			//return the query without the "xpath:" prefix
+			return substr ($query, 6);
+		} else {
+			//match the query against the shorthand syntax
+			if (preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $query, $m)) return
+				".//".				//use relative: <php.net/manual/en/domxpath.query.php#99760>
+				(@$m[1] ? $m[1] : "*").		//the element name, if specified, otherwise "*"
+				'[@nnf:data="'.$m[2].'"]'.	//the nnf:data attribute to find
+				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
+			;
+		}
 	}
 	
-	//run an xpath query and set the value on the resulting nodes:
+	//use a DOMNode as a base point for all the xpath queries and whatnot
+	//(in NNFTemplate this will be the whole template, in NNFTemplateRepeater, it will be the chosen element)
+	public function __construct ($DOMNode) {
+		$this->DOMNode = $DOMNode;
+		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
+	}
+	
+	//a simple wrapper to reduce some redundancy
+	protected function xpath ($query) {
+		return $this->DOMXPath->query ($this->nnf2xpath ($query), $this->DOMNode);
+	}
+	
+	//this sets multiple values using multiple xpath queries
+	public function set ($queries) {
+		foreach ($queries as $query => $value) $this->setValue ($query, $value);
+	}
+	
+	//set the text content on the results of a single xpath query
 	public function setValue ($query, $value) {
 		foreach ($this->xpath ($query) as $node) $node->nodeValue = $value;
 	}
 	
-	//using an xpath query, replace node content with new HTML
-	public function innerHTML ($html) {
-		$frag = $this->ownerDocument->createDocumentFragment ();
-		$frag->appendXML ($html);
-		$this->nodeValue = '';
-		$this->appendChild ($frag);
+	//set HTML content for a single xpath query
+	public function setHTML ($query, $html) {
+		foreach ($this->xpath ($query) as $node) {
+			$frag = $node->ownerDocument->createDocumentFragment ();
+			$frag->appendXML ($html);
+			$node->nodeValue = '';
+			$node->appendChild ($frag);
+		}
 	}
 	
 	public function addClass ($query, $new_class) {
@@ -529,21 +579,13 @@ class NNFElement extends DOMElement {
 		}
 	}
 	
-	//using an xpath query, remove resulting nodes
+	//remove all the elements / attributes that match an xpath query
 	public function remove ($query) {
-		foreach ($this->xpath ($query) as $node) $node->removeNode ();
-	}
-	
-	//remove a node using the node!
-	public function removeNode () {
-		$this->parentNode->removeChild ($this);
-	}
-}
-
-class NNFAttr extends DOMAttr {
-	//easy attribute removal without that ugly syntax
-	public function removeNode () {
-		$this->parentNode->removeAttributeNode ($this);
+		foreach ($this->xpath ($query) as $node) if ($node->nodeType == XML_ATTRIBUTE_NODE) {
+			$node->parentNode->removeAttributeNode ($node);
+		} else {
+			$node->parentNode->removeChild ($node);
+		}
 	}
 }
 
