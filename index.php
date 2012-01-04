@@ -71,7 +71,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ====================================================================================================================== */
 
 //load the template into DOM where we can manipulate it:
-$nnf = new NNFTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
+$nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
 
 /* HTML <head>
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -348,8 +348,6 @@ if (HTTP_AUTH) {
 	$nnf->remove ('signed-in');
 }
 
-//remove `data-template` attributes
-$nnf->remove ('xpath://@data-template');
 die ($nnf->html ());
 
 ?>
