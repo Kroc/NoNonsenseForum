@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:nnf="http://camendesign.com/nononsense_forum"><head>
+<html><head>
 	<meta charset="utf-8" />
 	<!-- NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2011
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
@@ -20,9 +20,9 @@
 </head><body>
 <!-- =================================================================================================================== -->
 <header id="mast">
-	<h1><a href="/" nnf:data="root">
-		<img nnf:data="logo" src="/themes/greyscale/icons/title.png" width="32" height="32" alt="" /><!--
-		--><span nnf:data="forum-name">NoNonsense Forum</span>
+	<h1><a href="/">
+		<img data-template="logo" src="/themes/greyscale/icons/title.png" width="32" height="32" alt="" /><!--
+		--><span data-template="forum-name">NoNonsense Forum</span>
 	</a></h1>
 	
 	<form id="search" method="get" action="http://google.com/search"><!--
@@ -32,52 +32,52 @@
 	--></form>
 	
 	<nav><p>
-		<a id="add" href="#new" nnf:data="can_post">Add Thread</a>
+		<a id="add" href="#new" data-template="can_post">Add Thread</a>
 		<a id="rss" href="index.xml">RSS</a>
 	</p><p>
-		<a id="index" href="/" nnf:data="root">Index</a>
-		<span nnf:data="subforum"> » <span nnf:data="subforum-name">Sub-forum</span></span>
+		<a id="index" href="/">Index</a>
+		<span data-template="subforum"> » <span data-template="subforum-name">Sub-forum</span></span>
 	</p></nav>
 </header>
-<section id="about" nnf:data="about"><p>
+<section id="about" data-template="about"><p>
 	If a fourm / sub-forum contains an ‘about.html’ file, it's contents will be loaded into this element.
 	If ‘about.html’ doesn’t exist the whole element will be removed.
 </p></section>
 <!-- =================================================================================================================== -->
-<section id="folders" nnf:data="folders">
+<section id="folders" data-template="folders">
 	<h1>Sub-Forums</h1>
-	<ol class="ui"><li nnf:data="folder">
-		<a nnf:data="folder-name" href="/sub-forum/">Sub-forum</a>
-		<img nnf:data="lock-threads" src="/themes/greyscale/icons/security_open_16.png" width="16" height="16" alt="Replies-only:" title="Replies-only" /><img nnf:data="lock-posts" src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Read-only:" title="Read-only" />
-		<span nnf:data="subforum-post"><a nnf:data="post-link" href="/forum/thread#postid"><time nnf:data="post-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a> <b nnf:data="post-author">author</b></span>
+	<ol class="ui"><li data-template="folder">
+		<a data-template="folder-name" href="/sub-forum/">Sub-forum</a>
+		<img data-template="lock-threads" src="/themes/greyscale/icons/security_open_16.png" width="16" height="16" alt="Replies-only:" title="Replies-only" /><img data-template="lock-posts" src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Read-only:" title="Read-only" />
+		<span data-template="subforum-post"><a data-template="post-link" href="/forum/thread#postid"><time data-template="post-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a> <b data-template="post-author">author</b></span>
 	</li></ol>
 </section>
 
-<p id="rights" nnf:data="forum-lock-threads">
+<p id="rights" data-template="forum-lock-threads">
 	<!-- if the forum is "thread-locked" only moderators/members can start new threads, but anybody can reply -->
 	Only <a href="#mods">moderators or members</a> can start new threads here [<a href="?signin">sign-in</a>],
 	but <em>anybody</em> can reply to existing threads.
 </p>
-<p id="rights" nnf:data="forum-lock-posts">
+<p id="rights" data-template="forum-lock-posts">
 	<!-- if the forum is "post-locked" only moderators/members can post or reply -->
 	Only <a href="#mods">moderators or members</a> can participate here.
 	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
 </p>
 
-<section id="threads" nnf:data="threads">
+<section id="threads" data-template="threads">
 	<h1>Threads</h1>
-	<nav><ol class="pages" nnf:data="pages">
+	<nav><ol class="pages" data-template="pages">
 		<li><em>1</em></li>
 		<li><a href="?page=2#threads">2</a></li>
 		<li>…</li>
 		<li><a href="?page=5#threads">99</a></li>
 	</ol></nav>
-	<ol class="ui"><li nnf:data="thread">
-		<a nnf:data="thread-post" href="/thread#id"><time nnf:data="thread-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a>
-		<i nnf:data="thread-replies">99</i> <b nnf:data="thread-author">Kroc</b> <img nnf:data="thread-locked" src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Locked:" />
-		<a nnf:data="thread-name" href="thread?page=last">The quick brown fox jumps over the lazy dog</a>
+	<ol class="ui"><li data-template="thread">
+		<a data-template="thread-post" href="/thread#id"><time data-template="thread-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a>
+		<i data-template="thread-replies">99</i> <b data-template="thread-author">Kroc</b> <img data-template="thread-locked" src="/themes/greyscale/icons/security_closed_16.png" width="16" height="16" alt="Locked:" />
+		<a data-template="thread-name" href="thread?page=last">The quick brown fox jumps over the lazy dog</a>
 	</li></ol>
-	<nav><ol class="pages" nnf:data="pages">
+	<nav><ol class="pages" data-template="pages">
 		<li><em>1</em></li>
 		<li><a href="?page=2#threads">2</a></li>
 		<li>…</li>
@@ -85,66 +85,66 @@
 	</ol></nav>
 </section>
 <!-- =================================================================================================================== -->
-<section id="new" nnf:data="can_post">
+<section id="new" data-template="can_post">
 	<h1>Add Thread</h1>
 	<form method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 	
 	<p id="ptitle">
 		<label for="title">Title:</label>
-		<input nnf:data="title-field" name="title" id="title" type="text" size="28" tabindex="1"
+		<input data-template="title-field" name="title" id="title" type="text" size="28" tabindex="1"
 		       maxlength="80" autocomplete="off"
 		       placeholder="Type thread title here…" value="" />
 	</p>
 	
-	<div id="rightcol"><div nnf:data="http-auth">
+	<div id="rightcol"><div data-template="http-auth">
 		<!-- if the user is signed in using HTTP_AUTH -->
 		<label for="user">You are signed in as:</label>
 		<p id="puser">
-			<input nnf:data="name-field-http" name="username" id="user" type="text" size="28" maxlength="20"
+			<input data-template="name-field-http" name="username" id="user" type="text" size="28" maxlength="20"
 			       disabled="disabled" value="" />
 		</p>
 	</div>
-	<p id="puser" nnf:data="name">
+	<p id="puser" data-template="name">
 		<label for="user">Name:</label>
-		<input nnf:data="name-field" name="username" id="user" type="text" size="28" tabindex="3"
+		<input data-template="name-field" name="username" id="user" type="text" size="28" tabindex="3"
 		       maxlength="20" autocomplete="on"
 		       placeholder="Your name" value="" />
-	</p><p id="ppass" nnf:data="pass">
+	</p><p id="ppass" data-template="pass">
 		<label for="pass">Password:</label>
-		<input nnf:data="pass-field" name="password" id="pass" type="password" size="28" tabindex="4"
+		<input data-template="pass-field" name="password" id="pass" type="password" size="28" tabindex="4"
 		       maxlength="20" autocomplete="on"
 		       placeholder="A password to keep your name" value="" />
-	</p><p id="pemail" nnf:data="email">
+	</p><p id="pemail" data-template="email">
 		<label class="email">Email:</label>
 		<input name="email" type="text" value="example@abc.com" tabindex="0"
 		       autocomplete="off" />
 		(Leave this as-is, it’s a trap!)
 	</p>
-	<p id="ok" nnf:data="error-none">
+	<p id="ok" data-template="error-none">
 		<!-- this is shown by default as long as new users aren't disabled and the user isn't signed in -->
 		There is no need to “register”, just enter the same name + password of your choice every time.
 	</p>
-	<p id="ok" nnf:data="error-none-http">
+	<p id="ok" data-template="error-none-http">
 		<!-- this is shown by default if the user is signed in -->
 		(Quit your browser or clear the browser cache to sign out.)
 	</p>
-	<p id="error" nnf:data="error-newbies">
+	<p id="error" data-template="error-newbies">
 		<!-- if the `FORUM_NEWBIES` option is false, only existing users can post -->
 		Only registered users can post.<br />No new registrations are allowed.
 	</p>
-	<p id="error" nnf:data="error-title">
+	<p id="error" data-template="error-title">
 		You need to enter the title of your new discussion thread.
 	</p>
-	<p id="error" nnf:data="error-name">
+	<p id="error" data-template="error-name">
 		Enter a name. You’ll need to use this with the password each time.
 	</p>
-	<p id="error" nnf:data="error-pass">
+	<p id="error" data-template="error-pass">
 		Enter a password. It’s so you can re-use your name each time.
 	</p>
-	<p id="error" nnf:data="error-text">
+	<p id="error" data-template="error-text">
 		Well, write a message!
 	</p>
-	<p id="error" nnf:data="error-auth">
+	<p id="error" data-template="error-auth">
 		That name is taken. Provide the password for it, or choose another name. (password typo?)
 	</p>
 	<p id="markup">
@@ -156,7 +156,7 @@
 	<p id="ptext">
 		<label for="text">Message:</label>
 		<span id="wtext">
-			<textarea nnf:data="text-field" name="text" id="text" cols="40" rows="14" tabindex="2"
+			<textarea data-template="text-field" name="text" id="text" cols="40" rows="14" tabindex="2"
 			          maxlength="50000" placeholder="Type your message here…"
 			></textarea>
 		</span>
@@ -173,23 +173,23 @@
 </section>
 <!-- =================================================================================================================== -->
 <div id="mods">
-	<p nnf:data="mods-local">
+	<p data-template="mods-local">
 		Moderators for this sub-forum:
-		<span nnf:data="mods-local-list"><b class="mod">Bob</b></span>
-	</p><p nnf:data="mods">
+		<span data-template="mods-local-list"><b class="mod">Bob</b></span>
+	</p><p data-template="mods">
 		Your friendly neighbourhood moderators:
-		<span nnf:data="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
-	</p><p nnf:data="members">
+		<span data-template="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
+	</p><p data-template="members">
 		Members of this forum:
-		<span nnf:data="members-list"><b>Arthur</b></span>
+		<span data-template="members-list"><b>Arthur</b></span>
 	</p>
 </div>
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
-</p><p id="signin" nnf:data="signed-in">
-	Signed in as<br /><b nnf:data="signed-in-name">Kroc</b>
-</p><p id="signin" nnf:data="signed-out">
+</p><p id="signin" data-template="signed-in">
+	Signed in as<br /><b data-template="signed-in-name">Kroc</b>
+</p><p id="signin" data-template="signed-out">
 	<a href="?signin">Sign in</a>
 </p></footer>
 

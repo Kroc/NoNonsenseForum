@@ -421,7 +421,7 @@ class DXML extends SimpleXMLElement {
 	}
 }
 
-//NoNonsense Forum's amazing templating engine. watch as mutating the hideous DOM becomes elegant and simple!
+//NoNonsense Forum's amazing templating engine: watch as mutating the hideous DOM becomes elegant and simple!
 class NNFTemplate extends NNFTemplateNode {
 	private $DOMDoucment;
 	
@@ -429,7 +429,7 @@ class NNFTemplate extends NNFTemplateNode {
 		$this->DOMDocument = new DOMDocument ();
 		//load the template file to work with
 		$this->DOMDocument->load ($filepath, LIBXML_COMPACT | LIBXML_NONET) or trigger_error (
-			"Template '$filename' is invalid XML", E_USER_ERROR
+			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
 		//set the parent node for all xpath searching
 		//(handled all internally by `NNFTemplateNode`)
@@ -472,7 +472,7 @@ class NNFTemplate extends NNFTemplateNode {
 /*
 	$item = $NNFTemplate->repeat ('list-item');
 	foreach ($data as $value) {
-		$item->set ('item-name', $value);
+		$item->setValue ('item-name', $value);
 		$item->next ();
 	}
 */
@@ -506,13 +506,13 @@ class NNFTemplateNode {
 	protected $DOMNode;
 	private $DOMXPath;
 	
-	//templating works by putting `nnf:data="xyz"` attributes on the HTML elements in your templates, and then using
+	//templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates, and then using
 	//xpath to refer to these elements and change their values and contents, this means that the vast majority of xpath
-	//queries are in the format of `.//*[@nnf:data="xyz"]`. because of this, a shorthand format is provided by default:
+	//queries are in the format of `.//*[@data-template="xyz"]`. because of this, a shorthand format is provided by default:
 	//
 	//	element:template-name@attribute
 	//	
-	//for eaxmple "a:xyz@href" would be translated to `.//a[@nnf:data="xyz"]/@href`.
+	//for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`.
 	//the "element:" and "@attribute" parts are optional.
 	//
 	//since this type of syntax is default, prefix the query with "xpath:" to use a full, real XPath query
@@ -526,7 +526,7 @@ class NNFTemplateNode {
 			if (preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $query, $m)) return
 				".//".				//use relative: <php.net/manual/en/domxpath.query.php#99760>
 				(@$m[1] ? $m[1] : "*").		//the element name, if specified, otherwise "*"
-				'[@nnf:data="'.$m[2].'"]'.	//the nnf:data attribute to find
+				'[@data-template="'.$m[2].'"]'.	//the data-template attribute to find
 				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
 			;
 		}

@@ -348,8 +348,8 @@ if (HTTP_AUTH) {
 	$nnf->remove ('signed-in');
 }
 
-//remove `nnf:data` attributes
-$nnf->remove ('xpath://@nnf:data');
+//remove `data-template` attributes
+$nnf->remove ('xpath://@data-template');
 die ($nnf->html ());
 
 ?>
