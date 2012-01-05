@@ -174,6 +174,17 @@ header ('Expires: 0', true);
 //everything prepared; below are just shared functions
 /* ====================================================================================================================== */
 
+//check to see if a name is a known moderator
+function isMod ($name) {
+	global $MODS; return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
+}
+
+function isMember ($name) {
+	global $MEMBERS; return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
+}
+
+/* ====================================================================================================================== */
+
 //sanitise input:
 function safeGet ($data, $len, $trim=true) {
 	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
@@ -328,17 +339,6 @@ function formatText ($text) {
 
 /* ====================================================================================================================== */
 
-//check to see if a name is a known moderator
-function isMod ($name) {
-	global $MODS; return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
-}
-
-function isMember ($name) {
-	global $MEMBERS; return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
-}
-
-/* ====================================================================================================================== */
-
 //regenerate a folder's RSS file (all changes happening in a folder)
 function indexRSS () {
 	/* create an RSS feed
@@ -430,7 +430,9 @@ class DOMTemplate extends DOMTemplateNode {
 	public function __construct ($filepath) {
 		$this->DOMDocument = new DOMDocument ();
 		//load the template file to work with
-		$this->DOMDocument->load ($filepath, LIBXML_COMPACT | LIBXML_NONET) or trigger_error (
+		$this->DOMDocument->loadXML (
+			static::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
+		) or trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
 		//set the parent node for all xpath searching
@@ -508,45 +510,120 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 //the DOM/XPATH voodoo is encapsulated here
 class DOMTemplateNode {
 	protected $DOMNode;
-	private $DOMXPath;
+	private   $DOMXPath;
 	
-	//templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates, and then
-	//using xpath to refer to these elements and change their values and contents, this means that the vast majority of
-	//xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this, a shorthand format is provided
-	//by default:
-	//
-	//	element:template-name@attribute
-	//	
-	//for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`.
-	//the "element:" and "@attribute" parts are optional.
-	//
-	//since this type of syntax is default, prefix the query with "xpath:" to use a full, real XPath query
-	private function shorthand2xpath ($query) {
-		//is this a full xpath query?
-		if (substr ($query, 0, 6) == "xpath:") {
-			//return the query without the "xpath:" prefix
-			return substr ($query, 6);
-		} else {
-			//match the query against the shorthand syntax
-			if (preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $query, $m)) return
-				".//".				//use relative: <php.net/manual/en/domxpath.query.php#99760>
-				(@$m[1] ? $m[1] : "*").		//the element name, if specified, otherwise "*"
-				'[@data-template="'.$m[2].'"]'.	//the data-template attribute to find
-				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
-			;
-		}
+	//because everything is XML, HTML named entities like "&copy;" will cause blank output.
+	//we need to convert these named entities back to real UTF-8 characters (which XML doesn’t mind)
+	//'&', '<' and '>' are exlcuded so that we don’t turn user text into working HTML!
+	public static $entities = array (
+		//I hope your text editor is decent...
+		'&nbsp;'	=> ' ', '&iexcl;'	=> '¡', '&cent;'	=> '¢', '&pound;'	=> '£',
+		'&curren;'	=> '¤', '&yen;'		=> '¥', '&brvbar;'	=> '¦', '&sect;'	=> '§',
+		'&uml;'		=> '¨', '&copy;'	=> '©', '&ordf;'	=> 'ª', '&laquo;'	=> '«',
+		'&not;'		=> '¬', '&shy;'		=> '­', '&reg;'		=> '®', '&macr;'	=> '¯',
+		'&deg;'		=> '°', '&plusmn;'	=> '±', '&sup2;'	=> '²', '&sup3;'	=> '³',
+		'&acute;'	=> '´', '&micro;'	=> 'µ', '&para;'	=> '¶', '&middot;'	=> '·',
+		'&cedil;'	=> '¸', '&sup1;'	=> '¹', '&ordm;'	=> 'º', '&raquo;'	=> '»',
+		'&frac14;'	=> '¼', '&frac12;'	=> '½', '&frac34;'	=> '¾', '&iquest;'	=> '¿',
+		'&Agrave;'	=> 'À', '&Aacute;'	=> 'Á', '&Acirc;'	=> 'Â', '&Atilde;'	=> 'Ã',
+		'&Auml;'	=> 'Ä', '&Aring;'	=> 'Å', '&AElig;'	=> 'Æ', '&Ccedil;'	=> 'Ç',
+		'&Egrave;'	=> 'È', '&Eacute;'	=> 'É', '&Ecirc;'	=> 'Ê', '&Euml;'	=> 'Ë',
+		'&Igrave;'	=> 'Ì', '&Iacute;'	=> 'Í', '&Icirc;'	=> 'Î', '&Iuml;'	=> 'Ï',
+		'&ETH;'		=> 'Ð', '&Ntilde;'	=> 'Ñ', '&Ograve;'	=> 'Ò', '&Oacute;'	=> 'Ó',
+		'&Ocirc;'	=> 'Ô', '&Otilde;'	=> 'Õ', '&Ouml;'	=> 'Ö', '&times;'	=> '×',
+		'&Oslash;'	=> 'Ø', '&Ugrave;'	=> 'Ù', '&Uacute;'	=> 'Ú', '&Ucirc;'	=> 'Û',
+		'&Uuml;'	=> 'Ü', '&Yacute;'	=> 'Ý', '&THORN;'	=> 'Þ', '&szlig;'	=> 'ß',
+		'&agrave;'	=> 'à', '&aacute;'	=> 'á', '&acirc;'	=> 'â', '&atilde;'	=> 'ã',
+		'&auml;'	=> 'ä', '&aring;'	=> 'å', '&aelig;'	=> 'æ', '&ccedil;'	=> 'ç',
+		'&egrave;'	=> 'è', '&eacute;'	=> 'é', '&ecirc;'	=> 'ê', '&euml;'	=> 'ë',
+		'&igrave;'	=> 'ì', '&iacute;'	=> 'í', '&icirc;'	=> 'î', '&iuml;'	=> 'ï',
+		'&eth;'		=> 'ð', '&ntilde;'	=> 'ñ', '&ograve;'	=> 'ò', '&oacute;'	=> 'ó',
+		'&ocirc;'	=> 'ô', '&otilde;'	=> 'õ', '&ouml;'	=> 'ö', '&divide;'	=> '÷',
+		'&oslash;'	=> 'ø', '&ugrave;'	=> 'ù', '&uacute;'	=> 'ú', '&ucirc;'	=> 'û',
+		'&uuml;'	=> 'ü', '&yacute;'	=> 'ý', '&thorn;'	=> 'þ', '&yuml;'	=> 'ÿ',
+		'&OElig;'	=> 'Œ', '&oelig;'	=> 'œ', '&Scaron;'	=> 'Š', '&scaron;'	=> 'š',
+		'&Yuml;'	=> 'Ÿ', '&fnof;'	=> 'ƒ', '&circ;'	=> 'ˆ', '&tilde;'	=> '˜',
+		'&Alpha;'	=> 'Α', '&Beta;'	=> 'Β', '&Gamma;'	=> 'Γ', '&Delta;'	=> 'Δ',
+		'&Epsilon;'	=> 'Ε', '&Zeta;'	=> 'Ζ', '&Eta;'		=> 'Η', '&Theta;'	=> 'Θ',
+		'&Iota;'	=> 'Ι', '&Kappa;'	=> 'Κ', '&Lambda;'	=> 'Λ', '&Mu;'		=> 'Μ',
+		'&Nu;'		=> 'Ν', '&Xi;'		=> 'Ξ', '&Omicron;'	=> 'Ο', '&Pi;'		=> 'Π',
+		'&Rho;'		=> 'Ρ', '&Sigma;'	=> 'Σ', '&Tau;'		=> 'Τ', '&Upsilon;'	=> 'Υ',
+		'&Phi;'		=> 'Φ', '&Chi;'		=> 'Χ', '&Psi;'		=> 'Ψ', '&Omega;'	=> 'Ω',
+		'&alpha;'	=> 'α', '&beta;'	=> 'β', '&gamma;'	=> 'γ', '&delta;'	=> 'δ',
+		'&epsilon;'	=> 'ε', '&zeta;'	=> 'ζ', '&eta;'		=> 'η', '&theta;'	=> 'θ',
+		'&iota;'	=> 'ι', '&kappa;'	=> 'κ', '&lambda;'	=> 'λ', '&mu;'		=> 'μ',
+		'&nu;'		=> 'ν', '&xi;'		=> 'ξ', '&omicron;'	=> 'ο', '&pi;'		=> 'π',
+		'&rho;'		=> 'ρ', '&sigmaf;'	=> 'ς', '&sigma;'	=> 'σ', '&tau;'		=> 'τ',
+		'&upsilon;'	=> 'υ', '&phi;'		=> 'φ', '&chi;'		=> 'χ', '&psi;'		=> 'ψ',
+		'&omega;'	=> 'ω', '&thetasym;'	=> 'ϑ', '&upsih;'	=> 'ϒ', '&piv;'		=> 'ϖ',
+		'&ensp;'	=> ' ', '&emsp;'	=> ' ', '&thinsp;'	=> ' ', '&zwnj;'	=> '‌',
+		'&zwj;'		=> '‍', '&lrm;'		=> '‎', '&rlm;'		=> '‏', '&ndash;'	=> '–',
+		'&mdash;'	=> '—', '&lsquo;'	=> '‘', '&rsquo;'	=> '’', '&sbquo;'	=> '‚',
+		'&ldquo;'	=> '“', '&rdquo;'	=> '”', '&bdquo;'	=> '„', '&dagger;'	=> '†',
+		'&Dagger;'	=> '‡', '&bull;'	=> '•', '&hellip;'	=> '…', '&permil;'	=> '‰',
+		'&prime;'	=> '′', '&Prime;'	=> '″', '&lsaquo;'	=> '‹', '&rsaquo;'	=> '›',
+		'&oline;'	=> '‾', '&frasl;'	=> '⁄', '&euro;'	=> '€', '&image;'	=> 'ℑ',
+		'&weierp;'	=> '℘', '&real;'	=> 'ℜ', '&trade;'	=> '™', '&alefsym;'	=> 'ℵ',
+		'&larr;'	=> '←', '&uarr;'	=> '↑', '&rarr;'	=> '→', '&darr;'	=> '↓',
+		'&harr;'	=> '↔', '&crarr;'	=> '↵', '&lArr;'	=> '⇐', '&uArr;'	=> '⇑',
+		'&rArr;'	=> '⇒', '&dArr;'	=> '⇓', '&hArr;'	=> '⇔', '&forall;'	=> '∀',
+		'&part;'	=> '∂', '&exist;'	=> '∃', '&empty;'	=> '∅', '&nabla;'	=> '∇',
+		'&isin;'	=> '∈', '&notin;'	=> '∉', '&ni;'		=> '∋', '&prod;'	=> '∏',
+		'&sum;'		=> '∑', '&minus;'	=> '−', '&lowast;'	=> '∗', '&radic;'	=> '√',
+		'&prop;'	=> '∝', '&infin;'	=> '∞', '&ang;'		=> '∠', '&and;'		=> '∧',
+		'&or;'		=> '∨', '&cap;'		=> '∩', '&cup;'		=> '∪', '&int;'		=> '∫',
+		'&there4;'	=> '∴', '&sim;'		=> '∼', '&cong;'	=> '≅',	'&asymp;'	=> '≈',
+		'&ne;'		=> '≠', '&equiv;'	=> '≡', '&le;'		=> '≤', '&ge;'		=> '≥',
+		'&sub;'		=> '⊂', '&sup;'		=> '⊃', '&nsub;'	=> '⊄', '&sube;'	=> '⊆',
+		'&supe;'	=> '⊇', '&oplus;'	=> '⊕', '&otimes;'	=> '⊗', '&perp;'	=> '⊥',
+		'&sdot;'	=> '⋅', '&lceil;'	=> '⌈', '&rceil;'	=> '⌉', '&lfloor;'	=> '⌊',
+		'&rfloor;'	=> '⌋', '&lang;'	=> '〈', '&rang;'	=> '〉', '&loz;'		=> '◊',
+		'&spades;'	=> '♠', '&clubs;'	=> '♣', '&hearts;'	=> '♥', '&diams;'	=> '♦'
+		/* BTW, if you have PHP 5.3.4+ you can produce this whole array with just two lines of code:
+		
+			$this->entities = array_flip (get_html_translation_table (HTML_ENTITIES, ENT_NOQUOTES, 'UTF-8'));
+			unset ($this->entities['&'], $this->entities['<'], $this->entities['>']);
+		*/
+	);
+	
+	public static function html_entity_decode ($html) {
+		return str_replace (array_keys (static::$entities), array_values (static::$entities), $html);
 	}
 	
-	//use a DOMNode as a base point for all the xpath queries and whatnot
-	//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
 	public function __construct ($DOMNode) {
+		//use a DOMNode as a base point for all the XPath queries and whatnot
+		//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
 		$this->DOMNode = $DOMNode;
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
 	}
 	
 	//a simple wrapper to reduce some redundancy
 	protected function xpath ($query) {
-		return $this->DOMXPath->query ($this->shorthand2xpath ($query), $this->DOMNode);
+		//templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates,
+		//and then using xpath to refer to these elements and change their values and contents, this means that
+		//the vast majority of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this,
+		//a shorthand format is provided by default:
+		//
+		//	element:template-name@attribute
+		//	
+		//for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
+		//"@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
+		//to use a full, real XPath query
+		
+		//is this a full xpath query?
+		if (substr ($query, 0, 6) == "xpath:") {
+			//return the query without the "xpath:" prefix
+			$query = substr ($query, 6);
+		} else {
+			//match the query against the shorthand syntax
+			if (preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $query, $m)) $query =
+				".//".				//use relative: <php.net/manual/en/domxpath.query.php#99760>
+				(@$m[1] ? $m[1] : "*").		//the element name, if specified, otherwise "*"
+				'[@data-template="'.$m[2].'"]'.	//the data-template attribute to find
+				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
+			;
+		}
+		return $this->DOMXPath->query ($query, $this->DOMNode);
 	}
 	
 	//this sets multiple values using multiple xpath queries
@@ -556,14 +633,16 @@ class DOMTemplateNode {
 	
 	//set the text content on the results of a single xpath query
 	public function setValue ($query, $value) {
-		foreach ($this->xpath ($query) as $node) $node->nodeValue = $value;
+		foreach ($this->xpath ($query) as $node)
+			$node->nodeValue = $node->nodeType == XML_ATTRIBUTE_NODE ? safeString ($value) : safeHTML ($value)
+		;
 	}
 	
 	//set HTML content for a single xpath query
 	public function setHTML ($query, $html) {
 		foreach ($this->xpath ($query) as $node) {
 			$frag = $node->ownerDocument->createDocumentFragment ();
-			$frag->appendXML ($html);
+			$frag->appendXML (static::html_entity_decode ($html));
 			$node->nodeValue = '';
 			$node->appendChild ($frag);
 		}

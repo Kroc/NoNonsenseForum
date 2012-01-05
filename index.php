@@ -71,17 +71,17 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ====================================================================================================================== */
 
 //load the template into DOM where we can manipulate it:
+//(see 'shared.php' or http://camendesign.com/dom_templating for more details)
 $nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
 
 /* HTML <head>
    ---------------------------------------------------------------------------------------------------------------------- */
 $nnf->set (array (
 	//HTML title (= forum / sub-forum name and page number)
-	'xpath:/html/head/title'				=> (PATH ? PATH : safeHTML (FORUM_NAME)).
-								   (PAGE>1 ? ' # '.PAGE : ''),
+	'xpath:/html/head/title'				=> (PATH ? PATH : FORUM_NAME).(PAGE>1 ? ' # '.PAGE : ''),
 	//application title (= forum / sub-forum name):
 	//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-	'xpath://meta[@name="application-name"]/@content'	=> PATH ? safeString (PATH) : safeString (FORUM_NAME),
+	'xpath://meta[@name="application-name"]/@content'	=> PATH ? PATH : FORUM_NAME,
 	//application URL (where the pinned site opens at)
 	'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 ));
@@ -94,8 +94,8 @@ if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
 $nnf->set (array (
-	'forum-name'	=> safeHTML (FORUM_NAME),					//forum name
-	'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO	//the forum logo
+	'forum-name'	=> FORUM_NAME,
+	'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
 ));
 
 //are we in a sub-folder?
@@ -113,11 +113,11 @@ $nnf->set (array (
 	'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
 											: 'http://google.com/search',
 	//set the forum URL for Google search-by-site
-	'xpath://input[@name="as_sitesearch"]/@value'			=> safeString ($_SERVER['HTTP_HOST'])
+	'xpath://input[@name="as_sitesearch"]/@value'			=> $_SERVER['HTTP_HOST']
 ));
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
-//remove the "add thread" link and anything else (like the input forum) related to posting
+//remove the "add thread" link and anything else (like the input form) related to posting
 if (!CAN_POST) $nnf->remove ('can-post');
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
@@ -160,7 +160,7 @@ if (!PATH && $folders = array_filter (
 		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 		
 		$item->set (array (
-			'a:folder-name'		=> safeHTML ($FOLDER),			//name of sub-forum
+			'a:folder-name'		=> $FOLDER,				//name of sub-forum
 			'a:folder-name@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
 		));
 		
@@ -171,7 +171,7 @@ if (!PATH && $folders = array_filter (
 		if ((bool) $last) {
 			$item->set (array (
 				//last post author name
-				'post-author'			=> safeHTML ($last->author),
+				'post-author'			=> $last->author,
 				//last post time (human readable)
 				'time:post-time'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
 				//last post time (machine readable)
@@ -217,8 +217,8 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		$threads = array_diff ($threads, $stickies);
 	}
 	
-	//do the page links
-	//(stickies are not included in the count as they appear on all pages)
+	//do the page links (stickies are not included in the count as they appear on all pages)
+	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
 	$nnf->setHTML ('pages', theme_pageList (
 		//page number,	number of pages
 		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
@@ -242,7 +242,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		
 		$item->set (array (
 			//thread title and URL
-			'a:thread-name'			=> safeHTML ($xml->channel->title),
+			'a:thread-name'			=> $xml->channel->title,
 			'a:thread-name@href'		=> pathinfo ($file, PATHINFO_FILENAME).'?page=last',
 			//number of replies
 			'thread-replies'		=> count ($xml->channel->item) - 1,
@@ -255,7 +255,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			//last post time (machine readable)
 			'time:thread-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
 			//last post author
-			'thread-author'			=> safeHTML ($last->author)
+			'thread-author'			=> $last->author
 		));
 		
 		//is the last post author a mod?
@@ -275,11 +275,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 if (CAN_POST) {
 	//set the field values from what was typed in before
 	$nnf->set (array (
-		'input:title-field@value'	=> safeString (TITLE),
-		'input:name-field-http@value'	=> safeString (NAME),
-		'input:name-field@value'	=> safeString (NAME),
-		'input:pass-field@value'	=> safeString (PASS),
-		'textarea:text-field'		=> safeHTML (TEXT)
+		'input:title-field@value'	=> TITLE,
+		'input:name-field-http@value'	=> NAME,
+		'input:name-field@value'	=> NAME,
+		'input:pass-field@value'	=> PASS,
+		'textarea:text-field'		=> TEXT
 	));
 	
 	//is the user already signed-in?

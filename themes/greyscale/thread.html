@@ -43,7 +43,7 @@
 <section id="post">
 	<h1 data-template="post-title" id="abcd">Thread Title</h1>
 	
-	<article class="op">
+	<article data-template="post" class="op">
 		<header>
 			<a data-template="post-append" class="ui append" rel="noindex nofollow" href="thread_title?append&amp;id=abcd">append</a>
 			<a data-template="post-delete" class="ui delete" rel="noindex nofollow" href="thread_title?delete&amp;id=abcd">delete</a>
@@ -55,7 +55,7 @@
 	</article>
 </section>
 
-<p id="rights" data-template="forum-locked">
+<p id="rights" data-template="forum-lock-posts">
 	Only <a href="#mods">moderators or members</a> can reply to this thread.
 	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
 </p>
@@ -72,7 +72,7 @@
 	<article data-template="reply" id="1234">
 		<header>
 			<a data-template="reply-append" class="ui append" rel="noindex nofollow" href="thread_title?append&amp;id=abcd">append</a>
-			<a data-template="reply-delete" class="ui delete" rel="noindex nofollow" href="<?php echo $POST['DELETE_URL'];?>">delete</a>
+			<a data-template="reply-delete" class="ui delete" rel="noindex nofollow" href="thread_title?delete&amp;id=abcd">delete</a>
 			<time data-template="reply-time" datetime="2012-01-01T00:00:00+00:00" pubdate="pubdate">01 Jan ’12 · 00:00</time>
 			<a data-template="reply-number" href="?page=1#abcd">#1.</a>
 			<b data-template="reply-author">Author</b>

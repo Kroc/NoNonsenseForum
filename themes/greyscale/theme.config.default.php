@@ -78,7 +78,7 @@ if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $page
 
 //produce an HTML list of names. used for the mods/members list
 if (!function_exists ('theme_nameList')) { function theme_nameList ($names) {
-	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="mod"' : '').">$name</b>";
+	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="mod"' : '').'>'.safeHTML ($name).'</b>';
 	return implode (', ', $names);
 }}
 
