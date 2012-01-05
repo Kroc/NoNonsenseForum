@@ -425,7 +425,7 @@ class DXML extends SimpleXMLElement {
 
 //NoNonsense Forum's amazing templating engine: watch as mutating the hideous DOM becomes elegant and simple!
 class DOMTemplate extends DOMTemplateNode {
-	private $DOMDoucment;
+	private $DOMDocument;
 	
 	public function __construct ($filepath) {
 		$this->DOMDocument = new DOMDocument ();

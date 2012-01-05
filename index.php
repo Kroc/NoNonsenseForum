@@ -118,7 +118,7 @@ $nnf->set (array (
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
 //remove the "add thread" link and anything else (like the input forum) related to posting
-if (!CAN_POST) $nnf->remove ('can_post');
+if (!CAN_POST) $nnf->remove ('can-post');
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
