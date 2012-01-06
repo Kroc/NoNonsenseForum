@@ -6,13 +6,13 @@
 */
 
 //bootstrap the forum; you should read that file first
-require_once './shared.php';
+require_once './start.php';
 
 //get page number
 define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
 
 //submitted info for making a new thread
-//(name / password already handled in 'shared.php')
+//(name / password already handled in 'start.php')
 define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
 define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
@@ -71,7 +71,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ====================================================================================================================== */
 
 //load the template into DOM where we can manipulate it:
-//(see 'shared.php' or http://camendesign.com/dom_templating for more details)
+//(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
 $nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
 
 /* HTML <head>
@@ -140,7 +140,7 @@ if (FORUM_LOCK != 'posts')   $nnf->remove ('forum-lock-posts');
 if (!PATH && $folders = array_filter (
 	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-	preg_grep ('/^(\.|users$|themes$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
 	$item = $nnf->repeat ('folder');
 	

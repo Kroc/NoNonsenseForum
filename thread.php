@@ -6,9 +6,9 @@
 */
 
 //bootstrap the forum; you should read that file first
-require_once './shared.php';
+require_once './start.php';
 
-//get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
+//get the post message, the other fields (name / pass) are retrieved automatically in 'start.php'
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 //which thread to show
@@ -130,7 +130,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 /* template thread
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
-//(see 'shared.php' or http://camendesign.com/dom_templating for more details)
+//(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
 $nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html');
 
 /* HTML <head>

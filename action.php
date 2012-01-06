@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-require_once './shared.php';
+require_once './start.php';
 
 /* append to a post?
    ====================================================================================================================== */
@@ -16,7 +16,7 @@ if (isset ($_GET['append'])) {
 	//ID of post appending to
 	$ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['id']) ? $_GET['id'] : '') or die ('Malformed request');
 	
-	//get the post message, the other fields (name / pass) are retrieved automatically in 'shared.php'
+	//get the post message, the other fields (name / pass) are retrieved automatically in 'start.php'
 	define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 	
 	//get a write lock on the file so that between now and saving, no other posts could slip in
