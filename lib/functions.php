@@ -119,7 +119,7 @@ function formatText ($text) {
 	*/
 	$text = preg_replace(
 		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
-		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\"/>$1</p>\n"),
+		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\">$1</p>\n"),
 	$text);
 	
 	/* blockquotes:

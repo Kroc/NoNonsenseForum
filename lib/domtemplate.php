@@ -29,14 +29,6 @@ class DOMTemplate extends DOMTemplateNode {
 		;
 	}
 	
-	//specify an element to repeat (like a list-item):
-	//this will return an DOMTemplateRepeater class that allows you to modify the contents the same as with the base
-	//template but also append the results to the parent and return to the original element's content to go again
-	public function repeat ($query) {
-		//take just the first element found in a query and return a repeating template of the element
-		return new DOMTemplateRepeater ($this->xpath ($query)->item (0));
-	}
-	
 	//output the complete HTML
 	public function html () {
 		//remove remaining `data-template` attributes
@@ -51,40 +43,6 @@ class DOMTemplate extends DOMTemplateNode {
 			'<$1 />',
 			'<$1$2></$1>'
 		), $this->DOMDocument->saveXML ());
-	}
-}
-
-//using `DOMTemplate->repeat ('xpath');` returns one of these classes that acts as a sub-template that you can modify and
-//then call the `next` method to append it to the parent and return to the template's original HTML code. this makes
-//creating a list stunning simple! e.g.
-/*
-	$item = $DOMTemplate->repeat ('list-item');
-	foreach ($data as $value) {
-		$item->setValue ('item-name', $value);
-		$item->next ();
-	}
-*/
-class DOMTemplateRepeater extends DOMTemplateNode {
-	private $parent;
-	private $template;
-	
-	public function __construct ($DOMNode) {
-		//add a reference to the parent node, where we will be appending the children
-		$this->parent = $DOMNode->parentNode;
-		//take the original node to use as the template for reuse
-		//and remove the source node from the original document
-		$this->template = $DOMNode->cloneNode (true);
-		$DOMNode->parentNode->removeChild ($DOMNode);
-		
-		//intitialise the repeater with a copy of the template
-		parent::__construct ($this->template->cloneNode (true));
-	}
-	
-	public function next () {
-		//attach the node to the parent
-		$this->parent->appendChild ($this->DOMNode);
-		//reset the template
-		$this->DOMNode = $this->template->cloneNode (true);
 	}
 }
 
@@ -163,13 +121,12 @@ class DOMTemplateNode {
 		'&spades;'	=> '♠', '&clubs;'	=> '♣', '&hearts;'	=> '♥', '&diams;'	=> '♦'
 		/* BTW, if you have PHP 5.3.4+ you can produce this whole array with just two lines of code:
 		
-			$this->entities = array_flip (get_html_translation_table (HTML_ENTITIES, ENT_NOQUOTES, 'UTF-8'));
-			unset ($this->entities['&'], $this->entities['<'], $this->entities['>']);
+			$entities = array_flip (get_html_translation_table (HTML_ENTITIES, ENT_NOQUOTES, 'UTF-8'));
+			unset ($entities['&'], $entities['<'], $entities['>']);
 		
 		   also, this list is *far* from comprehensive. see this page for the full list
 		   http://www.whatwg.org/specs/web-apps/current-work/multipage/named-character-references.html */
 	);
-	
 	public static function html_entity_decode ($html) {
 		return str_replace (array_keys (static::$entities), array_values (static::$entities), $html);
 	}
@@ -183,18 +140,16 @@ class DOMTemplateNode {
 	
 	//a simple wrapper to reduce some redundancy
 	protected function xpath ($query) {
-		//templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates,
-		//and then using xpath to refer to these elements and change their values and contents, this means that
-		//the vast majority of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this,
-		//a shorthand format is provided by default:
-		//
-		//	element:template-name@attribute
-		//	
-		//for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
-		//"@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
-		//to use a full, real XPath query
-		
-		//is this a full xpath query?
+		/* templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates,
+		   and then using xpath to refer to these elements and change their values and contents, this means that
+		   the vast majority of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this,
+		   a shorthand format is provided by default:
+		   
+		   	element:template-name@attribute
+		   
+		   for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
+		   "@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
+		   to use a full, real XPath query */
 		if (substr ($query, 0, 6) == "xpath:") {
 			//return the query without the "xpath:" prefix
 			$query = substr ($query, 6);
@@ -208,6 +163,14 @@ class DOMTemplateNode {
 			;
 		}
 		return $this->DOMXPath->query ($query, $this->DOMNode);
+	}
+	
+	//specify an element to repeat (like a list-item):
+	//this will return an DOMTemplateRepeater class that allows you to modify the contents the same as with the base
+	//template but also append the results to the parent and return to the original element's content to go again
+	public function repeat ($query) {
+		//take just the first element found in a query and return a repeating template of the element
+		return new DOMTemplateRepeater ($this->xpath ($query)->item (0));
 	}
 	
 	//this sets multiple values using multiple xpath queries
@@ -254,6 +217,40 @@ class DOMTemplateNode {
 		} else {
 			$node->parentNode->removeChild ($node);
 		}
+	}
+}
+
+//using `DOMTemplate->repeat ('xpath');` returns one of these classes that acts as a sub-template that you can modify and
+//then call the `next` method to append it to the parent and return to the template's original HTML code. this makes
+//creating a list stunning simple! e.g.
+/*
+	$item = $DOMTemplate->repeat ('list-item');
+	foreach ($data as $value) {
+		$item->setValue ('item-name', $value);
+		$item->next ();
+	}
+*/
+class DOMTemplateRepeater extends DOMTemplateNode {
+	private $parent;
+	private $template;
+	
+	public function __construct ($DOMNode) {
+		//add a reference to the parent node, where we will be appending the children
+		$this->parent = $DOMNode->parentNode;
+		//take the original node to use as the template for reuse
+		//and remove the source node from the original document
+		$this->template = $DOMNode->cloneNode (true);
+		$DOMNode->parentNode->removeChild ($DOMNode);
+		
+		//intitialise the repeater with a copy of the template
+		parent::__construct ($this->template->cloneNode (true));
+	}
+	
+	public function next () {
+		//attach the node to the parent
+		$this->parent->appendChild ($this->DOMNode);
+		//reset the template
+		$this->DOMNode = $this->template->cloneNode (true);
 	}
 }
 

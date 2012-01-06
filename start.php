@@ -1,4 +1,4 @@
-<?php //reduce some duplication
+<?php //bootstraps the forum
 /* ====================================================================================================================== */
 /* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
@@ -18,7 +18,7 @@ mb_regex_encoding    ('UTF-8');
 @include './config.php';
 //include the defaults: (for anything missing from the user’s config)
 //see that file for descriptions of the different available options
-@(include './config.default.php') or die ("config.default.php missing!");
+@(include './config.default.php') or die ('config.default.php missing!');
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
@@ -36,19 +36,11 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	'://'.$_SERVER['HTTP_HOST']
 );
 
-//these are just some enums for templates to react to
-define ('ERROR_NONE',		0);
-define ('ERROR_NAME',		1);				//name entered is invalid / blank
-define ('ERROR_PASS',		2);				//password is invalid / blank
-define ('ERROR_TITLE',		3);				//the title is invalid / blank
-define ('ERROR_TEXT',		4);				//post text is invalid / blank
-define ('ERROR_AUTH',		5);				//name / password did not match
-
 //load the user’s theme configuration, if it exists
 @include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
 //include the theme defaults
 //(can’t use `or die` on this otherwise it casts the string concatination to a bool!)
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ("theme.config.default.php missing!");
+@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
 
 
 /* common input
@@ -62,7 +54,7 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
-@chdir (FORUM_ROOT.PATH_DIR) or die ("Invalid path");
+@chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
 
 
 /* access control
@@ -74,16 +66,14 @@ define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` /
 if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode (
 	':', base64_decode (substr ($_SERVER['HTTP_AUTHORIZATION'], 6))
 );
-define ('HTTP_AUTH_UN', @$_SERVER['PHP_AUTH_USER']);	//username if using HTTP authentication
-define ('HTTP_AUTH_PW', @$_SERVER['PHP_AUTH_PW']);	//password if using HTTP authentication
 
 //all pages can accept a name / password when committing actions (new thread / reply &c.)
 //in the case of HTTP authentication (sign in), these are provided in the request header instead
-define ('NAME', HTTP_AUTH_UN ? HTTP_AUTH_UN : safeGet (@$_POST['username'], SIZE_NAME));
-define ('PASS', HTTP_AUTH_PW ? HTTP_AUTH_PW : safeGet (@$_POST['password'], SIZE_PASS, false));
+define ('NAME', @$_SERVER['PHP_AUTH_USER'] ? $_SERVER['PHP_AUTH_USER'] : safeGet (@$_POST['username'], SIZE_NAME));
+define ('PASS', @$_SERVER['PHP_AUTH_PW']   ? $_SERVER['PHP_AUTH_PW']   : safeGet (@$_POST['password'], SIZE_PASS, false));
 
 if ((	//if HTTP authentication is used, we don’t need to validate the form fields
-	HTTP_AUTH_UN && HTTP_AUTH_PW
+	@$_SERVER['PHP_AUTH_USER'] && @$_SERVER['PHP_AUTH_PW']
 ) || (	//if an input form was submitted:
 	//are the name and password non-blank?
 	NAME && PASS &&
@@ -99,14 +89,16 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//create the user, if new:
 	//- if registrations are allowed (`FORUM_NEWBIES` is true)
 	//- you can’t create new users with the HTTP_AUTH sign in
-	if (FORUM_NEWBIES && !HTTP_AUTH_UN && !file_exists ($user)) file_put_contents ($user, hash ('sha512', $name.PASS));
+	if (FORUM_NEWBIES && !isset ($_SERVER['PHP_AUTH_USER']) && !file_exists ($user))
+		file_put_contents ($user, hash ('sha512', $name.PASS))
+	;
 	
 	//does password match?
 	define ('AUTH', @file_get_contents ($user) == hash ('sha512', $name.PASS));
 	
 	//if signed in with HTTP_AUTH, confirm that it’s okay to use
 	//(e.g. the user could still have given the wrong password with HTTP_AUTH)
-	define ('HTTP_AUTH', HTTP_AUTH_UN ? AUTH : false);
+	define ('HTTP_AUTH', @$_SERVER['PHP_AUTH_USER'] ? AUTH : false);
 } else {
 	define ('AUTH',      false);
 	define ('HTTP_AUTH', false);
@@ -147,8 +139,9 @@ define ('CAN_POST', FORUM_ENABLED && (
 	!FORUM_LOCK
 ));
 
+
 /* send HTTP headers
-   ---------------------------------------------------------------------------------------------------------------------- */
+   ====================================================================================================================== */
 //if enabled, enforce HTTPS
 if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
