@@ -143,49 +143,43 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	))->setHTML (
 		'post-text', $post->description
 	);
-
+	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) {
-		$nnf->addClass ('post-author', 'mod')->addClass ('post',        'mod');
-	}
+	if (isMod ($post->author)) $nnf->addClass ('post, post-author', 'mod');
 	
-	//set the field values from what was typed in before
-	$nnf->set (array (
+	if (CAN_REPLY) $nnf->set (array (
+		//set the field values from what was typed in before
 		'input:name-field-http@value'	=> NAME,
 		'input:name-field@value'	=> NAME,
 		'input:pass-field@value'	=> PASS,
 		'textarea:text-field'		=> TEXT
-	));
-	
+
 	//is the user already signed-in?
-	if (HTTP_AUTH) {
+	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
-		$nnf->remove ('name')->remove ('pass')->remove ('email');
-	} else {
+		? 'name, pass, email, error-none'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
-		$nnf->remove ('http-auth')->remove ('error-none-http');
-	}
-	
+		: 'http-auth, error-none-http'
+
 	//are new registrations allowed?
-	$nnf->remove (FORUM_NEWBIES
+	)->remove (FORUM_NEWBIES
 		? 'error-newbies'	//yes: remove the warning message
 		: 'error-none'		//no:  remove the default message
-	);
-	
-	//if there's an error of any sort, remove the default messages
-	if (!empty ($_POST)) {
-		$nnf->remove ('error-none')->remove ('error-none-http')->remove ('error-newbies');
-	}
-	
-	//if the username & password are correct, remove the error message
-	if (empty ($_POST) || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('error-auth');
-	//if the password is valid, remove the erorr message
-	if (empty ($_POST) || !TEXT || !NAME || PASS) $nnf->remove ('error-pass');
-	//if the name is valid, remove the erorr message
-	if (empty ($_POST) || !TEXT || NAME) $nnf->remove ('error-name');
-	//if the message text is valid, remove the error message
-	if (empty ($_POST) || TEXT) $nnf->remove ('error-text');
+
+	//handle error messages
+	)->remove (array (
+		//if there's an error of any sort, remove the default messages
+		'error-none, error-none-http, error-newbies' => !empty ($_POST),
+		//if the username & password are correct, remove the error message
+		'error-auth'	=> empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		//if the password is valid, remove the erorr message
+		'error-pass'	=> empty ($_POST) || !TEXT || !NAME || PASS,
+		//if the name is valid, remove the erorr message
+		'error-name'	=> empty ($_POST) || !TEXT || NAME,
+		//if the message text is valid, remove the error message
+		'error-text'	=> empty ($_POST) || TEXT
+	));
 	
 	die ($nnf->html ());
 }
@@ -287,14 +281,10 @@ $nnf->set (array (
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
 //(you might want to style any posts made by a mod differently)
-if (isMod ($post->author)) {
-	$nnf->addClass ('post-author', 'mod')->addClass ('post',        'mod');
-}
+if (isMod ($post->author)) $nnf->addClass ('post, post-author', 'mod');
 
 //append / delete links?
-if (!CAN_REPLY) {
-	$nnf->remove ('post-append')->remove ('post-delete');
-}
+if (!CAN_REPLY) $nnf->remove ('post-append', 'post-delete');
 
 //remember the original poster’s name, for marking replies by the OP
 $author = (string) $post->author;
@@ -339,12 +329,10 @@ if (count ($thread)) {
 		);
 		
 		//is this reply from the person who started the thread?
-		if ($reply->author == $author) $item->addClass ('.', 'op');
+		if ($reply->author == $author) $item->addClass ('xpath:.', 'op');
 		//if the user who made the reply is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		if (isMod ($reply->author)) {
-			$item->addClass ('reply-author', 'mod')->addClass ('xpath:.',      'mod');
-		}
+		if (isMod ($reply->author)) $item->addClass ('xpath:., reply-author', 'mod');
 		
 		//if the current user in the curent forum can append/delete the current reply:
 		if (CAN_REPLY && (
@@ -358,13 +346,12 @@ if (count ($thread)) {
 				//if the forum is post-locked, they must be a member to append/delete their own replies
 				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
-		)) {
-			//append link not available when the reply has been deleted
+		)) {	//append link not available when the reply has been deleted
 			if ($reply->xpath ("category[text()='deleted']")) $item->remove ('reply-append');
 			//delete link not available when the reply has been deleted, except to mods
 			if ($reply->xpath ("category[text()='deleted']") && !IS_MOD) $item->remove ('reply-delete');
 		} else {
-			$item->remove ('reply-append')->remove ('reply-delete');
+			$item->remove ('reply-append, reply-delete');
 		}
 		$item->next ();
 	}
@@ -374,44 +361,38 @@ if (count ($thread)) {
 
 /* reply form
    ---------------------------------------------------------------------------------------------------------------------- */
-if (CAN_REPLY) {
+if (CAN_REPLY) $nnf->set (array (
 	//set the field values from what was typed in before
-	$nnf->set (array (
-		'input:name-field-http@value'	=> NAME,
-		'input:name-field@value'	=> NAME,
-		'input:pass-field@value'	=> PASS,
-		'textarea:text-field'		=> TEXT
-	));
-	
-	//is the user already signed-in?
-	if (HTTP_AUTH) {
-		//don’t need the usual name / password fields and the deafult message for anonymous users
-		$nnf->remove ('name')->remove ('pass')->remove ('email')->remove ('error-none');
-	} else {
-		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
-		$nnf->remove ('http-auth')->remove ('error-none-http');
-	}
-	
-	//are new registrations allowed?
-	$nnf->remove (FORUM_NEWBIES
-		? 'error-newbies'	//yes: remove the warning message
-		: 'error-none'		//no:  remove the default message
-	);
-	
+	'input:name-field-http@value'	=> NAME,
+	'input:name-field@value'	=> NAME,
+	'input:pass-field@value'	=> PASS,
+	'textarea:text-field'		=> TEXT
+
+//is the user already signed-in?
+))->remove (HTTP_AUTH
+	//don’t need the usual name / password fields and the deafult message for anonymous users
+	? 'name, pass, email, error-none'
+	//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
+	: 'http-auth, error-none-http'
+
+//are new registrations allowed?
+)->remove (FORUM_NEWBIES
+	? 'error-newbies'	//yes: remove the warning message
+	: 'error-none'		//no:  remove the default message
+
+//handle error messages
+)->remove (array (
 	//if there's an error of any sort, remove the default messages
-	if (!empty ($_POST)) {
-		$nnf->remove ('error-none')->remove ('error-none-http')->remove ('error-newbies');
-	}
-	
+	'error-none, error-none-http, error-newbies' => !empty ($_POST),
 	//if the username & password are correct, remove the error message
-	if (empty ($_POST) || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('error-auth');
+	'error-auth'	=> empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 	//if the password is valid, remove the erorr message
-	if (empty ($_POST) || !TEXT || !NAME || PASS) $nnf->remove ('error-pass');
+	'error-pass'	=> empty ($_POST) || !TEXT || !NAME || PASS,
 	//if the name is valid, remove the erorr message
-	if (empty ($_POST) || !TEXT || NAME) $nnf->remove ('error-name');
+	'error-name'	=> empty ($_POST) || !TEXT || NAME,
 	//if the message text is valid, remove the error message
-	if (empty ($_POST) || TEXT) $nnf->remove ('error-text');
-}
+	'error-text'	=> empty ($_POST) || TEXT
+));
 
 die ($nnf->html ());
 

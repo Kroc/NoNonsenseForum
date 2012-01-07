@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v3 © copyright (cc-by) Kroc Camen of http://camendesign.com 2012
+//DOM Templating classes v4 © copyright (cc-by) Kroc Camen of http://camendesign.com 2012
 //documentation at http://camendesign.com/dom_templating
 //you may do whatever you want with this code as long as you give credit
 
@@ -13,14 +13,15 @@ class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	
 	public function __construct ($filepath) {
-		$this->DOMDocument = new DOMDocument ();
 		//load the template file to work with
+		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
+			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
 			static::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
 		) or trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
-		//set the parent node for all xpath searching
+		//set the root node for all xpath searching
 		//(handled all internally by `DOMTemplateNode`)
 		parent::__construct ($this->DOMDocument->documentElement);
 		
@@ -141,19 +142,21 @@ class DOMTemplateNode {
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
 	}
 	
-	//a simple wrapper to reduce some redundancy
+	/* templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates, and then
+	   using xpath to refer to these elements and change their values and contents, this means that the vast majority
+	   of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this, a shorthand format is
+	   provided by default:
+	   
+	   	element:template-name@attribute
+	   
+	   for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
+	   "@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
+	   to use a full, real XPath query */
 	protected function xpath ($query) {
-		/* templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates,
-		   and then using xpath to refer to these elements and change their values and contents, this means that
-		   the vast majority of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this,
-		   a shorthand format is provided by default:
-		   
-		   	element:template-name@attribute
-		   
-		   for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
-		   "@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
-		   to use a full, real XPath query */
-		if (substr ($query, 0, 6) == "xpath:") {
+		//multiple targets are available by comma separating queries
+		$queries = explode (', ', $query);
+		//convert each query to real XPath
+		foreach ($queries as &$query) if (substr ($query, 0, 6) == "xpath:") {
 			//return the query without the "xpath:" prefix
 			$query = substr ($query, 6);
 		} else {
@@ -165,7 +168,8 @@ class DOMTemplateNode {
 				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
 			;
 		}
-		return $this->DOMXPath->query ($query, $this->DOMNode);
+		//run the real XPath query and return the nodelist result
+		return $this->DOMXPath->query (implode ('|', $queries), $this->DOMNode);
 	}
 	
 	//specify an element to repeat (like a list-item):
@@ -192,6 +196,7 @@ class DOMTemplateNode {
 	public function setHTML ($query, $html) {
 		foreach ($this->xpath ($query) as $node) {
 			$frag = $node->ownerDocument->createDocumentFragment ();
+			//if the HTML string is not valid, it won’t work
 			$frag->appendXML (static::html_entity_decode ($html));
 			$node->nodeValue = '';
 			$node->appendChild ($frag);
@@ -215,8 +220,14 @@ class DOMTemplateNode {
 	
 	//remove all the elements / attributes that match an xpath query
 	public function remove ($query) {
-		foreach ($this->xpath ($query) as $node) if ($node->nodeType == XML_ATTRIBUTE_NODE) {
-			$node->parentNode->removeAttributeNode ($node);
+		//this function can accept either a single query, or an array in the format of `'xpath' => true|false`.
+		//if the value is true then the xpath will be run and the found elements deleted, if the value is false
+		//then the xpath is skipped. why on earth would you want to provide an xpath, but not run it? because
+		//you can compact your code by using logic comparisons for the value
+		if (is_string ($query)) $query = array ($query => true);
+		foreach ($query as $xpath => $logic) if ($logic) foreach ($this->xpath ($xpath) as $node) if (
+			$node->nodeType == XML_ATTRIBUTE_NODE
+		) {	$node->parentNode->removeAttributeNode ($node);
 		} else {
 			$node->parentNode->removeChild ($node);
 		} return $this;
