@@ -32,9 +32,6 @@
 	--></form>
 	
 	<nav><p>
-		<a id="add" href="#reply" data-template="can-reply">Reply</a>
-		<a id="rss" href="thread_title.rss" data-template="rss">RSS</a>
-	</p><p>
 		<a id="index" href="/">Index</a>
 		<span data-template="subforum"> » <span data-template="subforum-name">Sub-forum</span></span>
 	</p></nav>
@@ -55,7 +52,7 @@
 	</article>
 </section>
 <!-- =================================================================================================================== -->
-<section id="append" data-template="can-reply">
+<section id="append">
 	<h1>Append</h1>
 	<form method="post" action="#append" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 	
@@ -85,29 +82,20 @@
 	</p>
 	<p id="ok" data-template="error-none">
 		<!-- this is shown by default as long as new users aren't disabled and the user isn't signed in -->
-		There is no need to “register”, just enter the same name + password of your choice every time.
-	</p>
-	<p id="ok" data-template="error-none-http">
+		Only the original author or a moderator can append to this post.
+	</p><p id="ok" data-template="error-none-http">
 		<!-- this is shown by default if the user is signed in -->
 		(Quit your browser or clear the browser cache to sign out.)
-	</p>
-	<p id="error" data-template="error-newbies">
-		<!-- if the `FORUM_NEWBIES` option is false, only existing users can post -->
-		Only registered users can post.<br />No new registrations are allowed.
-	</p>
-	<p id="error" data-template="error-name">
-		Enter a name. You’ll need to use this with the password each time.
-	</p>
-	<p id="error" data-template="error-pass">
-		Enter a password. It’s so you can re-use your name each time.
-	</p>
-	<p id="error" data-template="error-text">
+	</p><p id="error" data-template="error-name">
+		Enter the name of either the original author or a moderator to be able to append to this reply.
+	</p><p id="error" data-template="error-pass">
+		Enter the password for either the original author or a moderator to be able to append to this reply
+	</p><p id="error" data-template="error-text">
 		Well, write a message!
-	</p>
-	<p id="error" data-template="error-auth">
-		That name is taken. Provide the password for it, or choose another name. (password typo?)
-	</p>
-	<p id="markup">
+	</p><p id="error" data-template="error-auth">
+		Name / password mismatch! You must enter the name and password of either the original author,
+		or a designated moderator.
+	</p><p id="markup">
 		Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
 	</p>
 	
@@ -124,7 +112,7 @@
 	
 	</div>
 	
-	<p id="psubmit"><label for="submit">Submit
+	<p id="psubmit"><label for="submit">Append
 		<input id="submit" name="submit" type="image" src="/themes/greyscale/icons/submit.png"
 		       width="40" height="40" tabindex="5" value="&gt;" />
 	</label></p>
@@ -132,18 +120,17 @@
 	</form>
 </section>
 <!-- =================================================================================================================== -->
-<div id="mods">
-	<p data-template="mods-local">
-		Moderators for this sub-forum:
-		<span data-template="mods-local-list"><b class="mod">Bob</b></span>
-	</p><p data-template="mods">
-		Your friendly neighbourhood moderators:
-		<span data-template="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
-	</p><p data-template="members">
-		Members of this forum:
-		<span data-template="members-list"><b>Arthur</b></span>
-	</p>
-</div>
+<div id="mods"><p data-template="mods-local">
+	Moderators for this sub-forum:
+	<span data-template="mods-local-list"><b class="mod">Bob</b></span>
+</p><p data-template="mods">
+	Your friendly neighbourhood moderators:
+	<span data-template="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
+</p><p data-template="members">
+	Members of this forum:
+	<span data-template="members-list"><b>Arthur</b></span>
+</p></div>
+
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
 	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>

@@ -16,8 +16,10 @@ define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['pa
 define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
 define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
-/* ====================================================================================================================== */
 
+/* ======================================================================================================================
+   new thread submitted
+   ====================================================================================================================== */
 //has the user submitted a new thread?
 //(`AUTH` will be true if username and password submitted and correct, `TITLE` and `TEXT` are checked to not be blank)
 if (CAN_POST && AUTH && TITLE && TEXT) {
@@ -68,8 +70,10 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	exit;
 }
 
-/* ====================================================================================================================== */
 
+/* ======================================================================================================================
+   template the page
+   ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
 $nnf = prepareTemplate (
