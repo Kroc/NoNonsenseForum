@@ -73,6 +73,86 @@ if (isset ($_GET['lock']) && IS_MOD && AUTH) {
 }
 
 
+/* append link clicked
+   ====================================================================================================================== */
+if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : false)) {
+	//get a write lock on the file so that between now and saving, no other posts could slip in
+	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	
+	//find the post using the ID (we need to know the numerical index for later)
+	for ($i=0; $i<count ($xml->channel->item); $i++) if (
+		strstr ($xml->channel->item[$i]->link, '#') == "#$ID"
+	) break;
+	$post = $xml->channel->item[$i];
+	
+	/* has the un/pw been submitted to authenticate the append?
+	   -------------------------------------------------------------------------------------------------------------- */
+	if (AUTH && TEXT && CAN_REPLY && (
+		//a moderator can always append
+		IS_MOD ||
+		//the owner of a post can append
+		(strtolower (NAME) == strtolower ($post->author) && (
+			//if the forum is post-locked, they must be a member to append to their own posts
+			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
+		))
+	)) {
+		$now = time ();
+		$post->description .= "\n".sprintf (THEME_APPEND,
+			safeHTML (NAME),		//author
+			gmdate ('r', $now),		//machine-readable time
+			date (DATE_FORMAT, $now)	//human-readable time
+		).formatText (TEXT);
+		
+		//need to know what page this post is on to redirect back to it
+		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
+		
+		//commit the data
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		//close the lock / file
+		flock ($f, LOCK_UN); fclose ($f);
+		
+		//try set the modified date of the file back to the time of the last comment
+		//(appending to a post does not push the thread back to the top of the list)
+		//note: this may fail if the file is not owned by the Apache process
+		@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
+		
+		//regenerate the folder's RSS file
+		indexRSS ();
+		
+		//return to the appended post
+		header ('Location: '.FORUM_URL.PATH_URL."$FILE?page=$page#$ID", true, 303);
+		exit;
+	}
+	
+	//close the lock / file
+	flock ($f, LOCK_UN); fclose ($f);
+	
+	/* template the append page
+	   -------------------------------------------------------------------------------------------------------------- */
+	/*$HEADER = array (
+		'TITLE'		=> safeHTML ($xml->channel->title)
+	);
+	$FORM = array (
+		'NAME'		=> safeString (NAME),
+		'PASS'		=> safeString (PASS),
+		'TEXT'		=> safeString (TEXT),
+		'ERROR'		=> empty ($_POST) ? ERROR_NONE
+				 : (!NAME ? ERROR_NAME
+				 : (!PASS ? ERROR_PASS
+				 : ERROR_AUTH))
+	);
+	$POST = array (
+		'TITLE'		=> safeHTML ($post->title),
+		'AUTHOR'	=> safeHTML ($post->author),
+		'MOD'		=> isMod ($post->author),
+		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
+		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+		'TEXT'		=> $post->description
+	);*/
+}
+
+
 /* new reply submitted
    ====================================================================================================================== */
 //was the submit button clicked? (and is the info valid?)
@@ -133,50 +213,13 @@ if (CAN_REPLY && AUTH && TEXT) {
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
-$nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html');
+$nnf = prepareTemplate (
+	FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html',
+	$xml->channel->title.(PAGE>1 ? ' # '.PAGE : '')
+);
 
-/* HTML <head>
-   ---------------------------------------------------------------------------------------------------------------------- */
-$nnf->set (array (
-	//HTML title (= forum / sub-forum name and page number)
-	'xpath:/html/head/title'				=> $xml->channel->title.(PAGE>1 ? ' # '.PAGE : ''),
-	//application title (= forum / sub-forum name):
-	//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-	'xpath://meta[@name="application-name"]/@content'	=> PATH ? PATH : FORUM_NAME,
-	//application URL (where the pinned site opens at)
-	'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
-));
-
-//remove 'custom.css' stylesheet if 'custom.css' is missing
-if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-	$nnf->remove ('xpath://link[contains(@href,"custom.css")]')
-;
-
-/* site header
-   ---------------------------------------------------------------------------------------------------------------------- */
-$nnf->set (array (
-	'forum-name'	=> FORUM_NAME,
-	'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO,
-	'a:rss@href'	=> PATH_URL."$FILE.rss"
-));
-
-//are we in a sub-folder?
-if (PATH) {
-	//if so, add the sub-forum name to the breadcrumb navigation,
-	$nnf->setValue ('subforum-name', PATH);
-} else {
-	//otherwise -- remove the breadcrumb navigation
-	$nnf->remove ('subforum');
-}
-
-//search form:
-$nnf->set (array (
-	//if you're using a Google search, change it to HTTPS if enforced
-	'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-											: 'http://google.com/search',
-	//set the forum URL for Google search-by-site
-	'xpath://input[@name="as_sitesearch"]/@value'			=> $_SERVER['HTTP_HOST']
-));
+//the thread itself is the RSS feed :)
+$nnf->setValue ('a:rss@href', PATH_URL."$FILE.rss");
 
 //if replies can't be added (forum or thread is locked, user is not moderator / member),
 //remove the "add reply" link and anything else (like the input form) related to posting
@@ -197,7 +240,9 @@ $nnf->set (array (
 	'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
 	'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
-	'post-author'			=> $post->author
+	'post-author'			=> $post->author,
+	'a:post-append@href'		=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
+	'a:post-delete@href'		=> '?delete'
 ));
 $nnf->setHTML ('post-text', $post->description);
 
@@ -209,13 +254,7 @@ if (isMod ($post->author)) {
 }
 
 //append / delete links?
-if (CAN_REPLY) {
-	$nnf->set (array (
-		'a:post-append@href'	=> FORUM_PATH.'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-					   .substr (strstr ($post->link, '#'), 1).'#append',
-		'a:post-delete@href'	=> FORUM_PATH.'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE"
-	));
-} else {
+if (!CAN_REPLY) {
 	$nnf->remove ('post-append');
 	$nnf->remove ('post-delete');
 }
@@ -255,9 +294,10 @@ if (count ($thread)) {
 			'time:reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'a:reply-number'		=> '#'.(++$no).'.', //todo: need to template this
 			'a:reply-number@href'		=> '?page='.PAGE.strstr ($reply->link, '#'),
-			'reply-author'			=> $reply->author
+			'reply-author'			=> $reply->author,
+			'a:reply-append@href'		=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
+			'a:reply-delete@href'		=> '?delete='.substr (strstr ($reply->link, '#'), 1)
 		));
-		
 		$item->setHTML ('reply-text', $reply->description);
 		
 		//is this reply from the person who started the thread?
@@ -282,13 +322,6 @@ if (count ($thread)) {
 				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
 		)) {
-			$item->set (array (
-				'a:reply-append@href'	=> FORUM_PATH.'action.php?append&amp;path='.safeURL (PATH)
-							   ."&amp;file=$FILE&amp;id=".substr (strstr ($reply->link, '#'), 1)
-							   .'#append',
-				'a:reply-delete@href'	=> FORUM_PATH.'action.php?delete&amp;path='.safeURL (PATH)
-							   ."&amp;file=$FILE&amp;id=".substr (strstr ($reply->link, '#'), 1)
-			));
 			//append link not available when the reply has been deleted
 			if ($reply->xpath ("category[text()='deleted']")) $item->remove ('reply-append');
 			//delete link not available when the reply has been deleted, except to mods
@@ -350,32 +383,6 @@ if (CAN_REPLY) {
 	if (empty ($_POST) || !TEXT || NAME) $nnf->remove ('error-name');
 	//if the message text is valid, remove the error message
 	if (empty ($_POST) || TEXT) $nnf->remove ('error-text');
-}
-
-/* footer
-   ---------------------------------------------------------------------------------------------------------------------- */
-//are there any local mods?	create the list of local mods
-if (!empty ($MODS['LOCAL'])):	$nnf->setHTML ('mods-local-list', theme_nameList ($MODS['LOCAL']));
-                        else:	$nnf->remove ('mods-local');	//remove the local mods list section
-endif;
-//are there any site mods?	create the list of mods
-if (!empty ($MODS['GLOBAL'])):	$nnf->setHTML ('mods-list', theme_nameList ($MODS['GLOBAL']));
-                         else:	$nnf->remove ('mods');		//remove the mods list section
-endif;
-//are there any members?	create the list of members
-if (!empty ($MEMBERS)):		$nnf->setHTML ('members-list', theme_nameList ($MEMBERS));
-                  else:		$nnf->remove ('members');	//remove the members list section
-endif;
-
-//is a user signed in?
-if (HTTP_AUTH) {
-	//yes: remove the signed-out section
-	$nnf->remove ('signed-out');
-	//set the name of the signed-in user
-	$nnf->setValue ('signed-in-name', HTTP_AUTH_NAME);
-} else {
-	//no: remove the signed-in section
-	$nnf->remove ('signed-in');
 }
 
 die ($nnf->html ());

@@ -170,6 +170,79 @@ function formatText ($text) {
 
 /* ====================================================================================================================== */
 
+//the shared template stuff for all pages
+function prepareTemplate ($filepath, $title) {
+	$template = new DOMTemplate ($filepath);
+	
+	/* HTML <head>
+	   -------------------------------------------------------------------------------------------------------------- */
+	$template->set (array (
+		//HTML title (= forum / sub-forum name and page number)
+		'xpath:/html/head/title'				=> $title,
+		//application title (= forum / sub-forum name):
+		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
+		'xpath://meta[@name="application-name"]/@content'	=> PATH ? PATH : FORUM_NAME,
+		//application URL (where the pinned site opens at)
+		'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
+	));
+	//remove 'custom.css' stylesheet if 'custom.css' is missing
+	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
+		$template->remove ('xpath://link[contains(@href,"custom.css")]')
+	;
+	
+	/* site header
+	   -------------------------------------------------------------------------------------------------------------- */
+	$template->set (array (
+		'forum-name'	=> FORUM_NAME,
+		'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
+	));
+	//search form:
+	$template->set (array (
+		//if you're using a Google search, change it to HTTPS if enforced
+		'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
+												: 'http://google.com/search',
+		//set the forum URL for Google search-by-site
+		'xpath://input[@name="as_sitesearch"]/@value'			=> $_SERVER['HTTP_HOST']
+	));
+	//are we in a sub-folder?
+	if (PATH) {
+		//if so, add the sub-forum name to the breadcrumb navigation,
+		$template->setValue ('subforum-name', PATH);
+	} else {
+		//otherwise -- remove the breadcrumb navigation
+		$template->remove ('subforum');
+	}
+	
+	/* site footer
+	   -------------------------------------------------------------------------------------------------------------- */
+	//are there any local mods?	create the list of local mods
+	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('mods-local-list', theme_nameList ($MODS['LOCAL']));
+				else:	$template->remove ('mods-local');	//remove the local mods list section
+	endif;
+	//are there any site mods?	create the list of mods
+	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('mods-list', theme_nameList ($MODS['GLOBAL']));
+				 else:	$template->remove ('mods');		//remove the mods list section
+	endif;
+	//are there any members?	create the list of members
+	if (!empty ($MEMBERS)):		$template->setHTML ('members-list', theme_nameList ($MEMBERS));
+			  else:		$template->remove ('members');		//remove the members list section
+	endif;
+	//is a user signed in?
+	if (HTTP_AUTH) {
+		//yes: remove the signed-out section
+		$template->remove ('signed-out');
+		//set the name of the signed-in user
+		$template->setValue ('signed-in-name', HTTP_AUTH_NAME);
+	} else {
+		//no: remove the signed-in section
+		$template->remove ('signed-in');
+	}
+	
+	return $template;
+}
+
+/* ====================================================================================================================== */
+
 //regenerate a folder's RSS file (all changes happening in a folder)
 function indexRSS () {
 	/* create an RSS feed

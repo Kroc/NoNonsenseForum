@@ -72,49 +72,10 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
-$nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html');
-
-/* HTML <head>
-   ---------------------------------------------------------------------------------------------------------------------- */
-$nnf->set (array (
-	//HTML title (= forum / sub-forum name and page number)
-	'xpath:/html/head/title'				=> (PATH ? PATH : FORUM_NAME).(PAGE>1 ? ' # '.PAGE : ''),
-	//application title (= forum / sub-forum name):
-	//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-	'xpath://meta[@name="application-name"]/@content'	=> PATH ? PATH : FORUM_NAME,
-	//application URL (where the pinned site opens at)
-	'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
-));
-
-//remove 'custom.css' stylesheet if 'custom.css' is missing
-if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-	$nnf->remove ('xpath://link[contains(@href,"custom.css")]')
-;
-
-/* site header
-   ---------------------------------------------------------------------------------------------------------------------- */
-$nnf->set (array (
-	'forum-name'	=> FORUM_NAME,
-	'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
-));
-
-//are we in a sub-folder?
-if (PATH) {
-	//if so, add the sub-forum name to the breadcrumb navigation,
-	$nnf->setValue ('subforum-name', PATH);
-} else {
-	//otherwise -- remove the breadcrumb navigation
-	$nnf->remove ('subforum');
-}
-
-//search form:
-$nnf->set (array (
-	//if you're using a Google search, change it to HTTPS if enforced
-	'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-											: 'http://google.com/search',
-	//set the forum URL for Google search-by-site
-	'xpath://input[@name="as_sitesearch"]/@value'			=> $_SERVER['HTTP_HOST']
-));
+$nnf = prepareTemplate (
+	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
+	(PATH ? PATH : FORUM_NAME).(PAGE>1 ? ' # '.PAGE : '')
+);
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
 //remove the "add thread" link and anything else (like the input form) related to posting
@@ -320,32 +281,6 @@ if (CAN_POST) {
 	if (empty ($_POST) || !TITLE || TEXT) $nnf->remove ('error-text');
 	//if the title is valid, remove the erorr message
 	if (empty ($_POST) || TITLE) $nnf->remove ('error-title');
-}
-
-/* footer
-   ---------------------------------------------------------------------------------------------------------------------- */
-//are there any local mods?	create the list of local mods
-if (!empty ($MODS['LOCAL'])):	$nnf->setHTML ('mods-local-list', theme_nameList ($MODS['LOCAL']));
-                        else:	$nnf->remove ('mods-local');	//remove the local mods list section
-endif;
-//are there any site mods?	create the list of mods
-if (!empty ($MODS['GLOBAL'])):	$nnf->setHTML ('mods-list', theme_nameList ($MODS['GLOBAL']));
-                         else:	$nnf->remove ('mods');		//remove the mods list section
-endif;
-//are there any members?	create the list of members
-if (!empty ($MEMBERS)):		$nnf->setHTML ('members-list', theme_nameList ($MEMBERS));
-                  else:		$nnf->remove ('members');	//remove the members list section
-endif;
-
-//is a user signed in?
-if (HTTP_AUTH) {
-	//yes: remove the signed-out section
-	$nnf->remove ('signed-out');
-	//set the name of the signed-in user
-	$nnf->setValue ('signed-in-name', HTTP_AUTH_NAME);
-} else {
-	//no: remove the signed-in section
-	$nnf->remove ('signed-in');
 }
 
 die ($nnf->html ());
