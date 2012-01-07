@@ -245,17 +245,11 @@ if (CAN_POST) {
 	
 	//is the user already signed-in?
 	if (HTTP_AUTH) {
-		//don’t need the usual name / password fields
-		$nnf->remove ('name');
-		$nnf->remove ('pass');
-		$nnf->remove ('email');
-		//remove the deafult message for anonymous users
-		$nnf->remove ('error-none');
+		//don’t need the usual name / password fields and the deafult message for anonymous users
+		$nnf->remove ('name')->remove ('pass')->remove ('email')->remove ('error-none');
 	} else {
-		//user is not signed in, remove the "you are signed in as:" field
-		$nnf->remove ('http-auth');
-		//remove the default message for signed in users
-		$nnf->remove ('error-none-http');
+		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
+		$nnf->remove ('http-auth')->remove ('error-none-http');
 	}
 	
 	//are new registrations allowed?
@@ -266,9 +260,7 @@ if (CAN_POST) {
 	
 	//if there's an error of any sort, remove the default messages
 	if (!empty ($_POST)) {
-		$nnf->remove ('error-none');
-		$nnf->remove ('error-none-http');
-		$nnf->remove ('error-newbies');
+		$nnf->remove ('error-none')->remove ('error-none-http')->remove ('error-newbies');
 	}
 	
 	//if the username & password are correct, remove the error message

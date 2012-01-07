@@ -229,10 +229,8 @@ function prepareTemplate ($filepath, $title) {
 	endif;
 	//is a user signed in?
 	if (HTTP_AUTH) {
-		//yes: remove the signed-out section
-		$template->remove ('signed-out');
-		//set the name of the signed-in user
-		$template->setValue ('signed-in-name', HTTP_AUTH_NAME);
+		//yes: remove the signed-out section and set the name of the signed-in user
+		$template->remove ('signed-out')->setValue ('signed-in-name', HTTP_AUTH_NAME);
 	} else {
 		//no: remove the signed-in section
 		$template->remove ('signed-in');

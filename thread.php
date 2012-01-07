@@ -81,9 +81,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
 	
 	//find the post using the ID (we need to know the numerical index for later)
-	for ($i=0; $i<count ($xml->channel->item); $i++) if (
-		strstr ($xml->channel->item[$i]->link, '#') == "#$ID"
-	) break;
+	for ($i=0; $i<count ($xml->channel->item); $i++) if (strstr ($xml->channel->item[$i]->link, '#') == "#$ID") break;
 	$post = $xml->channel->item[$i];
 	
 	/* has the un/pw been submitted to authenticate the append?
@@ -142,14 +140,14 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'post-author'			=> $post->author
-	));
-	$nnf->setHTML ('post-text', $post->description);
+	))->setHTML (
+		'post-text', $post->description
+	);
 
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
 	if (isMod ($post->author)) {
-		$nnf->addClass ('post-author', 'mod');
-		$nnf->addClass ('post',        'mod');
+		$nnf->addClass ('post-author', 'mod')->addClass ('post',        'mod');
 	}
 	
 	//set the field values from what was typed in before
@@ -162,17 +160,11 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//is the user already signed-in?
 	if (HTTP_AUTH) {
-		//don’t need the usual name / password fields
-		$nnf->remove ('name');
-		$nnf->remove ('pass');
-		$nnf->remove ('email');
-		//remove the deafult message for anonymous users
-		$nnf->remove ('error-none');
+		//don’t need the usual name / password fields and the deafult message for anonymous users
+		$nnf->remove ('name')->remove ('pass')->remove ('email');
 	} else {
-		//user is not signed in, remove the "you are signed in as:" field
-		$nnf->remove ('http-auth');
-		//remove the default message for signed in users
-		$nnf->remove ('error-none-http');
+		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
+		$nnf->remove ('http-auth')->remove ('error-none-http');
 	}
 	
 	//are new registrations allowed?
@@ -183,9 +175,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//if there's an error of any sort, remove the default messages
 	if (!empty ($_POST)) {
-		$nnf->remove ('error-none');
-		$nnf->remove ('error-none-http');
-		$nnf->remove ('error-newbies');
+		$nnf->remove ('error-none')->remove ('error-none-http')->remove ('error-newbies');
 	}
 	
 	//if the username & password are correct, remove the error message
@@ -291,20 +281,19 @@ $nnf->set (array (
 	'post-author'			=> $post->author,
 	'a:post-append@href'		=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
 	'a:post-delete@href'		=> '?delete'
-));
-$nnf->setHTML ('post-text', $post->description);
+))->setHTML (
+	'post-text', $post->description
+);
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
 //(you might want to style any posts made by a mod differently)
 if (isMod ($post->author)) {
-	$nnf->addClass ('post-author', 'mod');
-	$nnf->addClass ('post',        'mod');
+	$nnf->addClass ('post-author', 'mod')->addClass ('post',        'mod');
 }
 
 //append / delete links?
 if (!CAN_REPLY) {
-	$nnf->remove ('post-append');
-	$nnf->remove ('post-delete');
+	$nnf->remove ('post-append')->remove ('post-delete');
 }
 
 //remember the original poster’s name, for marking replies by the OP
@@ -345,16 +334,16 @@ if (count ($thread)) {
 			'reply-author'			=> $reply->author,
 			'a:reply-append@href'		=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a:reply-delete@href'		=> '?delete='.substr (strstr ($reply->link, '#'), 1)
-		));
-		$item->setHTML ('reply-text', $reply->description);
+		))->setHTML (
+			'reply-text', $reply->description
+		);
 		
 		//is this reply from the person who started the thread?
 		if ($reply->author == $author) $item->addClass ('.', 'op');
 		//if the user who made the reply is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
 		if (isMod ($reply->author)) {
-			$item->addClass ('reply-author', 'mod');
-			$item->addClass ('xpath:.',      'mod');
+			$item->addClass ('reply-author', 'mod')->addClass ('xpath:.',      'mod');
 		}
 		
 		//if the current user in the curent forum can append/delete the current reply:
@@ -375,8 +364,7 @@ if (count ($thread)) {
 			//delete link not available when the reply has been deleted, except to mods
 			if ($reply->xpath ("category[text()='deleted']") && !IS_MOD) $item->remove ('reply-delete');
 		} else {
-			$item->remove ('reply-append');
-			$item->remove ('reply-delete');
+			$item->remove ('reply-append')->remove ('reply-delete');
 		}
 		$item->next ();
 	}
@@ -397,17 +385,11 @@ if (CAN_REPLY) {
 	
 	//is the user already signed-in?
 	if (HTTP_AUTH) {
-		//don’t need the usual name / password fields
-		$nnf->remove ('name');
-		$nnf->remove ('pass');
-		$nnf->remove ('email');
-		//remove the deafult message for anonymous users
-		$nnf->remove ('error-none');
+		//don’t need the usual name / password fields and the deafult message for anonymous users
+		$nnf->remove ('name')->remove ('pass')->remove ('email')->remove ('error-none');
 	} else {
-		//user is not signed in, remove the "you are signed in as:" field
-		$nnf->remove ('http-auth');
-		//remove the default message for signed in users
-		$nnf->remove ('error-none-http');
+		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
+		$nnf->remove ('http-auth')->remove ('error-none-http');
 	}
 	
 	//are new registrations allowed?
@@ -418,9 +400,7 @@ if (CAN_REPLY) {
 	
 	//if there's an error of any sort, remove the default messages
 	if (!empty ($_POST)) {
-		$nnf->remove ('error-none');
-		$nnf->remove ('error-none-http');
-		$nnf->remove ('error-newbies');
+		$nnf->remove ('error-none')->remove ('error-none-http')->remove ('error-newbies');
 	}
 	
 	//if the username & password are correct, remove the error message

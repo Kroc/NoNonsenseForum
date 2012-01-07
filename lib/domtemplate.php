@@ -5,7 +5,10 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//NoNonsense Forum's amazing templating engine: watch as mutating the hideous DOM becomes elegant and simple!
+//DOM Templating classes v3 © copyright (cc-by) Kroc Camen of http://camendesign.com 2012
+//documentation at http://camendesign.com/dom_templating
+//you may do whatever you want with this code as long as you give credit
+
 class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	
@@ -175,14 +178,14 @@ class DOMTemplateNode {
 	
 	//this sets multiple values using multiple xpath queries
 	public function set ($queries) {
-		foreach ($queries as $query => $value) $this->setValue ($query, $value);
+		foreach ($queries as $query => $value) $this->setValue ($query, $value); return $this;
 	}
 	
 	//set the text content on the results of a single xpath query
 	public function setValue ($query, $value) {
 		foreach ($this->xpath ($query) as $node)
 			$node->nodeValue = $node->nodeType == XML_ATTRIBUTE_NODE ? safeString ($value) : safeHTML ($value)
-		;
+		; return $this;
 	}
 	
 	//set HTML content for a single xpath query
@@ -192,7 +195,7 @@ class DOMTemplateNode {
 			$frag->appendXML (static::html_entity_decode ($html));
 			$node->nodeValue = '';
 			$node->appendChild ($frag);
-		}
+		} return $this;
 	}
 	
 	public function addClass ($query, $new_class) {
@@ -207,7 +210,7 @@ class DOMTemplateNode {
 		} else {
 			//no class attribute to begin with, add it
 			$node->setAttribute ('class', $new_class);
-		}
+		} return $this;
 	}
 	
 	//remove all the elements / attributes that match an xpath query
@@ -216,7 +219,7 @@ class DOMTemplateNode {
 			$node->parentNode->removeAttributeNode ($node);
 		} else {
 			$node->parentNode->removeChild ($node);
-		}
+		} return $this;
 	}
 }
 
