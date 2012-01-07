@@ -130,26 +130,74 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
-	/*$HEADER = array (
-		'TITLE'		=> safeHTML ($xml->channel->title)
+	$nnf = prepareTemplate (
+		FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.html',
+		'Append to '.$xml->post->title
 	);
-	$FORM = array (
-		'NAME'		=> safeString (NAME),
-		'PASS'		=> safeString (PASS),
-		'TEXT'		=> safeString (TEXT),
-		'ERROR'		=> empty ($_POST) ? ERROR_NONE
-				 : (!NAME ? ERROR_NAME
-				 : (!PASS ? ERROR_PASS
-				 : ERROR_AUTH))
+	
+	//prepare the first post, which on this forum appears above all pages of replies
+	$nnf->set (array (
+		'post-title'			=> $xml->channel->title,
+		'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
+		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+		'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
+		'post-author'			=> $post->author
+	));
+	$nnf->setHTML ('post-text', $post->description);
+
+	//if the user who made the post is a mod, also mark the whole post as by a mod
+	//(you might want to style any posts made by a mod differently)
+	if (isMod ($post->author)) {
+		$nnf->addClass ('post-author', 'mod');
+		$nnf->addClass ('post',        'mod');
+	}
+	
+	//set the field values from what was typed in before
+	$nnf->set (array (
+		'input:name-field-http@value'	=> NAME,
+		'input:name-field@value'	=> NAME,
+		'input:pass-field@value'	=> PASS,
+		'textarea:text-field'		=> TEXT
+	));
+	
+	//is the user already signed-in?
+	if (HTTP_AUTH) {
+		//don’t need the usual name / password fields
+		$nnf->remove ('name');
+		$nnf->remove ('pass');
+		$nnf->remove ('email');
+		//remove the deafult message for anonymous users
+		$nnf->remove ('error-none');
+	} else {
+		//user is not signed in, remove the "you are signed in as:" field
+		$nnf->remove ('http-auth');
+		//remove the default message for signed in users
+		$nnf->remove ('error-none-http');
+	}
+	
+	//are new registrations allowed?
+	$nnf->remove (FORUM_NEWBIES
+		? 'error-newbies'	//yes: remove the warning message
+		: 'error-none'		//no:  remove the default message
 	);
-	$POST = array (
-		'TITLE'		=> safeHTML ($post->title),
-		'AUTHOR'	=> safeHTML ($post->author),
-		'MOD'		=> isMod ($post->author),
-		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-		'TEXT'		=> $post->description
-	);*/
+	
+	//if there's an error of any sort, remove the default messages
+	if (!empty ($_POST)) {
+		$nnf->remove ('error-none');
+		$nnf->remove ('error-none-http');
+		$nnf->remove ('error-newbies');
+	}
+	
+	//if the username & password are correct, remove the error message
+	if (empty ($_POST) || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('error-auth');
+	//if the password is valid, remove the erorr message
+	if (empty ($_POST) || !TEXT || !NAME || PASS) $nnf->remove ('error-pass');
+	//if the name is valid, remove the erorr message
+	if (empty ($_POST) || !TEXT || NAME) $nnf->remove ('error-name');
+	//if the message text is valid, remove the error message
+	if (empty ($_POST) || TEXT) $nnf->remove ('error-text');
+	
+	die ($nnf->html ());
 }
 
 

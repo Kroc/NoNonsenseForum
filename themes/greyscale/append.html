@@ -18,3 +18,147 @@
 	<meta name="msapplication-window" content="width=1024;height=600" />
 	<meta name="msapplication-navbutton-color" content="#222" />
 </head><body>
+<!-- =================================================================================================================== -->
+<header id="mast">
+	<h1><a href="/">
+		<img data-template="logo" src="/themes/greyscale/icons/logo.png" width="32" height="32" alt="" /><!--
+		--><span data-template="forum-name">NoNonsense Forum</span>
+	</a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/icons/go.png" value="Search" width="20" height="20" /><!--
+	--></form>
+	
+	<nav><p>
+		<a id="add" href="#reply" data-template="can-reply">Reply</a>
+		<a id="rss" href="thread_title.rss" data-template="rss">RSS</a>
+	</p><p>
+		<a id="index" href="/">Index</a>
+		<span data-template="subforum"> » <span data-template="subforum-name">Sub-forum</span></span>
+	</p></nav>
+</header>
+<!-- =================================================================================================================== -->
+<section id="post">
+	<h1 data-template="post-title" id="abcd">Thread Title</h1>
+	
+	<article data-template="post" class="op">
+		<header>
+			<time data-template="post-time" datetime="2012-01-01T00:00:00+00:00" pubdate="pubdate">01 Jan ’12 · 00:00</time>
+			<b data-template="post-author">Author</b>
+		</header>
+		
+		<div data-template="post-text"><p>
+			The quick brown fox jumps over the lazy dog.
+		</p></div>
+	</article>
+</section>
+<!-- =================================================================================================================== -->
+<section id="append" data-template="can-reply">
+	<h1>Append</h1>
+	<form method="post" action="#append" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+	
+	<div id="rightcol"><div data-template="http-auth">
+		<!-- if the user is signed in using HTTP_AUTH -->
+		<label for="user">You are signed in as:</label>
+		<p id="puser">
+			<input data-template="name-field-http" name="username" id="user" type="text" size="28" maxlength="20"
+			       disabled="disabled" value="" />
+		</p>
+	</div>
+	<p id="puser" data-template="name">
+		<label for="user">Name:</label>
+		<input data-template="name-field" name="username" id="user" type="text" size="28" tabindex="3"
+		       maxlength="20" autocomplete="on"
+		       placeholder="Your name" value="" />
+	</p><p id="ppass" data-template="pass">
+		<label for="pass">Password:</label>
+		<input data-template="pass-field" name="password" id="pass" type="password" size="28" tabindex="4"
+		       maxlength="20" autocomplete="on"
+		       placeholder="A password to keep your name" value="" />
+	</p><p id="pemail" data-template="email">
+		<label class="email">Email:</label>
+		<input name="email" type="text" value="example@abc.com" tabindex="0"
+		       autocomplete="off" />
+		(Leave this as-is, it’s a trap!)
+	</p>
+	<p id="ok" data-template="error-none">
+		<!-- this is shown by default as long as new users aren't disabled and the user isn't signed in -->
+		There is no need to “register”, just enter the same name + password of your choice every time.
+	</p>
+	<p id="ok" data-template="error-none-http">
+		<!-- this is shown by default if the user is signed in -->
+		(Quit your browser or clear the browser cache to sign out.)
+	</p>
+	<p id="error" data-template="error-newbies">
+		<!-- if the `FORUM_NEWBIES` option is false, only existing users can post -->
+		Only registered users can post.<br />No new registrations are allowed.
+	</p>
+	<p id="error" data-template="error-name">
+		Enter a name. You’ll need to use this with the password each time.
+	</p>
+	<p id="error" data-template="error-pass">
+		Enter a password. It’s so you can re-use your name each time.
+	</p>
+	<p id="error" data-template="error-text">
+		Well, write a message!
+	</p>
+	<p id="error" data-template="error-auth">
+		That name is taken. Provide the password for it, or choose another name. (password typo?)
+	</p>
+	<p id="markup">
+		Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
+	</p>
+	
+	</div><div id="leftcol">
+	
+	<p id="ptext">
+		<label for="text">Message:</label>
+		<span id="wtext">
+			<textarea data-template="text-field" name="text" id="text" cols="40" rows="14" tabindex="2"
+			          maxlength="50000" placeholder="Type your message here…"
+			></textarea>
+		</span>
+	</p>
+	
+	</div>
+	
+	<p id="psubmit"><label for="submit">Submit
+		<input id="submit" name="submit" type="image" src="/themes/greyscale/icons/submit.png"
+		       width="40" height="40" tabindex="5" value="&gt;" />
+	</label></p>
+	
+	</form>
+</section>
+<!-- =================================================================================================================== -->
+<div id="mods">
+	<p data-template="mods-local">
+		Moderators for this sub-forum:
+		<span data-template="mods-local-list"><b class="mod">Bob</b></span>
+	</p><p data-template="mods">
+		Your friendly neighbourhood moderators:
+		<span data-template="mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
+	</p><p data-template="members">
+		Members of this forum:
+		<span data-template="members-list"><b>Arthur</b></span>
+	</p>
+</div>
+<footer><p>
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p><p id="signin" data-template="signed-in">
+	Signed in as<br /><b data-template="signed-in-name">Kroc</b>
+</p><p id="signin" data-template="signed-out">
+	<a href="?signin">Sign in</a>
+</p></footer>
+
+<script><!--
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
+}
+--></script>
+</body></html>
