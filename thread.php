@@ -18,8 +18,7 @@ $xml	= @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread	= $xml->channel->xpath ('item');
 
 //determine the page number (for threads, the page number can be given as "last")
-define ('PAGE',
-	@$_GET['page'] == 'last'
+define ('PAGE', @$_GET['page'] == 'last'
 	? ceil (count ($thread) / FORUM_POSTS)
 	: (preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1)
 );
@@ -35,11 +34,15 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 ));
 
-/* thread locked / unlocked
+
+/* thread lock / unlock action
    ====================================================================================================================== */
 if (isset ($_GET['lock']) && IS_MOD && AUTH) {
-	//get a write lock on the file so that between now and saving, no other posts could slip in
+	//get a read/write lock on the file so that between now and saving, no other posts could slip in
+	//normally we could use a write-only lock 'c', but on Windows you can't read the file when write-locked!
 	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
+	//we have to read the XML using the file handle that's locked because in Windows, functions like
+	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
 	
 	if ((bool) $xml->channel->xpath ("category[text()='locked']")) {
@@ -77,7 +80,6 @@ if (CAN_REPLY && AUTH && TEXT) {
 	//get a read/write lock on the file so that between now and saving, no other posts could slip in
 	//normally we could use a write-only lock 'c', but on Windows you can't read the file when write-locked!
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
-	
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
@@ -97,7 +99,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		//add the comment to the thread
 		$item = $xml->channel->item[0]->insertBefore ('item');
 		//add the "RE:" prefix, and reply number to the title
-		//(see 'theme.config.php', if it exists, otherwise 'theme.config.deafult.php',
+		//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
 		//in the theme's folder for the definition of `THEME_RE`)
 		$item->addChild ('title',	safeHTML (sprintf (THEME_RE,
 			count ($xml->channel->item)-1,	//number of the reply
@@ -130,7 +132,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 /* template thread
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
-//(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
+//(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $nnf = new DOMTemplate (FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html');
 
 /* HTML <head>
@@ -301,6 +303,55 @@ if (count ($thread)) {
 	$nnf->remove ('replies');
 }
 
+/* reply form
+   ---------------------------------------------------------------------------------------------------------------------- */
+if (CAN_REPLY) {
+	//set the field values from what was typed in before
+	$nnf->set (array (
+		'input:name-field-http@value'	=> NAME,
+		'input:name-field@value'	=> NAME,
+		'input:pass-field@value'	=> PASS,
+		'textarea:text-field'		=> TEXT
+	));
+	
+	//is the user already signed-in?
+	if (HTTP_AUTH) {
+		//don’t need the usual name / password fields
+		$nnf->remove ('name');
+		$nnf->remove ('pass');
+		$nnf->remove ('email');
+		//remove the deafult message for anonymous users
+		$nnf->remove ('error-none');
+	} else {
+		//user is not signed in, remove the "you are signed in as:" field
+		$nnf->remove ('http-auth');
+		//remove the default message for signed in users
+		$nnf->remove ('error-none-http');
+	}
+	
+	//are new registrations allowed?
+	$nnf->remove (FORUM_NEWBIES
+		? 'error-newbies'	//yes: remove the warning message
+		: 'error-none'		//no:  remove the default message
+	);
+	
+	//if there's an error of any sort, remove the default messages
+	if (!empty ($_POST)) {
+		$nnf->remove ('error-none');
+		$nnf->remove ('error-none-http');
+		$nnf->remove ('error-newbies');
+	}
+	
+	//if the username & password are correct, remove the error message
+	if (empty ($_POST) || !TEXT || !NAME || !PASS || AUTH) $nnf->remove ('error-auth');
+	//if the password is valid, remove the erorr message
+	if (empty ($_POST) || !TEXT || !NAME || PASS) $nnf->remove ('error-pass');
+	//if the name is valid, remove the erorr message
+	if (empty ($_POST) || !TEXT || NAME) $nnf->remove ('error-name');
+	//if the message text is valid, remove the error message
+	if (empty ($_POST) || TEXT) $nnf->remove ('error-text');
+}
+
 /* footer
    ---------------------------------------------------------------------------------------------------------------------- */
 //are there any local mods?	create the list of local mods
@@ -328,121 +379,5 @@ if (HTTP_AUTH) {
 }
 
 die ($nnf->html ());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//info for the site header
-$HEADER = array (
-	'TITLE'		=> safeHTML ($xml->channel->title),
-	'RSS'		=> PATH_URL."$FILE.rss",
-	'LOCKED'	=> (bool) $xml->channel->xpath ("category[text()='locked']"),
-	'LOCK_URL'	=> PATH_URL."$FILE?lock"
-);
-
-/* original post
-   ---------------------------------------------------------------------------------------------------------------------- */
-//take the first post from the thread (removing it from the rest)
-$thread = $xml->channel->xpath ('item');
-$post   = array_pop ($thread);
-
-//prepare the first post, which on this forum appears above all pages of replies
-$POST = array (
-	'TITLE'		=> safeHTML ($xml->channel->title),
-	'AUTHOR'	=> safeHTML ($post->author),
-	'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),
-	'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE",
-	'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-			  .substr (strstr ($post->link, '#'), 1).'#append',
-	'TEXT'		=> $post->description,
-	'MOD'		=> isMod ($post->author),
-	'ID'		=> substr (strstr ($post->link, '#'), 1)
-);
-
-//remember the original poster’s name, for marking replies by the OP
-$author = (string) $post->author;
-
-/* replies
-   ---------------------------------------------------------------------------------------------------------------------- */
-//determine the page number (for threads, the page number can be given as "last")
-define ('PAGE',
-	@$_GET['page'] == 'last'
-	? ceil (count ($thread) / FORUM_POSTS)
-	: (preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1)
-);
-
-if (count ($thread)) {
-	//sort the other way around
-	//<stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
-	foreach ($thread as &$node) $sort[] = strtotime ($node->pubDate);
-	array_multisort ($sort, SORT_ASC, $thread);
-	
-	//number of pages (stickies are not included in the count as they appear on all pages)
-	define ('PAGES', ceil (count ($thread) / FORUM_POSTS));
-	//slice the full list into the current page
-	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
-	
-	//index number of the replies, accounting for which page we are on
-	$no = (PAGE-1) * FORUM_POSTS;
-	foreach ($thread as &$post) $POSTS[] = array (
-		'AUTHOR'	=> safeHTML ($post->author),
-		'DATETIME'	=> gmdate ('r', strtotime ($post->pubDate)),		//HTML5 `<time>` datetime attribute
-		'TIME'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),	//human readable time
-		'TEXT'		=> $post->description,
-		'DELETED'	=> (bool) $post->xpath ("category[text()='deleted']") ? 'deleted' : '',
-		//if the current user in the curent forum can append/delete the current post:
-		'CAN_ACTION'	=> CAN_REPLY && (
-			//moderators can always see append/delete links on all posts
-			IS_MOD ||
-			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
-			//if you are signed in, then only links on posts with your name will show
-			!HTTP_AUTH ||
-			//if this post is the by the owner (they can append/delete to their own posts)
-			(strtolower (NAME) == strtolower ($post->author) && (
-				//if the forum is post-locked, they must be a member to append/delete their own posts
-				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
-			))
-		),
-		'DELETE_URL'	=> FORUM_PATH . 'action.php?delete&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-				  .substr (strstr ($post->link, '#'), 1),
-		'APPEND_URL'	=> FORUM_PATH . 'action.php?append&amp;path='.safeURL (PATH)."&amp;file=$FILE&amp;id="
-				  .substr (strstr ($post->link, '#'), 1).'#append',
-		'OP'		=> $post->author == $author ? 'op' : '',		//if author is the original poster
-		'MOD'		=> isMod ($post->author) ? 'mod' : '',			//if the author is a moderator
-		'NO'		=> ++$no,						//number of the reply
-		'ID'		=> substr (strstr ($post->link, '#'), 1)
-	);
-} else {
-	define ('PAGES', 1);
-}
-
-/* reply form
-   ---------------------------------------------------------------------------------------------------------------------- */
-if (CAN_REPLY) $FORM = array (
-	'NAME'	=> safeString (NAME),
-	'PASS'	=> safeString (PASS),
-	'TEXT'	=> safeString (TEXT),
-	'ERROR'	=> empty ($_POST) ? ERROR_NONE
-		 : (!NAME ? ERROR_NAME
-		 : (!PASS ? ERROR_PASS
-		 : (!TEXT ? ERROR_TEXT
-		 : ERROR_AUTH)))
-);
-
-//all the data prepared, now output the HTML
-include FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.inc.php';
 
 ?>
