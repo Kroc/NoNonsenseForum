@@ -52,7 +52,10 @@ function prepareTemplate ($filepath, $title) {
 	//are we in a sub-folder?
 	if (PATH) {
 		//if so, add the sub-forum name to the breadcrumb navigation,
-		$template->setValue ('.nnf_subforum-name', PATH);
+		$template->set (array (
+			'a.nnf_subforum-name'		=> PATH,
+			'a.nnf_subforum-name@href'	=> PATH_URL
+		));
 	} else {
 		//otherwise -- remove the breadcrumb navigation
 		$template->remove ('#nnf_breadcrumb');
@@ -307,8 +310,10 @@ function indexRSS () {
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
 		@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
-	) {
-		$map = $xml->addChild ('sitemap');
+	) if (
+		//if you delete the last thread in a folder, there won’t be anything in the RSS index file!
+		@$rss->channel->item[0]
+	){	$map = $xml->addChild ('sitemap');
 		$map->addChild ('loc',		FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml');
 		$map->addChild ('lastmod',	gmdate ('r', strtotime ($rss->channel->item[0]->pubDate)));
 	}
