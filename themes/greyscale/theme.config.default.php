@@ -59,7 +59,7 @@
    ====================================================================================================================== */
 //filename of the image to use as the site logo (assumed to be within the theme's folder)
 //- for this theme, it should be 32x32 px
-@define ('THEME_LOGO',		'title.png');
+@define ('THEME_LOGO',		'logo.png');
 
 
 /* functions: (you might want to do some particular formatting in your theme)

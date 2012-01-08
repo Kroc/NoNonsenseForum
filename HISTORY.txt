@@ -6,6 +6,8 @@ v12	08.JAN.12
 *	Fixed major bug with code blocks/spans restoring in the wrong order
 *	Changed dividers to use three or more dashes instead of four
 *	Fixed bug with dividers "---" using faulty HTML
+*	Added `theme_custom` function to 'theme.config.default.php' to add your own custom templating
+*	Moved templating of HTML titles to `THEME_TITLE*` consts in 'theme.config.default.php'
 *	Removed 'action.php' by integrating append/delete actions into 'thread.php'
 *	Renamed 'shared.php' to 'start.php' and created 'lib' folder for shared code
 *	Reorganised greyscale theme images
