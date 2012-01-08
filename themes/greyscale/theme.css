@@ -4,6 +4,9 @@
 /* ====================================================================================================================== */
 /* original Grayscale theme by Jon Gjengset <thesquareplanet.com>,
    greyscale theme by Kroc Camen, please modify to suit your needs
+*//*
+   IDs and classes prefixed with "nnf_" are those required by the templating logic
+   (see '/lib/domtemplate.php' or <camendesign.com/dom_templating> for documentation)
 */
 
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
