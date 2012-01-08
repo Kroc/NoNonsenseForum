@@ -78,12 +78,22 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 //(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
 $template = prepareTemplate (
 	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
-	(PATH ? PATH : FORUM_NAME).(PAGE>1 ? ' # '.PAGE : '')
-);
-
-//if threads can't be added (forum is disabled / locked, user is not moderator / member),
-//remove the "add thread" link and anything else (like the input form) related to posting
-if (!CAN_POST) $template->remove ('#nnf_add, #nnf_form');
+	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
+	sprintf (THEME_TITLE,
+		//if in a sub-forum, the folder name, else the site's name
+		PATH ? PATH : FORUM_NAME,
+		//if on page 2 or greater, include the page number in the title
+		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+	)
+)->remove (array (
+	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
+	//remove the "add thread" link and anything else (like the input form) related to posting
+	'#nnf_add, #nnf_new-form'	=> !CAN_POST,
+	//if the forum is not thread-locked (only mods can post, anybody can reply) then remove the warning message
+	'.nnf_forum-lock-threads'	=> FORUM_LOCK != 'threads',
+	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
+	'.nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'
+));
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
@@ -94,11 +104,6 @@ if (file_exists ('about.html')) {
 	$template->remove ('#nnf_about');
 }
 
-//if the forum is not thread-locked (only mods can start new threads, but anybody can reply) then remove the warning message
-if (FORUM_LOCK != 'threads') $template->remove ('.nnf_forum-lock-threads');
-//if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts')   $template->remove ('.nnf_forum-lock-posts');
-
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
 //don’t allow sub-sub-forums (yet)
@@ -107,6 +112,7 @@ if (!PATH && $folders = array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
+	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_folder');
 	
 	foreach ($folders as $FOLDER) {
@@ -124,6 +130,7 @@ if (!PATH && $folders = array_filter (
 		//read the newest thread (folder could be empty though)
 		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
 		
+		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,				//name of sub-forum
 			'a.nnf_folder-name@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
@@ -192,6 +199,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
+	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_thread');
 	
 	//generate the list of threads with data, for the template
@@ -199,13 +207,15 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		//read the file, and refer to the last post made
 		$xml  = @simplexml_load_file ($file)
 	) {
-		$last = &$xml->channel->item[0];
-		
 		//is the thread sticky?
 		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 
 		//if the thread isn’t locked, remove the lock icon
 		if (!$xml->channel->xpath ("category[text()='locked']")) $item->remove ('.nnf_thread-locked');
 		
+		//get the last post in the thread
+		$last = &$xml->channel->item[0];
+		
+		//apply the data to the template
 		$item->set (array (
 			//thread title and URL
 			'a.nnf_thread-name'		=> $xml->channel->title,
@@ -279,6 +289,9 @@ if (CAN_POST) $template->set (array (
 	'#nnf_error-title'=> empty ($_POST) || TITLE
 ));
 
+//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
+//this function is provided to allow custom themes to do their own additional templating
+theme_custom ($template);
 die ($template->html ());
 
 ?>

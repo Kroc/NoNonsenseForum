@@ -28,11 +28,11 @@
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/greyscale/img/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search" /><!--
 	--></form>
 	
 	<nav><p>
-		<a id="nnf_add" href="#new">Add Thread</a>
+		<a id="nnf_add" href="#nnf_new-form">Add Thread</a>
 		<a id="nnf_rss" href="index.xml">RSS</a>
 	</p><p>
 		<a id="index" href="/">Index</a>
@@ -87,7 +87,7 @@
 <!-- =================================================================================================================== -->
 <section id="nnf_new-form">
 	<h1>Add Thread</h1>
-	<form method="post" action="#new" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+	<form method="post" action="#nnf_new-form" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 	
 	<p id="ptitle">
 		<label for="nnf_title-field">Title:</label>

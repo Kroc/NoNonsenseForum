@@ -52,7 +52,7 @@ if (isset ($_GET['lock']) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.PATH_URL."$FILE?page=last#reply";
+		$url = FORUM_URL.PATH_URL."$FILE?page=last#nnf_reply-form";
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
@@ -97,11 +97,12 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 		))
 	)) {
-		$now = time ();
+		//append the given text to the reply
+		//see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPEND`
 		$post->description .= "\n".sprintf (THEME_APPEND,
 			safeHTML (NAME),		//author
-			gmdate ('r', $now),		//machine-readable time
-			date (DATE_FORMAT, $now)	//human-readable time
+			gmdate ('r', time ()),		//machine-readable time
+			date (DATE_FORMAT, time ())	//human-readable time
 		).formatText (TEXT);
 		
 		//need to know what page this post is on to redirect back to it
@@ -132,11 +133,10 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
 		FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.html',
-		'Append to '.$post->title
-	);
+		sprintf (THEME_TITLE_APPEND, $post->title)
 	
 	//the preview post
-	$template->set (array (
+	)->set (array (
 		'#nnf_post-title'		=> $xml->channel->title,
 		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
@@ -182,6 +182,9 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'#nnf_error-text' => empty ($_POST) || TEXT
 	));
 	
+	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
+	//this function is provided to allow custom themes to do their own additional templating
+	theme_custom ($template);
 	die ($template->html ());
 }
 
@@ -222,8 +225,7 @@ if (isset ($_GET['delete'])) {
 		))
 	//deleting a post?
 	)) if ($ID) {
-		//full delete? (option ticked, is moderator, and post is on the last page)
-		if (
+		if (	//full delete? (option ticked, is moderator, and post is on the last page)
 			(IS_MOD && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
 			//if the post has already been blanked, delete it fully
 			(isset ($_POST['remove']) || $post->xpath ("category[text()='deleted']"))
@@ -233,9 +235,8 @@ if (isset ($_GET['delete'])) {
 			
 			//we’ll redirect to the last page (which may have changed when the post was deleted)
 			$url = FORUM_URL.PATH_URL."$FILE?page=last#replies";
-			
 		} else {
-			//remove the post text
+			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
 			//add a "deleted" category so we know to no longer allow it to be edited or deleted again
 			if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
@@ -260,7 +261,6 @@ if (isset ($_GET['delete'])) {
 		//return to the deleted post / last page
 		header ("Location: $url", true, 303);
 		exit;
-	
 	} else {
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
@@ -283,11 +283,10 @@ if (isset ($_GET['delete'])) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
 		FORUM_ROOT.'/themes/'.FORUM_THEME.'/delete.html',
-		'Delete '.$post->title.'?'
-	);
+		sprintf (THEME_TITLE_DELETE, $post->title)
 	
 	//the preview post
-	$template->set (array (
+	)->set (array (
 		'#nnf_post-title'		=> $post->title,
 		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
@@ -326,6 +325,9 @@ if (isset ($_GET['delete'])) {
 		'#nnf_error-name' => empty ($_POST) || NAME
 	));
 	
+	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
+	//this function is provided to allow custom themes to do their own additional templating
+	theme_custom ($template);
 	die ($template->html ());
 }
 
@@ -394,24 +396,32 @@ if (CAN_REPLY && AUTH && TEXT) {
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
 	FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html',
-	$xml->channel->title.(PAGE>1 ? ' # '.PAGE : '')
-);
-
+	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
+	sprintf (THEME_TITLE,
+		//title of the thread, obviously
+		$xml->channel->title,
+		//if on page 2 or greater, include the page number in the title
+		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+	)
+	
 //the thread itself is the RSS feed :)
-$template->setValue ('a#nnf_rss@href', PATH_URL."$FILE.rss");
+)->setValue (
+	'a#nnf_rss@href', PATH_URL."$FILE.rss"
 
-//if replies can't be added (forum or thread is locked, user is not moderator / member),
-//remove the "add reply" link and anything else (like the input form) related to posting
-if (!CAN_REPLY) $template->remove ('.nnf_add, .nnf_reply');
-
-//if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts') $template->remove ('.nnf_forum-locked');
-
+)->remove (array (
+	//if replies can't be added (forum or thread is locked, user is not moderator / member),
+	//remove the "add reply" link and anything else (like the input form) related to posting
+	'#nnf_add, #nnf_reply-form'	=> !CAN_REPLY,
+	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
+	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts'
+));
 
 /* post
    ---------------------------------------------------------------------------------------------------------------------- */
 //take the first post from the thread (removing it from the rest)
 $post = array_pop ($thread);
+//remember the original poster’s name, for marking replies by the OP
+$author = (string) $post->author;
 
 //prepare the first post, which on this forum appears above all pages of replies
 $template->set (array (
@@ -432,9 +442,6 @@ if (isMod ($post->author)) $template->addClass ('#nnf_post, #nnf_post-author', '
 //append / delete links?
 if (!CAN_REPLY) $template->remove ('#nnf_post-append', '#nnf_post-delete');
 
-//remember the original poster’s name, for marking replies by the OP
-$author = (string) $post->author;
-
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -453,6 +460,7 @@ if (count ($thread)) {
 	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
+	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_reply');
 	
 	//index number of the replies, accounting for which page we are on
@@ -461,11 +469,12 @@ if (count ($thread)) {
 		//has the reply been deleted (blanked)?
 		if ($reply->xpath ("category[text()='deleted']")) $item->addClass ('.', 'deleted');
 		
+		//apply the data to the template (a reply)
 		$item->set (array (
 			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
-			'a.nnf_reply-number'		=> '#'.(++$no).'.', //todo: need to template this
+			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
 			'a.nnf_reply-number@href'	=> '?page='.PAGE.strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
@@ -544,6 +553,9 @@ if (CAN_REPLY) $template->set (array (
 	'#nnf_error-text'  => empty ($_POST) || TEXT
 ));
 
+//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
+//this function is provided to allow custom themes to do their own additional templating
+theme_custom ($template);
 die ($template->html ());
 
 ?>

@@ -16,7 +16,7 @@
 	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
 	<meta name="msapplication-window" content="width=1024;height=600" />
 	<meta name="msapplication-navbutton-color" content="#222" />
-	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><body><![endif]-->
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head><body>
 <!-- =================================================================================================================== -->
 <header id="mast">
@@ -28,11 +28,11 @@
 	<form id="search" method="get" action="http://google.com/search"><!--
 		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
 		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/greyscale/img/go.png" value="Search" width="20" height="20" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search" /><!--
 	--></form>
 	
 	<nav><p>
-		<a id="nnf_add" href="#reply">Reply</a>
+		<a id="nnf_add" href="#nnf_reply-form">Reply</a>
 		<a id="nnf_rss" href="thread_title.rss">RSS</a>
 	</p><p>
 		<a id="index" href="/">Index</a>
@@ -40,7 +40,7 @@
 	</p></nav>
 </header>
 <!-- =================================================================================================================== -->
-<section id="post">
+<section id="nnf_post">
 	<h1 id="nnf_post-title">Thread Title</h1>
 	
 	<article id="nnf_post" class="op">
@@ -95,7 +95,7 @@
 <!-- =================================================================================================================== -->
 <section id="nnf_reply-form">
 	<h1>Reply</h1>
-	<form method="post" action="#reply" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+	<form method="post" action="#nnf_reply-form" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
 	
 	<div id="rightcol">
 		<p id="nnf_name-http">

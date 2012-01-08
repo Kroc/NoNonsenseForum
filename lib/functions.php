@@ -5,11 +5,92 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//the shared template stuff for all pages
+function prepareTemplate ($filepath, $title) {
+	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
+	//<camendesign.com/dom_templating> for documentation
+	$template = new DOMTemplate ($filepath);
+	
+	//fix all absolute URLs (i.e. if NNF is running in a folder):
+	//(this also fixes the forum-title home link "/" when NNF runs in a folder)
+	foreach ($template->query ('//*/@href, //*/@src') as $node) if ($node->nodeValue[0] == '/')
+		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
+		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
+	;
+	
+	/* HTML <head>
+	   -------------------------------------------------------------------------------------------------------------- */
+	$template->set (array (
+		//HTML title (= forum / sub-forum name and page number)
+		'/html/head/title'					=> $title,
+		//application title (= forum / sub-forum name):
+		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
+		'//meta[@name="application-name"]/@content'		=> PATH ? PATH : FORUM_NAME,
+		//application URL (where the pinned site opens at)
+		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
+	));
+	//remove 'custom.css' stylesheet if 'custom.css' is missing
+	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
+		$template->remove ('//link[contains(@href,"custom.css")]')
+	;
+	
+	/* site header
+	   -------------------------------------------------------------------------------------------------------------- */
+	$template->set (array (
+		'.nnf_forum-name'	=> FORUM_NAME,
+		'img#logo@src'		=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
+	
+	//search form:
+	))->set (array (
+		//set the forum URL for Google search-by-site
+		'//input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
+		//if you're using a Google search, change it to HTTPS if enforced
+		'//form[@action="http://google.com/search"]/@action'
+			=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
+					: 'http://google.com/search'
+	));
+	//are we in a sub-folder?
+	if (PATH) {
+		//if so, add the sub-forum name to the breadcrumb navigation,
+		$template->setValue ('.nnf_subforum-name', PATH);
+	} else {
+		//otherwise -- remove the breadcrumb navigation
+		$template->remove ('#nnf_breadcrumb');
+	}
+	
+	/* site footer
+	   -------------------------------------------------------------------------------------------------------------- */
+	//are there any local mods?	create the list of local mods
+	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
+				else:	$template->remove ('#nnf_mods-local');	//remove the local mods list section
+	endif;
+	//are there any site mods?	create the list of mods
+	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
+				 else:	$template->remove ('#nnf_mods');	//remove the mods list section
+	endif;
+	//are there any members?	create the list of members
+	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
+			  else:		$template->remove ('#nnf_members');	//remove the members list section
+	endif;
+	//is a user signed in?
+	if (HTTP_AUTH) {
+		//yes: remove the signed-out section and set the name of the signed-in user
+		$template->remove ('.nnf_signed-out')->setValue ('.nnf_signed-in-name', NAME);
+	} else {
+		//no: remove the signed-in section
+		$template->remove ('.nnf_signed-in');
+	}
+	
+	return $template;
+}
+
+/* ====================================================================================================================== */
+
 //check to see if a name is a known moderator
 function isMod ($name) {
 	global $MODS; return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
 }
-
+//a member of a locked forum?
 function isMember ($name) {
 	global $MEMBERS; return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
 }
@@ -166,85 +247,6 @@ function formatText ($text) {
 	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
 	return $text;
-}
-
-/* ====================================================================================================================== */
-
-//the shared template stuff for all pages
-function prepareTemplate ($filepath, $title) {
-	$template = new DOMTemplate ($filepath);
-	
-	//fix all absolute URLs (i.e. if NNF is running in a folder):
-	//(this also fixes the forum-title home link "/" when NNF runs in a folder)
-	foreach ($template->query ('//*/@href, //*/@src') as $node) if ($node->nodeValue[0] == '/')
-		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
-		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
-	;
-	
-	/* HTML <head>
-	   -------------------------------------------------------------------------------------------------------------- */
-	$template->set (array (
-		//HTML title (= forum / sub-forum name and page number)
-		'/html/head/title'					=> $title,
-		//application title (= forum / sub-forum name):
-		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-		'//meta[@name="application-name"]/@content'		=> PATH ? PATH : FORUM_NAME,
-		//application URL (where the pinned site opens at)
-		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
-	));
-	//remove 'custom.css' stylesheet if 'custom.css' is missing
-	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-		$template->remove ('//link[contains(@href,"custom.css")]')
-	;
-	
-	/* site header
-	   -------------------------------------------------------------------------------------------------------------- */
-	$template->set (array (
-		'.nnf_forum-name'	=> FORUM_NAME,
-		'img#logo@src'		=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
-	
-	//search form:
-	))->set (array (
-		//set the forum URL for Google search-by-site
-		'//input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
-		//if you're using a Google search, change it to HTTPS if enforced
-		'//form[@action="http://google.com/search"]/@action'
-				=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-						: 'http://google.com/search'
-	));
-	//are we in a sub-folder?
-	if (PATH) {
-		//if so, add the sub-forum name to the breadcrumb navigation,
-		$template->setValue ('.nnf_subforum-name', PATH);
-	} else {
-		//otherwise -- remove the breadcrumb navigation
-		$template->remove ('#nnf_breadcrumb');
-	}
-	
-	/* site footer
-	   -------------------------------------------------------------------------------------------------------------- */
-	//are there any local mods?	create the list of local mods
-	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
-				else:	$template->remove ('#nnf_mods-local');	//remove the local mods list section
-	endif;
-	//are there any site mods?	create the list of mods
-	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
-				 else:	$template->remove ('#nnf_mods');	//remove the mods list section
-	endif;
-	//are there any members?	create the list of members
-	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
-			  else:		$template->remove ('#nnf_members');	//remove the members list section
-	endif;
-	//is a user signed in?
-	if (HTTP_AUTH) {
-		//yes: remove the signed-out section and set the name of the signed-in user
-		$template->remove ('.nnf_signed-out')->setValue ('.nnf_signed-in-name', NAME);
-	} else {
-		//no: remove the signed-in section
-		$template->remove ('.nnf_signed-in');
-	}
-	
-	return $template;
 }
 
 /* ====================================================================================================================== */

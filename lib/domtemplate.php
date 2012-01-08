@@ -13,7 +13,7 @@ class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	
 	public function __construct ($filepath) {
-		//load the template file to work with
+		//load the template file to work with. this must be valid XML (but not XHTML)
 		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
@@ -34,9 +34,7 @@ class DOMTemplate extends DOMTemplateNode {
 			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
 			'/<(div|[ou]l|textarea)(.*?) ?\/>/'		//3: fix broken self-closed tags
 		), array (
-			'',
-			'<$1 />',
-			'<$1$2></$1>'
+			'', '<$1 />', '<$1$2></$1>'
 		), $this->DOMDocument->saveXML ());
 	}
 }
@@ -132,13 +130,18 @@ class DOMTemplateNode {
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
 	}
 	
-	
+	//actions are performed on elements using xpath, but for brevity a shorthand is also recognised in the format of:
+	//	#id		- find an element with a particular ID (instead of writing './/*[@id="…"]')
+	//	.class		- find an element with a particular class
+	//	element#id	- enforce a particular element type (ID or class supported)
+	//	#id@attr	- select the named attribute of the found element
+	//	element#id@attr	- a fuller example
 	public function query ($query) {
 		//multiple targets are available by comma separating queries
 		$queries = explode (', ', $query);
 		//convert each query to real XPath:
 		foreach ($queries as &$query) if (
-			//is this the shorthand syntax? `element#id@attr` / `element.class@attr`
+			//is this the shorthand syntax?
 			preg_match ('/^([a-z0-9-]+)?([\.#])([a-z0-9:_-]+)(@[a-z-]+)?$/i', $query, $m)
 		) $query =
 			'.//'.						//see <php.net/manual/en/domxpath.query.php#99760>

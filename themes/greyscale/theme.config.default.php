@@ -18,7 +18,28 @@
 //see <php.net/manual/en/function.date.php> for documentation
 @define ('DATE_FORMAT',		'd M ’y · H:i');
 
-//title format for each reply (like in e-mail)
+//the HTML title for index and thread pages
+//"%1$s" - the title
+//"%2$s" - if on page 2 or greater, `THEME_TITLE_PAGENO` will be inserted here, otherwise it will be removed
+@define ('THEME_TITLE',		'%1$s%2$s');
+
+//the page number, added to the titles of index pages and threads
+//"%1$u" - the page number
+@define ('THEME_TITLE_PAGENO',	' # %1$u');
+
+//the title for append pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+@define ('THEME_TITLE_APPEND',	'Append to %1$s');
+
+//the title for delete pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+@define ('THEME_TITLE_DELETE',	'Delete %1$s?');
+
+//reply number shown in threads as a permalink
+//"%1$u" - the number of the reply
+@define ('THEME_REPLYNO',	'#%1$u.');
+
+//title format for each reply
 //"%1$u" - number of the reply
 //"%2$s" - the thread title
 @define ('THEME_RE',		'RE[%1$u]: %2$s');
@@ -43,6 +64,12 @@
 
 /* functions: (you might want to do some particular formatting in your theme)
    ====================================================================================================================== */
+if (!function_exists ('theme_custom')) { function theme_custom ($template) {
+	//this function is called just before a templated page is outputted so that you have an opportunity to do any
+	//extra templating of your own. the `$template` object passed in is a DOMTemplate class, see '/lib/domtemplate.php'
+	//for code or <camendesign.com/dom_templating> for documentation on how to template with it
+}}
+
 //produces a truncated list of page numbers around the current page:
 //(you might want to do something different, like a combo box with a button)
 if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $pages) {
