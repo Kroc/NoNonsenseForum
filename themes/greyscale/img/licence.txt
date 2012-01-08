@@ -5,7 +5,7 @@ under a Creative Commons Share-Alike 3.0 Licence:
 <creativecommons.org/licenses/by-sa/3.0/>
 
 All other icons are derived from Brightmix Iconset v2 (provided in
-original form in 'brightmixIconset_v02.eps') and also available at
+original form in 'refs/brightmixIconset_v02.eps') and also available at
 <brightmix.com/blog/more-icons-in-the-brightmix-icon-set-free-for-all>,
 licenced under the WTFPL licence:
 

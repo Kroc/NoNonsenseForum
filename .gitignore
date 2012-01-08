@@ -8,11 +8,12 @@
 !robots.txt
 
 # code
-!action.php
 !config.default.php
 !index.php
-!shared.php
+!start.php
 !thread.php
+!lib/domtemplate.php
+!lib/functions.php
 !themes/*
 !users/*
 

@@ -23,8 +23,8 @@ RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [N
 # don’t allow any access to /users (this is accessed purely from the PHP)
 RewriteRule ^users/.*$ - [NC,F]
 
-# don’t allow forum access to users / themes folder
-RewriteCond %{QUERY_STRING} path=/*(?:themes|users) [NC]
+# don’t allow forum access to users / themes / lib folder
+RewriteCond %{QUERY_STRING} path=/*(?:themes|users|lib) [NC]
 RewriteRule ^ - [F]
 
 DirectoryIndex index.php

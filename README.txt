@@ -1,4 +1,4 @@
-NoNonsense Forum v11 © Copyright CC-BY 3.0 Kroc Camen of Camen Design
+NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -53,7 +53,7 @@ Contents:
 [0]     Requirements:
 ========================================================================
 *       An up to date Apache installation, 2.1 or above
-*       PHP 5.2.4 or above (5.0.0 works in theory, but untested)
+*       PHP 5.2.4 or above (5.1.0 works in theory, but untested)
 
 Browser support:
 *       IE6, 7, 8, 9+
@@ -142,7 +142,7 @@ Using GIT you can update NoNonsense Forum in-place without having to
 re-download and install it. From the command line / terminal, enter:
 (ensure that you are within the NoNonsense Forum installation folder)
 
-git pull
+git pull origin master
 
 GIT will download and apply new features and fixes, without touching
 your configuration or existing threads. This will not work if you have
