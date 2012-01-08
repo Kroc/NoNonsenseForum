@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -76,28 +76,28 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
-$nnf = prepareTemplate (
+$template = prepareTemplate (
 	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
 	(PATH ? PATH : FORUM_NAME).(PAGE>1 ? ' # '.PAGE : '')
 );
 
 //if threads can't be added (forum is disabled / locked, user is not moderator / member),
 //remove the "add thread" link and anything else (like the input form) related to posting
-if (!CAN_POST) $nnf->remove ('can-post');
+if (!CAN_POST) $template->remove ('can-post');
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
 	//load the 'about.html' file and insert it into the page
-	$nnf->setHTML ('about', file_get_contents ('about.html'));
+	$template->setHTML ('about', file_get_contents ('about.html'));
 } else {
 	//no file? remove the element reserved for it
-	$nnf->remove ('about');
+	$template->remove ('about');
 }
 
 //if the forum is not thread-locked (only mods can start new threads, but anybody can reply) then remove the warning message
-if (FORUM_LOCK != 'threads') $nnf->remove ('forum-lock-threads');
+if (FORUM_LOCK != 'threads') $template->remove ('forum-lock-threads');
 //if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts')   $nnf->remove ('forum-lock-posts');
+if (FORUM_LOCK != 'posts')   $template->remove ('forum-lock-posts');
 
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -107,7 +107,7 @@ if (!PATH && $folders = array_filter (
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
-	$item = $nnf->repeat ('folder');
+	$item = $template->repeat ('folder');
 	
 	foreach ($folders as $FOLDER) {
 		//the sorting (below) requires we be in the directory at hand to use `filemtime`
@@ -159,7 +159,7 @@ if (!PATH && $folders = array_filter (
 	
 } else {
 	//no sub-forums, remove the template stuff
-	$nnf->remove ('folders');
+	$template->remove ('folders');
 }
 
 /* threads
@@ -184,14 +184,14 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	
 	//do the page links (stickies are not included in the count as they appear on all pages)
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$nnf->setHTML ('pages', theme_pageList (
+	$template->setHTML ('pages', theme_pageList (
 		//page number,	number of pages
 		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
 	));
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
-	$item = $nnf->repeat ('thread');
+	$item = $template->repeat ('thread');
 	
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) if (
@@ -232,18 +232,23 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	
 } else {
 	//no threads, remove the template stuff
-	$nnf->remove ('threads');
+	$template->remove ('threads');
 }
 
 /* new thread form
    ---------------------------------------------------------------------------------------------------------------------- */
-if (CAN_POST) $nnf->set (array (
+if (CAN_POST) $template->set (array (
 	//set the field values from what was typed in before
 	'input:title-field@value'	=> TITLE,
 	'input:name-field-http@value'	=> NAME,
 	'input:name-field@value'	=> NAME,
 	'input:pass-field@value'	=> PASS,
-	'textarea:text-field'		=> TEXT
+	'textarea:text-field'		=> TEXT,
+	//set the maximum field sizes
+	'input:title-field@maxlength'	=> SIZE_TITLE,
+	'input:name-field@maxlength'	=> SIZE_NAME,
+	'input:pass-field@maxlength'	=> SIZE_PASS,
+	'textarea:text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
 ))->remove (HTTP_AUTH
@@ -273,6 +278,6 @@ if (CAN_POST) $nnf->set (array (
 	'error-title'	=> empty ($_POST) || TITLE
 ));
 
-die ($nnf->html ());
+die ($template->html ());
 
 ?>

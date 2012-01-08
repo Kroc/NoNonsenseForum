@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 	<meta charset="utf-8" />
-	<!-- NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
+	<!-- NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 	<title>Append to Thread Title</title>
@@ -60,24 +60,21 @@
 		<!-- if the user is signed in using HTTP_AUTH -->
 		<label for="user">You are signed in as:</label>
 		<p id="puser">
-			<input data-template="name-field-http" name="username" id="user" type="text" size="28" maxlength="20"
+			<input data-template="name-field-http" name="username" id="user" type="text" size="28" tabindex="0"
 			       disabled="disabled" value="" />
 		</p>
 	</div>
 	<p id="puser" data-template="name">
 		<label for="user">Name:</label>
-		<input data-template="name-field" name="username" id="user" type="text" size="28" tabindex="3"
-		       maxlength="20" autocomplete="on"
-		       placeholder="Your name" value="" />
+		<input data-template="name-field" name="username" id="user" type="text" size="28" maxlength="20" tabindex="2"
+		       autocomplete="on" required="required" placeholder="Your name" value="" />
 	</p><p id="ppass" data-template="pass">
 		<label for="pass">Password:</label>
-		<input data-template="pass-field" name="password" id="pass" type="password" size="28" tabindex="4"
-		       maxlength="20" autocomplete="on"
-		       placeholder="A password to keep your name" value="" />
+		<input data-template="pass-field" name="password" id="pass" type="password" size="28" maxlength="20" tabindex="3"
+		       autocomplete="on" required="required" placeholder="A password to keep your name" value="" />
 	</p><p id="pemail" data-template="email">
 		<label class="email">Email:</label>
-		<input name="email" type="text" value="example@abc.com" tabindex="0"
-		       autocomplete="off" />
+		<input name="email" type="text" tabindex="0" autocomplete="off" required="required" value="example@abc.com" />
 		(Leave this as-is, it’s a trap!)
 	</p>
 	<p id="ok" data-template="error-none">
@@ -104,8 +101,8 @@
 	<p id="ptext">
 		<label for="text">Message:</label>
 		<span id="wtext">
-			<textarea data-template="text-field" name="text" id="text" cols="40" rows="14" tabindex="2"
-			          maxlength="50000" placeholder="Type your message here…"
+			<textarea data-template="text-field" name="text" id="text" cols="40" rows="14" maxlength="50000" tabindex="1"
+			          required="required" placeholder="Type your message here…"
 			></textarea>
 		</span>
 	</p>
@@ -114,7 +111,7 @@
 	
 	<p id="psubmit"><label for="submit">Append
 		<input id="submit" name="submit" type="image" src="/themes/greyscale/img/submit.png"
-		       width="40" height="40" tabindex="5" value="&gt;" />
+		       width="40" height="40" tabindex="4" alt="&gt;" />
 	</label></p>
 	
 	</form>

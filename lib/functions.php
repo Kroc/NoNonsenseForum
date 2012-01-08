@@ -1,6 +1,6 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -115,10 +115,10 @@ function formatText ($text) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	/* example: (titles)	/	(dividers)
 		
-		:: title		----
+		:: title		---
 	*/
 	$text = preg_replace(
-		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(----+)\h*(?:\n?$|\Z)/m'),
+		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m'),
 		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\">$1</p>\n"),
 	$text);
 	
@@ -161,7 +161,7 @@ function formatText ($text) {
 		$text = @$result .= "\n$chunk";
 	}
 	
-	//restore code blocks
+	//restore code blocks/spans
 	foreach ($pre  as $html) $text = preg_replace ('/&__PRE__;/',  $html, $text, 1);
 	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
 	
@@ -173,6 +173,13 @@ function formatText ($text) {
 //the shared template stuff for all pages
 function prepareTemplate ($filepath, $title) {
 	$template = new DOMTemplate ($filepath);
+	
+	//fix all absolute URLs (i.e. if NNF is running in a folder):
+	//(this also fixes the forum-title home link "/" when NNF runs in a folder)
+	foreach ($template->query ('xpath://*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
+		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
+		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
+	;
 	
 	/* HTML <head>
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -195,14 +202,15 @@ function prepareTemplate ($filepath, $title) {
 	$template->set (array (
 		'forum-name'	=> FORUM_NAME,
 		'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
-	));
+	
 	//search form:
-	$template->set (array (
-		//if you're using a Google search, change it to HTTPS if enforced
-		'xpath://form[@action="http://google.com/search"]/@action'	=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-												: 'http://google.com/search',
+	))->set (array (
 		//set the forum URL for Google search-by-site
-		'xpath://input[@name="as_sitesearch"]/@value'			=> $_SERVER['HTTP_HOST']
+		'xpath://input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
+		//if you're using a Google search, change it to HTTPS if enforced
+		'xpath://form[@action="http://google.com/search"]/@action'
+				=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
+						: 'http://google.com/search'
 	));
 	//are we in a sub-folder?
 	if (PATH) {
@@ -230,7 +238,7 @@ function prepareTemplate ($filepath, $title) {
 	//is a user signed in?
 	if (HTTP_AUTH) {
 		//yes: remove the signed-out section and set the name of the signed-in user
-		$template->remove ('signed-out')->setValue ('signed-in-name', HTTP_AUTH_NAME);
+		$template->remove ('signed-out')->setValue ('signed-in-name', NAME);
 	} else {
 		//no: remove the signed-in section
 		$template->remove ('signed-in');
@@ -251,8 +259,8 @@ function indexRSS () {
 	);
 	$chan = $rss->addChild ('channel');
 	//RSS feed title and URL to this forum / sub-forum
-	$chan->addChild ('title',	safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')));
-	$chan->addChild ('link',	FORUM_URL);
+	$chan->addChild ('title', safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')));
+	$chan->addChild ('link',  FORUM_URL);
 	
 	//get list of threads, sort by date; most recently modified first
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));

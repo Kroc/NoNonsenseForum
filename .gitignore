@@ -8,7 +8,6 @@
 !robots.txt
 
 # code
-!action.php
 !config.default.php
 !index.php
 !start.php

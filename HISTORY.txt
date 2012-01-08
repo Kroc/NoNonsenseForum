@@ -1,3 +1,15 @@
+v12	08.JAN.12
+*	Complete theming overhaul. The PHP logic and HTML are now separated using this methodology:
+	http://camendesign.com/dom_templating allowing admins to modify the HTML easily.
+	- WARNING: a bug since v9 of NNF caused dividers to be inserted with invalid HTML, these posts
+	  will appear blank unless you search your threads for `"hr"/` and replace with `"hr"`
+*	Fixed major bug with code blocks/spans restoring in the wrong order
+*	Changed dividers to use three or more dashes instead of four
+*	Fixed bug with dividers "---" using faulty HTML
+*	Removed 'action.php' by integrating append/delete actions into 'thread.php'
+*	Renamed 'shared.php' to 'start.php' and created 'lib' folder for shared code
+*	Reorganised greyscale theme images
+
 v11	24.DEC.11
 *	WARNING: Removed "private" forum lock-type due to basic lack of privacy without htpasswd
 	(anybody can just access the "index.xml" file to view posts); will leave this feature

@@ -1,6 +1,6 @@
 <?php //bootstraps the forum
 /* ====================================================================================================================== */
-/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -39,7 +39,6 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 //load the user’s theme configuration, if it exists
 @include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
 //include the theme defaults
-//(can’t use `or die` on this otherwise it casts the string concatination to a bool!)
 @(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
 
 

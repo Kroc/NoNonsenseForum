@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v11 © Copyright (CC-BY) Kroc Camen 2011
+/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -130,13 +130,13 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
-	$nnf = prepareTemplate (
+	$template = prepareTemplate (
 		FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.html',
 		'Append to '.$post->title
 	);
 	
 	//the preview post
-	$nnf->set (array (
+	$template->set (array (
 		'post-title'			=> $xml->channel->title,
 		'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
 		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
@@ -148,15 +148,19 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) $nnf->addClass ('post, post-author', 'mod');
+	if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
 	
-	$nnf->set (array (
+	$template->set (array (
 		//set the field values from what was typed in before
 		'input:name-field-http@value'	=> NAME,
 		'input:name-field@value'	=> NAME,
 		'input:pass-field@value'	=> PASS,
-		'textarea:text-field'		=> TEXT
-
+		'textarea:text-field'		=> TEXT,
+		//set the maximum field sizes
+		'input:name-field@maxlength'	=> SIZE_NAME,
+		'input:pass-field@maxlength'	=> SIZE_PASS,
+		'textarea:text-field@maxlength'	=> SIZE_TEXT
+		
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
@@ -178,7 +182,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'error-text'	=> empty ($_POST) || TEXT
 	));
 	
-	die ($nnf->html ());
+	die ($template->html ());
 }
 
 
@@ -277,13 +281,13 @@ if (isset ($_GET['delete'])) {
 	
 	/* template the delete page
 	   -------------------------------------------------------------------------------------------------------------- */
-	$nnf = prepareTemplate (
+	$template = prepareTemplate (
 		FORUM_ROOT.'/themes/'.FORUM_THEME.'/delete.html',
 		'Delete '.$post->title.'?'
 	);
 	
 	//the preview post
-	$nnf->set (array (
+	$template->set (array (
 		'post-title'			=> $xml->channel->title,
 		'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
 		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
@@ -295,12 +299,15 @@ if (isset ($_GET['delete'])) {
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) $nnf->addClass ('post, post-author', 'mod');
+	if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
 	
-	$nnf->set (array (
+	$template->set (array (
 		//set the field values from what was typed in before
 		'input:name-field@value'	=> NAME,
 		'input:pass-field@value'	=> PASS,
+		//set the maximum field sizes
+		'input:name-field@maxlength'	=> SIZE_NAME,
+		'input:pass-field@maxlength'	=> SIZE_PASS
 		
 	//are we deleting the whole thread, or just one reply?
 	))->remove ($ID 
@@ -319,7 +326,7 @@ if (isset ($_GET['delete'])) {
 		'error-name'	=> empty ($_POST) || NAME
 	));
 	
-	die ($nnf->html ());
+	die ($template->html ());
 }
 
 
@@ -385,20 +392,20 @@ if (CAN_REPLY && AUTH && TEXT) {
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
-$nnf = prepareTemplate (
+$template = prepareTemplate (
 	FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html',
 	$xml->channel->title.(PAGE>1 ? ' # '.PAGE : '')
 );
 
 //the thread itself is the RSS feed :)
-$nnf->setValue ('a:rss@href', PATH_URL."$FILE.rss");
+$template->setValue ('a:rss@href', PATH_URL."$FILE.rss");
 
 //if replies can't be added (forum or thread is locked, user is not moderator / member),
 //remove the "add reply" link and anything else (like the input form) related to posting
-if (!CAN_REPLY) $nnf->remove ('can-reply');
+if (!CAN_REPLY) $template->remove ('can-reply');
 
 //if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts') $nnf->remove ('forum-lock-posts');
+if (FORUM_LOCK != 'posts') $template->remove ('forum-lock-posts');
 
 
 /* post
@@ -407,7 +414,7 @@ if (FORUM_LOCK != 'posts') $nnf->remove ('forum-lock-posts');
 $post = array_pop ($thread);
 
 //prepare the first post, which on this forum appears above all pages of replies
-$nnf->set (array (
+$template->set (array (
 	'post-title'			=> $xml->channel->title,
 	'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
 	'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
@@ -421,10 +428,10 @@ $nnf->set (array (
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
 //(you might want to style any posts made by a mod differently)
-if (isMod ($post->author)) $nnf->addClass ('post, post-author', 'mod');
+if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
 
 //append / delete links?
-if (!CAN_REPLY) $nnf->remove ('post-append', 'post-delete');
+if (!CAN_REPLY) $template->remove ('post-append', 'post-delete');
 
 //remember the original poster’s name, for marking replies by the OP
 $author = (string) $post->author;
@@ -440,14 +447,14 @@ if (count ($thread)) {
 	
 	//do the page links
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$nnf->setHTML ('pages', theme_pageList (
+	$template->setHTML ('pages', theme_pageList (
 		//page number,	number of pages
 		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
 	));
 	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
-	$item = $nnf->repeat ('reply');
+	$item = $template->repeat ('reply');
 	
 	//index number of the replies, accounting for which page we are on
 	$no = (PAGE-1) * FORUM_POSTS;
@@ -496,17 +503,21 @@ if (count ($thread)) {
 		$item->next ();
 	}
 } else {
-	$nnf->remove ('replies');
+	$template->remove ('replies');
 }
 
 /* reply form
    ---------------------------------------------------------------------------------------------------------------------- */
-if (CAN_REPLY) $nnf->set (array (
+if (CAN_REPLY) $template->set (array (
 	//set the field values from what was typed in before
 	'input:name-field-http@value'	=> NAME,
 	'input:name-field@value'	=> NAME,
 	'input:pass-field@value'	=> PASS,
-	'textarea:text-field'		=> TEXT
+	'textarea:text-field'		=> TEXT,
+	//set the maximum field sizes
+	'input:name-field@maxlength'	=> SIZE_NAME,
+	'input:pass-field@maxlength'	=> SIZE_PASS,
+	'textarea:text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
 ))->remove (HTTP_AUTH
@@ -534,6 +545,6 @@ if (CAN_REPLY) $nnf->set (array (
 	'error-text'	=> empty ($_POST) || TEXT
 ));
 
-die ($nnf->html ());
+die ($template->html ());
 
 ?>
