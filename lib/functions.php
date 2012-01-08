@@ -194,7 +194,7 @@ function prepareTemplate ($filepath, $title) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template->set (array (
 		'forum-name'	=> FORUM_NAME,
-		'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/icons/'.THEME_LOGO
+		'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
 	));
 	//search form:
 	$template->set (array (

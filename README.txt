@@ -142,7 +142,7 @@ Using GIT you can update NoNonsense Forum in-place without having to
 re-download and install it. From the command line / terminal, enter:
 (ensure that you are within the NoNonsense Forum installation folder)
 
-git pull
+git pull origin master
 
 GIT will download and apply new features and fixes, without touching
 your configuration or existing threads. This will not work if you have

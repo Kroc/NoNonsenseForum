@@ -11,7 +11,7 @@ header, nav, section, article,	/* this doesn’t get set on browsers without an 
 
 html, body			{width: 100%; margin: 0; padding: 0; border: 0;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
-				 background: white url("bg.png") fixed repeat-x bottom center;
+				 background: white url("img/bg.png") fixed repeat-x bottom center;
 				 /* CSS3 gradients for browsers that support it: */
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
@@ -76,11 +76,11 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #mast nav p			{display: block; padding: 0 20px 0 60px;}
 
 #index				{display: inline-block; padding-left: 36px; margin-left: -36px;
-				 background: url("icons/here.png") no-repeat 0 50%;}
+				 background: url("img/here.png") no-repeat 0 50%;}
 
 #add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
-#add				{background: url("icons/add.png") no-repeat 0 50%;}
-#rss				{background: url("icons/rss.png") no-repeat 0 50%;}
+#add				{background: url("img/add.png") no-repeat 0 50%;}
+#rss				{background: url("img/rss.png") no-repeat 0 50%;}
 
 /* Google search box: */
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
@@ -96,7 +96,7 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 				         border-radius: 10px;
 				 font-size: 12px !important;
 				 line-height: 20px; /*< equalises vertical position of search box in IE8 */
-				 background: white url("icons/search.png") no-repeat 5px 50%;}
+				 background: white url("img/search.png") no-repeat 5px 50%;}
 ::-webkit-search-decoration,	/* reset Safari custom search-box design */
  ::-webkit-search-cancel-button	{display: none;}
 input[type=search]		{-webkit-appearance: textfield;
@@ -153,8 +153,8 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 /* titles */
-#folders h1			{background-image: url("icons/folders.png");}
-#threads h1, #post h1		{background-image: url("icons/threads.png");}
+#folders h1			{background-image: url("img/folders.png");}
+#threads h1, #post h1		{background-image: url("img/threads.png");}
 
 /* folder / thread names: */
 ol.ui li			{padding-left: 60px;}
@@ -185,7 +185,7 @@ article				{padding: 0 20px 19px; border: 1px solid #444;
 /* close the border within the 20px rhythm on the initial post */
 #post article			{padding-bottom: 19px !important; border-bottom-width: 1px;}
 
-#replies h1			{background-image: url("icons/replies.png");}
+#replies h1			{background-image: url("img/replies.png");}
 
 article header			{height: 38px; line-height: 38px; margin: -1px -20px 0; padding: 1px 20px;
 				 border-bottom: 1px dotted #444;
@@ -208,8 +208,8 @@ article header .ui,
 				      -o-transition: all .2s;
 				         transition: all .2s;}
 
-.delete				{background: url("icons/delete.png") no-repeat right center;}
-.append				{background: url("icons/append.png") no-repeat right center;}
+.delete				{background: url("img/delete.png") no-repeat right center;}
+.append				{background: url("img/append.png") no-repeat right center;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
@@ -228,7 +228,7 @@ p.appended			{color: #888; padding-top: 19px;
 
 /* input forms
    ====================================================================================================================== */
-#new h1, #reply h1, #append h1	{background-image: url("icons/new.png");}
+#new h1, #reply h1, #append h1	{background-image: url("img/new.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -293,8 +293,8 @@ input[type=text],
 
 /* delete, un/lock form
    ---------------------------------------------------------------------------------------------------------------------- */
-#delete h1			{background-image: url("icons/deletetitle.png");}
-#lock h1, #unlock h1		{background-image: url("icons/threads.png");}
+#delete h1			{background-image: url("img/deletetitle.png");}
+#lock h1, #unlock h1		{background-image: url("img/threads.png");}
 #delete #psubmit		{margin-top: 20px !important;}
 
 /* no path / rss buttons up top */
@@ -317,8 +317,8 @@ input[type=text],
 a#lock, a#unlock		{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
    <creativecommons.org/licenses/by-sa/3.0/> */
-a#lock				{background: url("icons/security_closed_16.png") no-repeat 0 50%;}
-a#unlock			{background: url("icons/security_open_16.png") no-repeat 0 50%;}
+a#lock				{background: url("img/security_closed_16.png") no-repeat 0 50%;}
+a#unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
 
 footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
@@ -432,8 +432,8 @@ article header time		{/* don’t show the post time in portrait */
 #mast nav			{width: 100%; margin-top: -5px; margin-bottom: 0; background: #222;}
 #mast nav a			{color: white;}
 #add				{padding-right: 5%;
-				 background-image: url("icons/add_white.png");}
-#rss				{background-image: url("icons/rss_white.png");}
+				 background-image: url("img/add_white.png");}
+#rss				{background-image: url("img/rss_white.png");}
 
 /* show the post time when in portrait */
 article header time		{display: inline;}
@@ -490,6 +490,6 @@ ol.pages em			{font-weight: bold; text-decoration: underline;}
 
 /* debugging */
 body>#grid			{position: absolute; width: 100%; height: 6000px; top: 0; left: 0; opacity: 0.25;
-				 background: transparent url("/themes/greyscale/grid.png") top left;
+				 background: transparent url("img/grid.png") top left;
 				 pointer-events: none;
 				 display: block;}

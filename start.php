@@ -80,7 +80,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//the email check is a fake hidden field in the form to try and fool spam bots
 	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
 	//I wonder what this does...?
-	((isset ($_POST['x']) && isset ($_POST['y'])) || (isset ($_POST['submit_x']) && isset ($_POST['submit_y'])))
+	(isset ($_POST['x'], $_POST['y']) || isset ($_POST['submit_x'], $_POST['submit_y']))
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
