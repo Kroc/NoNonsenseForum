@@ -78,9 +78,9 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #index				{display: inline-block; padding-left: 36px; margin-left: -36px;
 				 background: url("img/here.png") no-repeat 0 50%;}
 
-#add, #rss			{float: right; margin-left: 20px; padding-left: 25px;}
-#add				{background: url("img/add.png") no-repeat 0 50%;}
-#rss				{background: url("img/rss.png") no-repeat 0 50%;}
+#nnf_add, #nnf_rss		{float: right; margin-left: 20px; padding-left: 25px;}
+#nnf_add			{background: url("img/add.png") no-repeat 0 50%;}
+#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
 /* Google search box: */
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
@@ -115,7 +115,7 @@ section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-#about				{background: none; margin-top: 0; padding: 0 20px;
+#nnf_about			{background: none; margin-top: 0; padding: 0 20px;
 				 -webkit-box-sizing: border-box;
 				    -moz-box-sizing: border-box;
 				         box-sizing: border-box;}
@@ -127,19 +127,19 @@ section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1p
 				 background-color: #444;}
 
 /* cover over the dotted line at the bottom */
-#threads nav			{margin-top: -1px;}
+#nnf_threads nav		{margin-top: -1px;}
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
 section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
 
-ol.pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
-ol.pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
+ol.nnf_pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
+ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
 				 text-align: center;}
-ol.pages a			{display: block; width: 40px; height: 39px;
+ol.nnf_pages a			{display: block; width: 40px; height: 39px;
 				 color: #aaa; text-decoration: none;}
-ol.pages a:hover		{color: white; background-color: #888;}
-ol.pages em			{color: white; font-style: normal;}
+ol.nnf_pages a:hover		{color: white; background-color: #888;}
+ol.nnf_pages em			{color: white; font-style: normal;}
 
 /* item list (folders / threads) */
 ol.ui				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -153,19 +153,19 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 /* titles */
-#folders h1			{background-image: url("img/folders.png");}
-#threads h1, #post h1		{background-image: url("img/threads.png");}
+#nnf_folders h1			{background-image: url("img/folders.png");}
+#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png");}
 
 /* folder / thread names: */
 ol.ui li			{padding-left: 60px;}
-#folders ol.ui li		{border-bottom: 1px solid #444;}
+#nnf_folders ol.ui li		{border-bottom: 1px solid #444;}
 
 
 ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
 
 ol.ui li img			{margin-left: -20px; margin-top: 2px;  position: absolute;}
-#folders ol.ui li img		{margin-left: -40px;}
+#nnf_folders ol.ui li img	{margin-left: -40px;}
 
 ol.ui li.sticky			{background: #eee;}
 
@@ -183,16 +183,16 @@ article				{padding: 0 20px 19px; border: 1px solid #444;
 				 border-width: 0 1px 1px;}
 
 /* close the border within the 20px rhythm on the initial post */
-#post article			{padding-bottom: 19px !important; border-bottom-width: 1px;}
+#nnf_post article		{padding-bottom: 19px !important; border-bottom-width: 1px;}
 
-#replies h1			{background-image: url("img/replies.png");}
+#nnf_replies h1			{background-image: url("img/replies.png");}
 
 article header			{height: 38px; line-height: 38px; margin: -1px -20px 0; padding: 1px 20px;
 				 border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
 article header b		{margin-left: 10px;}
-#post article header b		{/* the first post doesn’t have a number, only replies */
+#nnf_post article header b	{/* the first post doesn’t have a number, only replies */
 				 margin-left: 0;}
 article header time,
  article header .ui		{float: right;}
@@ -228,7 +228,9 @@ p.appended			{color: #888; padding-top: 19px;
 
 /* input forms
    ====================================================================================================================== */
-#new h1, #reply h1, #append h1	{background-image: url("img/new.png");}
+#nnf_new-form h1,
+ #nnf_reply-form h1,
+ #append h1			{background-image: url("img/new.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -238,8 +240,8 @@ input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sa
 label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
 
 form p				{padding: 0; color: #888;}
-#ok, #error, #markup		{padding: 20px 20px 0 !important;}
-#error				{color: #d11;}
+.ok, .error, #markup		{padding: 20px 20px 0 !important;}
+.error				{color: #d11;}
 
 
 input[type=text],
@@ -250,8 +252,13 @@ input[type=text],
 #leftcol			{width: 65%;}
 #rightcol			{position: absolute; width: 35%; right: 0;}
 
-#user, #pass			{display: block; width: 100%;}
-#title, #user, #pass		{height: 39px; line-height: 39px;
+#nnf_name-field,
+ #nnf_name-field-http,
+ #nnf_pass-field		{display: block; width: 100%;}
+#nnf_title-field,
+ #nnf_name-field,
+ #nnf_name-field-http,
+ #nnf_pass-field		{height: 39px; line-height: 39px;
 				 /* since IE 6/7 don't support box-sizing, we can't use padding in the text-box,
 				    we'll just indent instead */
 				 padding: 0; text-indent: 20px;
@@ -262,7 +269,7 @@ input[type=text],
 #ptitle label			{display: block; float: left; width: 20%; height: 39px; padding: 0; text-indent: 20px;
 				 line-height: 38.999px; /*< Chrome gets this a pixel out, use imprecision to fix */
 				 border-bottom: 1px dotted #444;}
-#title				{display: block; position: absolute; left: 20%; right: 1px; width: 80%;
+#nnf_title-field		{display: block; position: absolute; left: 20%; right: 1px; width: 80%;
 				 -webkit-box-shadow: inset 5px 0 5px -6px black;
 				    -moz-box-shadow: inset 5px 0 5px -6px black;
 				         box-shadow: inset 5px 0 5px -6px black;}
@@ -275,13 +282,13 @@ input[type=text],
 #wtext				{display: block; padding: 0 40px 0 0;
 				 position: relative; /*< force dotted line above rightcol in Firefox */
 				 _position: static;  /*< that then breaks IE6 :P */}
-#text 				{display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
+#nnf_text-field			{display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
 				 border: none; border-right: 1px dotted #444;
 				 /* fix width for browsers that allow resizable text-areas */
 				 min-width: 100%; max-width: 100%; min-height: 300px; max-height: 700px;}
 
 /* the e-mail field is an anti-spam feature and not used by the user */
-#pemail				{display: none;}
+#nnf_email			{display: none;}
 
 /* submit button at bottom of form */
 #psubmit			{clear: both; height: 40px;
@@ -294,18 +301,11 @@ input[type=text],
 /* delete, un/lock form
    ---------------------------------------------------------------------------------------------------------------------- */
 #delete h1			{background-image: url("img/deletetitle.png");}
-#lock h1, #unlock h1		{background-image: url("img/threads.png");}
 #delete #psubmit		{margin-top: 20px !important;}
 
-/* no path / rss buttons up top */
-#delete, #lock, #unlock		{margin-top: 40px;}
 /* put the name / password fields side by side since there's no message box taking up the space */
-#delete #leftcol,
- #lock #leftcol,
- #unlock #leftcol		{width: 50%;}
-#delete #rightcol,
- #lock #rightcol,
- #unlock #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
+#delete #leftcol		{width: 50%;}
+#delete #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
 
 
 /* site footer
@@ -388,8 +388,8 @@ ol.ui li time			{left: 40px !important; text-align: left;}
 ol.ui li i			{/* position the post-count closer */
 				 width: 20px !important; margin: 0 10px 0 -30px !important;
 				 font-size: 14px;}
-#folders ol.ui li img		{margin-left: -30px;}
-#threads ol.ui li img		{/* put the sticky icon underneath the post count instead of next to it */
+#nnf_folders ol.ui li img	{margin-left: -30px;}
+#nnf_threads ol.ui li img	{/* put the sticky icon underneath the post count instead of next to it */
 				 position: absolute; top: 35px;}
 
 
@@ -459,15 +459,15 @@ p#signin			{margin-top: -120px;}
 section				{width: 100% !important;}
 
 /* things to hide from printer: */
-#mast nav, #search,		/* - nav */
- #new, #reply, #delete,		/* - input forms */
- a.ui,				/* - delete / append buttons */
+#mast nav, #search,			/* - nav */
+ #nnf_new, #nnf_reply, #nnf_delete,	/* - input forms */
+ a.ui,					/* - delete / append buttons */
  #mods, footer			{display: none;}
 
 /* remove background colours, set text-colour */
 html, h1, h1 a, section,
  nav, li.sticky, header,
- ol.pages em			{color: black !important; background: none !important;}
+ ol.nnf_pages em		{color: black !important; background: none !important;}
 
 /* remove padding added to hold background images */
 h1, h1 a			{padding-left: 0 !important;}
@@ -481,9 +481,9 @@ article, ol.ui li		{padding-left: 0; padding-right: 0;}
 section>h1 + nav		{padding-right: 0;}
 
 /* page links */
-ol.pages li			{text-align: right;}
-ol.pages a			{font-weight: normal; font-style: italic;}
-ol.pages em			{font-weight: bold; text-decoration: underline;}
+ol.nnf_pages li			{text-align: right;}
+ol.nnf_pages a			{font-weight: normal; font-style: italic;}
+ol.nnf_pages em			{font-weight: bold; text-decoration: underline;}
 
 }
 

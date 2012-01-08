@@ -176,7 +176,7 @@ function prepareTemplate ($filepath, $title) {
 	
 	//fix all absolute URLs (i.e. if NNF is running in a folder):
 	//(this also fixes the forum-title home link "/" when NNF runs in a folder)
-	foreach ($template->query ('xpath://*/@href|//*/@src') as $node) if ($node->nodeValue[0] == '/')
+	foreach ($template->query ('//*/@href, //*/@src') as $node) if ($node->nodeValue[0] == '/')
 		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
 		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
 	;
@@ -185,63 +185,63 @@ function prepareTemplate ($filepath, $title) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template->set (array (
 		//HTML title (= forum / sub-forum name and page number)
-		'xpath:/html/head/title'				=> $title,
+		'/html/head/title'					=> $title,
 		//application title (= forum / sub-forum name):
 		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-		'xpath://meta[@name="application-name"]/@content'	=> PATH ? PATH : FORUM_NAME,
+		'//meta[@name="application-name"]/@content'		=> PATH ? PATH : FORUM_NAME,
 		//application URL (where the pinned site opens at)
-		'xpath://meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
+		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 	));
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
 	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-		$template->remove ('xpath://link[contains(@href,"custom.css")]')
+		$template->remove ('//link[contains(@href,"custom.css")]')
 	;
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template->set (array (
-		'forum-name'	=> FORUM_NAME,
-		'img:logo@src'	=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
+		'.nnf_forum-name'	=> FORUM_NAME,
+		'img#logo@src'		=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
 	
 	//search form:
 	))->set (array (
 		//set the forum URL for Google search-by-site
-		'xpath://input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
+		'//input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
 		//if you're using a Google search, change it to HTTPS if enforced
-		'xpath://form[@action="http://google.com/search"]/@action'
+		'//form[@action="http://google.com/search"]/@action'
 				=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
 						: 'http://google.com/search'
 	));
 	//are we in a sub-folder?
 	if (PATH) {
 		//if so, add the sub-forum name to the breadcrumb navigation,
-		$template->setValue ('subforum-name', PATH);
+		$template->setValue ('.nnf_subforum-name', PATH);
 	} else {
 		//otherwise -- remove the breadcrumb navigation
-		$template->remove ('subforum');
+		$template->remove ('#nnf_breadcrumb');
 	}
 	
 	/* site footer
 	   -------------------------------------------------------------------------------------------------------------- */
 	//are there any local mods?	create the list of local mods
-	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('mods-local-list', theme_nameList ($MODS['LOCAL']));
-				else:	$template->remove ('mods-local');	//remove the local mods list section
+	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
+				else:	$template->remove ('#nnf_mods-local');	//remove the local mods list section
 	endif;
 	//are there any site mods?	create the list of mods
-	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('mods-list', theme_nameList ($MODS['GLOBAL']));
-				 else:	$template->remove ('mods');		//remove the mods list section
+	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
+				 else:	$template->remove ('#nnf_mods');	//remove the mods list section
 	endif;
 	//are there any members?	create the list of members
-	if (!empty ($MEMBERS)):		$template->setHTML ('members-list', theme_nameList ($MEMBERS));
-			  else:		$template->remove ('members');		//remove the members list section
+	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
+			  else:		$template->remove ('#nnf_members');	//remove the members list section
 	endif;
 	//is a user signed in?
 	if (HTTP_AUTH) {
 		//yes: remove the signed-out section and set the name of the signed-in user
-		$template->remove ('signed-out')->setValue ('signed-in-name', NAME);
+		$template->remove ('.nnf_signed-out')->setValue ('.nnf_signed-in-name', NAME);
 	} else {
 		//no: remove the signed-in section
-		$template->remove ('signed-in');
+		$template->remove ('.nnf_signed-in');
 	}
 	
 	return $template;

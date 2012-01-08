@@ -12,10 +12,10 @@ require_once './start.php';
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 //which thread to show
-$FILE	= (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+$FILE   = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 //load the thread (have to read lock status from the file)
-$xml	= @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
-$thread	= $xml->channel->xpath ('item');
+$xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
+$thread = $xml->channel->xpath ('item');
 
 //determine the page number (for threads, the page number can be given as "last")
 define ('PAGE', @$_GET['page'] == 'last'
@@ -137,49 +137,49 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//the preview post
 	$template->set (array (
-		'post-title'			=> $xml->channel->title,
-		'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
-		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-		'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'post-author'			=> $post->author
+		'#nnf_post-title'		=> $xml->channel->title,
+		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
+		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
+		'#nnf_post-author'		=> $post->author
 	))->setHTML (
-		'post-text', $post->description
+		'#nnf_post-text', $post->description
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
+	if (isMod ($post->author)) $template->addClass ('#nnf_post, #nnf_post-author', 'mod');
 	
 	$template->set (array (
 		//set the field values from what was typed in before
-		'input:name-field-http@value'	=> NAME,
-		'input:name-field@value'	=> NAME,
-		'input:pass-field@value'	=> PASS,
-		'textarea:text-field'		=> TEXT,
+		'input#nnf_name-field-http@value'	=> NAME,
+		'input#nnf_name-field@value'		=> NAME,
+		'input#nnf_pass-field@value'		=> PASS,
+		'textarea#nnf_text-field'		=> TEXT,
 		//set the maximum field sizes
-		'input:name-field@maxlength'	=> SIZE_NAME,
-		'input:pass-field@maxlength'	=> SIZE_PASS,
-		'textarea:text-field@maxlength'	=> SIZE_TEXT
+		'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+		'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
+		'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 		
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
-		? 'name, pass, email, error-none'
+		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
-		: 'http-auth, error-none-http'
+		: '#nnf_name-http, #nnf_error-none-http'
 		
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'error-none, error-none-http' => !empty ($_POST),
+		'#nnf_error-none, #nnf_error-none-http' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'error-auth'	=> empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		'#nnf_error-auth' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'error-pass'	=> empty ($_POST) || !TEXT || !NAME || PASS,
+		'#nnf_error-pass' => empty ($_POST) || !TEXT || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'error-name'	=> empty ($_POST) || !TEXT || NAME,
+		'#nnf_error-name' => empty ($_POST) || !TEXT || NAME,
 		//if the message text is valid, remove the error message
-		'error-text'	=> empty ($_POST) || TEXT
+		'#nnf_error-text' => empty ($_POST) || TEXT
 	));
 	
 	die ($template->html ());
@@ -288,13 +288,13 @@ if (isset ($_GET['delete'])) {
 	
 	//the preview post
 	$template->set (array (
-		'post-title'			=> $xml->channel->title,
-		'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
-		'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-		'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
-		'post-author'			=> $post->author
+		'#nnf_post-title'		=> $post->title,
+		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
+		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
+		'#nnf_post-author'		=> $post->author
 	))->setHTML (
-		'post-text', $post->description
+		'#nnf_post-text', $post->description
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
@@ -303,27 +303,27 @@ if (isset ($_GET['delete'])) {
 	
 	$template->set (array (
 		//set the field values from what was typed in before
-		'input:name-field@value'	=> NAME,
-		'input:pass-field@value'	=> PASS,
+		'input#nnf_name-field@value'		=> NAME,
+		'input#nnf_pass-field@value'		=> PASS,
 		//set the maximum field sizes
-		'input:name-field@maxlength'	=> SIZE_NAME,
-		'input:pass-field@maxlength'	=> SIZE_PASS
+		'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+		'input#nnf_pass-field@maxlength'	=> SIZE_PASS
 		
 	//are we deleting the whole thread, or just one reply?
 	))->remove ($ID 
-		? 'error-none-thread'
-		: 'error-none-reply, remove'	//if deleting the whole thread, also remove the checkbox option
+		? '#nnf_error-none-thread'
+		: '#nnf_error-none-reply, #nnf_remove'	//if deleting the whole thread, also remove the checkbox option
 		
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'error-none-thread, error-none-reply' => !empty ($_POST),
+		'#nnf_error-none-thread, #nnf_error-none-reply' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'error-auth'	=> empty ($_POST) || !NAME || !PASS || AUTH,
+		'#nnf_error-auth' => empty ($_POST) || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'error-pass'	=> empty ($_POST) || !NAME || PASS,
+		'#nnf_error-pass' => empty ($_POST) || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'error-name'	=> empty ($_POST) || NAME
+		'#nnf_error-name' => empty ($_POST) || NAME
 	));
 	
 	die ($template->html ());
@@ -398,14 +398,14 @@ $template = prepareTemplate (
 );
 
 //the thread itself is the RSS feed :)
-$template->setValue ('a:rss@href', PATH_URL."$FILE.rss");
+$template->setValue ('a#nnf_rss@href', PATH_URL."$FILE.rss");
 
 //if replies can't be added (forum or thread is locked, user is not moderator / member),
 //remove the "add reply" link and anything else (like the input form) related to posting
-if (!CAN_REPLY) $template->remove ('can-reply');
+if (!CAN_REPLY) $template->remove ('.nnf_add, .nnf_reply');
 
 //if the forum is not post-locked (only mods can post / reply) then remove the warning message
-if (FORUM_LOCK != 'posts') $template->remove ('forum-lock-posts');
+if (FORUM_LOCK != 'posts') $template->remove ('.nnf_forum-locked');
 
 
 /* post
@@ -415,23 +415,22 @@ $post = array_pop ($thread);
 
 //prepare the first post, which on this forum appears above all pages of replies
 $template->set (array (
-	'post-title'			=> $xml->channel->title,
-	'post-title@id'			=> substr (strstr ($post->link, '#'), 1),
-	'time:post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
-	'time:post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
-	'post-author'			=> $post->author,
-	'a:post-append@href'		=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
-	'a:post-delete@href'		=> '?delete'
+	'#nnf_post-title'		=> $xml->channel->title,
+	'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
+	'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
+	'#nnf_post-author'		=> $post->author,
+	'a#nnf_post-append@href'	=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
+	'a#nnf_post-delete@href'	=> '?delete'
 ))->setHTML (
-	'post-text', $post->description
+	'#nnf_post-text', $post->description
 );
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
 //(you might want to style any posts made by a mod differently)
-if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
+if (isMod ($post->author)) $template->addClass ('#nnf_post, #nnf_post-author', 'mod');
 
 //append / delete links?
-if (!CAN_REPLY) $template->remove ('post-append', 'post-delete');
+if (!CAN_REPLY) $template->remove ('#nnf_post-append', '#nnf_post-delete');
 
 //remember the original poster’s name, for marking replies by the OP
 $author = (string) $post->author;
@@ -447,39 +446,39 @@ if (count ($thread)) {
 	
 	//do the page links
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setHTML ('pages', theme_pageList (
+	$template->setHTML ('.nnf_pages', theme_pageList (
 		//page number,	number of pages
 		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
 	));
 	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
-	$item = $template->repeat ('reply');
+	$item = $template->repeat ('.nnf_reply');
 	
 	//index number of the replies, accounting for which page we are on
 	$no = (PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$reply) {
 		//has the reply been deleted (blanked)?
-		if ($reply->xpath ("category[text()='deleted']")) $item->addClass ('xpath:.', 'deleted');
+		if ($reply->xpath ("category[text()='deleted']")) $item->addClass ('.', 'deleted');
 		
 		$item->set (array (
-			'xpath:./@id'			=> substr (strstr ($reply->link, '#'), 1),
-			'time:reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
-			'time:reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
-			'a:reply-number'		=> '#'.(++$no).'.', //todo: need to template this
-			'a:reply-number@href'		=> '?page='.PAGE.strstr ($reply->link, '#'),
-			'reply-author'			=> $reply->author,
-			'a:reply-append@href'		=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
-			'a:reply-delete@href'		=> '?delete='.substr (strstr ($reply->link, '#'), 1)
+			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
+			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
+			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
+			'a.nnf_reply-number'		=> '#'.(++$no).'.', //todo: need to template this
+			'a.nnf_reply-number@href'	=> '?page='.PAGE.strstr ($reply->link, '#'),
+			'.nnf_reply-author'		=> $reply->author,
+			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
+			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
 		))->setHTML (
-			'reply-text', $reply->description
+			'.nnf_reply-text', $reply->description
 		);
 		
 		//is this reply from the person who started the thread?
-		if ($reply->author == $author) $item->addClass ('xpath:.', 'op');
+		if ($reply->author == $author) $item->addClass ('.', 'op');
 		//if the user who made the reply is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		if (isMod ($reply->author)) $item->addClass ('xpath:., reply-author', 'mod');
+		if (isMod ($reply->author)) $item->addClass ('., .nnf_reply-author', 'mod');
 		
 		//if the current user in the curent forum can append/delete the current reply:
 		if (CAN_REPLY && (
@@ -494,55 +493,55 @@ if (count ($thread)) {
 				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
 		)) {	//append link not available when the reply has been deleted
-			if ($reply->xpath ("category[text()='deleted']")) $item->remove ('reply-append');
+			if ($reply->xpath ("category[text()='deleted']")) $item->remove ('.nnf_reply-append');
 			//delete link not available when the reply has been deleted, except to mods
-			if ($reply->xpath ("category[text()='deleted']") && !IS_MOD) $item->remove ('reply-delete');
+			if ($reply->xpath ("category[text()='deleted']") && !IS_MOD) $item->remove ('.nnf_reply-delete');
 		} else {
-			$item->remove ('reply-append, reply-delete');
+			$item->remove ('.nnf_reply-append, .nnf_reply-delete');
 		}
 		$item->next ();
 	}
 } else {
-	$template->remove ('replies');
+	$template->remove ('#nnf_replies');
 }
 
 /* reply form
    ---------------------------------------------------------------------------------------------------------------------- */
 if (CAN_REPLY) $template->set (array (
 	//set the field values from what was typed in before
-	'input:name-field-http@value'	=> NAME,
-	'input:name-field@value'	=> NAME,
-	'input:pass-field@value'	=> PASS,
-	'textarea:text-field'		=> TEXT,
+	'input#nnf_name-field-http@value'	=> NAME,
+	'input#nnf_name-field@value'		=> NAME,
+	'input#nnf_pass-field@value'		=> PASS,
+	'textarea#nnf_text-field'		=> TEXT,
 	//set the maximum field sizes
-	'input:name-field@maxlength'	=> SIZE_NAME,
-	'input:pass-field@maxlength'	=> SIZE_PASS,
-	'textarea:text-field@maxlength'	=> SIZE_TEXT
+	'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+	'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
+	'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
 ))->remove (HTTP_AUTH
 	//don’t need the usual name / password fields and the deafult message for anonymous users
-	? 'name, pass, email, error-none'
+	? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
 	//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
-	: 'http-auth, error-none-http'
+	: '#nnf_name-http, #nnf_error-none-http'
 	
 //are new registrations allowed?
 )->remove (FORUM_NEWBIES
-	? 'error-newbies'	//yes: remove the warning message
-	: 'error-none'		//no:  remove the default message
+	? '#nnf_error-newbies'	//yes: remove the warning message
+	: '#nnf_error-none'	//no:  remove the default message
 	
 //handle error messages
 )->remove (array (
 	//if there's an error of any sort, remove the default messages
-	'error-none, error-none-http, error-newbies' => !empty ($_POST),
+	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
 	//if the username & password are correct, remove the error message
-	'error-auth'	=> empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+	'#nnf_error-auth'  => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 	//if the password is valid, remove the erorr message
-	'error-pass'	=> empty ($_POST) || !TEXT || !NAME || PASS,
+	'#nnf_error-pass'  => empty ($_POST) || !TEXT || !NAME || PASS,
 	//if the name is valid, remove the erorr message
-	'error-name'	=> empty ($_POST) || !TEXT || NAME,
+	'#nnf_error-name'  => empty ($_POST) || !TEXT || NAME,
 	//if the message text is valid, remove the error message
-	'error-text'	=> empty ($_POST) || TEXT
+	'#nnf_error-text'  => empty ($_POST) || TEXT
 ));
 
 die ($template->html ());

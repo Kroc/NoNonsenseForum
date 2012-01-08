@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v4 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v5 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at http://camendesign.com/dom_templating
 
@@ -28,8 +28,6 @@ class DOMTemplate extends DOMTemplateNode {
 	
 	//output the complete HTML
 	public function html () {
-		//remove remaining `data-template` attributes
-		$this->remove ('xpath://@data-template');
 		//fix and clean DOM's XML output:
 		return preg_replace (array (
 			'/^<\?xml.*?>\n/',				//1: remove XML prolog
@@ -134,32 +132,23 @@ class DOMTemplateNode {
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
 	}
 	
-	/* templating works by putting `data-template="xyz"` attributes on the HTML elements in your templates, and then
-	   using xpath to refer to these elements and change their values and contents, this means that the vast majority
-	   of xpath queries are in the format of `.//*[@data-template="xyz"]`. because of this, a shorthand format is
-	   provided by default:
-	   
-	   	element:template-name@attribute
-	   
-	   for eaxmple "a:xyz@href" would be translated to `.//a[@data-template="xyz"]/@href`. the "element:" and
-	   "@attribute" parts are optional. since this type of syntax is default, prefix the query with "xpath:"
-	   to use a full, real XPath query */
+	
 	public function query ($query) {
 		//multiple targets are available by comma separating queries
 		$queries = explode (', ', $query);
-		//convert each query to real XPath
-		foreach ($queries as &$query) if (substr ($query, 0, 6) == "xpath:") {
-			//return the query without the "xpath:" prefix
-			$query = substr ($query, 6);
-		} else {
-			//match the query against the shorthand syntax
-			if (preg_match ('/^(?:([a-z0-9-]+):)?([a-z0-9_-]+)(@[a-z-]+)?$/i', $query, $m)) $query =
-				".//".				//use relative: <php.net/manual/en/domxpath.query.php#99760>
-				(@$m[1] ? $m[1] : "*").		//the element name, if specified, otherwise "*"
-				'[@data-template="'.$m[2].'"]'.	//the data-template attribute to find
-				(@$m[3] ? '/'.$m[3] : '')	//optional attribute of the parent element
-			;
-		}
+		//convert each query to real XPath:
+		foreach ($queries as &$query) if (
+			//is this the shorthand syntax? `element#id@attr` / `element.class@attr`
+			preg_match ('/^([a-z0-9-]+)?([\.#])([a-z0-9:_-]+)(@[a-z-]+)?$/i', $query, $m)
+		) $query =
+			'.//'.						//see <php.net/manual/en/domxpath.query.php#99760>
+			(@$m[1] ? $m[1] : '*').				//the element name, if specified, otherwise "*"
+			($m[2] == '#'					//is this an ID?
+				? "[@id=\"${m[3]}\"]"			//- yes
+				: "[contains(@class,\"${m[3]}\")]"	//- no, a class	
+			).
+			(@$m[4] ? "/${m[4]}" : '')			//optional attribute of the parent element
+		;
 		//run the real XPath query and return the nodelist result
 		return $this->DOMXPath->query (implode ('|', $queries), $this->DOMNode);
 	}
@@ -230,9 +219,9 @@ class DOMTemplateNode {
 //then call the `next` method to append it to the parent and return to the template's original HTML code. this makes
 //creating a list stunning simple! e.g.
 /*
-	$item = $DOMTemplate->repeat ('list-item');
+	$item = $DOMTemplate->repeat ('.list-item');
 	foreach ($data as $value) {
-		$item->setValue ('item-name', $value);
+		$item->setValue ('.item-name', $value);
 		$item->next ();
 	}
 */
