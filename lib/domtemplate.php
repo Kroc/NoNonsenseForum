@@ -17,7 +17,7 @@ class DOMTemplate extends DOMTemplateNode {
 		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
-			static::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
+			self::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
 		) or trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
@@ -120,7 +120,7 @@ class DOMTemplateNode {
 		'&spades;'      => '♠', '&clubs;'       => '♣', '&hearts;'      => '♥', '&diams;'       => '♦'
 	);
 	public static function html_entity_decode ($html) {
-		return str_replace (array_keys (static::$entities), array_values (static::$entities), $html);
+		return str_replace (array_keys (self::$entities), array_values (self::$entities), $html);
 	}
 	
 	public function __construct ($DOMNode) {
@@ -181,7 +181,7 @@ class DOMTemplateNode {
 		foreach ($this->query ($query) as $node) {
 			$frag = $node->ownerDocument->createDocumentFragment ();
 			//if the HTML string is not valid, it won’t work
-			$frag->appendXML (static::html_entity_decode ($html));
+			$frag->appendXML (self::html_entity_decode ($html));
 			$node->nodeValue = '';
 			$node->appendChild ($frag);
 		} return $this;
