@@ -484,7 +484,7 @@ if (count ($thread)) {
 		);
 		
 		//is this reply from the person who started the thread?
-		if ($reply->author == $author) $item->addClass ('.', 'op');
+		if (strtolower ($reply->author) == strtolower ($author)) $item->addClass ('.', 'op');
 		//if the user who made the reply is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
 		if (isMod ($reply->author)) $item->addClass ('., .nnf_reply-author', 'mod');
