@@ -75,12 +75,13 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
    template the page
    ====================================================================================================================== */
 //load the template into DOM where we can manipulate it:
-//(see 'lib/domtemplate.php' or http://camendesign.com/dom_templating for more details)
+//(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details. `prepareTemplate` can be found in
+// 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
 	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
-	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
+	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
-		//if in a sub-forum, the folder name, else the site's name
+		//if in a sub-forum use the folder name, else the site's name
 		PATH ? PATH : FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
 		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
@@ -205,7 +206,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//generate the list of threads with data, for the template
 	foreach ($threads as $file) if (
 		//read the file, and refer to the last post made
-		$xml  = @simplexml_load_file ($file)
+		$xml = @simplexml_load_file ($file)
 	) {
 		//is the thread sticky?
 		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 

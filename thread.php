@@ -46,9 +46,9 @@ if (isset ($_GET['lock']) && IS_MOD && AUTH) {
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
 	
+	//if there’s a "locked" category, remove it
 	if ((bool) $xml->channel->xpath ("category[text()='locked']")) {
-		//if there’s a "locked" category, remove it
-		//note: for simplicity this removes *all* channel categories as NNF only uses one atm,
+		//note: for simplicity this removes *all* channel categories as NNF only uses one at the moment,
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
@@ -56,7 +56,7 @@ if (isset ($_GET['lock']) && IS_MOD && AUTH) {
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
-		//if locking return to the index
+		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
 		$url = FORUM_URL.PATH_URL;
 	}
@@ -65,6 +65,11 @@ if (isset ($_GET['lock']) && IS_MOD && AUTH) {
 	rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 	//close the lock / file
 	flock ($f, LOCK_UN); fclose ($f);
+	
+	//try set the modified date of the file back to the time of the last reply
+	//(un/locking a thread does not push the thread back to the top of the index)
+	//note: this may fail if the file is not owned by the Apache process
+	@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
@@ -98,7 +103,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		))
 	)) {
 		//append the given text to the reply
-		//see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPEND`
+		//(see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPEND`)
 		$post->description .= "\n".sprintf (THEME_APPEND,
 			safeHTML (NAME),		//author
 			gmdate ('r', time ()),		//machine-readable time
@@ -113,8 +118,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
 		
-		//try set the modified date of the file back to the time of the last comment
-		//(appending to a post does not push the thread back to the top of the list)
+		//try set the modified date of the file back to the time of the last reply
+		//(appending to a post does not push the thread back to the top of the index)
 		//note: this may fail if the file is not owned by the Apache process
 		@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
 		
@@ -250,8 +255,8 @@ if (isset ($_GET['delete'])) {
 		//close the lock / file
 		flock ($f, LOCK_UN); fclose ($f);
 		
-		//try set the modified date of the file back to the time of the last comment
-		//(so that deleting does not push the thread back to the top of the list)
+		//try set the modified date of the file back to the time of the last reply
+		//(so that deleting does not push the thread back to the top of the index)
 		//note: this may fail if the file is not owned by the Apache process
 		@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
 		
