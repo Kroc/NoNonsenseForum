@@ -506,10 +506,12 @@ if (count ($thread)) {
 				//if the forum is post-locked, they must be a member to append/delete their own replies
 				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
-		)) {	//append link not available when the reply has been deleted
-			if ($reply->xpath ("category[text()='deleted']")) $item->remove ('.nnf_reply-append');
-			//delete link not available when the reply has been deleted, except to mods
-			if ($reply->xpath ("category[text()='deleted']") && !IS_MOD) $item->remove ('.nnf_reply-delete');
+		)) {	$item->remove (array (
+				//append link not available when the reply has been deleted
+				'.nnf_reply-append' => $reply->xpath ("category[text()='deleted']"),
+				//delete link not available when the reply has been deleted, except to mods
+				'.nnf_reply-delete' => $reply->xpath ("category[text()='deleted']") && !IS_MOD
+			));
 		} else {
 			$item->remove ('.nnf_reply-append, .nnf_reply-delete');
 		}

@@ -1,47 +1,29 @@
-ServerSignature	Off
-RewriteEngine	On
+ServerSignature   Off
+AddDefaultCharset utf-8
 
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
 # <webmasterworld.com/apache/3808792.htm>
 Options -MultiViews -Indexes
 
-# HTTP_AUTH workaround for CGI
-# <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+<IfModule mod_dir.c>
+	DirectoryIndex	index.php
+</IfModule>
 
-# custom favicon?
-RewriteCond %{DOCUMENT_ROOT}/favicon\.ico !-f
-RewriteRule ^favicon\.ico$ /favicon.default.ico [NC,L]
+<IfModule mod_mime.c>
+	AddType application/rss+xml .rss
+	AddCharset utf-8 .css .xml .rss .txt
+</IfModule>
 
-# custom apple-touch-icon?
-RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon\.png !-f
-RewriteRule ^apple-touch-icon\.png$ /apple-touch-icon.default.png [NC,L]
-RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon-precomposed\.png !-f
-RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [NC,L]
-
-# don’t allow any access to /users (this is accessed purely from the PHP)
-RewriteRule ^users/.*$ - [NC,F]
-
-# don’t allow forum access to users / themes / lib folder
-RewriteCond %{QUERY_STRING} path=/*(?:themes|users|lib) [NC]
-RewriteRule ^ - [F]
-
-DirectoryIndex index.php
-
-AddType application/rss+xml	.rss
 <Files "index.xml">
+	# 'index.xml' (unlike 'sitemap.xml') is an RSS feed
 	ForceType application/rss+xml
 </Files>
 
-# force utf-8 for a number of file formats:
-AddDefaultCharset utf-8
-AddCharset utf-8 .css .xml .rss .txt
-
 <IfModule mod_deflate.c>
-	AddOutputFilterByType DEFLATE text/html text/plain text/css application/x-javascript text/javascript application/javascript application/json text/xml application/xml application/rss+xml
+	AddOutputFilterByType DEFLATE text/html text/plain
 	
-	<FilesMatch "\.(ttf|otf|svg)$">
+	<FilesMatch "\.(css|js|otf|rss|svg|ttf|txt|xml)$">
 		SetOutputFilter DEFLATE
 	</FilesMatch>
 </IfModule>
@@ -55,21 +37,46 @@ AddCharset utf-8 .css .xml .rss .txt
 	ExpiresByType font/x-woff	"access plus 1 year"
 </IfModule>
 
-# this is a mess, and probably wrong
-<FilesMatch "\.(xml|rss)$">
-	<IfModule mod_headers.c>
+<IfModule mod_headers.c>
+	<FilesMatch "\.(xml|rss)$">
+		# this is a mess, and probably wrong
 		Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
 		Header set Pragma "no-cache"
-		Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"
-	</IfModule>
-</FilesMatch>
+		Header set Expires "Sun, 1 Jan 2012 00:00:00 GMT"
+	</FilesMatch>
+</IfModule>
 
-# a folder
-RewriteCond %{REQUEST_URI} ^/(?:[^./&]+/)+$
-RewriteCond %{DOCUMENT_ROOT}%0 -d
-RewriteRule ^(?:([^./&]+)/)?$ ?path=$1 [QSA,L]
-
-# a thread
-RewriteCond %{REQUEST_URI} ^/((?:[^./&]+/)*)([^./]+)$
-RewriteCond %{DOCUMENT_ROOT}%0.rss -f
-RewriteRule ^(?:([^./&]+)/)?([^./]+)$ thread.php?path=$1&file=$2 [QSA,L]
+<IfModule mod_rewrite.c>
+	RewriteEngine	On
+	
+	# HTTP_AUTH workaround for CGI
+	# <orangejuiceliberationfront.com/http-auth-with-php-in-cgi-mode-e-g-on-dreamhost/>
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	
+	# custom favicon?
+	RewriteCond %{DOCUMENT_ROOT}/favicon\.ico !-f
+	RewriteRule ^favicon\.ico$ /favicon.default.ico [NC,L]
+	
+	# custom apple-touch-icon?
+	RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon\.png !-f
+	RewriteRule ^apple-touch-icon\.png$ /apple-touch-icon.default.png [NC,L]
+	RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon-precomposed\.png !-f
+	RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [NC,L]
+	
+	# don’t allow any access to /users (this is accessed purely from the PHP)
+	RewriteRule ^users/.*$ - [NC,F]
+	
+	# don’t allow forum access to users / themes / lib folder
+	RewriteCond %{QUERY_STRING} path=/*(?:themes|users|lib) [NC]
+	RewriteRule ^ - [F]
+	
+	# a folder
+	RewriteCond %{REQUEST_URI} ^/(?:[^./&]+/)+$
+	RewriteCond %{DOCUMENT_ROOT}%0 -d
+	RewriteRule ^(?:([^./&]+)/)?$ ?path=$1 [QSA,L]
+	
+	# a thread
+	RewriteCond %{REQUEST_URI} ^/((?:[^./&]+/)*)([^./]+)$
+	RewriteCond %{DOCUMENT_ROOT}%0.rss -f
+	RewriteRule ^(?:([^./&]+)/)?([^./]+)$ thread.php?path=$1&file=$2 [QSA,L]
+</IfModule>
