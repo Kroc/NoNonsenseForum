@@ -1,6 +1,6 @@
 <?php //bootstraps the forum
 /* ====================================================================================================================== */
-/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -45,10 +45,12 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 /* common input
    ====================================================================================================================== */
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
-define ('PATH',     preg_match ('/[^.\/&]+/', @$_GET['path']) ? $_GET['path'] : '');
+define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
-define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH.'/', false));	//when outputting as part of a URL
-define ('PATH_DIR', !PATH ? '/' : '/'.PATH.'/');				//serverside, like `chdir` / `unlink`
+define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));	//when outputting as part of a URL
+define ('PATH_DIR', !PATH ? '/' : '/'.PATH);					//serverside, like `chdir` / `unlink`
+//if we are in nested sub-folders, the name of the current sub-forum, exluding the rest
+define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
@@ -68,8 +70,8 @@ if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['
 
 //all pages can accept a name / password when committing actions (new thread / reply &c.)
 //in the case of HTTP authentication (sign in), these are provided in the request header instead
-define ('NAME', @$_SERVER['PHP_AUTH_USER'] ? $_SERVER['PHP_AUTH_USER'] : safeGet (@$_POST['username'], SIZE_NAME));
-define ('PASS', @$_SERVER['PHP_AUTH_PW']   ? $_SERVER['PHP_AUTH_PW']   : safeGet (@$_POST['password'], SIZE_PASS, false));
+define ('NAME', safeGet (@$_SERVER['PHP_AUTH_USER'] ? @$_SERVER['PHP_AUTH_USER'] : @$_POST['username'], SIZE_NAME));
+define ('PASS', safeGet (@$_SERVER['PHP_AUTH_PW']   ? @$_SERVER['PHP_AUTH_PW']   : @$_POST['password'], SIZE_PASS, false));
 
 if ((	//if HTTP authentication is used, we don’t need to validate the form fields
 	@$_SERVER['PHP_AUTH_USER'] && @$_SERVER['PHP_AUTH_PW']

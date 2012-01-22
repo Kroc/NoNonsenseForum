@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -60,7 +60,9 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	$item->addChild ('pubDate',	gmdate ('r'));
 	$item->addChild ('description',	safeHTML (formatText (TEXT)));
 	//save to disk
-	$rss->asXML ("$file.rss");
+	$rss->asXML ("$file.rss") or die (
+		"Failed to save thread. Folder permissions may be incorrect."
+	);
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
@@ -82,7 +84,7 @@ $template = prepareTemplate (
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
-		PATH ? PATH : FORUM_NAME,
+		PATH ? SUBFORUM: FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
 		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
 	)
@@ -107,8 +109,7 @@ if (file_exists ('about.html')) {
 
 /* sub-forums
    ---------------------------------------------------------------------------------------------------------------------- */
-//don’t allow sub-sub-forums (yet)
-if (!PATH && $folders = array_filter (
+if ($folders = array_filter (
 	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
@@ -134,7 +135,7 @@ if (!PATH && $folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,				//name of sub-forum
-			'a.nnf_folder-name@href'	=> safeURL (FORUM_PATH."$FOLDER/")	//URL to it
+			'a.nnf_folder-name@href'	=> PATH_URL.safeURL ($FOLDER).'/'	//URL to it
 		
 		//remove the lock icons if not required
 		))->remove (array (

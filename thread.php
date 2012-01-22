@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -12,7 +12,7 @@ require_once './start.php';
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 //which thread to show
-$FILE   = (preg_match ('/^[^.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+$FILE   = (preg_match ('/^[^\.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 //load the thread (have to read lock status from the file)
 $xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread = $xml->channel->xpath ('item');

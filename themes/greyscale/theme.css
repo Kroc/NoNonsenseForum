@@ -1,4 +1,4 @@
-/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -21,7 +21,7 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 	/* FF3.6+ */		 background-image:    -moz-linear-gradient(white, #ddd);
 	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
 	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
-	/* future? */		 background-image:         linear-gradient(white, #ddd);
+	/* future! */		 background-image:         linear-gradient(white, #ddd);
 				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
 				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
 				    manually insert a background colour for IE6 into the 32-bit PNGs) */
@@ -71,21 +71,23 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #mast h1			{position: absolute; top: 0; left: 0; right: 0; padding-left: 0; font-size: 32px;
 				 width: 100%; /*< IE6 */ height: 20px;}
 #mast h1 a			{margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;}
-#mast h1 a img			{margin: -6px 10px 0 -45px; vertical-align: middle;}
+#mast h1 a img			{margin: -6px 10px 0 -45px; border: none; vertical-align: middle;}
 
-/* the breadcrumb and rss / new buttons: */
 #mast nav			{margin: 40px auto 0;
 				 text-transform: uppercase; color: #888;}
 #mast nav p			{display: block; padding: 0 20px 0 60px;}
 
-#index				{display: inline-block; padding-left: 36px; margin-left: -36px;
-				 background: url("img/here.png") no-repeat 0 50%;}
+/* the breadcrumb for sub-forums */
+#index				{margin: 0 0 0 20px;
+				 background: url("img/here.png") no-repeat 4px 0;}
+#index li			{display: inline;}
 
+/* 'add' and 'rss' buttons */
 #nnf_add, #nnf_rss		{float: right; margin-left: 20px; padding-left: 25px;}
 #nnf_add			{background: url("img/add.png") no-repeat 0 50%;}
 #nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
-/* Google search box: */
+/* search box: */
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
 				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
 				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
@@ -379,6 +381,7 @@ h1				{font-size: 20px !important;}
 #mast nav p:last-child		{/* hide location marker */
 				 display: none;}
 #nnf_add			{margin-right: 0;}
+#index				{display: none;}
 
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -408,6 +411,11 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
  input[type="password"]		{-webkit-appearance: none; -moz-appearance: none;
 				 -webkit-border-radius: 0;}
 
+/* set text-indent of the placeholder text, except for the textarea, which has padding
+   (interesting note: iOS 4 can't cope with this selector being split, iOS5 can) */
+:not(#nnf_text-field)::-webkit-input-placeholder
+				{text-indent: 20px;}
+
 /* single column */
 #rightcol, #leftcol		{position: static; width: 100%;}
 
@@ -416,7 +424,7 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 
 #ptitle label, #nnf_name label, #nnf_pass label,
  #delete > form > p > label	{float: none; display: table-cell; width: 75px; height: 39px; padding: 0 0 0 20px;
-				 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0;}
+				 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0; vertical-align: middle}
 #nnf_title-field, #nnf_name-field,
  #nnf_pass-field		{position: static; display: table-cell; width: 100%; height: 43px;
 				 -webkit-box-shadow: inset 5px 0 5px -6px black;

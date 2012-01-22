@@ -1,4 +1,4 @@
-NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -39,13 +39,13 @@ Contents:
 [5.1]   Sign-in
 [6]     Forum locking
 [6.1]   Members
-[6.2]	A note on private forums
-[7]	Customising
-[7.1]	'config.php'
-[7.2]	'theme.config.php'
-[7.3]	Favicon and touch-icon
-[7.4]	Adding a forum introduction (about.html)
-[7.5]	Custom CSS
+[6.2]   A note on private forums
+[7]     Customising
+[7.1]   'config.php'
+[7.2]   'theme.config.php'
+[7.3]   Favicon and touch-icon
+[7.4]   Adding a forum introduction (about.html)
+[7.5]   Custom CSS
 [8]     Acknowledgements
 ------------------------------------------------------------------------
 
@@ -117,10 +117,10 @@ in "Install from download" above).
 *       Visit the site in your browser. If all is well, you should have
         an empty, but functional forum. If you're having problems you
         can ask for help on the forums: <forum.camendesign.com>
-        
+
 NOTE:   Please ensure ".htaccess" files are enabled on your web-server.
         For example XAMPP does not execute ".htaccess" files by deafult
-        
+
 NOTE:   If you run NoNonsense Forum in a sub-folder, any existing
         ".htaccess" rules from the web-root might 'leak' into the
         folder and prevent the forum from working correctly.
@@ -174,7 +174,7 @@ To avoid abuse, users cannot permenantly delete their posts.
 *       When a user deletes their post, the text is removed and
         replaced with a message like "This post was deleted by its
         owner" (or "a moderator"), the name and time remains
-        
+
 *       A moderator can delete any post, likewise
 
 *       A blanked-out deleted post can be removed permenantly from the
@@ -198,7 +198,7 @@ Sub-forums are simply folders.
 
 *       Make sure the folder has write-permissions
 
-*       Second-level sub-folders are not yet supported
+*       Nested sub-folders are supported, to any reasonable depth
         (E.g. '/Music/Techno/')
 
 
@@ -282,7 +282,7 @@ have moderator powers; they are your participants in restricted forums.
         
 *       Members must sign-in to be able to post in locked forums
 
-[6.2]	A note on private forums:
+[6.2]   A note on private forums:
 ------------------------------------------------------------------------
 NoNonsense Forum does not provide an option for private forums that
 (can only be accessed by members) because the index RSS feed (which
@@ -298,9 +298,9 @@ The users defined in the ".htpasswd" file will have to have the same
 password as their NoNonsense Forum username.
 
 
-[7]	Customising:
+[7]     Customising:
 ========================================================================
-[7.1]	'config.php':
+[7.1]   'config.php':
 ------------------------------------------------------------------------
 The 'config.default.php' file contains default settings for the forum,
 make a copy of this file and name it 'config.php' -- DO NOT modify,
@@ -309,7 +309,7 @@ delete or rename 'config.default.php' as it is still required.
 Modify your 'config.php' to your liking, the settings are explained
 within.
 
-[7.2]	'theme.config.php':
+[7.2]   'theme.config.php':
 ------------------------------------------------------------------------
 The `FORUM_THEME` option in 'config.php' (default: "greyscale"), refers
 to the name of the theme in the 'themes' folder. Inside the theme is a
@@ -322,7 +322,7 @@ explained within.
 DO NOT modify, delete or rename 'theme.config.default.php' as it is
 still required.
 
-[7.3]	Favicon and touch-icon:
+[7.3]   Favicon and touch-icon:
 ------------------------------------------------------------------------
 The site will use '/favicon.default.ico' as the favicon and
 '/apple-touch-icon.deafult.png' for iOS home-screen icons by default,
@@ -330,7 +330,7 @@ just provide your own 'favicon.ico' and 'apple-touch-icon.png' files
 to override. Each theme will have examples you can use in the theme
 folder, just copy those to webroot to use.
 
-[7.4]	Adding a forum introduction ('about.html'):
+[7.4]   Adding a forum introduction ('about.html'):
 ------------------------------------------------------------------------
 You can add a custom message to the top of the forum index / sub-forum
 index pages by creating an 'about.html' file in the folder and
@@ -341,7 +341,7 @@ top of each forum to tell visitors what the forum is used for, rules
 etc., but since any HTML can be used you can add whatever you want --
 social buttons, links, images and so forth.
 
-[7.5]	Custom CSS:
+[7.5]   Custom CSS:
 ------------------------------------------------------------------------
 Within the theme folder (that is where 'theme.css' is for the chosen
 theme) create a 'custom.css' file and it will be automatically included.
@@ -351,12 +351,12 @@ theme) create a 'custom.css' file and it will be automatically included.
 ========================================================================
 See LICENCE.txt for licence details
 
-*	Jon Gjengset		-	Original theme / mobile theme
-*	"JJ"			-	Quote syntax
-*	"Martijn"		-	Lynx support
-*	"Temukki"		-	Bugs
-*	Richard van Velzen	-	subfolder support / other fixes,
-					additional markup implementation
+*       Jon Gjengset            - Original theme / mobile theme
+*       "JJ"                    - Quote syntax
+*       "Martijn"               - Lynx support
+*       "Temukki"               - Bugs
+*       Richard van Velzen      - subfolder support / other fixes,
+                                  additional markup implementation
 
-*	The users of Camen Design Forum <forum.camendesign.com>
-	for testing and support
+*       The users of Camen Design Forum <forum.camendesign.com>
+        for testing and support
