@@ -1,6 +1,6 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v12 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -25,7 +25,7 @@ function prepareTemplate ($filepath, $title) {
 		'/html/head/title'					=> $title,
 		//application title (= forum / sub-forum name):
 		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-		'//meta[@name="application-name"]/@content'		=> PATH ? PATH : FORUM_NAME,
+		'//meta[@name="application-name"]/@content'		=> SUBFORUM ? SUBFORUM : FORUM_NAME,
 		//application URL (where the pinned site opens at)
 		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 	));
@@ -49,40 +49,40 @@ function prepareTemplate ($filepath, $title) {
 			=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
 					: 'http://google.com/search'
 	));
-	//are we in a sub-folder?
-	if (PATH) {
-		//if so, add the sub-forum name to the breadcrumb navigation,
-		$template->set (array (
-			'a.nnf_subforum-name'		=> PATH,
-			'a.nnf_subforum-name@href'	=> PATH_URL
-		));
-	} else {
-		//otherwise -- remove the breadcrumb navigation
-		$template->remove ('#nnf_breadcrumb');
-	}
+	
+	//are we in a sub-folder? if so, build the breadcrumb navigation
+	if (PATH) for (
+		//split the path by '/' to get each sub-forum
+		$items = explode ('/', trim (PATH, '/')), $item = $template->repeat ('.nnf_breadcrumb'),
+		$i = 0; $i < count ($items); $i++
+	) $item->set (array (
+		'a.nnf_subforum-name'      => $items[$i],
+		//reconstruct the URL from each sub-forum up to the current one
+		'a.nnf_subforum-name@href' => FORUM_PATH.implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
+	))->next ();
+	//not in a sub-folder? remove the breadcrumb navigation
+	if (!PATH) $template->remove ('.nnf_breadcrumb');
 	
 	/* site footer
 	   -------------------------------------------------------------------------------------------------------------- */
 	//are there any local mods?	create the list of local mods
 	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
-				else:	$template->remove ('#nnf_mods-local');	//remove the local mods list section
+				else:	$template->remove  ('#nnf_mods-local');	//remove the local mods list section
 	endif;
 	//are there any site mods?	create the list of mods
 	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
-				 else:	$template->remove ('#nnf_mods');	//remove the mods list section
+				 else:	$template->remove  ('#nnf_mods');	//remove the mods list section
 	endif;
 	//are there any members?	create the list of members
 	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
-			  else:		$template->remove ('#nnf_members');	//remove the members list section
+			  else:		$template->remove  ('#nnf_members');	//remove the members list section
 	endif;
-	//is a user signed in?
-	if (HTTP_AUTH) {
-		//yes: remove the signed-out section and set the name of the signed-in user
-		$template->remove ('.nnf_signed-out')->setValue ('.nnf_signed-in-name', NAME);
-	} else {
-		//no: remove the signed-in section
-		$template->remove ('.nnf_signed-in');
-	}
+	
+	//set the name of the signed-in user
+	$template->setValue ('.nnf_signed-in-name', NAME)->remove (
+		//removed the relevant section for signed-in / out
+		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
+	);
 	
 	return $template;
 }
@@ -91,7 +91,7 @@ function prepareTemplate ($filepath, $title) {
 
 //check to see if a name is a known moderator
 function isMod ($name) {
-	global $MODS; return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
+	global $MODS;    return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
 }
 //a member of a locked forum?
 function isMember ($name) {
@@ -264,7 +264,7 @@ function indexRSS () {
 	);
 	$chan = $rss->addChild ('channel');
 	//RSS feed title and URL to this forum / sub-forum
-	$chan->addChild ('title', safeHTML (FORUM_NAME.(PATH ? ' / '.PATH : '')));
+	$chan->addChild ('title', safeHTML (FORUM_NAME.(PATH ? explode (' / ', trim (PATH, '/')) : '')));
 	$chan->addChild ('link',  FORUM_URL);
 	
 	//get list of threads, sort by date; most recently modified first

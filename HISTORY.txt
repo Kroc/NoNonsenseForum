@@ -1,3 +1,10 @@
+v13	22.JAN.12
+*	Nested sub-folders
+*	Un/locking a thread will no longer bump it to the top of the index
+*	Fixed bug with closing parenthesis being included in a URL at the end of a quote
+*	Fixed small bug with user name case-sensitivity
+*	Small fix to `DOMTemplate` to reduce PHP requirement to at least 5.2.17, possibly 5.1.0
+
 v12	08.JAN.12
 *	Complete theming overhaul. The PHP logic and HTML are now separated using this methodology:
 	http://camendesign.com/dom_templating allowing admins to modify the HTML easily.
