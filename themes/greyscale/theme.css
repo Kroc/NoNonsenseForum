@@ -318,12 +318,12 @@ input[type=text],
 #mods				{margin: 0 auto; padding-top: 20px; overflow: hidden;}
 #mods p				{padding: 0 20px 0; color: #888;}
 
-#admin				{float: right;}
-a#lock, a#unlock		{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
+#nnf_admin			{float: right;}
+a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
    <creativecommons.org/licenses/by-sa/3.0/> */
-a#lock				{background: url("img/security_closed_16.png") no-repeat 0 50%;}
-a#unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
+a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%;}
+a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
 
 footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
