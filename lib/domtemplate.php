@@ -1,18 +1,18 @@
 <?php //DOM-based templating engine: <camendesign.com/dom_templating>
 /* ====================================================================================================================== */
-/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v14 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v5 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v6 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at http://camendesign.com/dom_templating
 
 class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	
-	public function __construct ($filepath) {
+	public function __construct ($filepath, $NS = '', $NS_URI = '') {
 		//load the template file to work with. this must be valid XML (but not XHTML)
 		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
@@ -23,7 +23,7 @@ class DOMTemplate extends DOMTemplateNode {
 		);
 		//set the root node for all xpath searching
 		//(handled all internally by `DOMTemplateNode`)
-		parent::__construct ($this->DOMDocument->documentElement);
+		parent::__construct ($this->DOMDocument->documentElement, $NS, $NS_URI);
 	}
 	
 	//output the complete HTML
@@ -44,6 +44,9 @@ class DOMTemplate extends DOMTemplateNode {
 class DOMTemplateNode {
 	protected $DOMNode;
 	private   $DOMXPath;
+	
+	protected $NS;		//namespace
+	protected $NS_URI;	//namespace URI
 	
 	//because everything is XML, HTML named entities like "&copy;" will cause blank output.
 	//we need to convert these named entities back to real UTF-8 characters (which XML doesn’t mind)
@@ -123,11 +126,16 @@ class DOMTemplateNode {
 		return str_replace (array_keys (self::$entities), array_values (self::$entities), $html);
 	}
 	
-	public function __construct ($DOMNode) {
+	public function __construct ($DOMNode, $NS = '', $NS_URI = '') {
 		//use a DOMNode as a base point for all the XPath queries and whatnot
 		//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
 		$this->DOMNode = $DOMNode;
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
+		//the painful bit. if you have an XMLNS in your template then XPath won’t work unless you:
+		// a. register a default namespace, and
+		// b. prefix all your XPath queries with this namespace
+		$this->NS = $NS; $this->NS_URI = $NS_URI;
+		if ($this->NS && $this->NS_URI) $this->DOMXPath->registerNamespace ($this->NS, $this->NS_URI);
 	}
 	
 	//actions are performed on elements using xpath, but for brevity a shorthand is also recognised in the format of:
@@ -145,6 +153,7 @@ class DOMTemplateNode {
 			preg_match ('/^([a-z0-9-]+)?([\.#])([a-z0-9:_-]+)(@[a-z-]+)?$/i', $query, $m)
 		) $query =
 			'.//'.						//see <php.net/manual/en/domxpath.query.php#99760>
+			($this->NS ? $this->NS.':' : '').		//the default namespace, if set
 			(@$m[1] ? $m[1] : '*').				//the element name, if specified, otherwise "*"
 			($m[2] == '#'					//is this an ID?
 				? "[@id=\"${m[3]}\"]"			//- yes
@@ -161,7 +170,7 @@ class DOMTemplateNode {
 	//template but also append the results to the parent and return to the original element's content to go again
 	public function repeat ($query) {
 		//take just the first element found in a query and return a repeating template of the element
-		return new DOMTemplateRepeater ($this->query ($query)->item (0));
+		return new DOMTemplateRepeater ($this->query ($query)->item (0), $this->NS, $this->NS_URI);
 	}
 	
 	//this sets multiple values using multiple xpath queries
@@ -229,24 +238,27 @@ class DOMTemplateNode {
 	}
 */
 class DOMTemplateRepeater extends DOMTemplateNode {
-	private $parent;
+	private $refNode;
 	private $template;
 	
-	public function __construct ($DOMNode) {
-		//add a reference to the parent node, where we will be appending the children
-		$this->parent = $DOMNode->parentNode;
-		//take the original node to use as the template for reuse
-		//and remove the source node from the original document
+	public function __construct ($DOMNode, $NS = '', $NS_URI = '') {
+		//we insert the templated item before or after the reference node,
+		//which will always be set to the last item that was templated
+		$this->refNode  = $DOMNode;
+		//take a copy of the original node that we will use as a starting point each time we iterate
 		$this->template = $DOMNode->cloneNode (true);
-		$DOMNode->parentNode->removeChild ($DOMNode);
-		
-		//intitialise the repeater with a copy of the template
-		parent::__construct ($this->template->cloneNode (true));
+		//initialise the template with the current, original node
+		parent::__construct ($DOMNode, $NS, $NS_URI);
 	}
 	
 	public function next () {
-		//attach the node to the parent
-		$this->parent->appendChild ($this->DOMNode);
+		//when we insert the newly templated item, use it as the reference node for the next item and so on.
+		$this->refNode = ($this->refNode->parentNode->lastChild === $this->DOMNode)
+			? $this->refNode->parentNode->appendChild ($this->DOMNode)
+			//if there's some kind of HTML after the reference node, we can use that to insert our item
+			//inbetween. this means that the list you are templating doesn't have to be wrapped in an element!
+			: $this->refNode->parentNode->insertBefore ($this->DOMNode, $this->refNode->nextSibling)
+		;
 		//reset the template
 		$this->DOMNode = $this->template->cloneNode (true);
 	}

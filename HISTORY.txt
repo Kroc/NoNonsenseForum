@@ -1,3 +1,11 @@
+v14	23.JAN.12
+*	Added the thread un/lock button back which had been missing since v12!!!
+*	Titles in RSS feeds were incorrect
+*	Moved RSS & sitemap to DOM templating (look in lib folder)
+*	Added XML namespace support to `DOMTemplate`
+*	Modified `DOMTemplateRepeater` to append items after the previous,
+	rather than as the last-child of the parent (no need for a superfluous wrapper)
+
 v13	22.JAN.12
 *	Nested sub-folders
 *	Un/locking a thread will no longer bump it to the top of the index

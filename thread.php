@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v14 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -38,7 +38,7 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 /* ======================================================================================================================
    thread lock / unlock action
    ====================================================================================================================== */
-if (isset ($_GET['lock']) && IS_MOD && AUTH) {
+if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 	//get a read/write lock on the file so that between now and saving, no other posts could slip in
 	//normally we could use a write-only lock 'c', but on Windows you can't read the file when write-locked!
 	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
@@ -418,7 +418,12 @@ $template = prepareTemplate (
 	//remove the "add reply" link and anything else (like the input form) related to posting
 	'#nnf_add, #nnf_reply-form'	=> !CAN_REPLY,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
-	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts'
+	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts',
+	//is the user a mod and can lock / unlock the thread?
+	'#nnf_admin'			=> !IS_MOD,
+	//is the thread already locked?
+	'#nnf_lock'			=>  $xml->channel->xpath ("category[text()='locked']"),
+	'#nnf_unlock'			=> !$xml->channel->xpath ("category[text()='locked']")
 ));
 
 /* post

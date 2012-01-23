@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v14 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -44,23 +44,18 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
-	$rss  = new SimpleXMLElement (
-		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<rss version="2.0" />'
-	);
-	$chan = $rss->addChild ('channel');
-	//RSS feed title and URL to this forum / sub-forum
-	$chan->addChild ('title',	safeHTML (TITLE));
-	$chan->addChild ('link',	FORUM_URL.PATH_URL.$file);
-	//the thread's first post
-	$item = $chan->addChild ('item');
-	$item->addChild ('title',	safeHTML (TITLE));
-	$item->addChild ('link',	FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36));
-	$item->addChild ('author',	safeHTML (NAME));
-	$item->addChild ('pubDate',	gmdate ('r'));
-	$item->addChild ('description',	safeHTML (formatText (TEXT)));
-	//save to disk
-	$rss->asXML ("$file.rss") or die (
+	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss->set (array (
+		'/rss/channel/title'	=> TITLE,
+		'/rss/channel/link'	=> FORUM_URL.PATH_URL.$file,
+		//the thread's first post
+		'/rss/item/title'	=> TITLE,
+		'/rss/item/link'	=> FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36),
+		'/rss/item/author'	=> NAME,
+		'/rss/item/pubDate'	=> gmdate ('r'),
+		'/rss/item/description'	=> formatText (TEXT)
+	));
+	file_put_contents ("$file.rss", $rss->html ()) or die (
 		"Failed to save thread. Folder permissions may be incorrect."
 	);
 	

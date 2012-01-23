@@ -1,6 +1,6 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v13 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v14 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -258,86 +258,63 @@ function formatText ($text) {
 function indexRSS () {
 	/* create an RSS feed
 	   -------------------------------------------------------------------------------------------------------------- */
-	$rss  = new SimpleXMLElement (
-		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<rss version="2.0" />'
-	);
-	$chan = $rss->addChild ('channel');
-	//RSS feed title and URL to this forum / sub-forum
-	$chan->addChild ('title', safeHTML (FORUM_NAME.(PATH ? explode (' / ', trim (PATH, '/')) : '')));
-	$chan->addChild ('link',  FORUM_URL);
+	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss->set (array (
+		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
+		'/rss/channel/link'	=> FORUM_URL.PATH_URL
+	));
 	
 	//get list of threads, sort by date; most recently modified first
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
+	$items = $rss->repeat ('/rss/channel/item');
 	//get the last post made in each thread as an RSS item
 	foreach (array_slice ($threads, 0, FORUM_THREADS) as $thread)
-		if ($xml = @simplexml_load_file ($thread))	//if the RSS feed is valid
-		if ($item = $xml->channel->item[0])		//if the feed has any items
-	{
-		$new = $chan->addChild ('item');
-		$new->addChild ('title',	safeHTML ($item->title));
-		$new->addChild ('link',		$item->link);
-		$new->addChild ('author',	safeHTML ($item->author));
-		$new->addChild ('pubDate',	gmdate ('r', strtotime ($item->pubDate)));
-		$new->addChild ('description',	safeHTML ($item->description));
-	}
-	//save to disk
-	$rss->asXML ('index.xml');
+		if ($xml  = @simplexml_load_file ($thread))	//if the RSS feed is valid
+		if ($item = @$xml->channel->item[0])		//if the feed has any items
+		$items->set (array (
+			'./title'	=> $item->title,
+			'./link'	=> $item->link,
+			'./author'	=> $item->author,
+			'./pubDate'	=> gmdate ('r', strtotime ($item->pubDate)),
+			'./description'	=> $item->description
+		))->next ();
+	;
+	file_put_contents ('index.xml', $rss->html ());
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
 	//we’re going to use the RSS files as sitemaps
 	chdir (FORUM_ROOT);
 	
-	//start the XML file
-	$xml = new SimpleXMLElement (
-		'<?xml version="1.0" encoding="UTF-8"?>'.
-		'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" />'
-	);
-	
-	//get list of sub-forums
-	$folders = array ('');
-	foreach (array_filter (
+	//get list of sub-forums and include the root too
+	$folders = array ('') + array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
 		preg_grep ('/^(\.|users$|themes$|lib$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
-	) as $folder) $folders[] = $folder;
+	);
+	
+	//start the XML file. this template has an XMLNS, so we have to prefix all our XPath queries :(
+	$xml = new DOMTemplate (FORUM_ROOT.'/lib/sitemap-template.xml', 'x', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 	
 	//generate a sitemap index file, to point to each index RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
-	foreach ($folders as $folder) if (
+	$sitemap = $xml->repeat ('//x:sitemap');
+	foreach ($folders as $folder)
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml')
-	) if (
+		if (@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml'))
 		//if you delete the last thread in a folder, there won’t be anything in the RSS index file!
-		@$rss->channel->item[0]
-	){	$map = $xml->addChild ('sitemap');
-		$map->addChild ('loc',		FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml');
-		$map->addChild ('lastmod',	gmdate ('r', strtotime ($rss->channel->item[0]->pubDate)));
-	}
-	$xml->asXML (FORUM_ROOT.'/sitemap.xml');
+		if (@$rss->channel->item[0])
+	 	$sitemap->set (array (
+			'./x:loc'	=> FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml',
+			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
+		))->next ()
+	;
+	file_put_contents (FORUM_ROOT.'/sitemap.xml', $xml->html ());
 	
 	//you saw nothing, right?
 	clearstatcache ();
-}
-
-/* ====================================================================================================================== */
-
-//SimpleXML (what we use for all RSS creation / manipulation) is great, but doesn’t support adding a node before another;
-//(in RSS feeds, the newest item comes first), so here we add this functionality in
-class DXML extends SimpleXMLElement {
-	//this concept modifed from:
-	//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-	public function insertBefore ($name, $value=NULL) {
-		//import the SimpleXML into DOM proper, which does have an `insertBefore` method
-		$dom = dom_import_simplexml ($this);
-		//add the item
-		$new = $dom->parentNode->insertBefore ($dom->ownerDocument->createElement ($name, $value), $dom);
-		//convert back to SimpleXML and return
-		return simplexml_import_dom ($new, get_class ($this));
-	}
 }
 
 ?>
