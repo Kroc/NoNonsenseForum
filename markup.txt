@@ -30,9 +30,9 @@ Example:
 
 Dividers
 ========
-To draw a line across your text, use four dashes:
+To draw a line across your text, use three or more dashes:
 
-----
+---
 
 
 Quotes:
@@ -176,6 +176,8 @@ $
 
 Inline Code:
 ============
-For small snippets of code / teletype text you want to appear admidst other sentences (rather than in a separate block), you can use backticks to enclose the code (1 or more allowed):
+For small snippets of code / teletype text you want to appear
+admidst other sentences (rather than in a separate block),
+you can use backticks to enclose the code (1 or more allowed):
 
-	Use `*bold*` for bold and ``_italic_`` for italics.
+E.g.	Use `*bold*` for bold and ``_italic_`` for italics.
