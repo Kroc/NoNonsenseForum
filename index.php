@@ -46,15 +46,16 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//write out the new thread as an RSS file:
 	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
 	$rss->set (array (
-		'/rss/channel/title'	=> TITLE,
-		'/rss/channel/link'	=> FORUM_URL.PATH_URL.$file,
+		'/rss/channel/title'		=> TITLE,
+		'/rss/channel/link'		=> FORUM_URL.PATH_URL.$file,
 		//the thread's first post
-		'/rss/item/title'	=> TITLE,
-		'/rss/item/link'	=> FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36),
-		'/rss/item/author'	=> NAME,
-		'/rss/item/pubDate'	=> gmdate ('r'),
-		'/rss/item/description'	=> formatText (TEXT)
+		'/rss/channel/item/title'	=> TITLE,
+		'/rss/channel/item/link'	=> FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36),
+		'/rss/channel/item/author'	=> NAME,
+		'/rss/channel/item/pubDate'	=> gmdate ('r'),
+		'/rss/channel/item/description'	=> formatText (TEXT)
 	));
+
 	file_put_contents ("$file.rss", $rss->html ()) or die (
 		"Failed to save thread. Folder permissions may be incorrect."
 	);
