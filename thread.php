@@ -44,7 +44,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	//if there’s a "locked" category, remove it
 	if ((bool) $xml->channel->xpath ("category[text()='locked']")) {
@@ -85,7 +85,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : false)) {
 	//get a write lock on the file so that between now and saving, no other posts could slip in
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	//find the post using the ID (we need to know the numerical index for later)
 	for ($i=0; $i<count ($xml->channel->item); $i++) if (strstr ($xml->channel->item[$i]->link, '#') == "#$ID") break;
@@ -204,7 +204,7 @@ if (isset ($_GET['delete'])) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	
 	//load the thread to get the post preview
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	//access the particular post. if no ID is provided (deleting the whole thread) use the last item in the RSS file
 	//(the first post), otherwise find the ID of the specific post
@@ -347,7 +347,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
