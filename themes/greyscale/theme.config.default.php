@@ -96,13 +96,15 @@ if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $page
 	}
 	
 	//turn it into HTML
-	foreach ($list as &$item) if ($item == $page) {
-		$item = "<li><em>$item</em></li>";
-	} elseif ($item) {
-		$item = "<li><a href=\"?page=$item#threads\">$item</a></li>";
-	} else {
-		$item = '<li>…</li>';
+	foreach ($list as &$item) switch (true) {
+		case $item == $page:	$item = "<li><em>$item</em></li>"; 			break;
+		case $item:		$item = "<li><a href=\"?page=$item\">$item</a></li>";	break;
+		default:		$item = '<li>…</li>';
 	}
+	//insert the previous / next links
+	if ($pages > 1 && $page > 1)	array_unshift ($list, "<li><a href=\"?page=".($page-1)."\">«</a></li>");
+	if ($page < $pages)		array_push    ($list, "<li><a href=\"?page=".($page+1)."\">»</a></li>");
+	
 	return implode ('', $list);
 }}
 
