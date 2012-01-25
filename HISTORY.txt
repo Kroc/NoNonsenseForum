@@ -1,3 +1,12 @@
+v15	25.JAN.12
+*	The greyscale theme's logo was being templated in the wrong file,
+	since it's theme-specific, it has been moved to 'theme.config.default.php'
+*	Added page next / previous links
+	NOTE: if you have already created a 'theme.config.php' file, it is recommended to
+	create a fresh copy from 'theme.config.default.php' for the above two changes
+*	"User X added on date Y" text won't copy/paste so quotes can be cleaner
+*	Fixed bug in v14 that stopped replies from working
+
 v14	23.JAN.12
 *	Added the thread un/lock button back which had been missing since v12!!!
 *	Titles in RSS feeds were incorrect
