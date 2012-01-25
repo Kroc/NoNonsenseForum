@@ -68,6 +68,9 @@ if (!function_exists ('theme_custom')) { function theme_custom ($template) {
 	//this function is called just before a templated page is outputted so that you have an opportunity to do any
 	//extra templating of your own. the `$template` object passed in is a DOMTemplate class, see '/lib/domtemplate.php'
 	//for code or <camendesign.com/dom_templating> for documentation on how to template with it
+	
+	//stuff just for this theme: set the logo
+	$template->setValue ('img#logo@src', FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO);
 }}
 
 //produces a truncated list of page numbers around the current page:

@@ -37,11 +37,8 @@ function prepareTemplate ($filepath, $title) {
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template->set (array (
-		'.nnf_forum-name'	=> FORUM_NAME,
-		'img#logo@src'		=> FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO
-	
-	//search form:
-	))->set (array (
+		//site title
+		'.nnf_forum-name' => FORUM_NAME,
 		//set the forum URL for Google search-by-site
 		'//input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
 		//if you're using a Google search, change it to HTTPS if enforced
