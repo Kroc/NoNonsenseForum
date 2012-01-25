@@ -347,7 +347,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
