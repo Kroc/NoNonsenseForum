@@ -213,8 +213,8 @@ article header .ui,
 				      -o-transition: all .2s;
 				         transition: all .2s;}
 
-.nnf_reply-delete		{background: url("img/delete.png") no-repeat right center;}
-.nnf_reply-append		{background: url("img/append.png") no-repeat right center;}
+.delete				{background: url("img/delete.png") no-repeat right center;}
+.append				{background: url("img/append.png") no-repeat right center;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
