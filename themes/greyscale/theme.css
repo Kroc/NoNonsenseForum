@@ -228,7 +228,12 @@ article .hr			{height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
 				 border-bottom: 1px dotted #222; text-indent: -999em;}
 
 p.appended			{color: #888; padding-top: 19px;
-				 border-bottom: 1px dotted #222;}
+				 border-bottom: 1px dotted #222;
+				 /* don’t include the 'user X added on date Y' when copy/pasting */
+				 -webkit-user-select: none;
+				    -moz-user-select: none;
+				     -ms-user-select: none;
+				         user-select: none;}
 
 
 /* input forms
