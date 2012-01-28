@@ -67,7 +67,6 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 
 /* site header
    ====================================================================================================================== */
-#mast				{}
 #mast h1			{width: 100%; /*< IE6 */ padding: 0;
 				 font-size: 32px; line-height: 40px;}
 #mast h1 a			{display: block; margin: 0 auto 0 10%; padding: 10px 0 10px 60px;
@@ -468,6 +467,38 @@ article header time		{display: inline;}
 footer				{padding-top: 60px;}
 footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
 p#signin			{margin-top: -120px;}
+
+}
+
+/* ======================================================================================================================
+   opera speed dial / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+  ====================================================================================================================== */
+@media screen and (view-mode: minimized) {
+
+#mast h1			{padding-bottom: 5px}
+
+/* hide the search box, breadcrumb and rss / add links */
+#mast form, #mast nav,
+ /* index page stuff */
+ #nnf_about, #nnf_folders, #nnf_threads>h1, .nnf_thread.sticky, #nnf_threads>nav, #nnf_new-form,
+ /* thread pages stuff */
+ #nnf_post, #nnf_replies>h1, .nnf_reply, #nnf_replies>nav, #nnf_reply-form,
+ /* reply stuff */
+ .nnf_reply-append, .nnf_reply-delete,
+ /* footer stuff */
+ #nnf_admin, #mods, footer	{display: none;}
+
+/* for index page, all threads are shown except stickies */
+#nnf_threads			{margin-top: 10px; border-top: 1px solid #444;}
+.nnf_thread			{display: block; border-bottom-style: solid !important;}
+
+/* for thread pages, show only the last reply */
+#nnf_replies			{margin-top: 10px;}
+.nnf_reply			{padding: 0 10px 9px;}
+.nnf_reply>header		{height: 29px; overflow: hidden; margin: -1px -10px 0; padding: 0 10px;
+				 border-top: 1px solid #444; line-height: 30px;}
+.nnf_reply-text			{margin-top: -10px;}
+article.nnf_reply:last-of-type	{display: block;}
 
 }
 
