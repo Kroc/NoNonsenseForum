@@ -67,19 +67,20 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 
 /* site header
    ====================================================================================================================== */
-#mast				{padding: 40px 0 0; }
-#mast h1			{position: absolute; top: 0; left: 0; right: 0; padding-left: 0; font-size: 32px;
-				 width: 100%; /*< IE6 */ height: 20px;}
-#mast h1 a			{margin: 0 auto 0 10%; padding-left: 60px; color: #f7f6f7;}
-#mast h1 a img			{margin: -6px 10px 0 -45px; border: none; vertical-align: middle;}
+#mast				{}
+#mast h1			{width: 100%; /*< IE6 */ padding: 0;
+				 font-size: 32px; line-height: 40px;}
+#mast h1 a			{display: block; margin: 0 auto 0 10%; padding: 10px 0 10px 60px;
+				 color: #f7f6f7;}
+#mast h1 a img			{position: absolute; margin: 4px 0 0 -45px; border: none;}
 
-#mast nav			{margin: 40px auto 0;
+#mast nav			{margin: 20px auto 0;
 				 text-transform: uppercase; color: #888;}
 #mast nav p			{display: block; padding: 0 20px 0 60px;}
 
 /* the breadcrumb for sub-forums */
-#index				{margin: 0 0 0 20px;
-				 background: url("img/here.png") no-repeat 4px 0;}
+#index				{margin: 0; padding: 0 0 0 60px;
+				 background: url("img/here.png") no-repeat 24px 0;}
 #index li			{display: inline;}
 
 /* 'add' and 'rss' buttons */
@@ -91,8 +92,8 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
 				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
 				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
-				 margin: -20px 10% 0 auto; padding: 0 10px 0 0; overflow: hidden;
-				 border: none; /* very bizarely, the positioning magically adds a border */
+				 margin: -40px 10% 40px auto; padding: 0 10px 0 0; overflow: hidden;
+				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
 #query				{display: block; /*< removes magic-spacing / height on input box */
 				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
@@ -153,7 +154,17 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 				 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
 				    line of text is 20px so that the bottom border never shifts out of place
 				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
-				 padding: 9.999px 20px 9px; line-height: 20px;}
+				 padding: 9.999px 20px 9px 60px; line-height: 20px;}
+
+ol.ui li.sticky			{background: #eee;}
+
+ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
+				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
+
+ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
+ol.ui li time			{float: right; width: 9.1em;				/* timestamp */
+				 font-weight: normal; text-align: right; color: #888;}
+ol.ui li a:hover time		{text-decoration: underline;}
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
@@ -161,25 +172,13 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 #nnf_folders h1			{background-image: url("img/folders.png");}
 #nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png");}
 
-/* folder / thread names: */
-ol.ui li			{padding-left: 60px;}
-#nnf_folders ol.ui li		{border-bottom: 1px solid #444;}
+/* the last post name / date for sub-forums */
+#nnf_folders ol.ui li		{border-bottom: 1px solid #444; position: relative;}
+.nnf_subforum-post		{position: absolute; right: 20px;}
 
-
-ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
-				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
-
-ol.ui li img			{margin-left: -20px; margin-top: 2px;  position: absolute;}
+/* the lock/sticky icon positioning */
+ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
 #nnf_folders ol.ui li img	{margin-left: -40px;}
-
-ol.ui li.sticky			{background: #eee;}
-
-/* these apply to folders and threads */
-ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
-ol.ui li time			{float: right; width: 9.1em;				/* timestamp */
-				 font-weight: normal; text-align: right; color: #888;}
-ol.ui li a:hover time		{text-decoration: underline;}
-
 
 /* thread page
    ====================================================================================================================== */
@@ -344,7 +343,7 @@ p#signin a			{text-transform: uppercase;}
 /* ======================================================================================================================
    mobile / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
    ====================================================================================================================== */
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 800px) {
 
 html				{font-size: 14px; background: #ddd; /* mobile devices don't like fixed backgrounds */}
 
@@ -359,10 +358,10 @@ html, body			{width: 100%; -webkit-text-size-adjust: none;}
 /* reduce the title size */
 h1				{font-size: 20px !important;}
 #mast				{padding: 0;}
-#mast h1			{position: static; padding: 5px 0 0; line-height: 20px; min-height: 40px;}
+#mast h1			{padding: 5px 0 0; line-height: 20px; min-height: 40px;}
 #mast h1 a			{/* fit the logo in tighter */
-				 position: static; display: block; height: 30px; margin: 0; padding: 10px 0 0 55px;
-				 background-position: 10px 50%;}
+				 margin: 0; padding: 10px 0 0 55px;}
+#mast h1 a img			{margin-top: -6px;}
 
 /* re-position the search field below the title */
 #search				{width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px;
@@ -381,7 +380,7 @@ h1				{font-size: 20px !important;}
 #go				{left: -5px; top: -23px;}
 
 /* fit the rss / add buttons into one line */
-#mast nav			{height: 40px; line-height: 40px; margin: 20px 0 -20px;
+#mast nav			{height: 40px; line-height: 40px; margin: 40px 0 -20px;
 				 overflow: hidden; /*< strange behaviour in webkit */}
 #mast nav p:last-child		{/* hide location marker */
 				 display: none;}
@@ -446,7 +445,7 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 
 }
 
-@media screen and (max-width: 640px) and (orientation: landscape) {
+@media screen and (max-width: 800px) and (orientation: landscape) {
 
 /* when landscape, shrink the size of the search field, and place the RSS / New Thread links in the header */
 #search				{width: 50%; float: left;}
@@ -462,7 +461,7 @@ article header time		{display: inline;}
 
 }
 
-@media screen and (max-width: 640px) and (orientation: portrait) {
+@media screen and (max-width: 800px) and (orientation: portrait) {
 
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
