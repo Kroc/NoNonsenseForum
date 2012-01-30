@@ -5,6 +5,12 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//is the htaccess working properly?
+//(.htaccess sets this variable for us)
+if (!@$_SERVER['HTTP_HTACCESS']) die (
+	"'.htaccess' file is missing, or not enabled."
+);
+
 require_once 'lib/functions.php';	//import shared functions
 require_once 'lib/domtemplate.php';	//import the templating engine
 
