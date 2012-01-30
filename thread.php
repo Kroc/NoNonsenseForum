@@ -344,7 +344,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss")), 'DXML') or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
@@ -357,22 +357,40 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
 		$url  = FORUM_URL.PATH_URL."$FILE:$page#".base_convert (microtime (), 10, 36);
 		
-		//add the comment to the thread
-		$item = $xml->channel->item[0]->insertBefore ('item');
-		//add the "RE:" prefix, and reply number to the title
-		//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
-		//in the theme's folder for the definition of `THEME_RE`)
-		$item->addChild ('title',	safeHTML (sprintf (THEME_RE,
-			count ($xml->channel->item)-1,	//number of the reply
-			$xml->channel->title		//thread title
-		)));
-		$item->addChild ('link',	$url);
-		$item->addChild ('author',	safeHTML (NAME));
-		$item->addChild ('pubDate',	gmdate ('r'));
-		$item->addChild ('description',	safeHTML (formatText (TEXT)));
+		//re-template the whole thread:
+		$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+		$rss->set (array (
+			'/rss/channel/title'		=> $xml->channel->title,
+			'/rss/channel/link'		=> FORUM_URL.PATH_URL.$FILE
+		));
+		
+		//template the new reply first
+		$items = $rss->repeat ('/rss/channel/item');
+		$items->set (array (
+			//add the "RE:" prefix, and reply number to the title
+			//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
+			//in the theme's folder for the definition of `THEME_RE`)
+			'./title'		=> safeHTML (sprintf (THEME_RE,
+				count ($xml->channel->item),	//number of the reply
+				$xml->channel->title		//thread title
+			)),
+			'./link'		=> $url,
+			'./author'		=> NAME,
+			'./pubDate'		=> gmdate ('r'),
+			'./description'		=> formatText (TEXT)
+		))->next ();
+		
+		//copy the remaining replies across
+		foreach ($xml->channel->item as $item) $items->set (array (
+			'./title'		=> $item->title,
+			'./link'		=> $item->link,
+			'./author'		=> $item->author,
+			'./pubDate'		=> $item->pubDate,
+			'./description'		=> $item->description
+		))->next ();
 		
 		//write the file: first move the write-head to 0, remove the file's contents, and then write new ones
-		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->html ());
 	} else {
 		//if a double-post, link back to the previous post
 		$url = $xml->channel->item[0]->link;

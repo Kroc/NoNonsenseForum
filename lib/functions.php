@@ -112,10 +112,6 @@ function safeHTML ($text) {
 	//encode a string for insertion into an HTML element
 	return htmlspecialchars ($text, ENT_NOQUOTES);
 }
-function safeString ($text) {
-	//encode a string for insertion between quotes in an HTML attribute (like `value` or `title`)
-	return htmlspecialchars ($text, ENT_QUOTES);
-}
 function safeURL ($text, $is_HTML=true) {
 	//encode a string to be used in a URL, keeping path separators
 	$text = str_replace ('%2F', '/', rawurlencode ($text));
@@ -312,23 +308,6 @@ function indexRSS () {
 	
 	//you saw nothing, right?
 	clearstatcache ();
-}
-
-/* ====================================================================================================================== */
- 
-//SimpleXML (what we use for all RSS creation / manipulation) is great, but doesn’t support adding a node before another;
-//(in RSS feeds, the newest item comes first), so here we add this functionality in
-class DXML extends SimpleXMLElement {
-	//this concept modifed from:
-	//<stackoverflow.com/questions/2092012/simplexml-how-to-prepend-a-child-in-a-node/2093059#2093059>
-	public function insertBefore ($name, $value=NULL) {
-		//import the SimpleXML into DOM proper, which does have an `insertBefore` method
-		$dom = dom_import_simplexml ($this);
-		//add the item
-		$new = $dom->parentNode->insertBefore ($dom->ownerDocument->createElement ($name, $value), $dom);
-		//convert back to SimpleXML and return
-		return simplexml_import_dom ($new, get_class ($this));
-	}
 }
 
 ?>
