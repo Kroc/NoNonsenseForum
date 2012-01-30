@@ -1,3 +1,9 @@
+v16	30.JAN.12
+*	Integrated the page number into the URL scheme
+	(threads now default to the last page if no page number given)
+*	Opera Speed Dial support (shows the latest non-sticky thread / reply)
+*	CSS fixes for IE6/7/8, iOS and Kindle
+
 v15	25.JAN.12
 *	The greyscale theme's logo was being templated in the wrong file,
 	since it's theme-specific, it has been moved to 'theme.config.default.php'

@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v15 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -12,15 +12,15 @@ require_once './start.php';
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 //which thread to show
-$FILE   = (preg_match ('/^[^\.\/]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+$FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 //load the thread (have to read lock status from the file)
 $xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread = $xml->channel->xpath ('item');
 
-//determine the page number (for threads, the page number can be given as "last")
-define ('PAGE', @$_GET['page'] == 'last'
-	? ceil (count ($thread) / FORUM_POSTS)
-	: (preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1)
+//determine the page number, for threads no page number specified defaults to the last page
+define ('PAGE',
+	preg_match ('/^[1-9][0-9]*$/', @$_GET['page'])
+	? (int) $_GET['page'] : ceil (count ($thread) / FORUM_POSTS)
 );
 
 //access rights for the current user
@@ -52,7 +52,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.PATH_URL."$FILE?page=last#nnf_reply-form";
+		$url = FORUM_URL.PATH_URL."$FILE#nnf_reply-form";
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
@@ -110,9 +110,6 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			date (DATE_FORMAT, time ())	//human-readable time
 		).formatText (TEXT);
 		
-		//need to know what page this post is on to redirect back to it
-		$page = ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS);
-		
 		//commit the data
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
 		//close the lock / file
@@ -127,7 +124,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE?page=$page#$ID", true, 303);
+		header ('Location: '.FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID", true, 303);
 		exit;
 	}
 	
@@ -239,7 +236,7 @@ if (isset ($_GET['delete'])) {
 			unset ($xml->channel->item[$i]);
 			
 			//we’ll redirect to the last page (which may have changed when the post was deleted)
-			$url = FORUM_URL.PATH_URL."$FILE?page=last#replies";
+			$url = FORUM_URL.PATH_URL."$FILE#replies";
 		} else {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
@@ -247,7 +244,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.PATH_URL."$FILE?page=".ceil ((count ($xml->channel->item)-1-$i) / FORUM_POSTS)."#$ID";
+			$url = FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID";
 		}
 		
 		//commit the data
@@ -357,9 +354,8 @@ if (CAN_REPLY && AUTH && TEXT) {
 		!$xml->channel->xpath ("category[text()='locked']")
 	)) {
 		//where to?
-		//(we won’t use `page=last` here as we are effecitvely handing the user a permalink here)
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-		$url  = FORUM_URL.PATH_URL.$FILE.($page > 1 ? "?page=$page" : '').'#'.base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.PATH_URL."$FILE:$page#".base_convert (microtime (), 10, 36);
 		
 		//add the comment to the thread
 		$item = $xml->channel->item[0]->insertBefore ('item');
@@ -464,6 +460,8 @@ if (count ($thread)) {
 	//do the page links
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
 	$template->setHTML ('.nnf_pages', theme_pageList (
+		//base URL to work with
+		PATH_URL.$FILE,
 		//page number,	number of pages
 		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
 	));
@@ -485,7 +483,7 @@ if (count ($thread)) {
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> '?page='.PAGE.strstr ($reply->link, '#'),
+			'a.nnf_reply-number@href'	=> "$FILE:".PAGE.strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
