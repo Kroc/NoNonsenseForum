@@ -1,4 +1,4 @@
-# NoNonsense Forum v15 © Copyright (CC-BY) Kroc Camen 2012
+# NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
 # licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 # you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 
@@ -11,7 +11,7 @@ AddDefaultCharset utf-8
 Options -MultiViews -Indexes
 
 <IfModule mod_dir.c>
-	DirectoryIndex	index.php
+	DirectoryIndex index.php
 </IfModule>
 
 <IfModule mod_mime.c>
@@ -71,16 +71,19 @@ Options -MultiViews -Indexes
 	RewriteRule ^users/.*$ - [NC,F]
 	
 	# don’t allow forum access to users / themes / lib folder
-	RewriteCond %{QUERY_STRING} path=/*(?:themes|users|lib) [NC]
+	RewriteCond %{QUERY_STRING} path=(?:themes|users|lib) [NC]
 	RewriteRule ^ - [F]
 	
+	# page numbers on the root forum
+	RewriteRule ^:(\d+)$ ?page=$1 [QSA,L]
+	
 	# a sub-forum
-	RewriteCond %{REQUEST_URI} ^/(?:[^\./&]+/)+$
-	RewriteCond %{DOCUMENT_ROOT}%0 -d
-	RewriteRule ^(?:[^\./&]+/)+$ ?path=$0 [QSA,L]
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?::\d+)?$
+	RewriteCond %{DOCUMENT_ROOT}%1 -d
+	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ ?path=$1&page=$2 [QSA,L]
 	
 	# a thread
-	RewriteCond %{REQUEST_URI} ^/((?:[^\./&]+/)*)([^\./]+)$
-	RewriteCond %{DOCUMENT_ROOT}%0.rss -f
-	RewriteRule ^((?:[^\./&]+/)*)([^\./]+)$ thread.php?path=$1&file=$2 [QSA,L]
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?::\d+)?$
+	RewriteCond %{DOCUMENT_ROOT}%1.rss -f
+	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?::(\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
 </IfModule>

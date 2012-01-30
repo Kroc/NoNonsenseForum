@@ -1,6 +1,6 @@
 <?php //theme configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v15 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -25,7 +25,7 @@
 
 //the page number, added to the titles of index pages and threads
 //"%1$u" - the page number
-@define ('THEME_TITLE_PAGENO',	' # %1$u');
+@define ('THEME_TITLE_PAGENO',	' : %1$u');
 
 //the title for append pages
 //"%1$s" - the post title (will come from `THEME_RE` for replies)
@@ -75,7 +75,7 @@ if (!function_exists ('theme_custom')) { function theme_custom ($template) {
 
 //produces a truncated list of page numbers around the current page:
 //(you might want to do something different, like a combo box with a button)
-if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $pages) {
+if (!function_exists ('theme_pageList')) { function theme_pageList ($url_slug, $page, $pages) {
 	//always include the first page
 	$list[] = 1;
 	//more than one page?
@@ -97,13 +97,13 @@ if (!function_exists ('theme_pageList')) { function theme_pageList ($page, $page
 	
 	//turn it into HTML
 	foreach ($list as &$item) switch (true) {
-		case $item == $page:	$item = "<li><em>$item</em></li>"; 			break;
-		case $item:		$item = "<li><a href=\"?page=$item\">$item</a></li>";	break;
+		case $item == $page:	$item = "<li><em>$item</em></li>"; 				break;
+		case $item:		$item = "<li><a href=\"$url_slug:$item\">$item</a></li>";	break;
 		default:		$item = '<li>…</li>';
 	}
 	//insert the previous / next links
-	if ($pages > 1 && $page > 1)	array_unshift ($list, "<li><a href=\"?page=".($page-1)."\">«</a></li>");
-	if ($page < $pages)		array_push    ($list, "<li><a href=\"?page=".($page+1)."\">»</a></li>");
+	if ($pages > 1 && $page > 1)	array_unshift ($list, "<li><a href=\"$url_slug:".($page-1)."\">«</a></li>");
+	if ($page < $pages)		array_push    ($list, "<li><a href=\"$url_slug:".($page+1)."\">»</a></li>");
 	
 	return implode ('', $list);
 }}
