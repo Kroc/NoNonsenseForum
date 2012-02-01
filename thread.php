@@ -370,10 +370,10 @@ if (CAN_REPLY && AUTH && TEXT) {
 			//add the "RE:" prefix, and reply number to the title
 			//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
 			//in the theme's folder for the definition of `THEME_RE`)
-			'./title'		=> safeHTML (sprintf (THEME_RE,
+			'./title'		=> sprintf (THEME_RE,
 				count ($xml->channel->item),	//number of the reply
 				$xml->channel->title		//thread title
-			)),
+			),
 			'./link'		=> $url,
 			'./author'		=> NAME,
 			'./pubDate'		=> gmdate ('r'),
