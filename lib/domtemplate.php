@@ -12,10 +12,13 @@
 class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
 	
-	public function __construct ($filepath, $NS = '', $NS_URI = '') {
+	public function __construct ($filepath, $NS = '', $NS_URI = '', $document_encoding="utf-8") {
 		//load the template file to work with. this must be valid XML (but not XHTML)
 		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
+			//add XML declaration to avoid mangling non-ascii characters
+			// see http://www.php.net/manual/en/domdocument.loadxml.php#94291
+			"<?xml version=\"1.0\" encoding=\"$document_encoding\"?>"
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
 			self::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
 		) or trigger_error (
