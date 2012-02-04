@@ -5,22 +5,28 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v6 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v7 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at http://camendesign.com/dom_templating
 
 class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;
+	private $keep_prolog = false;
 	
-	public function __construct ($filepath, $NS = '', $NS_URI = '', $document_encoding="utf-8") {
+	public function __construct ($filepath, $NS='', $NS_URI='') {
+		//get just the template text to begin with
+		$xml = file_get_contents ($filepath);
+		//does this file have an XML prolog? if so, we’ll keep it as-is in the output
+		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
+		
 		//load the template file to work with. this must be valid XML (but not XHTML)
 		$this->DOMDocument = new DOMDocument ();
 		$this->DOMDocument->loadXML (
-			//add XML declaration to avoid mangling non-ascii characters
-			// see http://www.php.net/manual/en/domdocument.loadxml.php#94291
-			"<?xml version=\"1.0\" encoding=\"$document_encoding\"?>" .
+			//if the document doesn't already have an XML prolog, add one to avoid mangling unicode characters
+			//see <php.net/manual/en/domdocument.loadxml.php#94291>
+			(!$this->keep_prolog ? "<?xml version=\"1.0\" encoding=\"utf-8\"?>" : '').
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
-			self::html_entity_decode (file_get_contents ($filepath)), LIBXML_COMPACT | LIBXML_NONET
+			self::html_entity_decode ($xml), @LIBXML_COMPACT | @LIBXML_NONET
 		) or trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
@@ -32,13 +38,15 @@ class DOMTemplate extends DOMTemplateNode {
 	//output the complete HTML
 	public function html () {
 		//fix and clean DOM's XML output:
-		return preg_replace (array (
-			'/^<\?xml.*?>\n/',				//1: remove XML prolog
-			'/<(.*?[^ ])\/>/s',				//2: add space to self-closing
-			'/<(div|[ou]l|textarea)(.*?) ?\/>/'		//3: fix broken self-closed tags
-		), array (
-			'', '<$1 />', '<$1$2></$1>'
-		), $this->DOMDocument->saveXML ());
+		return preg_replace (
+			//add space to self-closing	//fix broken self-closed tags
+			array ('/<(.*?[^ ])\/>/s',	'/<(div|[ou]l|textarea)(.*?) ?\/>/'),
+			array ('<$1 />',		'<$1$2></$1>'),
+			//should we remove the XML prolog?
+			!$this->keep_prolog
+				? preg_replace ('/^<\?xml.*?>\n/', '', $this->DOMDocument->saveXML ())
+				: $this->DOMDocument->saveXML ()
+		);
 	}
 }
 

@@ -357,6 +357,7 @@ See LICENCE.txt for licence details
 *       "Temukki"               - Bugs
 *       Richard van Velzen      - subfolder support / other fixes,
                                   additional markup implementation
+*       Fyra                    - UTF-8 fix for templates
 
 *       The users of Camen Design Forum <forum.camendesign.com>
         for testing and support
