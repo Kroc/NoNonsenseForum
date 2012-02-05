@@ -1,6 +1,6 @@
 <?php //DOM-based templating engine: <camendesign.com/dom_templating>
 /* ====================================================================================================================== */
-/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -137,7 +137,7 @@ class DOMTemplateNode {
 		return str_replace (array_keys (self::$entities), array_values (self::$entities), $html);
 	}
 	
-	public function __construct ($DOMNode, $NS = '', $NS_URI = '') {
+	public function __construct ($DOMNode, $NS='', $NS_URI='') {
 		//use a DOMNode as a base point for all the XPath queries and whatnot
 		//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
 		$this->DOMNode = $DOMNode;
@@ -252,7 +252,7 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 	private $refNode;
 	private $template;
 	
-	public function __construct ($DOMNode, $NS = '', $NS_URI = '') {
+	public function __construct ($DOMNode, $NS='', $NS_URI='') {
 		//we insert the templated item before or after the reference node,
 		//which will always be set to the last item that was templated
 		$this->refNode  = $DOMNode;

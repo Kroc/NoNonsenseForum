@@ -1,4 +1,4 @@
-NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -250,6 +250,11 @@ Some moderator actions require the user to sign-in.
         close the tab or window), or clear your browser's cache to
         sign out
 
+*	Unfortunately, due to a flaw in HTTP authentication, users with
+	accented / unicode letters in their name will not be able to
+	sign-in. Moderators and members must limit their chosen names
+	to basic letters, numbers and punctuation
+
 
 [6]     Forum Locking:
 ========================================================================
@@ -284,10 +289,10 @@ have moderator powers; they are your participants in restricted forums.
 
 [6.2]   A note on private forums:
 ------------------------------------------------------------------------
-NoNonsense Forum does not provide an option for private forums that
-(can only be accessed by members) because the index RSS feed (which
-includes the text of posts being made in the forum) cannot be protected
-without the use of ".htpasswd" based password-protection.
+NoNonsense Forum does not provide an option for private forums (can
+only be accessed by members) because the index RSS feed (which includes
+the text of posts being made in the forum) cannot be protected without
+the use of ".htpasswd" based password-protection.
 
 If you want a private forum / sub-forum, protect the relevant directory
 using ".htpasswd". Instructions are not provided here on how to
@@ -357,7 +362,7 @@ See LICENCE.txt for licence details
 *       "Temukki"               - Bugs
 *       Richard van Velzen      - subfolder support / other fixes,
                                   additional markup implementation
-*       Fyra                    - UTF-8 fix for templates
+*       "Fyra"                  - UTF-8 fix for templates
 
 *       The users of Camen Design Forum <forum.camendesign.com>
         for testing and support

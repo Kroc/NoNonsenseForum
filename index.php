@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -55,7 +55,6 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
 		'/rss/channel/item/description'	=> formatText (TEXT)
 	));
-
 	file_put_contents ("$file.rss", $rss->html ()) or die (
 		"Failed to save thread. Folder permissions may be incorrect."
 	);

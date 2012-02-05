@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -108,7 +108,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			safeHTML (NAME),		//author
 			gmdate ('r', time ()),		//machine-readable time
 			date (DATE_FORMAT, time ())	//human-readable time
-		).formatText (TEXT);
+		).formatText (TEXT, $xml);
 		
 		//commit the data
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
@@ -348,8 +348,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
-		NAME == $xml->channel->item[0]->author &&
-		formatText (TEXT) == $xml->channel->item[0]->description &&
+		NAME == $xml->channel->item[0]->author && formatText (TEXT, $xml) == $xml->channel->item[0]->description &&
 		//can’t post if the thread is locked
 		!$xml->channel->xpath ("category[text()='locked']")
 	)) {
@@ -377,7 +376,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./link'		=> $url,
 			'./author'		=> NAME,
 			'./pubDate'		=> gmdate ('r'),
-			'./description'		=> formatText (TEXT)
+			'./description'		=> formatText (TEXT, $xml)
 		))->next ();
 		
 		//copy the remaining replies across
