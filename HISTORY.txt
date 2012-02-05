@@ -1,3 +1,8 @@
+v17	05.FEB.12
+*	Referring to people with '@name' will now link to the latest reply in the thread by that person
+*	Fixed issue with replying to a locked thread removing the lock
+*	UTF-8 characters in templates are no longer hex encoded in the output, with thanks to Fyra
+
 v16	30.JAN.12
 *	Integrated the page number into the URL scheme
 	(threads now default to the last page if no page number given)

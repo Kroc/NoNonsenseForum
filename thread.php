@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -28,10 +28,10 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 	//- if you are a moderator (doesn’t matter if the forum or thread is locked)
 	IS_MOD ||
 	//- if you are a member, the forum lock doesn’t matter, but you can’t reply to locked threads (only mods can)
-	(!(bool) $xml->channel->xpath ("category[text()='locked']") && IS_MEMBER) ||
+	(!(bool) $xml->channel->xpath ("category[.='locked']") && IS_MEMBER) ||
 	//- if you are neither a mod nor a member, then as long as: 1. the thread is not locked, and
 	//  2. the forum is such that anybody can reply (unlocked or thread-locked), then you can reply
-	(!(bool) $xml->channel->xpath ("category[text()='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
+	(!(bool) $xml->channel->xpath ("category[.='locked']") && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 ));
 
 
@@ -47,7 +47,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
 	
 	//if there’s a "locked" category, remove it
-	if ((bool) $xml->channel->xpath ("category[text()='locked']")) {
+	if ((bool) $xml->channel->xpath ("category[.='locked']")) {
 		//note: for simplicity this removes *all* channel categories as NNF only uses one at the moment,
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
@@ -108,7 +108,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			safeHTML (NAME),		//author
 			gmdate ('r', time ()),		//machine-readable time
 			date (DATE_FORMAT, time ())	//human-readable time
-		).formatText (TEXT);
+		).formatText (TEXT, $xml);
 		
 		//commit the data
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
@@ -230,7 +230,7 @@ if (isset ($_GET['delete'])) {
 		if (	//full delete? (option ticked, is moderator, and post is on the last page)
 			(IS_MOD && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
 			//if the post has already been blanked, delete it fully
-			(isset ($_POST['remove']) || $post->xpath ("category[text()='deleted']"))
+			(isset ($_POST['remove']) || $post->xpath ("category[.='deleted']"))
 		) {
 			//remove the post from the thread entirely
 			unset ($xml->channel->item[$i]);
@@ -241,7 +241,7 @@ if (isset ($_GET['delete'])) {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
 			//add a "deleted" category so we know to no longer allow it to be edited or deleted again
-			if (!$post->xpath ("category[text()='deleted']")) $post->category[] = 'deleted';
+			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
 			$url = FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID";
@@ -348,10 +348,9 @@ if (CAN_REPLY && AUTH && TEXT) {
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
-		NAME == $xml->channel->item[0]->author &&
-		formatText (TEXT) == $xml->channel->item[0]->description &&
+		NAME == $xml->channel->item[0]->author && formatText (TEXT, $xml) == $xml->channel->item[0]->description &&
 		//can’t post if the thread is locked
-		!$xml->channel->xpath ("category[text()='locked']")
+		!$xml->channel->xpath ("category[.='locked']")
 	)) {
 		//where to?
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
@@ -362,6 +361,9 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
 			'/rss/channel/link'		=> FORUM_URL.PATH_URL.$FILE
+		))->remove (array (
+			//is the thread is unlocked?
+			'/rss/channel/category'		=> !$xml->channel->xpath ("category[.='locked']")
 		));
 		
 		//template the new reply first
@@ -377,8 +379,11 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./link'		=> $url,
 			'./author'		=> NAME,
 			'./pubDate'		=> gmdate ('r'),
-			'./description'		=> formatText (TEXT)
-		))->next ();
+			'./description'		=> formatText (TEXT, $xml)
+		))->remove (
+			//the new reply isn’t deleted, so remove the category marker
+			'./category'
+		)->next ();
 		
 		//copy the remaining replies across
 		foreach ($xml->channel->item as $item) $items->set (array (
@@ -387,6 +392,9 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./author'		=> $item->author,
 			'./pubDate'		=> $item->pubDate,
 			'./description'		=> $item->description
+		))->remove (array (
+			//has the reply been deleted? (blanked)
+			'./category'		=> !$item->xpath ('./category')
 		))->next ();
 		
 		//write the file: first move the write-head to 0, remove the file's contents, and then write new ones
@@ -436,8 +444,8 @@ $template = prepareTemplate (
 	//is the user a mod and can lock / unlock the thread?
 	'#nnf_admin'			=> !IS_MOD,
 	//is the thread already locked?
-	'#nnf_lock'			=>  $xml->channel->xpath ("category[text()='locked']"),
-	'#nnf_unlock'			=> !$xml->channel->xpath ("category[text()='locked']")
+	'#nnf_lock'			=>  $xml->channel->xpath ("category[.='locked']"),
+	'#nnf_unlock'			=> !$xml->channel->xpath ("category[.='locked']")
 ));
 
 /* post
@@ -493,7 +501,7 @@ if (count ($thread)) {
 	$no = (PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$reply) {
 		//has the reply been deleted (blanked)?
-		if ($reply->xpath ("category[text()='deleted']")) $item->addClass ('.', 'deleted');
+		if ($reply->xpath ("category[.='deleted']")) $item->addClass ('.', 'deleted');
 		
 		//apply the data to the template (a reply)
 		$item->set (array (
@@ -529,9 +537,9 @@ if (count ($thread)) {
 			))
 		)) {	$item->remove (array (
 				//append link not available when the reply has been deleted
-				'.nnf_reply-append' => $reply->xpath ("category[text()='deleted']"),
+				'.nnf_reply-append' => $reply->xpath ("category[.='deleted']"),
 				//delete link not available when the reply has been deleted, except to mods
-				'.nnf_reply-delete' => $reply->xpath ("category[text()='deleted']") && !IS_MOD
+				'.nnf_reply-delete' => $reply->xpath ("category[.='deleted']") && !IS_MOD
 			));
 		} else {
 			$item->remove ('.nnf_reply-append, .nnf_reply-delete');

@@ -1,6 +1,6 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v16 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -121,7 +121,7 @@ function safeURL ($text, $is_HTML=true) {
 }
 
 //take the author's message, process markup, and encode it safely for the RSS feed
-function formatText ($text) {
+function formatText ($text, $rss=NULL) {
 	//unify carriage returns between Windows / UNIX, and sanitise HTML against injection
 	$text = safeHTML (preg_replace ('/\r\n?/', "\n", $text));
 	
@@ -227,6 +227,48 @@ function formatText ($text) {
 		array ('&ldquo;</span>',	'<span class="qr">'),
 	$text);
 	
+	/* name references:
+	   -------------------------------------------------------------------------------------------------------------- */
+	//name references (e.g. "@bob") will link back to the last reply in the thread made by that person.
+	//this requires that the whole RSS thread is passed to this function to refer to
+	if (!is_null ($rss)) {
+		//first, produce a list of all authors in the thread
+		$names = array ();
+		foreach ($rss->channel->xpath ('./item/author') as $name) $names[] = $name[0];
+		$names = array_map ('strtolower', $names);	//set all to lowercase
+		$names = array_map ('safeHTML',   $names);	//HTML encode names as they will be in the source text
+		$names = array_unique ($names);			//remove duplicates
+		//sort the list of names Z-A so that longer names and names with spaces occur first,
+		//this is so that we don’t choose "Bob" over "Bob Monkhouse" when matching names
+		rsort ($names);
+		
+		//find all possible name references in the text:
+		//(that is, any "@" followed by text up to the end of a line. note that this means that what might be
+		//matched may include additional text that *isn't* part of the name, e.g. "@bob How are you?")
+		while (preg_match ('/(?:^|\s+)(@.+)/m', $text, $m, PREG_OFFSET_CAPTURE, @$offset)) {
+			print_r ($m);
+			
+			//check each of the known names in the thread and see if one fits the source text reference
+			//e.g. does "@bob How are you?" begin with "bob"
+			foreach ($names as $name) if (stripos ($m[1][0], $name) === 1)
+				//locate the last post made by that author in the thread to link to
+				foreach ($rss->channel->item as $item) if (safeHTML (strtolower ($item->author)) == $name)
+			{	//replace the reference with the link to the post
+				$text = substr_replace ($text,
+					'<a href="'.$item->link.'">'.substr ($m[1][0], 0, strlen ($name)+1).'</a>',
+					$m[1][1], strlen ($name)+1
+				);
+				//move on to the next reference, no need to check any further names for this one
+				$offset = $m[1][1] + strlen ($name) + strlen ($item->link) + 15 + 1;
+				break 2;
+			}
+			
+			//failing any match, continue searching
+			//(avoid getting stuck in an infinite loop)
+			$offset = $m[1][1] + 1;
+		};
+	}
+	
 	/* finalise:
 	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
@@ -298,8 +340,7 @@ function indexRSS () {
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
 		if (@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml'))
 		//if you delete the last thread in a folder, there won’t be anything in the RSS index file!
-		if (@$rss->channel->item[0])
-	 	$sitemap->set (array (
+		if (@$rss->channel->item[0]) $sitemap->set (array (
 			'./x:loc'	=> FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml',
 			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
 		))->next ()

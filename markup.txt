@@ -2,17 +2,22 @@ Links:
 ======
 Clickable links will be created automatically on any web addresses in
 your text that begin with "http://", "https://", "ftp://" or "irc://".
+Also, e-mail addresses will be turned into clickable links for you.
 
 YES:	http://www.google.com
 YES:	http://google.com
 NO:	www.google.com
 NO:	google.com
-NO:	readme.txt
-
-Email addresses will be turned into clickable links for you.
-
 YES:	email@email.com
-NO:	@twitter
+
+
+Name References:
+================
+You can refer to another person by prefixing their name with an
+at-symbol. E.g. @bob
+
+The name will link to the last reply made by that person in the
+current discussion thread.
 
 
 Bold & Italic
@@ -63,7 +68,7 @@ There must be no text before or after the quote marks:
 NO:	"This is your text".
 	
 However, spaces before or after are allowed. When you copy and paste
-someone else's quote extra spaces might be included, just ignore these.
+someone else's quote, extra spaces might be included, just ignore these.
 
 YES:	This is my text
 

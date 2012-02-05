@@ -3,10 +3,12 @@
 
 <title>NoNonsense Forum</title>
 <link>http://forum.camendesign.com</link>
+<category>locked</category>
 
 <item>
 
 <title>NoNonsense Forum Release Announcements</title>
+<category>deleted</category>
 <link>http://forum.camendesign.com/releases_change_log</link>
 <author>Kroc</author>
 <pubDate>Sat, 08 Oct 2011 20:56:51 +0000</pubDate>
