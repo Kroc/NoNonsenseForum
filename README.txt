@@ -53,7 +53,7 @@ Contents:
 [0]     Requirements:
 ========================================================================
 *       An up to date Apache installation, 2.1 or above
-*       PHP 5.2.4 or above (5.1.0 works in theory, but untested)
+*       PHP 5.2.3 or above
 
 Browser support:
 *       IE6, 7, 8, 9+
