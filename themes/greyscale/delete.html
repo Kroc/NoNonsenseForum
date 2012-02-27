@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<meta charset="utf-8" />
+	<!-- NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
+	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
+	<title>Delete Thread Title?</title>
+	<!-- get rid of IE site compatibility button -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
+	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+	<meta name="robots" content="noindex, nofollow" />
+	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
+	<meta name="application-name" content="NoNonsense Forum" />
+	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
+	<meta name="msapplication-window" content="width=1024;height=600" />
+	<meta name="msapplication-navbutton-color" content="#222" />
+</head><body>
+<!-- =================================================================================================================== -->
+<header id="mast">
+	<h1><a href="/">
+		<img id="nnf_logo" src="/themes/greyscale/img/logo.png" width="32" height="32" alt="" /><!--
+		--><span class="nnf_forum-name">NoNonsense Forum</span>
+	</a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search"  /><!--
+	--></form>
+	
+	<nav><ol id="index">
+		<li><a href="/">Index</a></li>
+		<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
+	</ol></nav>
+</header>
+<!-- =================================================================================================================== -->
+<section id="delete">
+	<h1>Delete</h1>
+	<form method="post" action="#delete" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+	
+	<div id="leftcol">
+		<p id="nnf_name">
+			<label for="user">Name:</label>
+			<input id="nnf_name-field" name="username" type="text" size="28" maxlength="20" tabindex="1"
+			       autocomplete="on" required="required" placeholder="Your name" value="" />
+		</p>
+	</div><div id="rightcol">
+		<p id="nnf_pass">
+			<label for="nnf_pass-field">Password:</label>
+			<input id="nnf_pass-field" name="password" type="password" size="28" maxlength="20" tabindex="2"
+			       autocomplete="on" required="required" placeholder="A password to keep your name" value="" />
+		</p><p id="nnf_email">
+			<label for="email">Email:</label>
+			<input name="email" type="text" tabindex="0" autocomplete="off" required="required"
+			       value="example@abc.com" />
+			(Leave this as-is, it’s a trap!)
+		</p>
+	</div>
+	
+	<p id="nnf_error-none-thread" class="ok">
+		To delete this thread, and all replies to it, you must be either the original author
+		or a designated moderator.
+	</p><p id="nnf_error-none-reply" class="ok" >
+		To delete this post you must be either the original author or a designated moderator.<br />
+		The content of the post will be removed but the name and date will remain.
+	</p><p id="nnf_error-name" class="error">
+		Enter the name of either the original author or a moderator to be able to delete.
+	</p><p id="nnf_error-pass" class="error">
+		Enter the password for either the original author or a moderator to be able to delete.
+	</p><p id="nnf_error-auth" class="error">
+		Name / password mismatch! You must enter the name and password of either the original author,
+		or a designated moderator.
+	</p>
+	
+	<div id="nnf_remove"><p><label for="remove">
+		<input id="remove" name="remove" type="checkbox" tabindex="3" value="yes" />
+		<span>Remove completely (moderators only)</span>
+	</label></p>
+	<ul>
+		<li>The post will be removed completely from the thread, rather than blanked</li>
+		<li>Only posts on the last page of the thread can be removed completely (so as to not break permalinks)</li>
+	</ul></div>
+	
+	<p id="psubmit"><label for="submit"><span>Delete</span>
+		<input id="submit" name="submit" type="image" src="/themes/greyscale/img/submit.png"
+		       width="40" height="40" tabindex="4" alt="&gt;" />
+	</label></p>
+	
+	</form>
+</section>
+<!-- =================================================================================================================== -->
+<section id="nnf_post">
+	<h1 id="nnf_post-title">Thread Title</h1>
+	
+	<article id="nnf_post" class="op">
+		<header>
+			<time id="nnf_post-time" datetime="2012-01-01T00:00:00+00:00" pubdate="pubdate">01 Jan ’12 · 00:00</time>
+			<b id="nnf_post-author">Author</b>
+		</header>
+		
+		<div id="nnf_post-text"><p>
+			The quick brown fox jumps over the lazy dog.
+		</p></div>
+	</article>
+</section>
+<!-- =================================================================================================================== -->
+<div id="mods"><p id="nnf_mods-local">
+	Moderators for this sub-forum:
+	<span id="nnf_mods-local-list"><b class="mod">Alice</b></span>
+</p><p id="nnf_mods">
+	Your friendly neighbourhood moderators:
+	<span id="nnf_mods-list"><b class="mod">Bob</b></span>
+</p><p id="nnf_members">
+	Members of this forum:
+	<span id="nnf_members-list"><b>Charlie</b></span>
+</p></div>
+
+<footer><p>
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+</p><p id="signin" class="nnf_signed-in">
+	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
+</p><p id="signin" class="nnf_signed-out">
+	<a href="?signin">Sign in</a>
+</p></footer>
+
+<script><!--
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
+}
+--></script>
+</body></html>
