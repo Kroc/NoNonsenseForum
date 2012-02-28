@@ -7,6 +7,8 @@
 
 //the shared template stuff for all pages
 function prepareTemplate ($filepath, $title) {
+	global $MODS, $MEMBERS;
+	
 	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
 	//<camendesign.com/dom_templating> for documentation
 	$template = new DOMTemplate ($filepath);
