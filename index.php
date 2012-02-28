@@ -233,6 +233,9 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			'time.nnf_thread-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
 			//last post author
 			'.nnf_thread-author'		=> $last->author
+		))->remove (array (
+			//if the thread is not sticky, remove the sticky icon
+			'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
 		));
 		
 		//is the last post author a mod?
