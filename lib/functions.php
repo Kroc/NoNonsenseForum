@@ -166,20 +166,21 @@ function formatText ($text, $rss=NULL) {
 	//find full URLs and turn into HTML hyperlinks. we also detect e-mail addresses automatically
 	while (preg_match (
 		'/(?:
-			((?:(?:http|ftp)s?|irc)?:\/\/)				# $1 = protocol
-			(							# $2 = friendly URL (no protocol)
-				[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+		# domain name
-			)(\/)?							# $3 = slash is excluded from friendly URL
-			(?(3)(							# $4 = folders and filename, relative URL
-				(?>						# folders and filename
-					"(?!\/?&gt;|\s|$)|			# ignore the end of an HTML hyperlink
-					\)(?![:\.,"”»]?(?:\s|$))|		# ignore brackets on end with punctuation
-					[:\.,”»](?!\s|$)|			# ignore various characters on the end
-					[^\s:)\.,"”»]				# the rest, including bookmark
+			((?:(?:http|ftp)s?|irc)?:\/\/)			# $1 = protocol
+		|	([a-z0-9\._%+\-]+@)				# $2 = email name
+		)?(							# $3 = friendly URL (no protocol)
+			[^\p{Z}\p{C}\.\/&\x{23}@"”»]+			# domain name (not "separator", "other" and slash)
+			(?:\.[^\p{Z}\p{C}\.\/&\x{23}@"”»]+)+		# top-level domain
+		)(?(2)|							# email ends here
+			(\/)?						# $4 = slash is excluded from friendly URL
+			(?(4)(						# $5 = folders and filename, relative URL
+				(?>					# folders and filename
+					"(?!\/?&gt;|\s|$)|		# ignore the end of an HTML hyperlink
+					\)(?![:\.,"”»]?(?:\s|$))|	# ignore brackets on end with punctuation
+					[:\.,”»](?!\s|$)|		# ignore various characters on the end
+					[^\s:)\.,"”»]			# the rest, including bookmark
 				)*
 			)?)
-		|
-			([a-z0-9\._%+\-]+@[a-z0-9\.\-]{1,}(?:\.[a-z]{2,6})+)	# $5 = e-mail
 		)/xiu',
 		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
 		$text, $m, PREG_OFFSET_CAPTURE,
@@ -189,11 +190,11 @@ function formatText ($text, $rss=NULL) {
 		
 	//replace the URL in the source text with a hyperlinked version:
 	)) $text = substr_replace ($text, $replace =
-		'<a href="'.(@$m[5][0]	? 'mailto:'.$m[5][0]			//is this an e-mail address?
+		'<a href="'.(@$m[2][0]	? 'mailto:'.$m[2][0]			//is this an e-mail address?
 					: ($m[1][0] ? $m[1][0] : 'http://'))	//has a protocol been given?
 		//rest of the URL [domain . slash . everything-else]
 		//(encode double-quotes without double-encoding existing ampersands; this is the PHP5.2.3 requirement)
-		.htmlspecialchars ($m[2][0].@$m[3][0].@$m[4][0], ENT_COMPAT, 'UTF-8', false).'" rel="nofollow">'
+		.htmlspecialchars ($m[3][0].@$m[4][0].@$m[5][0], ENT_COMPAT, 'UTF-8', false).'" rel="nofollow">'
 		.$m[0][0].'</a>',
 		//where to substitute
 		$m[0][1], strlen ($m[0][0])
