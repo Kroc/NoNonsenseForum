@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v7 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v8 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at http://camendesign.com/dom_templating
 
@@ -185,34 +185,42 @@ class DOMTemplateNode {
 	}
 	
 	//this sets multiple values using multiple xpath queries
-	public function set ($queries) {
-		foreach ($queries as $query => $value) $this->setValue ($query, $value); return $this;
+	public function set ($queries, $asHTML=false) {
+		foreach ($queries as $query => $value) $this->setValue ($query, $value, $asHTML); return $this;
 	}
 	
 	//set the text content on the results of a single xpath query
-	public function setValue ($query, $value) {
-		foreach ($this->query ($query) as $node) $node->nodeValue = $node->nodeType == XML_ATTRIBUTE_NODE
-			? htmlspecialchars ($value, ENT_QUOTES) : htmlspecialchars ($value, ENT_NOQUOTES)
-		; return $this;
-	}
-	
-	//set HTML content for a single xpath query
-	public function setHTML ($query, $html) {
-		foreach ($this->query ($query) as $node) {
-			$frag = $node->ownerDocument->createDocumentFragment ();
-			//if the HTML string is not valid, it won’t work
-			$frag->appendXML (self::html_entity_decode ($html));
-			$node->nodeValue = '';
-			$node->appendChild ($frag);
-		} return $this;
+	public function setValue ($query, $value, $asHTML=false) {
+		foreach ($this->query ($query) as $node) switch (true) {
+			//if the selected node is a "class" attribute, add the className to it
+			case $node->nodeType == XML_ATTRIBUTE_NODE && $node->nodeName == 'class':
+				$this->addClass ($query, $value); break;
+				
+			//if the selected node is any other element attribute, set its value
+			case $node->nodeType == XML_ATTRIBUTE_NODE:
+				$node->nodeValue = htmlspecialchars ($value, ENT_QUOTES); break;
+				
+			//if the text is to be inserted as HTML that will be inluded into the output
+			case $asHTML:
+				$frag = $node->ownerDocument->createDocumentFragment ();
+				//if the HTML string is not valid XML, it won’t work!
+				$frag->appendXML (self::html_entity_decode ($value));
+				$node->nodeValue = '';
+				$node->appendChild ($frag);
+				break;
+				
+			//otherwise, encode the text to display as-is
+			default:
+				$node->nodeValue = htmlspecialchars ($value, ENT_NOQUOTES);
+		}
+		return $this;
 	}
 	
 	public function addClass ($query, $new_class) {
 		//first determine if there is a 'class' attribute already?
 		foreach ($this->query ($query) as $node) if (
 			$node->hasAttributes () && $class = $node->getAttribute ('class')
-		) {
-			//if the new class is not already in the list, add it in
+		) {	//if the new class is not already in the list, add it in
 			if (!in_array ($new_class, explode (' ', $class)))
 				$node->setAttribute ('class', "$class $new_class")
 			;

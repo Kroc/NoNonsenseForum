@@ -98,7 +98,7 @@ $template = prepareTemplate (
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
 if (file_exists ('about.html')) {
 	//load the 'about.html' file and insert it into the page
-	$template->setHTML ('#nnf_about', file_get_contents ('about.html'));
+	$template->setValue ('#nnf_about', file_get_contents ('about.html'), true);
 } else {
 	//no file? remove the element reserved for it
 	$template->remove ('#nnf_about');
@@ -191,12 +191,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	
 	//do the page links (stickies are not included in the count as they appear on all pages)
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setHTML ('.nnf_pages', theme_pageList (
+	$template->setValue ('.nnf_pages', theme_pageList (
 		//base URL to work with
 		PATH_URL,
 		//page number,	number of pages
 		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
-	));
+	), true);
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	

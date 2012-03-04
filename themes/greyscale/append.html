@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head>
+<html lang="en"><head>
 	<meta charset="utf-8" />
 	<!-- NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
@@ -77,19 +77,19 @@
 			       autocomplete="off" required="required" value="example@abc.com" />
 			(Leave this as-is, it’s a trap!)
 		</p>
-		<p id="nnf_error-none" class="ok">
+		<p id="nnf_error-none-append" class="ok">
 			<!-- this is shown by default as long as new users aren't disabled and the user isn't signed in -->
 			Only the original author or a moderator can append to this post.
 		</p><p id="nnf_error-none-http" class="ok">
 			<!-- this is shown by default if the user is signed in -->
 			(Quit your browser or clear the browser cache to sign out.)
-		</p><p id="nnf_error-name" class="error">
+		</p><p id="nnf_error-name-append" class="error">
 			Enter the name of either the original author or a moderator to be able to append to this reply.
-		</p><p id="nnf_error-pass" class="error">
+		</p><p id="nnf_error-pass-append" class="error">
 			Enter the password for either the original author or a moderator to be able to append to this reply
 		</p><p id="nnf_error-text" class="error">
 			Well, write a message!
-		</p><p id="nnf_error-auth" class="error">
+		</p><p id="nnf_error-auth-append" class="error">
 			Name / password mismatch! You must enter the name and password of either the original author,
 			or a designated moderator.
 		</p><p id="markup">
@@ -106,7 +106,7 @@
 		</p>
 	</div>
 	
-	<p id="psubmit"><label for="submit">Append
+	<p id="psubmit"><label for="submit"><span>Append</span>
 		<input id="submit" name="submit" type="image" src="/themes/greyscale/img/submit.png"
 		       width="40" height="40" tabindex="4" alt="&gt;" />
 	</label></p>
@@ -116,13 +116,13 @@
 <!-- =================================================================================================================== -->
 <div id="mods"><p id="nnf_mods-local">
 	Moderators for this sub-forum:
-	<span id="nnf_mods-local-list"><b class="mod">Bob</b></span>
+	<span id="nnf_mods-local-list"><b class="mod">Alice</b></span>
 </p><p id="nnf_mods">
 	Your friendly neighbourhood moderators:
-	<span id="nnf_mods-list"><b class="mod">Kroc</b>, <b class="mod">JJ</b>, <b class="mod">theraje</b></span>
+	<span id="nnf_mods-list"><b class="mod">Bob</b></span>
 </p><p id="nnf_members">
 	Members of this forum:
-	<span id="nnf_members-list"><b>Arthur</b></span>
+	<span id="nnf_members-list"><b>Charlie</b></span>
 </p></div>
 
 <footer><p>

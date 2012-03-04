@@ -5,6 +5,15 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//default UTF-8 throughout
+mb_internal_encoding ('UTF-8');
+mb_regex_encoding    ('UTF-8');
+
+//correct PHP version?
+if (version_compare (PHP_VERSION, '5.2.3') < 0) die (
+	'PHP version 5.2.3 or greater required, yours is: '.PHP_VERSION
+);
+
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
 if (!@$_SERVER['HTTP_HTACCESS']) die (
@@ -16,10 +25,6 @@ require_once 'lib/domtemplate.php';	//import the templating engine
 
 /* configuration:
    ---------------------------------------------------------------------------------------------------------------------- */
-//default UTF-8 throughout
-mb_internal_encoding ('UTF-8');
-mb_regex_encoding    ('UTF-8');
-
 //try set the forum owner’s personal config ('config.php'), if it exists
 @include './config.php';
 //include the defaults: (for anything missing from the user’s config)
@@ -42,12 +47,6 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	'://'.$_SERVER['HTTP_HOST']
 );
 
-//load the user’s theme configuration, if it exists
-@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
-//include the theme defaults
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
-
-
 /* common input
    ====================================================================================================================== */
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
@@ -62,6 +61,20 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
+
+
+/* theme & translation
+   ====================================================================================================================== */
+//load the user’s theme configuration, if it exists
+@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
+//include the theme defaults
+@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
+
+//include the language translations
+$LANG = array ();
+foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
+
+define ('LANG', 'x-pig-latin');
 
 
 /* access control
@@ -120,8 +133,8 @@ define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 
 //get the list of moderators:
 //(`file` returns NULL if the file doesn’t exist; casting that to an array creates an array with a blank element, and
-//`array_filter` removes blank elements, including blank lines in the text file; we could use the `FILE_SKIP_EMPTY_LINES`
-//flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
+// `array_filter` removes blank elements, including blank lines in the text file; we could use the `FILE_SKIP_EMPTY_LINES`
+// flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
 	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES)),

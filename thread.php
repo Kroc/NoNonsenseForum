@@ -144,8 +144,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setHTML (
-		'#nnf_post-text', $post->description
+	))->setValue (
+		'#nnf_post-text', $post->description, true
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
@@ -166,22 +166,22 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
-		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
+		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_append-error-none'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
 		: '#nnf_name-http, #nnf_error-none-http'
 		
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'#nnf_error-none, #nnf_error-none-http' => !empty ($_POST),
+		'#nnf_append-error-none, #nnf_error-none-http' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		'#nnf_append-error-auth' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'#nnf_error-pass' => empty ($_POST) || !TEXT || !NAME || PASS,
+		'#nnf_append-error-pass' => empty ($_POST) || !TEXT || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'#nnf_error-name' => empty ($_POST) || !TEXT || NAME,
+		'#nnf_append-error-name' => empty ($_POST) || !TEXT || NAME,
 		//if the message text is valid, remove the error message
-		'#nnf_error-text' => empty ($_POST) || TEXT
+		'#nnf_error-text'        => empty ($_POST) || TEXT
 	));
 	
 	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
@@ -294,8 +294,8 @@ if (isset ($_GET['delete'])) {
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setHTML (
-		'#nnf_post-text', $post->description
+	))->setValue (
+		'#nnf_post-text', $post->description, true
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
@@ -438,7 +438,7 @@ $template = prepareTemplate (
 )->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
-	'#nnf_add, #nnf_reply-form'	=> !CAN_REPLY,
+	'#nnf_reply, #nnf_reply-form'	=> !CAN_REPLY,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
 	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts',
 	//is the user a mod and can lock / unlock the thread?
@@ -463,8 +463,8 @@ $template->set (array (
 	'#nnf_post-author'		=> $post->author,
 	'a#nnf_post-append@href'	=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
 	'a#nnf_post-delete@href'	=> '?delete'
-))->setHTML (
-	'#nnf_post-text', $post->description
+))->setValue (
+	'#nnf_post-text', $post->description, true
 );
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
@@ -485,12 +485,12 @@ if (count ($thread)) {
 	
 	//do the page links
 	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setHTML ('.nnf_pages', theme_pageList (
+	$template->setValue ('.nnf_pages', theme_pageList (
 		//base URL to work with
 		PATH_URL.$FILE,
 		//page number,	number of pages
 		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
-	));
+	), true);
 	//slice the full list into the current page
 	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
@@ -513,8 +513,8 @@ if (count ($thread)) {
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
-		))->setHTML (
-			'.nnf_reply-text', $reply->description
+		))->setValue (
+			'.nnf_reply-text', $reply->description, true
 		);
 		
 		//is this reply from the person who started the thread?

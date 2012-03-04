@@ -7,10 +7,10 @@
 
 //the shared template stuff for all pages
 function prepareTemplate ($filepath, $title) {
-	global $MODS, $MEMBERS;
+	global $LANG, $MODS, $MEMBERS;
 	
 	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
-	//<camendesign.com/dom_templating> for documentation
+	//<camendesign.com/dom_templating> for documentation of this object
 	$template = new DOMTemplate ($filepath);
 	
 	//fix all absolute URLs (i.e. if NNF is running in a folder):
@@ -18,6 +18,15 @@ function prepareTemplate ($filepath, $title) {
 	foreach ($template->query ('//*/@href, //*/@src') as $node) if ($node->nodeValue[0] == '/')
 		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
 		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
+	;
+	
+	/* translate!
+	   ---------------------------------------------------------------------------------------------------------------*/
+	//before we start changing element content, we run through the language translation, if necessary;
+	//if the current user-chosen language is in the list of available language translations for this theme,
+	//execute the array of XPath string replacements in the translation. see the 'lang.*.php' files for details
+	if (in_array (LANG, @explode (' ', THEME_LANGS)))
+		$template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG)
 	;
 	
 	/* HTML <head>
@@ -65,16 +74,16 @@ function prepareTemplate ($filepath, $title) {
 	/* site footer
 	   -------------------------------------------------------------------------------------------------------------- */
 	//are there any local mods?	create the list of local mods
-	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
-				else:	$template->remove  ('#nnf_mods-local');	//remove the local mods list section
+	if (!empty ($MODS['LOCAL'])):	$template->setValue ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']), true);
+				else:	$template->remove   ('#nnf_mods-local');	//remove the local mods list section
 	endif;
 	//are there any site mods?	create the list of mods
-	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
-				 else:	$template->remove  ('#nnf_mods');	//remove the mods list section
+	if (!empty ($MODS['GLOBAL'])):	$template->setValue ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']), true);
+				 else:	$template->remove   ('#nnf_mods');		//remove the mods list section
 	endif;
 	//are there any members?	create the list of members
-	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
-			  else:		$template->remove  ('#nnf_members');	//remove the members list section
+	if (!empty ($MEMBERS)):		$template->setValue ('#nnf_members-list', theme_nameList ($MEMBERS), true);
+			  else:		$template->remove   ('#nnf_members');	//remove the members list section
 	endif;
 	
 	//set the name of the signed-in user

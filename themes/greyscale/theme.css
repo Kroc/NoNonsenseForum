@@ -83,8 +83,8 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #index li			{display: inline;}
 
 /* 'add' and 'rss' buttons */
-#nnf_add, #nnf_rss		{float: right; margin-left: 20px; padding-left: 25px;}
-#nnf_add			{background: url("img/add.png") no-repeat 0 50%;}
+#nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;}
+#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
 #nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
 /* search box: */
@@ -383,7 +383,7 @@ h1				{font-size: 20px !important;}
 				 overflow: hidden; /*< strange behaviour in webkit */}
 #mast nav p:last-child		{/* hide location marker */
 				 display: none;}
-#nnf_add			{margin-right: 0;}
+#nnf_add, #nnf_reply		{margin-right: 0;}
 #index				{display: none;}
 
 /* index page
@@ -451,7 +451,7 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 
 #mast nav			{width: 100%; margin-top: -5px; margin-bottom: 0; background: #222;}
 #mast nav a			{color: white;}
-#nnf_add			{padding-right: 5%;
+#nnf_add, #nnf_reply		{padding-right: 5%;
 				 background-image: url("img/add_white.png");}
 #nnf_rss			{background-image: url("img/rss_white.png");}
 

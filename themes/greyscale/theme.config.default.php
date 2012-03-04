@@ -12,11 +12,26 @@
 
 /* required options: (used internally by NoNonsense Forum itself, all themes must provide these)
    ====================================================================================================================== */
-//(the template replacements are done using `sprintf`, see <php.net/manual/en/function.sprintf.php> for details)
+//the default written langauge of the your template files (i.e. `<html lang="en">`). this will be a standard language code,
+//see this web page for information on choosing a language code: <w3.org/International/questions/qa-choosing-language-tags>
+//of course, don’t actually change this value for an existing theme! this only applies if you are creating a new theme that
+//uses a different language by default! changing this value will *not* change the default language shown!
+@define ('THEME_LANG',		'en');
+
+//a space-delimited list of theme translations the user can choose, excluding the theme's default language (above).
+//each item in the list should be a standard language code, which therefore refers to the matching 'lang.*.php' file,
+//e.g. `fr de es it` for French, German, Spanish & Italian. See 'lang.example.php' for info on translations
+@define ('THEME_LANGS',		'x-pig-latin');
+//(if you change the text in the theme ['*.html' files], you might want to change this option to blank '' so that users
+//can’t use the other translations, which may no longer match up with your default language's text, unless you intend to
+//update the additonal translations too!)
 
 //the `date` format code used to print human readable dates into the HTML,
 //see <php.net/manual/en/function.date.php> for documentation
 @define ('DATE_FORMAT',		'd M ’y · H:i');
+
+//the following template replacements are done using `sprintf`,
+//see <php.net/manual/en/function.sprintf.php> for details
 
 //the HTML title for index and thread pages
 //"%1$s" - the title
