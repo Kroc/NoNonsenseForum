@@ -1,4 +1,4 @@
-NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum

@@ -1,3 +1,13 @@
+v18	05.MAR.12
+*	'delete.html' had been missing for some time!
+*	The sticky-thread icon had been missing for an equally long time
+*	Mods and member's list not showing in the footer
+*	Sub-forum lock icon positioning fixed
+*	Improved URL parsing involving speech marks
+*	IDN (unicode) URLs
+*	Error message if inadequate PHP version
+*	If a mod / member of a locked forum, the warning message is no longer shown
+
 v17	05.FEB.12
 *	Referring to people with '@name' will now link to the latest reply in the thread by that person
 *	Fixed issue with replying to a locked thread removing the lock
