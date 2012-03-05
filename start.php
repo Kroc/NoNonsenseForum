@@ -5,6 +5,11 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//correct PHP version?
+if (version_compare (PHP_VERSION, '5.2.3') < 0) die (
+	'PHP version 5.2.3 or greater required, yours is: '.PHP_VERSION
+);
+
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
 if (!@$_SERVER['HTTP_HTACCESS']) die (
