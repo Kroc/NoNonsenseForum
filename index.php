@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v17 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -210,8 +210,6 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	) {
 		//is the thread sticky?
 		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 
-		//if the thread isn’t locked, remove the lock icon
-		if (!$xml->channel->xpath ("category[.='locked']")) $item->remove ('.nnf_thread-locked');
 		
 		//get the last post in the thread
 		$last = &$xml->channel->item[0];
@@ -234,8 +232,12 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 			//last post author
 			'.nnf_thread-author'		=> $last->author
 		))->remove (array (
+			//if the thread isn’t locked, remove the lock icon
+			'.nnf_thread-locked'		=> !$xml->channel->xpath ("category[.='locked']"),
 			//if the thread is not sticky, remove the sticky icon
 			'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
+							//the lock-icon takes precedence over the sticky icon
+							|| $xml->channel->xpath ("category[.='locked']")
 		));
 		
 		//is the last post author a mod?
