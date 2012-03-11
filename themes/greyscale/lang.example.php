@@ -17,6 +17,7 @@ how to create a theme translation:
 
 */
 
+$LANG['en']['name']    = 'English';
 $LANG['en']['strings'] = array (
 
 /* xpath/shorthand:			replacement text:			description:

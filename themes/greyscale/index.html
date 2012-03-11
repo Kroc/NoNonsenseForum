@@ -32,24 +32,26 @@
 	--></form>
 	
 	<nav>
-		<form id="lang">
-			<input type="submit" name="lang:en" value="en" />
-			<input type="submit" name="lang:fr" value="fr" />
-			<input type="submit" name="lang:it" value="it" />
-			<input type="submit" name="lang:de" value="de" />
-			<input type="submit" name="lang:es" value="es" />
+		<form id="nnf_lang" method="post">
+			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
+			<select name="lang">
+				<option class="nnf_lang" value="en">English</option>
+				<option class="nnf_lang" value="x-pig-latin">Igpay Atinlay</option>
+			</select>
+			<input id="lang-set" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set Language" />
 		</form>
 		<ol id="index">
 			<li><a href="/">Index</a></li>
 			<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
 		</ol>
 	</nav>
+	
+	<section id="nnf_about"><p>
+		If a fourm / sub-forum contains an ‘about.html’ file, it's contents will be loaded into this element.
+		If ‘about.html’ doesn’t exist the whole element will be removed.
+	</p></section>
 </header>
 <!-- =================================================================================================================== -->
-<section id="nnf_about"><p>
-	If a fourm / sub-forum contains an ‘about.html’ file, it's contents will be loaded into this element.
-	If ‘about.html’ doesn’t exist the whole element will be removed.
-</p></section>
 <section id="nnf_folders">
 	<h1>Sub-Forums</h1>
 	<ol class="ui"><li class="nnf_folder">
@@ -59,18 +61,18 @@
 	</li></ol>
 </section>
 
-<p id="rights" class="nnf_forum-lock-threads">
-	Only <a href="#mods">moderators or members</a> can start new threads here [<a href="?signin">sign-in</a>],
-	but <em>anybody</em> can reply to existing threads.
-</p>
-<p id="rights" class="nnf_forum-lock-posts">
-	Only <a href="#mods">moderators or members</a> can participate here.
-	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
-</p>
-
-<p id="links">
-	<a id="nnf_rss" href="index.xml">RSS</a>
+<p id="info">
 	<a id="nnf_add" href="#nnf_new-form">Add Thread</a>
+	<a id="nnf_rss" href="index.xml">RSS</a>
+	
+	<span class="nnf_forum-lock-threads">
+		Only <a href="#mods">moderators or members</a> can start new threads here [<a href="?signin">sign-in</a>],
+		but <em>anybody</em> can reply to existing threads.
+	</span>
+	<span class="nnf_forum-lock-posts">
+		Only <a href="#mods">moderators or members</a> can participate here.
+		<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+	</span>
 </p>
 
 <section id="nnf_threads">

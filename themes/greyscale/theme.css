@@ -12,7 +12,7 @@
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
-html, body			{width: 100%; margin: 0; padding: 0; border: 0;}
+html, body			{width: 100%; margin: 0; padding: 0; border: 0; color: #888;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
 				 background: white url("img/bg.png") fixed repeat-x bottom center; word-wrap: break-word;
 				 /* CSS3 gradients for browsers that support it: */
@@ -33,7 +33,7 @@ h1				{margin: 0; padding: 20px 0 20px 60px;
 				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
 				 background: #222;}
 
-p				{margin: 0; padding: 20px 20px 0;
+p				{margin: 0; padding: 0 20px 20px;
 				 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
 				    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
 				 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
@@ -75,23 +75,16 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 				 text-indent: 60px;}
 #mast h1 a img			{position: absolute; margin: 4px 0 0 -45px; border: none;}
 
-#mast nav			{padding-top: 80px; text-transform: uppercase; color: #888;}
+#mast nav			{padding-top: 80px;}
 
 /* the breadcrumb for sub-forums */
-#index				{margin: 0; padding: 0 0 0 60px;
+#index				{margin: 0; padding: 0 0 20px 60px; text-transform: uppercase;
 				 background: url("img/here.png") no-repeat 24px 0;}
 #index li			{display: inline;}
-
-/* 'Add' / 'Reply' and 'RSS' buttons */
-#links				{text-align: right; text-transform: uppercase;}
-#nnf_add, #nnf_reply, #nnf_rss	{margin-left: 20px; padding-left: 25px;}
-#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
-#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
 /* search box: */
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
 				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
-				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
 				 margin: 0; padding: 20px 10px 20px; overflow: hidden;
 				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
@@ -112,23 +105,30 @@ input[type=search]:focus	{outline: none;}
 #go				{position: relative; margin-left: -20px; top: -20px;}
 
 /* language selector: */
-#lang				{float: right; border: none; text-align: right;}
-#lang input			{display: inline; float: left; margin: -10px 0 0 5px; padding: 10px 10px;
-				 border: 1px solid #eee; background: none; cursor: pointer;}
-#lang input:hover		{background: #eee;}
+#nnf_lang			{float: right; padding-right: 20px; border: none; text-align: right;}
+#nnf_lang img			{vertical-align: middle;}
+#nnf_lang input			{vertical-align: bottom;}
+
+/* the admin's custom header message, 'about.html' */
+#nnf_about			{margin-bottom: 0; background: none;}
 
 /* the access warning message that appears on locked forums / threads */
-#rights				{margin: 0 auto; text-align: center; color: #888;}
-#rights a			{color: #666;}
+#info				{overflow: auto;}
+#info a				{color: #666;}
+/* 'Add' / 'Reply' and 'RSS' buttons */
+#nnf_add, #nnf_reply, #nnf_rss	{float: right; padding-left: 25px;
+				 text-align: right; text-transform: uppercase; color: #222 !important;}
+#nnf_add, #nnf_reply		{margin-left: 20px;
+				 background: url("img/add.png") no-repeat 0 50%;}
+#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
+
 
 
 /* index page
    ====================================================================================================================== */
-section				{margin: 20px auto 0;
+section				{margin: 0 0 20px; color: #222;
 				 background: #f7f6f7;}
 section h1			{background: #222 none no-repeat 15px 15px;}
-
-#nnf_about			{background: none; margin-top: 0;}
 
 /* page list */
 section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
@@ -189,6 +189,7 @@ ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
 article				{padding: 0 20px 19px; border: 1px solid #444;
 				 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
 				 border-width: 0 1px 1px;}
+article p			{padding: 20px 0 0 0;}
 
 /* close the border within the 20px rhythm on the initial post */
 #nnf_post article		{padding-bottom: 19px !important; border-bottom-width: 1px;}
@@ -324,9 +325,6 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-#mods				{margin: 0 auto; overflow: hidden;}
-#mods p				{color: #888;}
-
 #nnf_admin			{float: right;}
 a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
@@ -334,7 +332,7 @@ a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform:
 a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%;}
 a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
 
-footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
+footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
 				 background: #222;}
 

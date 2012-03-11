@@ -35,8 +35,9 @@ require_once 'lib/domtemplate.php';	//import the templating engine
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
 date_default_timezone_set (FORUM_TIMEZONE);
 
+
 /* constants: some stuff we don’t expect to change
-   ---------------------------------------------------------------------------------------------------------------------- */
+   ====================================================================================================================== */
 define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
 define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
 	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
@@ -48,7 +49,7 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 );
 
 /* common input
-   ====================================================================================================================== */
+   ---------------------------------------------------------------------------------------------------------------------- */
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
@@ -61,20 +62,6 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
-
-
-/* theme & translation
-   ====================================================================================================================== */
-//load the user’s theme configuration, if it exists
-@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
-//include the theme defaults
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
-
-//include the language translations
-$LANG = array ();
-foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
-
-define ('LANG', 'en');
 
 
 /* access control
@@ -158,6 +145,33 @@ define ('CAN_POST', FORUM_ENABLED && (
 	//- if the forum is unlocked (mods will have to log in to see the form)
 	!FORUM_LOCK
 ));
+
+
+/* theme & translation
+   ====================================================================================================================== */
+//load the user’s theme configuration, if it exists
+@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
+//include the theme defaults
+@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
+
+//include the language translations
+$LANG = array ();
+foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
+
+//was the language changed?
+if (@$_POST['lang']) {
+	//set the language cookie for 30 days
+	setcookie ("lang", $_POST['lang'], time ()+60*60*24*30, FORUM_PATH, $_POST['HTTP_HOST'], FORUM_HTTPS);
+	define ('LANG', $_POST['lang']);
+	
+//does a cookie already exist to set the language?
+} elseif (@$_COOKIE['lang'] && in_array ($_COOKIE['lang'], @explode (' ', THEME_LANGS))) {
+	define ('LANG', $_COOKIE['lang']);
+	
+} else {
+	//use default language
+	define ('LANG', THEME_LANG);
+}
 
 
 /* send HTTP headers

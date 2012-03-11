@@ -32,12 +32,13 @@
 	--></form>
 	
 	<nav>
-		<form id="lang">
-			<input type="submit" name="lang:en" value="en" />
-			<input type="submit" name="lang:fr" value="fr" />
-			<input type="submit" name="lang:it" value="it" />
-			<input type="submit" name="lang:de" value="de" />
-			<input type="submit" name="lang:es" value="es" />
+		<form id="nnf_lang" method="post">
+			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
+			<select name="lang">
+				<option class="nnf_lang" value="en">English</option>
+				<option class="nnf_lang" value="x-pig-latin">Igpay Atinlay</option>
+			</select>
+			<input id="lang-set" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set Language" />
 		</form>
 		<ol id="index">
 			<li><a href="/">Index</a></li>
@@ -63,14 +64,14 @@
 	</article>
 </section>
 
-<p id="links">
-	<a id="nnf_rss" href="thread_title.rss">RSS</a>
+<p id="info">
 	<a id="nnf_reply" href="#nnf_reply-form">Reply</a>
-</p>
-
-<p id="rights" class="nnf_forum-locked">
-	Only <a href="#mods">moderators or members</a> can reply to this thread.
-	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+	<a id="nnf_rss" href="thread_title.rss">RSS</a>
+	
+	<span class="nnf_forum-locked">
+		Only <a href="#mods">moderators or members</a> can reply to this thread.
+		<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+	</span>
 </p>
 
 <section id="nnf_replies">

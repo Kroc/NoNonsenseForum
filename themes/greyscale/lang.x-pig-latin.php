@@ -17,6 +17,7 @@ how to create a theme translation:
 
 */
 
+$LANG['x-pig-latin']['name']    = 'Igpay Atinlay';
 $LANG['x-pig-latin']['strings'] = array (
 
 /* xpath/shorthand:			replacement text:			description:
