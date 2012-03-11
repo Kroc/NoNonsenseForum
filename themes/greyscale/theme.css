@@ -67,7 +67,7 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 /* site header
    ====================================================================================================================== */
 #mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
-				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
+				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
 				 font-size: 32px; line-height: 40px; background: #222;}
 #mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;
 				 /* we can't use left-padding as this element is centered with a % width and 
@@ -77,16 +77,10 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 
 #mast nav			{padding-top: 80px;}
 
-/* the breadcrumb for sub-forums */
-#index				{margin: 0; padding: 0 0 20px 60px; text-transform: uppercase;
-				 background: url("img/here.png") no-repeat 24px 0;}
-#index li			{display: inline;}
-
 /* search box: */
-#search				{float: right; *float: none; /*< IE6 & 7 work without floating */
-				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
-				 margin: 0; padding: 20px 10px 20px; overflow: hidden;
-				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
+#search				{float: right; width: 210px; overflow: hidden; margin: 0; padding: 20px 10px 0;
+				*position: absolute; *right: 10%; /* IE6/7 have float conflicts with the language selector */ 
+				border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
 #query				{display: block; /*< removes magic-spacing / height on input box */
 				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
@@ -104,8 +98,13 @@ input[type=search]:focus	{outline: none;}
 
 #go				{position: relative; margin-left: -20px; top: -20px;}
 
+/* the breadcrumb for sub-forums */
+#index				{margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
+				 background: url("img/here.png") no-repeat 24px 0;}
+#index li			{display: inline;}
+
 /* language selector: */
-#nnf_lang			{float: right; padding-right: 10px; border: none; text-align: right;}
+#nnf_lang			{float: right; height: 20px; margin-bottom: 20px; padding-right: 10px; border: none;}
 #nnf_lang img			{vertical-align: middle;}
 #nnf_lang input			{vertical-align: bottom;}
 
@@ -113,20 +112,37 @@ input[type=search]:focus	{outline: none;}
 #nnf_about			{margin-bottom: 0; background: none;}
 
 /* the access warning message that appears on locked forums / threads */
-#info				{overflow: auto;}
 #info a				{color: #666;}
+
 /* 'Add' / 'Reply' and 'RSS' buttons */
-#nnf_add, #nnf_reply, #nnf_rss	{float: right; padding-left: 25px;
+#nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;
 				 text-align: right; text-transform: uppercase; color: #222 !important;}
-#nnf_add, #nnf_reply		{margin-left: 20px;
-				 background: url("img/add.png") no-repeat 0 50%;}
+#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
 #nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
+/* what follows is a phenominally complex system of floats that just somehow allows for an elegant collapsing of elements
+   under certain conditions, primarily so that if there is no language selector present, no 'about.html' and no sub-forums
+   then the RSS/ADD links will fit themselves into the blank space where the language selector would be */
+
+#index, #index li		{/* allow either the language selector or the RSS/ADD links to fit to the right of the
+				    breadcrumb. each breadcrumb item is allowed to wrap, so the whole block doesn’t clear */
+				 float: left;}
+#nnf_about			{/* if the admin's custom header is present the RSS/ADD links won’t be able to fit into
+				    the top if the language selector is missing */
+				 clear: left;}
+#info				{/* if the language selector and the RSS/ADD links are present, the won’t collide */
+				 clear: right;
+				 /* this solves a missing bottom-padding when the language selector and RSS/ADD links are
+				    above each other, but where `overflow: auto` causes the access warning message to
+				    not clear when it's visible. IE6 does not understand `min-height` */
+				 _height: 20px; min-height: 20px;}
+#nnf_forum-lock-threads,	 /* prevent the access warning message from trying to squeeze in */
+ #nnf_forum-lock-posts		{display: block; clear: left;}
 
 
 /* index page
    ====================================================================================================================== */
-section				{margin: 0 0 20px; color: #222;
+section				{clear: both; margin: 0 0 20px; color: #222;
 				 background: #f7f6f7;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
@@ -178,7 +194,7 @@ ol.ui li a:hover time		{text-decoration: underline;}
 
 /* the last post name / date for sub-forums */
 #nnf_folders ol.ui li		{position: relative; border-bottom: 1px solid #444;}
-.nnf_subforum-post		{position: absolute; right: 20px;}
+.nnf_subforum-post		{*position: absolute; *right: 20px; /* IE<8 fix */}
 
 /* the lock/sticky icon positioning */
 ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
@@ -333,7 +349,7 @@ a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%;}
 a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
 
 footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
-				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
+				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
 				 background: #222;}
 
 footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
@@ -354,20 +370,19 @@ html				{font-size: 14px; background: #ddd; /* mobile devices don't like fixed b
 html, body			{width: 100%; -webkit-text-size-adjust: none;}
 
 /* page width */
-#mast nav, section, #mods	{width: 95%;}
+body, #mast h1 a		{width: 95%;}
 
 /* header
    ---------------------------------------------------------------------------------------------------------------------- */
 /* reduce the title size */
 h1				{font-size: 20px !important;}
-#mast				{padding: 0;}
-#mast h1			{padding: 5px 0 0; line-height: 20px; min-height: 40px;}
+#mast h1			{height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
 #mast h1 a			{/* fit the logo in tighter */
-				 margin: 0; padding: 10px 0 0 55px;}
+				 margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
 #mast h1 a img			{margin-top: -6px;}
 
 /* re-position the search field below the title */
-#search				{width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px;
+#search				{width: 100%; height: 35px; margin: 45px 0 0; padding: 0 10px 10px 50px;
 				 -webkit-box-sizing: border-box;
 				    -moz-box-sizing: border-box;
 				         box-sizing: border-box;
@@ -382,9 +397,7 @@ h1				{font-size: 20px !important;}
 				         border-radius: 14px;}
 #go				{left: -5px; top: -23px;}
 
-/* fit the rss / add buttons into one line */
-#mast nav			{height: 40px; line-height: 40px; margin: 40px 0 -20px;
-				 overflow: hidden; /*< strange behaviour in webkit */}
+#mast nav			{padding-top: 100px;}
 #mast nav p:last-child		{/* hide location marker */
 				 display: none;}
 #nnf_add, #nnf_reply		{margin-right: 0;}
