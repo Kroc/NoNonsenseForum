@@ -105,7 +105,7 @@ input[type=search]:focus	{outline: none;}
 #go				{position: relative; margin-left: -20px; top: -20px;}
 
 /* language selector: */
-#nnf_lang			{float: right; padding-right: 20px; border: none; text-align: right;}
+#nnf_lang			{float: right; padding-right: 10px; border: none; text-align: right;}
 #nnf_lang img			{vertical-align: middle;}
 #nnf_lang input			{vertical-align: bottom;}
 

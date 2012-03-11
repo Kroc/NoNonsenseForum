@@ -280,6 +280,7 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 		;
 		//reset the template
 		$this->DOMNode = $this->template->cloneNode (true);
+		return $this;
 	}
 }
 

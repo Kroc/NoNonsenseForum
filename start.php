@@ -158,20 +158,16 @@ define ('CAN_POST', FORUM_ENABLED && (
 $LANG = array ();
 foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
 
-//was the language changed?
-if (@$_POST['lang']) {
-	//set the language cookie for 30 days
-	setcookie ("lang", $_POST['lang'], time ()+60*60*24*30, FORUM_PATH, $_POST['HTTP_HOST'], FORUM_HTTPS);
-	define ('LANG', $_POST['lang']);
-	
-//does a cookie already exist to set the language?
-} elseif (@$_COOKIE['lang'] && in_array ($_COOKIE['lang'], @explode (' ', THEME_LANGS))) {
-	define ('LANG', $_COOKIE['lang']);
-	
-} else {
-	//use default language
-	define ('LANG', THEME_LANG);
-}
+//get / set the language to use
+define ('LANG', @$_POST['lang'] && setcookie (
+	//set the language cookie for 1 year
+	"lang", $_POST['lang'], time ()+60*60*24*365, FORUM_PATH, $_SERVER['HTTP_HOST'], FORUM_HTTPS
+)	? $_POST['lang']
+	//does a cookie already exist to set the language?
+	: (@$_COOKIE['lang'] ? $_COOKIE['lang'] : THEME_LANG)
+);
+//don’t treat language choice as an invalid form error
+if (@$_POST['lang']) unset ($_POST);
 
 
 /* send HTTP headers

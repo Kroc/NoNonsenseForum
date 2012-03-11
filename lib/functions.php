@@ -25,9 +25,21 @@ function prepareTemplate ($filepath, $title) {
 	//before we start changing element content, we run through the language translation, if necessary;
 	//if the current user-chosen language is in the list of available language translations for this theme,
 	//execute the array of XPath string replacements in the translation. see the 'lang.*.php' files for details
-	if (in_array (LANG, @explode (' ', THEME_LANGS)))
-		$template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG)
-	;
+	if (@$LANG[LANG]) $template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG);
+	//template the language chooser
+	if (THEME_LANGS) {
+		//the first item in the template should be your default language
+		$item = $template->repeat ('.nnf_lang')->remove (array ('@selected' => LANG != THEME_LANG))->next ();
+		//build the list for each additional language
+		foreach ($LANG as $code => $lang); $item->set (array (
+			'@value'	=> $code,
+			'.'		=> $lang['name']
+		))->remove (array (
+			'@selected'	=> !($code == LANG)
+		))->next ();
+	} else {
+		$template->remove ('#nnf_lang');
+	}
 	
 	/* HTML <head>
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -83,12 +95,12 @@ function prepareTemplate ($filepath, $title) {
 	endif;
 	//are there any members?	create the list of members
 	if (!empty ($MEMBERS)):		$template->setValue ('#nnf_members-list', theme_nameList ($MEMBERS), true);
-			  else:		$template->remove   ('#nnf_members');	//remove the members list section
+			  else:		$template->remove   ('#nnf_members');		//remove the members list section
 	endif;
 	
 	//set the name of the signed-in user
 	$template->setValue ('.nnf_signed-in-name', NAME)->remove (
-		//removed the relevant section for signed-in / out
+		//remove the relevant section for signed-in / out
 		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
 	

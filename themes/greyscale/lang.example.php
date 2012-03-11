@@ -25,13 +25,15 @@ $LANG['en']['strings'] = array (
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
 //search box
- '#query@placeholder'			=> 'Google Search…'
-,'#go@alt'				=> 'Search'
+ '#query@placeholder'			=> 'Google Search…'			//default text shown in search box
+,'#go@alt'				=> 'Search'				//search submit button
 
-//breadcrumb / navigation links
-,'#nnf_add'				=> 'Add Thread'				//the "add thread" link in 'index.html'
-,'#nnf_reply'				=> 'Reply'				//the "reply" link in 'thread.html'
-,'#nnf_rss'				=> 'RSS'				//the RSS link in the header
+//language selector
+,'//*[@id="nnf_lang"]/img/@alt, '.
+ '//*[@id="nnf_lang"]/img/@title'	=> 'Language:'				//language chooser icon
+,'//*[@id="nnf_lang"]/input/@alt'	=> 'Set language'			//language chooser submit button
+
+//breadcrumb
 ,'//*[@id="index"]/li[1]/a'		=> 'Index'				//breadcrumb root location
 
 /* index page
@@ -42,6 +44,11 @@ $LANG['en']['strings'] = array (
  '.nnf_lock-threads@title'		=> 'Replies-only:'			//alt+title of lock-icon, if thread-locked
 ,'.nnf_lock-posts@alt, '.
  '.nnf_lock-posts@title'		=> 'Read-only:'				//alt+title of lock-icon, if post-locked
+
+//navigation links
+,'#nnf_add'				=> 'Add Thread'				//the "add thread" link in 'index.html'
+,'#nnf_reply'				=> 'Reply'				//the "reply" link in 'thread.html'
+,'#nnf_rss'				=> 'RSS'				//the RSS link in the header
 
 //access rights
 ,'#nnf_forum-lock-threads'		=> <<<HTML

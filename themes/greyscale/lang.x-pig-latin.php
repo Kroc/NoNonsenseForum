@@ -25,13 +25,15 @@ $LANG['x-pig-latin']['strings'] = array (
 /* site header
    ---------------------------------------------------------------------------------------------------------------------- */
 //search box
- '#query@placeholder'			=> 'Ooglegay Earchsay…'
-,'#go@alt'				=> 'Earchsay'
+ '#query@placeholder'			=> 'Ooglegay Earchsay…'			//default text shown in search box
+,'#go@alt'				=> 'Earchsay'				//search submit button
 
-//breadcrumb / navigation links
-,'#nnf_add'				=> 'Addway Read’thay'			//the "add thread" link in 'index.html'
-,'#nnf_reply'				=> 'Eplyray'				//the "reply" link in 'thread.html'
-,'#nnf_rss'				=> 'RaySaySay'				//the RSS link in the header
+//language selector
+,'//*[@id="nnf_lang"]/img/@alt, '.
+ '//*[@id="nnf_lang"]/img/@title'	=> 'Anguagelay:'			//language chooser icon
+,'//*[@id="nnf_lang"]/input/@alt'	=> 'Etsay anguagelay'			//language chooser submit button
+
+//breadcrumb
 ,'//*[@id="index"]/li[1]/a'		=> 'Indexway'				//breadcrumb root location
 
 /* index page
@@ -42,6 +44,11 @@ $LANG['x-pig-latin']['strings'] = array (
  '.nnf_lock-threads@title'		=> 'Epliesray-onlyway:'			//alt+title of lock-icon, if thread-locked
 ,'.nnf_lock-posts@alt, '.
  '.nnf_lock-posts@title'		=> 'Eadray-onlyway:'			//alt+title of lock-icon, if post-locked
+
+//navigation links
+,'#nnf_add'				=> 'Addway Read’thay'			//the "add thread" link in 'index.html'
+,'#nnf_reply'				=> 'Eplyray'				//the "reply" link in 'thread.html'
+,'#nnf_rss'				=> 'RaySaySay'				//the RSS link in the header
 
 //access rights
 ,'#nnf_forum-lock-threads'		=> <<<HTML
