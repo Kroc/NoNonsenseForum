@@ -74,7 +74,7 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 $LANG = array ();
 foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
 
-define ('LANG', 'x-pig-latin');
+define ('LANG', 'en');
 
 
 /* access control

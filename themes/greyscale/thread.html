@@ -31,13 +31,19 @@
 		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search" /><!--
 	--></form>
 	
-	<nav><p>
-		<a id="nnf_reply" href="#nnf_reply-form">Reply</a>
-		<a id="nnf_rss" href="thread_title.rss">RSS</a>
-	</p><ol id="index">
-		<li><a href="/">Index</a></li>
-		<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
-	</ol></nav>
+	<nav>
+		<form id="lang">
+			<input type="submit" name="lang:en" value="en" />
+			<input type="submit" name="lang:fr" value="fr" />
+			<input type="submit" name="lang:it" value="it" />
+			<input type="submit" name="lang:de" value="de" />
+			<input type="submit" name="lang:es" value="es" />
+		</form>
+		<ol id="index">
+			<li><a href="/">Index</a></li>
+			<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
+		</ol>
+	</nav>
 </header>
 <!-- =================================================================================================================== -->
 <section id="nnf_post">
@@ -56,6 +62,11 @@
 		</p></div>
 	</article>
 </section>
+
+<p id="links">
+	<a id="nnf_rss" href="thread_title.rss">RSS</a>
+	<a id="nnf_reply" href="#nnf_reply-form">Reply</a>
+</p>
 
 <p id="rights" class="nnf_forum-locked">
 	Only <a href="#mods">moderators or members</a> can reply to this thread.

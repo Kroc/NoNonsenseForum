@@ -26,15 +26,14 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
 				    manually insert a background colour for IE6 into the 32-bit PNGs) */
 				_background: #eee;}
-
-#mast nav, section, #mods,	/* page centering / width */
- #rights			{width: 80%; max-width: 1024px;}
+body, #mast h1 a		{/* page centering / width */
+				 width: 80%; max-width: 1024px; margin: 0 auto;}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
 				 background: #222;}
 
-p				{margin: 0; padding: 20px 0 0;
+p				{margin: 0; padding: 20px 20px 0;
 				 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
 				    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
 				 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
@@ -67,23 +66,25 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 
 /* site header
    ====================================================================================================================== */
-#mast h1			{width: 100%; /*< IE6 */ padding: 0;
-				 font-size: 32px; line-height: 40px;}
-#mast h1 a			{display: block; margin: 0 auto 0 10%; padding: 10px 0 10px 60px;
-				 color: #f7f6f7;}
+#mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
+				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
+				 font-size: 32px; line-height: 40px; background: #222;}
+#mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;
+				 /* we can't use left-padding as this element is centered with a % width and 
+				    IE<8 don't support changing the box-model */
+				 text-indent: 60px;}
 #mast h1 a img			{position: absolute; margin: 4px 0 0 -45px; border: none;}
 
-#mast nav			{margin: 20px auto 0;
-				 text-transform: uppercase; color: #888;}
-#mast nav p			{display: block; padding: 0 20px 0 60px;}
+#mast nav			{padding-top: 80px; text-transform: uppercase; color: #888;}
 
 /* the breadcrumb for sub-forums */
 #index				{margin: 0; padding: 0 0 0 60px;
 				 background: url("img/here.png") no-repeat 24px 0;}
 #index li			{display: inline;}
 
-/* 'add' and 'rss' buttons */
-#nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;}
+/* 'Add' / 'Reply' and 'RSS' buttons */
+#links				{text-align: right; text-transform: uppercase;}
+#nnf_add, #nnf_reply, #nnf_rss	{margin-left: 20px; padding-left: 25px;}
 #nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
 #nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
@@ -91,7 +92,7 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 #search				{float: right; *float: none; /*< IE6 & 7 work without floating */
 				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
 				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
-				 margin: -40px 10% 40px auto; padding: 0 10px 0 0; overflow: hidden;
+				 margin: 0; padding: 20px 10px 20px; overflow: hidden;
 				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
 #query				{display: block; /*< removes magic-spacing / height on input box */
@@ -110,6 +111,13 @@ input[type=search]:focus	{outline: none;}
 
 #go				{position: relative; margin-left: -20px; top: -20px;}
 
+/* language selector: */
+#lang				{float: right; border: none; text-align: right;}
+#lang input			{display: inline; float: left; margin: -10px 0 0 5px; padding: 10px 10px;
+				 border: 1px solid #eee; background: none; cursor: pointer;}
+#lang input:hover		{background: #eee;}
+
+/* the access warning message that appears on locked forums / threads */
 #rights				{margin: 0 auto; text-align: center; color: #888;}
 #rights a			{color: #666;}
 
@@ -120,10 +128,7 @@ section				{margin: 20px auto 0;
 				 background: #f7f6f7;}
 section h1			{background: #222 none no-repeat 15px 15px;}
 
-#nnf_about			{background: none; margin-top: 0; padding: 0 20px;
-				 -webkit-box-sizing: border-box;
-				    -moz-box-sizing: border-box;
-				         box-sizing: border-box;}
+#nnf_about			{background: none; margin-top: 0;}
 
 /* page list */
 section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
@@ -172,7 +177,7 @@ ol.ui li a:hover time		{text-decoration: underline;}
 #nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png");}
 
 /* the last post name / date for sub-forums */
-#nnf_folders ol.ui li		{border-bottom: 1px solid #444; position: relative;}
+#nnf_folders ol.ui li		{position: relative; border-bottom: 1px solid #444;}
 .nnf_subforum-post		{position: absolute; right: 20px;}
 
 /* the lock/sticky icon positioning */
@@ -245,7 +250,8 @@ form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-s
 
 input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sans-serif;}
 
-label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
+label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;
+				 cursor: pointer;}
 
 form p				{padding: 0; color: #888;}
 .ok, .error, #markup		{padding: 20px 20px 0 !important;}
@@ -302,7 +308,7 @@ input[type=text],
 #psubmit			{clear: both; height: 40px;
 				 margin: 0 !important; padding: 0; text-align: right;
 				 background: #444;}
-#psubmit label			{display: inline-block; padding: 0 0 0 20px; cursor: pointer;
+#psubmit label			{display: inline-block; padding: 0 0 0 20px;
 				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
@@ -318,8 +324,8 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-#mods				{margin: 0 auto; padding-top: 20px; overflow: hidden;}
-#mods p				{padding: 0 20px 0; color: #888;}
+#mods				{margin: 0 auto; overflow: hidden;}
+#mods p				{color: #888;}
 
 #nnf_admin			{float: right;}
 a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
@@ -332,10 +338,10 @@ footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px
 				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
 				 background: #222;}
 
-footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
+footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-p#signin			{margin: -60px 10% 0 auto; padding-right: 20px; text-align: right;}
+p#signin			{margin: -60px 10% 0 auto; text-align: right;}
 p#signin a			{text-transform: uppercase;}
 
 
