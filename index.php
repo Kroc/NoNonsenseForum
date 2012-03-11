@@ -90,9 +90,9 @@ $template = prepareTemplate (
 	//remove the "add thread" link and anything else (like the input form) related to posting
 	'#nnf_add, #nnf_new-form'	=> !CAN_POST,
 	//if the forum is not thread-locked (only mods can post, anybody can reply) then remove the warning message
-	'.nnf_forum-lock-threads'	=> FORUM_LOCK != 'threads' || IS_MOD,
+	'#nnf_forum-lock-threads'	=> FORUM_LOCK != 'threads' || IS_MOD,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
-	'.nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
+	'#nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
 ));
 
 //an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum

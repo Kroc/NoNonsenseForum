@@ -48,12 +48,12 @@ $LANG['x-pig-latin']['strings'] = array (
 //navigation links
 ,'#nnf_add'				=> 'Addway Read’thay'			//the "add thread" link in 'index.html'
 ,'#nnf_reply'				=> 'Eplyray'				//the "reply" link in 'thread.html'
-,'#nnf_rss'				=> 'RaySaySay'				//the RSS link in the header
+,'#nnf_rss'				=> 'RaSaySay'				//the RSS link in the header
 
 //access rights
 ,'#nnf_forum-lock-threads'		=> <<<HTML
 	Onlyway <a href="#mods">oderatorsmay orway embersmay</a> ancay art’stay ewnay reads’thay erehay
-	[<a href="?signin">Ignsay-inway</a>], utbay <em>anyway-odybay</em> anay eplyray otay existingway reads’thay.
+	[<a href="?signin">Ignsay-inway</a>], utbay <em>anyway-odybay</em> ancay eplyray otay existingway reads’thay.
 HTML
 ,'#nnf_forum-lock-posts'		=> <<<HTML
 	Onlyway <a href="#mods">oderatorsmay orway embersmay</a> ancay articipatepay erehay.
@@ -114,7 +114,7 @@ HTML
 ,'#nnf_name-field@placeholder'		=> 'Ouryay amenay'			//placeholder text for the name field
 
 ,'//label[@for="nnf_pass-field"]'	=> 'Asspay-ordway:'			//label for password field
-,'#nnf_pass-field@placeholder'		=> 'Away asspay-ordway otay eepkay ouryay amenay'
+,'#nnf_pass-field@placeholder'		=> 'Asspay-ordway orfay amenay'
 
 //this is shown by default as long as new users aren't disabled and the user isn't signed in
 ,'#nnf_error-none'			=> <<<HTML
@@ -175,15 +175,16 @@ HTML
 			amenay. (asspay-ordway ypotay?)
 HTML
 ,'#nnf_error-auth-append'		=> <<<HTML
-			Amenay / asspay-ordway ismay-atchmay! Ouyay ustmay enterway hetay amenay andway asspay-ordway ofway
-			eitherway hetay originalway authorway, orway away esignatedday oderatormay.
+			Amenay / asspay-ordway ismay-atchmay! Enterway hetay amenay andway asspay-ordway ofway hetay
+			originalway authorway orway away oderatormay.
 HTML
 ,'#nnf_error-auth-delete'		=> <<<HTML
-			Amenay / asspay-ordway ismay-atchmay! Ouyay ustmay enterway hetay amenay andway asspay-ordway ofway
-			eitherway hetay originalway authorway, orway away esignatedday oderatormay.
+			Amenay / asspay-ordway ismay-atchmay! Enterway hetay amenay andway asspay-ordway ofway hetay
+			originalway authorway orway away oderatormay.
 HTML
 ,'#markup'				=> <<<HTML
-			Ropay iptay: Useway <a href="/markup.txt">arkupmay</a> otay addway inkslay, otes’quay andway oremay.
+			O’pray iptay: Useway <a href="/markup.txt">arkmay-upway</a> otay addway inkslay, otes’quay andway
+			oremay.
 HTML
 
 ,'//label[@for="nnf_text-field"]'	=> 'Essagemay:'
@@ -209,7 +210,7 @@ HTML
 
 ,'/html/body/footer/p[1]'		=> <<<HTML
 	Oweredpay ybay <a href="http://camendesign.com/nononsense_forum">OnayOnsensenay Orumfay</a><br />
-	© Rockay Amencay ofway <a href="http://camendesign.com">Amencay Esignday</a>
+	© RocKay AmenCay ofway <a href="http://camendesign.com">Amencay Esignday</a>
 HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Ignedsay inway asway<br /><b class="nnf_signed-in-name">Rockay</b>

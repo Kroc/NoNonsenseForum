@@ -166,20 +166,20 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
-		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_append-error-none'
+		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none-append'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
 		: '#nnf_name-http, #nnf_error-none-http'
 		
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'#nnf_append-error-none, #nnf_error-none-http' => !empty ($_POST),
+		'#nnf_error-none-append, #nnf_error-none-http' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'#nnf_append-error-auth' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-append' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'#nnf_append-error-pass' => empty ($_POST) || !TEXT || !NAME || PASS,
+		'#nnf_error-pass-append' => empty ($_POST) || !TEXT || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'#nnf_append-error-name' => empty ($_POST) || !TEXT || NAME,
+		'#nnf_error-name-append' => empty ($_POST) || !TEXT || NAME,
 		//if the message text is valid, remove the error message
 		'#nnf_error-text'        => empty ($_POST) || TEXT
 	));
@@ -311,7 +311,7 @@ if (isset ($_GET['delete'])) {
 		'input#nnf_pass-field@maxlength'	=> SIZE_PASS
 		
 	//are we deleting the whole thread, or just one reply?
-	))->remove ($ID 
+	))->remove ($ID
 		? '#nnf_error-none-thread'
 		: '#nnf_error-none-reply, #nnf_remove'	//if deleting the whole thread, also remove the checkbox option
 		
@@ -320,11 +320,11 @@ if (isset ($_GET['delete'])) {
 		//if there's an error of any sort, remove the default messages
 		'#nnf_error-none-thread, #nnf_error-none-reply' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth' => empty ($_POST) || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-delete' => empty ($_POST) || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'#nnf_error-pass' => empty ($_POST) || !NAME || PASS,
+		'#nnf_error-pass-delete' => empty ($_POST) || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'#nnf_error-name' => empty ($_POST) || NAME
+		'#nnf_error-name-delete' => empty ($_POST) || NAME
 	));
 	
 	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
