@@ -101,7 +101,7 @@ input[type=search]:focus	{outline: none;}
 /* the breadcrumb for sub-forums */
 #index				{margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
 				 background: url("img/here.png") no-repeat 24px 0;}
-#index li			{display: inline;}
+#index li			{display: inline; padding-right: 0.4em;}
 
 /* language selector: */
 #nnf_lang			{float: right; height: 20px; margin-bottom: 20px; padding-right: 10px; border: none;}
@@ -120,7 +120,7 @@ input[type=search]:focus	{outline: none;}
 #nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
 #nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
 
-/* what follows is a phenominally complex system of floats that just somehow allows for an elegant collapsing of elements
+/* what follows is a phenomenally complex system of floats that just somehow allows for an elegant collapsing of elements
    under certain conditions, primarily so that if there is no language selector present, no 'about.html' and no sub-forums
    then the RSS/ADD links will fit themselves into the blank space where the language selector would be */
 
@@ -378,11 +378,11 @@ body, #mast h1 a		{width: 95%;}
 h1				{font-size: 20px !important;}
 #mast h1			{height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
 #mast h1 a			{/* fit the logo in tighter */
-				 margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
+				 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
 #mast h1 a img			{margin-top: -6px;}
 
 /* re-position the search field below the title */
-#search				{width: 100%; height: 35px; margin: 45px 0 0; padding: 0 10px 10px 50px;
+#search				{float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;
 				 -webkit-box-sizing: border-box;
 				    -moz-box-sizing: border-box;
 				         box-sizing: border-box;
@@ -396,6 +396,11 @@ h1				{font-size: 20px !important;}
 				    -moz-border-radius: 14px;
 				         border-radius: 14px;}
 #go				{left: -5px; top: -23px;}
+
+#nnf_lang			{float: right; margin-top: -55px; padding-right: 0; text-align: right;}
+#nnf_lang>img, #nnf_lang>input	{display: none;}
+
+
 
 #mast nav			{padding-top: 100px;}
 #mast nav p:last-child		{/* hide location marker */
@@ -463,27 +468,22 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 
-/* when landscape, shrink the size of the search field, and place the RSS / New Thread links in the header */
-#search				{width: 50%; float: left;}
-
-#mast nav			{width: 100%; margin-top: -5px; margin-bottom: 0; background: #222;}
-#mast nav a			{color: white;}
-#nnf_add, #nnf_reply		{padding-right: 5%;
-				 background-image: url("img/add_white.png");}
-#nnf_rss			{background-image: url("img/rss_white.png");}
-
-/* show the post time when in portrait */
+/* show the post time when in landscape */
 article header time		{display: inline;}
 
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 
+/* not enough room for the page list in the title, you’ll have to use the one at the bottom */
+#nnf_threads>h1 + nav,		/* the spaces between `+` are required here for WebKit! */
+ #nnf_replies>h1 + nav		{display: none !important;}
+
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
 footer				{padding-top: 60px;}
 footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
-p#signin			{margin-top: -120px;}
+p#signin			{margin-top: -100px;}
 
 }
 
@@ -492,7 +492,7 @@ p#signin			{margin-top: -120px;}
   ====================================================================================================================== */
 @media screen and (view-mode: minimized) {
 
-#mast h1			{padding-bottom: 5px}
+#mast h1			{height: 30px;}
 
 /* hide the search box, breadcrumb and rss / add links */
 #mast form, #mast nav,
@@ -525,10 +525,15 @@ article.nnf_reply:last-of-type	{display: block;}
 @media print {
 
 /* fix page width */
-section				{width: 100% !important;}
+body, #mast h1 a		{width: 100% !important;}
+
+#mast h1			{position: static;}
+#mast h1 a			{text-indent: 0;}
+#mast h1 a img			{display: none;}
 
 /* things to hide from printer: */
-#mast nav, #search,		/* - nav */
+#mast nav, #search, #info,	/* - nav */
+ #nnf_folders,			/* - subfolders list */
  #nnf_new-form, #nnf_reply-form,/* - input forms */
  #delete,			
  a.ui,				/* - delete / append buttons */

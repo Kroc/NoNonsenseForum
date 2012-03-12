@@ -34,7 +34,7 @@
 	<nav>
 		<form id="nnf_lang" method="post">
 			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
-			<select name="lang">
+			<select name="lang" id="lang">
 				<option class="nnf_lang" value="en" selected="selected">English</option>
 			</select>
 			<input type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set language" />
@@ -143,12 +143,15 @@
 	<a href="?signin">Sign in</a>
 </p></footer>
 
-<script><!--
+<script defer="defer"><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
 	var labels = document.getElementsByTagName ("label");
 	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
+//when the language selector is changed, submit immediately
+document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); }
 --></script>
+
 </body></html>
