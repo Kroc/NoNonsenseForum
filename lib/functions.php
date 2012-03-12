@@ -31,7 +31,7 @@ function prepareTemplate ($filepath, $title) {
 		//the first item in the template should be your default language
 		$item = $template->repeat ('.nnf_lang')->remove (array ('@selected' => LANG != THEME_LANG))->next ();
 		//build the list for each additional language
-		foreach ($LANG as $code => $lang); $item->set (array (
+		foreach ($LANG as $code => $lang) $item->set (array (
 			'@value'	=> $code,
 			'.'		=> $lang['name']
 		))->remove (array (

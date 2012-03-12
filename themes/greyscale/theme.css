@@ -164,8 +164,8 @@ ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40
 				 text-align: center;}
 ol.nnf_pages a			{display: block; width: 40px; height: 39px;
 				 color: #aaa; text-decoration: none;}
-ol.nnf_pages a:hover		{color: white; background-color: #888;}
-ol.nnf_pages em			{color: white; font-style: normal;}
+ol.nnf_pages a:hover		{color: white; font-style: normal; background-color: #888;}
+ol.nnf_pages em			{display: block; height: 39px; font-style: normal; color: white; background: #888;}
 
 /* item list (folders / threads) */
 ol.ui				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -199,6 +199,7 @@ ol.ui li a:hover time		{text-decoration: underline;}
 /* the lock/sticky icon positioning */
 ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
 #nnf_folders ol.ui li img	{margin-left: -38px;}
+
 
 /* thread page
    ====================================================================================================================== */
