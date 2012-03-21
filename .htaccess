@@ -82,12 +82,12 @@ Options -MultiViews -Indexes
 	RewriteRule ^:(\d+)$ ?page=$1 [QSA,L]
 	
 	# a sub-forum
-	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?::\d+)?$
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1 -d
 	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ ?path=$1&page=$2 [QSA,L]
 	
 	# a thread
-	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?::\d+)?$
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1.rss -f
-	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?::(\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
+	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?:[:+](\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
 </IfModule>

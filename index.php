@@ -95,10 +95,14 @@ $template = prepareTemplate (
 	'#nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
 ));
 
-//an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
-if (file_exists ('about.html')) {
+//an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum,
+//for translations, 'about_en.html' can be used where 'en' is the language code for the translation
+//(see 'lang.example.php' in the themes folder for more details on translation)
+if ($about = @array_shift (array_filter (array (
+	@file_get_contents ('about_'.LANG.'.html'), @file_get_contents ('about.html')
+)))) {
 	//load the 'about.html' file and insert it into the page
-	$template->setValue ('#nnf_about', file_get_contents ('about.html'), true);
+	$template->setValue ('#nnf_about', $about, true);
 } else {
 	//no file? remove the element reserved for it
 	$template->remove ('#nnf_about');
