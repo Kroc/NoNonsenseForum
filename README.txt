@@ -32,7 +32,6 @@ Contents:
 [2]     Things to note
 [2.1]   Post appending
 [2.2]   Post deleting
-[2.3]   Markup
 [3]     Sub-forums
 [4]     Sticky threads
 [5]     Moderators
@@ -181,11 +180,6 @@ To avoid abuse, users cannot permenantly delete their posts.
         thread by a moderator by deleting it again, but only if the
         post is on the last page of replies -- so as to not break any
         permalinks by rearranging page boundaries
-
-[2.3]   Markup:
-------------------------------------------------------------------------
-NoNonsense Forum has simple and innovative markup, see "markup.txt"
-for details.
 
 
 [3]     Sub-forums:

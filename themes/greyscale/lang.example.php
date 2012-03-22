@@ -14,10 +14,19 @@ how to create a theme translation:
 2.	make a copy of 'lang.example.php' and rename as 'lang.en.php' where "en" is the language code for your translation
 	(do not rename, modify or delete 'lang.example.php')
 
+3.	if you have not already, make a copy of 'theme.config.default.php' and rename it to 'theme.config.php'.
+	within that file add your language code, separated from any other languages by a space, to the `THEME_LANGS`
+	option; this will tell NNF that your language is available to use and will add it to the theme's language selector
+
+4.	translate the text within your lang file. please note that all text is HTML.
+	you can preview as you go by selecting your new language when running NNF
 
 */
 
+//name of the language, as the user will use to select it;
+//therefore should be the name of the language, written in that language - i.e. "Espanol" (Spanish)
 $LANG['en']['name']    = 'English';
+
 $LANG['en']['strings'] = array (
 
 /* xpath/shorthand:			replacement text:			description:
@@ -175,12 +184,198 @@ HTML
 			Name / password mismatch! You must enter the name and password of either the original author,
 			or a designated moderator.
 HTML
-,'#markup'				=> <<<HTML
+,'#protip'				=> <<<HTML
 			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
 HTML
 
 ,'//label[@for="nnf_text-field"]'	=> 'Message:'
 ,'#nnf_text-field@placeholder'		=> 'Type your message here…'
+
+/* markup page
+   ---------------------------------------------------------------------------------------------------------------------- */
+//the markup documentation:
+,'#markup'				=> <<<HTML
+
+<h1>Markup</h1>
+<article>
+<header>
+<ol>
+	<li><a href="#links">» Links</a></li>
+	<li><a href="#names">» Names</a></li>
+	<li><a href="#bolditalic">» Bold &amp; italic</a></li>
+	<li><a href="#titles">» Titles</a></li>
+	<li><a href="#dividers">» Dividers</a></li>
+	<li><a href="#quotes">» Quotes</a></li>
+	<li><a href="#pre">» Monospace Text</a></li>
+</ol>
+</header>
+	
+<h2 id="links">Links:</h2>
+<p>
+	Clickable links will be created automatically on any web addresses in your text that begin with
+	"<samp>http://</samp>", "<samp>https://</samp>", "<samp>ftp://</samp>" or "<samp>irc://</samp>".
+	Also, e-mail addresses will be turned into clickable links for you.
+</p>
+<pre>
+YES:	http://www.google.com
+NO:	www.google.com
+YES:	email@email.com
+</pre>
+
+<h2 id="names">Names:</h2>
+<p>
+	You can refer to another person by prefixing their name with an	at-symbol. E.g. "<samp>@bob</samp>"
+	The name will link to the last reply made by that person in the current discussion thread.
+</p>
+
+<h2 id="bolditalic">Bold &amp; Italic</h2>
+<pre>
+*Write bold text like this*, and _italic text like this_.
+</pre>
+
+
+<h2 id="titles">Titles:</h2>
+<p>
+	For a title, start a line with two colons. Example:
+</p>
+<pre>
+:: Shopping list
+</pre>
+
+<h2 id="dividers">Dividers:</h2>
+<p>
+	To draw a line across your text, use three or more dashes:<br />
+	(this should be on its own line, with a blank line before and after)
+</p>
+<pre>
+---
+</pre>
+
+<h2 id="quotes">Quotes:</h2>
+<p>
+	To quote somebody else's text, place it on its own line with quote marks at the beginning and end.
+	This applies even if the quoted text is more than one paragraph, or contains quotes itself.
+</p><p>
+	There must be a blank line between any quote and other text:<br />
+	(a single line-break will not work)
+</p>
+<pre>
+YES:	This is my text
+	
+	"This is your text"
+	
+	This is my text
+</pre>
+<p>
+	There must be no text before or after the quote marks:
+</p>
+<pre>
+NO:	"This is your text".
+</pre>
+<p>
+	However, spaces before or after are allowed. When you copy and paste someone else's quote,
+	extra spaces might be included, these will be ignored.
+</p>
+<pre>
+YES:	This is my text
+
+	     "this is your text
+	
+	"
+	
+	This is my text
+</pre>
+<p>
+	A quote may span more than one line or paragraph:
+</p>
+<pre>
+YES:	This is my text
+	
+	"The quick brown fox
+	jumped over the lazy dog
+	
+	Jackdaws love my big
+	sphinx of quartz"
+	
+	This is my text
+</pre>
+<p>
+	Quotes can contain quotes:
+</p>
+<pre>
+YES:	"This is the first quote
+	
+	"This is the second quote"
+	
+	This is the first quote"
+</pre>
+<p>	
+	You may use three different kinds of quote marks:<br />
+	(but you can’t mismatch the ends)
+</p>
+<pre>
+YES:	"Plain speech marks"
+
+	“Curly quotes”
+	
+	«Guillemots»
+</pre>
+<p>
+	Different kinds of quotes can be nested:
+</p>
+<pre>
+YES:	"This is the first quote
+
+	“This is the second quote
+	
+	«This is a third quote»”"
+</pre>
+
+<h2 id="pre">Monospace Text:</h2>
+<p>
+	For small snippets of code or technical writing you want to appear as-is admidst other writing you can use
+	backticks (1 or more allowed) to enclose the monospace text; the text within will not be processed for bold /
+	italic and other markup.
+</p>
+<pre>
+Use `<samp>*bold*</samp>` for bold and ``<samp>_italic_</samp>`` for italics.
+</pre>
+<p>
+	When posting, all unnecessary white-space is automatically removed. If you have some text that relies upon a
+	monospace font (such as ASCII art), you can use a "code block".
+</p><p>
+	The code block begins with a percent sign, then your text (starting the next line),
+	and then the ending percent sign on the next line.
+</p>
+<pre>
+%
+      __...--~~~~~-._   _.-~~~~~--...__
+    //               `V'               \\ 
+   //                 |                 \\ 
+  //__...--~~~~~~-._  |  _.-~~~~~~--...__\\ 
+ //__.....----~~~~._\ | /_.~~~~----.....__\\
+====================\\|//====================
+                dwb `---`
+%
+</pre>
+<p>
+	Note that there should be a blank line between the code block and any other text before or after:
+</p><p>
+	You can include a title after the first percent sign, for example when inserting source code snippets you can state
+	the programming language used:
+</p>
+<pre>
+% CSS
+div	{color: red;}
+%
+</pre>
+<p>
+	Should you need to quote something that has percent symbols as the first character on a line, such as the LaTeX
+	programming language, you can simply use the dollar sign "<samp>$</samp>" as a delimiter instead.
+</p>
+
+</article>
+HTML
 
 /* site footer
    ---------------------------------------------------------------------------------------------------------------------- */

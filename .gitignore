@@ -12,6 +12,7 @@
 !index.php
 !start.php
 !thread.php
+!markup.php
 !lib/domtemplate.php
 !lib/functions.php
 !lib/rss-template.xml
@@ -22,6 +23,5 @@
 # documentation
 !HISTORY.txt
 !LICENCE.txt
-!markup.txt
 !README.txt
 
