@@ -159,12 +159,22 @@ $LANG = array ();
 foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
 
 //get / set the language to use
-define ('LANG', @$_POST['lang'] && setcookie (
-	//set the language cookie for 1 year
+define ('LANG',
+	//if the language selector has been used to choose a language:
+	@$_POST['lang'] && setcookie (
+	//- set the language cookie for 1 year
 	"lang", $_POST['lang'], time ()+60*60*24*365, FORUM_PATH, $_SERVER['HTTP_HOST'], FORUM_HTTPS
 )	? $_POST['lang']
-	//does a cookie already exist to set the language?
-	: (@$_COOKIE['lang'] ? $_COOKIE['lang'] : THEME_LANG)
+	//otherwise, does a cookie already exist to set the language?
+	: (@$_COOKIE['lang'] ? $_COOKIE['lang'] : (
+	//otherwise, try detect the language sent by the browser:
+	$lang = @array_shift (array_intersect (
+		//- find language codes in the HTTP header and compare with the theme provided languages
+		preg_replace ('/^([a-z0-9-]+).*/i', '$1', explode (',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])),
+		explode (' ', THEME_LANGS)
+	)) ? $lang
+	//all else failing, use the default language
+	: THEME_LANG))
 );
 //don’t treat language choice as an invalid form error
 if (@$_POST['lang']) unset ($_POST);
