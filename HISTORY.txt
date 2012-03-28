@@ -5,8 +5,11 @@ v
 	-	Markup.txt removed, moved to a themed / translatable page
 	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
 *	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
-*	Current page number more visible
+*	Removed `theme_pageList` from 'theme.config.default.php'. Whilst this prevents customised page lists,
+	I think it's the best tradeoff for theme stability right now
+*	Page numbers are now validated / bounded
 *	Added INSTALL.txt
+*	Current page number more visible
 *	If a mod / member, threads in locked forums no longer show warning message
 	(similar to the change in v18 that removed the same warning from index pages)
 

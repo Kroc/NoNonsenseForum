@@ -8,9 +8,6 @@
 //bootstrap the forum; you should read that file first
 require_once './start.php';
 
-//get page number
-define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
-
 //submitted info for making a new thread
 //(name / password already handled in 'start.php')
 define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
@@ -73,7 +70,33 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ======================================================================================================================
    template the page
    ====================================================================================================================== */
-//load the template into DOM where we can manipulate it:
+//first load the list of threads in the forum so that we can determine the number of pages and validate the page number,
+//the thread list won't be used until further down after templating begins
+if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
+	//order by last modified date
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+	
+	//get sticky list, trimming any files that no longer exist
+	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
+	if ($stickies = array_intersect (
+		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
+		//then `array_filter` removes blank items. this way saves having to check if the file exists first
+		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
+	)) {
+		//order the stickies by reverse date order
+		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
+		//remove the stickies from the thread list
+		$threads = array_diff ($threads, $stickies);
+	}
+	//validate the given page number; an invalid page number returns the first instead
+	$PAGES = ceil (count ($threads) / FORUM_THREADS);
+	$PAGE  = !PAGE || PAGE > $PAGES ? 1 : PAGE;
+} else {
+	$PAGES = 1; $PAGE = 1;
+}
+
+/* load the template into DOM where we can manipulate it:
+   ---------------------------------------------------------------------------------------------------------------------- */
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details. `prepareTemplate` can be found in
 // 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
@@ -83,7 +106,7 @@ $template = prepareTemplate (
 		//if in a sub-forum use the folder name, else the site's name
 		PATH ? SUBFORUM: FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
-		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
 )->remove (array (
 	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
@@ -175,34 +198,11 @@ if ($folders = array_filter (
 
 /* threads
    ---------------------------------------------------------------------------------------------------------------------- */
-//get list of threads (if any--could be an empty folder)
-if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
-	//order by last modified date
-	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
-	
-	//get sticky list, trimming any files that no longer exist
-	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
-	if ($stickies = array_intersect (
-		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
-		//then `array_filter` removes blank items. this way saves having to check if the file exists first
-		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
-	)) {
-		//order the stickies by reverse date order
-		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
-		//remove the stickies from the thread list
-		$threads = array_diff ($threads, $stickies);
-	}
-	
+if ($threads) {
 	//do the page links (stickies are not included in the count as they appear on all pages)
-	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setValue ('.nnf_pages', theme_pageList (
-		//base URL to work with
-		PATH_URL,
-		//page number,	number of pages
-		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
-	), true);
+	$template->setValue ('.nnf_pages', pageList (PATH_URL, $PAGE, $PAGES), true);
 	//slice the full list into the current page
-	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
+	$threads = array_merge ($stickies, array_slice ($threads, ($PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_thread');

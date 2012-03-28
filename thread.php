@@ -17,11 +17,9 @@ $FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') 
 $xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread = $xml->channel->xpath ('item');
 
-//determine the page number, for threads no page number specified defaults to the last page
-define ('PAGE',
-	preg_match ('/^[1-9][0-9]*$/', @$_GET['page'])
-	? (int) $_GET['page'] : ceil (count ($thread) / FORUM_POSTS)
-);
+//validate the page number, when no page number is specified default to the last page
+$PAGES = ceil (count ($thread) / FORUM_POSTS);
+$PAGE  = !PAGE || PAGE > $PAGES ? $PAGES : PAGE;
 
 //access rights for the current user
 define ('CAN_REPLY', FORUM_ENABLED && (
@@ -124,7 +122,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE+".PAGE."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.PATH_URL."$FILE+$PAGE#$ID", true, 303);
 		exit;
 	}
 	
@@ -244,7 +242,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.PATH_URL."$FILE+".PAGE."#$ID";
+			$url = FORUM_URL.PATH_URL."$FILE+$PAGE#$ID";
 		}
 		
 		//commit the data
@@ -428,7 +426,7 @@ $template = prepareTemplate (
 		//title of the thread, obviously
 		$xml->channel->title,
 		//if on page 2 or greater, include the page number in the title
-		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
 	
 //the thread itself is the RSS feed :)
@@ -484,21 +482,15 @@ if (count ($thread)) {
 	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//do the page links
-	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setValue ('.nnf_pages', theme_pageList (
-		//base URL to work with
-		PATH_URL.$FILE,
-		//page number,	number of pages
-		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
-	), true);
+	$template->setValue ('.nnf_pages', pageList (PATH_URL.$FILE, $PAGE, $PAGES), true);
 	//slice the full list into the current page
-	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
+	$thread = array_slice ($thread, ($PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_reply');
 	
 	//index number of the replies, accounting for which page we are on
-	$no = (PAGE-1) * FORUM_POSTS;
+	$no = ($PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$reply) {
 		//has the reply been deleted (blanked)?
 		if ($reply->xpath ("category[.='deleted']")) $item->addClass ('.', 'deleted');
@@ -509,7 +501,7 @@ if (count ($thread)) {
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> "$FILE+".PAGE.strstr ($reply->link, '#'),
+			'a.nnf_reply-number@href'	=> "$FILE+$PAGE".strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)

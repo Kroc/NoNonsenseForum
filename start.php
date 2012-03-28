@@ -50,6 +50,8 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 
 /* common input
    ---------------------------------------------------------------------------------------------------------------------- */
+//most pages allow for a page number; note that this is merely the user-input, it is not necessarily a valid page number!
+define ('PAGE',     preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : false);
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
 //these two get used an awful lot
