@@ -79,7 +79,7 @@ Options -MultiViews -Indexes
 	RewriteRule ^ - [F]
 	
 	# page numbers on the root forum
-	RewriteRule ^:(\d+)$ ?page=$1 [QSA,L]
+	RewriteRule ^[:+](\d+)$ ?page=$1 [QSA,L]
 	
 	# a sub-forum
 	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$

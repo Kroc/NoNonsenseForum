@@ -124,7 +124,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.PATH_URL."$FILE+".PAGE."#$ID", true, 303);
 		exit;
 	}
 	
@@ -244,7 +244,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID";
+			$url = FORUM_URL.PATH_URL."$FILE+".PAGE."#$ID";
 		}
 		
 		//commit the data
@@ -354,7 +354,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	)) {
 		//where to?
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-		$url  = FORUM_URL.PATH_URL."$FILE:$page#".base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.PATH_URL."$FILE+$page#".base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
@@ -509,7 +509,7 @@ if (count ($thread)) {
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> "$FILE:".PAGE.strstr ($reply->link, '#'),
+			'a.nnf_reply-number@href'	=> "$FILE+".PAGE.strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)

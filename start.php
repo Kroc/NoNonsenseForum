@@ -195,7 +195,6 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 
 //if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
-//(these are trapped higher up as HTTP_AUTH_UN and HTTP_AUTH_PW and are authenticated the same as the regular post form)
 if (!HTTP_AUTH && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');

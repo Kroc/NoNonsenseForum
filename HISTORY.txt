@@ -1,3 +1,15 @@
+v
+*	Translation support
+	-	Themes can provide their own translations and admins can add more themselves easily
+	-	Browser language is auto-detected, or user can select one
+	-	Markup.txt removed, moved to a themed / translatable page
+	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
+*	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
+*	Current page number more visible
+*	Added INSTALL.txt
+*	If a mod / member, threads in locked forums no longer show warning message
+	(similar to the change in v18 that removed the same warning from index pages)
+
 v18	05.MAR.12
 *	'delete.html' had been missing for some time!
 *	The sticky-thread icon had been missing for an equally long time
