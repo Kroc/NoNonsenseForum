@@ -149,12 +149,12 @@ if ($folders = array_filter (
 		$lock = trim (@file_get_contents ('locked.txt'));
 		
 		//get a list of files in the folder to determine which one is newest
-		$threads = preg_grep ('/\.rss$/', scandir ('.'));
+		$files = preg_grep ('/\.rss$/', scandir ('.'));
 		//order by last modified date
-		array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+		array_multisort (array_map ('filemtime', $files), SORT_DESC, $files);
 		
 		//read the newest thread (folder could be empty though)
-		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
+		$last = ($xml = @simplexml_load_file ($files[0])) ? $xml->channel->item[0] : '';
 		
 		//start applying the data to the template
 		$item->set (array (
