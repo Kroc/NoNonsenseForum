@@ -5,7 +5,7 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//DOM Templating classes v8 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v9 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at http://camendesign.com/dom_templating
 
@@ -137,6 +137,34 @@ class DOMTemplateNode {
 		return str_replace (array_keys (self::$entities), array_values (self::$entities), $html);
 	}
 	
+	//actions are performed on elements using xpath, but for brevity a shorthand is also recognised in the format of:
+	//	#id		- find an element with a particular ID (instead of writing './/*[@id="…"]')
+	//	.class		- find an element with a particular class
+	//	element#id	- enforce a particular element type (ID or class supported)
+	//	#id@attr	- select the named attribute of the found element
+	//	element#id@attr	- a fuller example
+	//note also:
+	//*	you can test the value of attributes (e.g. '#id@attr="test"') this selects the element, not the attribute
+	//*	sub-trees in shorthand can be expressed with '/', e.g. '#id/li/a@attr'
+	//*	an index-number can be provided after the element name, e.g. 'li[1]'	
+	public static function shorthand2xpath ($query, $apply_prefix=true) {
+		return preg_match (
+			'/^(?!\/)([a-z0-9:-]+(\[\d+\])?)?(?:([\.#])([a-z0-9:_-]+))?(@[a-z-]+(="[^"]+")?)?(?:\/(.*))?$/i',
+		$query, $m)
+		?	($apply_prefix ? './/' : '').			//see <php.net/manual/en/domxpath.query.php#99760>
+			(@$m[1] ? @$m[1].@$m[2] : '*').			//- the element name, if specified, otherwise "*"
+			(@$m[4] ? ($m[3] == '#'				//is this an ID?
+				? "[@id=\"${m[4]}\"]"			//- yes
+				: "[contains(@class,\"${m[4]}\")]"	//- no, a class	
+			) : '').
+			(@$m[5] ? (@$m[6]				//optional attribute of the parent element
+				? "[${m[5]}]"				//- an attribute test
+				: "/${m[5]}"				//- or select the attribute
+			) : '').
+			(@$m[7] ? '/'.self::shorthand2xpath ($m[7], false) : '')
+		: $query;
+	}
+	
 	public function __construct ($DOMNode, $NS='', $NS_URI='') {
 		//use a DOMNode as a base point for all the XPath queries and whatnot
 		//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
@@ -149,31 +177,13 @@ class DOMTemplateNode {
 		if ($this->NS && $this->NS_URI) $this->DOMXPath->registerNamespace ($this->NS, $this->NS_URI);
 	}
 	
-	//actions are performed on elements using xpath, but for brevity a shorthand is also recognised in the format of:
-	//	#id		- find an element with a particular ID (instead of writing './/*[@id="…"]')
-	//	.class		- find an element with a particular class
-	//	element#id	- enforce a particular element type (ID or class supported)
-	//	#id@attr	- select the named attribute of the found element
-	//	element#id@attr	- a fuller example
 	public function query ($query) {
-		//multiple targets are available by comma separating queries
-		$queries = explode (', ', $query);
-		//convert each query to real XPath:
-		foreach ($queries as &$query) if (
-			//is this the shorthand syntax?
-			preg_match ('/^([a-z0-9-]+)?([\.#])([a-z0-9:_-]+)(@[a-z-]+)?$/i', $query, $m)
-		) $query =
-			'.//'.						//see <php.net/manual/en/domxpath.query.php#99760>
-			($this->NS ? $this->NS.':' : '').		//the default namespace, if set
-			(@$m[1] ? $m[1] : '*').				//the element name, if specified, otherwise "*"
-			($m[2] == '#'					//is this an ID?
-				? "[@id=\"${m[3]}\"]"			//- yes
-				: "[contains(@class,\"${m[3]}\")]"	//- no, a class	
-			).
-			(@$m[4] ? "/${m[4]}" : '')			//optional attribute of the parent element
-		;
 		//run the real XPath query and return the nodelist result
-		return $this->DOMXPath->query (implode ('|', $queries), $this->DOMNode);
+		return $this->DOMXPath->query (implode ('|',
+			//convert each query to real XPath:
+			//(multiple targets are available by comma separating queries)
+			array_map (array (self, 'shorthand2xpath'), explode (', ', $query))
+		), $this->DOMNode);
 	}
 	
 	//specify an element to repeat (like a list-item):

@@ -17,8 +17,9 @@
 !lib/functions.php
 !lib/rss-template.xml
 !lib/sitemap-template.xml
-!themes/*
-!users/*
+!themes
+!users
+!lib
 
 # documentation
 !HISTORY.txt

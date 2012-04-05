@@ -38,17 +38,17 @@ $LANG['en']['strings'] = array (
 ,'#go@alt'				=> 'Search'				//search submit button
 
 //language selector
-,'//*[@id="nnf_lang"]/img/@alt, '.
- '//*[@id="nnf_lang"]/img/@title'	=> 'Language:'				//language chooser icon
-,'//*[@id="nnf_lang"]/input/@alt'	=> 'Set language'			//language chooser submit button
+,'#nnf_lang/img@alt, '.
+ '#nnf_lang/img@title'			=> 'Language:'				//language chooser icon
+,'#nnf_lang/input@alt'			=> 'Set language'			//language chooser submit button
 
 //breadcrumb
-,'//*[@id="index"]/li[1]/a'		=> 'Index'				//breadcrumb root location
+,'#index"/li[1]/a'			=> 'Index'				//breadcrumb root location
 
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
 //list of sub-forums
-,'//*[@id="nnf_folders"]/h1'		=> 'Sub-Forums'				//section title
+,'#nnf_folders/h1'			=> 'Sub-Forums'				//section title
 ,'.nnf_lock-threads@alt, '.
  '.nnf_lock-threads@title'		=> 'Replies-only:'			//alt+title of lock-icon, if thread-locked
 ,'.nnf_lock-posts@alt, '.
@@ -70,13 +70,13 @@ HTML
 HTML
 
 //list of threads
-,'//*[@id="nnf_threads"]/h1'		=> 'Threads'
+,'#nnf_threads/h1'			=> 'Threads'
 ,'.nnf_thread-locked@alt, '.
  '.nnf_thread-locked@title'		=> 'Locked:'
 
-,'//*[@id="nnf_new-form"]/h1'		=> 'Add Thread'				//add thread form title
-,'//*[@id="nnf_new-form"]'.
- '//label[@for="submit"]/span'		=> 'Submit'				//form submit button
+,'#nnf_new-form/h1'			=> 'Add Thread'				//add thread form title
+,'#nnf_new-form/form/p/'.
+ 'label@for="submit"/span'		=> 'Submit'				//form submit button
 
 /* thread page
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -90,39 +90,39 @@ HTML
 	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
 HTML
 
-,'//*[@id="nnf_replies"]/h1'		=> 'Replies'				//title for replies list
+,'#nnf_replies/h1'			=> 'Replies'				//title for replies list
 
-,'//*[@id="nnf_reply-form"]/h1'		=> 'Reply'				//reply form title
-,'//*[@id="nnf_reply-form"]'.
- '//label[@for="submit"]/span'		=> 'Reply'				//form submit button
+,'#nnf_reply-form/h1'			=> 'Reply'				//reply form title
+,'#nnf_reply-form/form/p/'.
+ 'label@for="submit"/span'		=> 'Reply'				//form submit button
 
 /* append page
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//*[@id="append"]/h1'			=> 'Append'				//append form title
-,'//*[@id="append"]'.
- '//label[@for="submit"]/span'		=> 'Append'				//form submit button
+,'#append/h1'				=> 'Append'				//append form title
+,'#append/form/p/'.
+ 'label@for="submit"/span'		=> 'Append'				//form submit button
 
 /* delete page
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//*[@id="delete"]/h1'			=> 'Delete'				//delete form title
+,'#delete/h1'				=> 'Delete'				//delete form title
 
-,'//label[@for="remove"]/span'		=> 'Remove completely (moderators only)'
-,'//div[@id="nnf_remove"]/ul/li[1]'	=> 'The post will be removed completely from the thread, rather than blanked'
-,'//div[@id="nnf_remove"]/ul/li[2]'	=> 'Only posts on the last page of the thread can be removed completely (so as to not break permalinks)'
+,'label@for="remove"/span'		=> 'Remove completely (moderators only)'
+,'#nnf_remove"/ul/li[1]'		=> 'The post will be removed completely from the thread, rather than blanked'
+,'#nnf_remove"/ul/li[2]'		=> 'Only posts on the last page of the thread can be removed completely (so as to not break permalinks)'
 
-,'//*[@id="delete"]'.
- '//label[@for="submit"]/span'		=> 'Delete'				//form submit button
+,'#delete/form/p/'.
+ 'label@for="submit"/span'		=> 'Delete'				//form submit button
 
 /* input forms
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//label[@for="nnf_title-field"]'	=> 'Title:'				//title field label
+,'label@for="nnf_title-field"'		=> 'Title:'				//title field label
 ,'#nnf_title-field@placeholder'		=> 'Type thread title here…'		//placeholder text for the title field
 
-,'//label[@for="nnf_name-field-http"]'	=> 'You are signed in as:'		//label for name field if HTTP_AUTH
-,'//label[@for="nnf_name-field"]'	=> 'Name:'				//name field label
+,'label@for="nnf_name-field-http"'	=> 'You are signed in as:'		//label for name field if HTTP_AUTH
+,'label@for="nnf_name-field"'		=> 'Name:'				//name field label
 ,'#nnf_name-field@placeholder'		=> 'Your name'				//placeholder text for the name field
 
-,'//label[@for="nnf_pass-field"]'	=> 'Password:'				//label for password field
+,'label@for="nnf_pass-field"'		=> 'Password:'				//label for password field
 ,'#nnf_pass-field@placeholder'		=> 'A password to keep your name'	//placeholder text for the password field
 
 ,'#nnf_error-none'			=> <<<HTML
@@ -188,7 +188,7 @@ HTML
 			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
 HTML
 
-,'//label[@for="nnf_text-field"]'	=> 'Message:'
+,'label@for="nnf_text-field"'		=> 'Message:'
 ,'#nnf_text-field@placeholder'		=> 'Type your message here…'
 
 /* markup page
@@ -402,7 +402,7 @@ HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
 HTML
-,'//*[@class="nnf_signed-out"]/a'	=> 'Sign in'
+,'@class="nnf_signed-out"/a'		=> 'Sign in'
 
 );
 

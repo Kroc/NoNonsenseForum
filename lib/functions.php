@@ -29,13 +29,13 @@ function prepareTemplate ($filepath, $title) {
 	//template the language chooser
 	if (THEME_LANGS) {
 		//the first item in the template should be your default language
-		$item = $template->repeat ('.nnf_lang')->remove (array ('@selected' => LANG != THEME_LANG))->next ();
+		$item = $template->repeat ('.nnf_lang')->remove (array ('./@selected' => LANG != THEME_LANG))->next ();
 		//build the list for each additional language
 		foreach ($LANG as $code => $lang) $item->set (array (
-			'@value'	=> $code,
+			'./@value'	=> $code,
 			'.'		=> $lang['name']
 		))->remove (array (
-			'@selected'	=> !($code == LANG)
+			'./@selected'	=> !($code == LANG)
 		))->next ();
 	} else {
 		$template->remove ('#nnf_lang');

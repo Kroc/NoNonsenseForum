@@ -35,17 +35,17 @@ $LANG['x-pig-latin']['strings'] = array (
 ,'#go@alt'				=> 'Earchsay'				//search submit button
 
 //language selector
-,'//*[@id="nnf_lang"]/img/@alt, '.
- '//*[@id="nnf_lang"]/img/@title'	=> 'Anguagelay:'			//language chooser icon
-,'//*[@id="nnf_lang"]/input/@alt'	=> 'Etsay anguagelay'			//language chooser submit button
+,'#nnf_lang/img@alt, '.
+ '#nnf_lang/img@title'			=> 'Anguagelay:'			//language chooser icon
+,'#nnf_lang/input@alt'			=> 'Etsay anguagelay'			//language chooser submit button
 
 //breadcrumb
-,'//*[@id="index"]/li[1]/a'		=> 'Indexway'				//breadcrumb root location
+,'#index/li[1]/a'			=> 'Indexway'				//breadcrumb root location
 
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
 //list of sub-forums
-,'//*[@id="nnf_folders"]/h1'		=> 'Ubsay-Orumsfay'			//section title
+,'#nnf_folders/h1'			=> 'Ubsay-Orumsfay'			//section title
 ,'.nnf_lock-threads@alt, '.
  '.nnf_lock-threads@title'		=> 'Epliesray-onlyway:'			//alt+title of lock-icon, if thread-locked
 ,'.nnf_lock-posts@alt, '.
@@ -67,13 +67,13 @@ HTML
 HTML
 
 //list of threads
-,'//*[@id="nnf_threads"]/h1'		=> 'Reads’thay'
+,'#nnf_threads/h1'			=> 'Reads’thay'
 ,'.nnf_thread-locked@alt, '.
  '.nnf_thread-locked@title'		=> 'Ockedlay:'
 
-,'//*[@id="nnf_new-form"]/h1'		=> 'Addway Read’thay'			//add thread form title
-,'//*[@id="nnf_new-form"]'.
- '//label[@for="submit"]/span'		=> 'Ubmitsay'				//form submit button
+,'#nnf_new-form/h1'			=> 'Addway Read’thay'			//add thread form title
+,'#nnf_new-form/form/p/'.
+ 'label@for="submit"/span'		=> 'Ubmitsay'				//form submit button
 
 /* thread page
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -87,39 +87,39 @@ HTML
 	<a href="?signin">Ignsay-inway</a> ifway ouway areway away oderatormay orway embermay inway orderway otay ostpay.
 HTML
 
-,'//*[@id="nnf_replies"]/h1'		=> 'Epliesray'				//title for replies list
+,'#nnf_replies/h1'			=> 'Epliesray'				//title for replies list
 
-,'//*[@id="nnf_reply-form"]/h1'		=> 'Eplyray'				//reply form title
-,'//*[@id="nnf_reply-form"]'.
- '//label[@for="submit"]/span'		=> 'Eplyray'				//form submit button
+,'#nnf_reply-form/h1'			=> 'Eplyray'				//reply form title
+,'#nnf_reply-form/form/p/'.
+ 'label@for="submit"/span'		=> 'Eplyray'				//form submit button
 
 /* append page
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//*[@id="append"]/h1'			=> 'Appendway'				//append form title
-,'//*[@id="append"]'.
- '//label[@for="submit"]/span'		=> 'Appendway'				//form submit button
+,'#append/h1'				=> 'Appendway'				//append form title
+,'#append/form/p/'.
+ 'label@for="submit"/span'		=> 'Appendway'				//form submit button
 
 /* delete page
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//*[@id="delete"]/h1'			=> 'Eleteday'				//delete form title
+,'#delete/h1'				=> 'Eleteday'				//delete form title
 
-,'//label[@for="remove"]/span'		=> 'Emoveray ompletelycay (oderatorsmay onlyway)'
-,'//div[@id="nnf_remove"]/ul/li[1]'	=> 'Hetay ostpay illway ebay emovedray ompletelycay romfay hetay read’thay, atherray hantay lankedbay'
-,'//div[@id="nnf_remove"]/ul/li[2]'	=> 'Onlyway ostspay onway hetay astlay agepay ofway hetay read’thay ancay ebay emovedray ompletelycay (osay asway otay otnay reakbay ermapay-inkslay)'
+,'label@for="remove"/span'		=> 'Emoveray ompletelycay (oderatorsmay onlyway)'
+,'#nnf_remove/ul/li[1]'			=> 'Hetay ostpay illway ebay emovedray ompletelycay romfay hetay read’thay, atherray hantay lankedbay'
+,'#nnf_remove/ul/li[2]'			=> 'Onlyway ostspay onway hetay astlay agepay ofway hetay read’thay ancay ebay emovedray ompletelycay (osay asway otay otnay reakbay ermapay-inkslay)'
 
-,'//*[@id="delete"]'.
- '//label[@for="submit"]/span'		=> 'Eleteday'				//form submit button
+,'#delete/form/p/'.
+ 'label@for="submit"/span'		=> 'Eleteday'				//form submit button
 
 /* input forms
    ---------------------------------------------------------------------------------------------------------------------- */
-,'//label[@for="nnf_title-field"]'	=> 'Itletay:'				//title field label
+,'label@for="nnf_title-field"'		=> 'Itletay:'				//title field label
 ,'#nnf_title-field@placeholder'		=> 'Ypetay read’thay itletay erehay…'	//placeholder text for the title field
 
-,'//label[@for="nnf_name-field-http"]'	=> 'Ouyay areway ignedsay inway asway:'	//label for name field if HTTP_AUTH
-,'//label[@for="nnf_name-field"]'	=> 'Amenay:'				//name field label
+,'label@for="nnf_name-field-http"'	=> 'Ignedsay inway asway:'		//label for name field if HTTP_AUTH
+,'label@for="nnf_name-field"'		=> 'Amenay:'				//name field label
 ,'#nnf_name-field@placeholder'		=> 'Ouryay amenay'			//placeholder text for the name field
 
-,'//label[@for="nnf_pass-field"]'	=> 'Asspay-ordway:'			//label for password field
+,'label@for="nnf_pass-field"'		=> 'Asspay-ordway:'			//label for password field
 ,'#nnf_pass-field@placeholder'		=> 'Asspay-ordway orfay amenay'
 
 //this is shown by default as long as new users aren't disabled and the user isn't signed in
@@ -193,7 +193,7 @@ HTML
 			oremay.
 HTML
 
-,'//label[@for="nnf_text-field"]'	=> 'Essagemay:'
+,'label@for="nnf_text-field"'		=> 'Essagemay:'
 ,'#nnf_text-field@placeholder'		=> 'Ypetay ouryay essagemay erehay…'
 
 /* markup page
@@ -407,7 +407,7 @@ HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Ignedsay inway asway<br /><b class="nnf_signed-in-name">Rockay</b>
 HTML
-,'//*[@class="nnf_signed-out"]/a'	=> 'Ignsay inway'
+,'@class="nnf_signed-out"/a'		=> 'Ignsay inway'
 
 );
 
