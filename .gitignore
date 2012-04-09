@@ -13,6 +13,7 @@
 !start.php
 !thread.php
 !markup.php
+!privacy.php
 !lib/domtemplate.php
 !lib/functions.php
 !lib/rss-template.xml

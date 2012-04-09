@@ -185,7 +185,7 @@ HTML
 			or a designated moderator.
 HTML
 ,'#protip'				=> <<<HTML
-			Pro tip: Use <a href="/markup.txt">markup</a> to add links, quotes and more.
+			Pro tip: Use <a href="/markup.php">markup</a> to add links, quotes and more.
 HTML
 
 ,'label@for="nnf_text-field"'		=> 'Message:'
@@ -377,6 +377,75 @@ div	{color: red;}
 </article>
 HTML
 
+/* privacy policy page
+   ---------------------------------------------------------------------------------------------------------------------- */
+,'#privacy'				=> <<<HTML
+
+<h1>Privacy Policy</h1>
+<article>
+<header>
+<ol>
+	<li><a href="#collected">» Information Collected</a></li>
+	<li><a href="#stored">» Information Stored</a></li>
+	<li><a href="#other">» Other Information</a></li>
+</ol>
+</header>
+
+<p>
+	This discussion forum is powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a>
+	(here after “NNF”). As a forum, NNF is unique in what and the way it stores information,
+	notably in what it <em>doesn’t</em> store, compared to other forums.
+</p>
+
+<h2 id="collected">Information Collected:</h2>
+<p>
+	The only information you are asked to provide is a name, password and the text that you wish to publish.
+</p>
+
+<h2 id="stored">Information Stored:</h2>
+<ul>
+	<li><p>
+		The name and message you provide is stored as part of the discussion feed and made public.<br />
+		The name can be any text and you do not have to use your real name or any identifying moniker
+	</p></li>
+	<li><p>
+		The password you provide is one-way encrypted once received and stored only in this encrypted form —
+		this means that NNF (and the site owner) does not know your password and cannot recover it
+	</p></li>
+	<li><p>
+		If this forum provides selectable translations then changing the display language will set a
+		<em>cookie</em> specifying your chosen language.
+	</p><p>
+		A <em>Cookie</em> is a small piece of text stored on your computer used to remember some kind of
+		interaction with a website, in this case which language you have selected. NNF only uses cookies to
+		remember the language selection and does not track you in any way. It is completely safe to delete the
+		cookie
+	</p></li>
+</ul>
+
+<h2 id="other">Other Information:</h2>
+<ul>
+	<li><p>
+		Please note that NoNonsense Forum is free, open-source software, adaptable by anybody with sufficient
+		knowledge; this forum may be collecting additional information beyond this privacy policy.
+		The person who owns and operates this website may have additional privacy policies in place.
+		Please contact the site owner with any questions
+	</p></li>
+	<li><p>
+		Almost all websites collect visitor information, which typically includes details such as your I.P. address,
+		time of access and web browser (also possibly operating system) identifying mark.
+		These details are typically used for measuring traffic and finding faults. None of this information is
+		collected by any part of NoNonsense Forum itself; again, contact the website owner with any questions
+	</p></li>
+	<li><p>
+		The search feature is controlled by a third party (usually <a href="http://google.com">Google</a>),
+		and will certainly collect information. Please check their website for their privacy policy
+	</p></li>
+</ul>
+
+</article>
+HTML
+
 /* site footer
    ---------------------------------------------------------------------------------------------------------------------- */
 ,'#nnf_lock'				=> 'Lock'				//Lock link in 'thread.html'
@@ -397,7 +466,7 @@ HTML
 
 ,'/html/body/footer/p[1]'		=> <<<HTML
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
-	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+	<a href="/privacy.php">privacy policy</a>
 HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>

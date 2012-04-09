@@ -1,4 +1,4 @@
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -257,18 +257,21 @@ p.appended			{color: #888; padding-top: 19px;
 				         user-select: none;}
 
 
-/* markup page
+/* markup / privacy page
    ====================================================================================================================== */
-/* table of contents */
-#markup header ol		{margin: 0; padding: 0;}
-#markup header li		{display: inline; padding: 0 20px 0 0;}
+#markup h1,			/* title icon */
+ #privacy h1			{background-image: url("img/help.png");}
+
+#markup header ol,		/* table of contents */
+ #privacy header ol		{margin: 0; padding: 0;}
+#markup header li,
+ #privacy header li		{display: inline; padding: 0 20px 0 0;}
 
 
 /* input forms
    ====================================================================================================================== */
-#nnf_new-form h1,
- #nnf_reply-form h1,
- #append h1, #markup h1		{background-image: url("img/new.png");}
+#nnf_new-form h1,		/* title icon */
+ #nnf_reply-form h1		{background-image: url("img/new.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -337,7 +340,7 @@ input[type=text],
 				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
-/* delete, un/lock form
+/* delete form
    ---------------------------------------------------------------------------------------------------------------------- */
 #delete h1			{background-image: url("img/deletetitle.png");}
 #delete #psubmit		{margin-top: 20px !important;}

@@ -1,8 +1,9 @@
-v
+v19	
 *	Translation support
 	-	Themes can provide their own translations and admins can add more themselves easily
 	-	Browser language is auto-detected, or user can select one
 	-	Markup.txt removed, moved to a themed / translatable page
+	-	Privacy policy added (also translatable)
 	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
 *	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
 *	Removed `theme_pageList` from 'theme.config.default.php'. Whilst this prevents customised page lists,
