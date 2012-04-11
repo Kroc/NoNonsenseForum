@@ -21,7 +21,7 @@
 //a space-delimited list of theme translations the user can choose, excluding the theme's default language (above).
 //each item in the list should be a standard language code, which therefore refers to the matching 'lang.*.php' file,
 //e.g. `fr de es it` for French, German, Spanish & Italian. See 'lang.example.php' for info on translations
-@define ('THEME_LANGS',		'x-pig-latin');
+@define ('THEME_LANGS',		'');
 //(if you change the text in the theme ['*.html' files], you might want to change this option to blank '' so that users
 //can’t use the other translations, which may no longer match up with your default language's text, unless you intend to
 //update the additonal translations too!)
