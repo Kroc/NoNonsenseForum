@@ -1,0 +1,9 @@
+*
+!.gitignore
+
+!functions.php
+
+!domtemplate**
+
+!rss-template.xml
+!sitemap-template.xml
