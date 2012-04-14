@@ -1,0 +1,7 @@
+# ignore files that aren't part of NoNonsenseForum:
+# (in this folder we want to ignore third-party themes)
+*
+!.gitignore
+
+# include the default theme
+!greyscale

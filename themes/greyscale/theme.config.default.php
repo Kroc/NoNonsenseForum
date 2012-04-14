@@ -76,22 +76,4 @@
 //- for this theme, it should be 32x32 px
 @define ('THEME_LOGO',		'logo.png');
 
-
-/* functions: (you might want to do some particular formatting in your theme)
-   ====================================================================================================================== */
-if (!function_exists ('theme_custom')) { function theme_custom ($template) {
-	//this function is called just before a templated page is outputted so that you have an opportunity to do any
-	//extra templating of your own. the `$template` object passed in is a DOMTemplate class, see '/lib/domtemplate.php'
-	//for code or <camendesign.com/dom_templating> for documentation on how to template with it
-	
-	//set the logo
-	$template->setValue ('img#logo@src', FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO);
-}}
-
-//produce an HTML list of names. used for the mods/members list
-if (!function_exists ('theme_nameList')) { function theme_nameList ($names) {
-	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="mod"' : '').'>'.safeHTML ($name).'</b>';
-	return implode (', ', $names);
-}}
-
 ?>

@@ -151,6 +151,8 @@ define ('CAN_POST', FORUM_ENABLED && (
 
 /* theme & translation
    ====================================================================================================================== */
+//load the theme-specific functions
+@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.php') or die ('theme.php missing!');
 //load the user’s theme configuration, if it exists
 @include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
 //include the theme defaults
