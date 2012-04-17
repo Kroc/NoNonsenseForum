@@ -35,7 +35,7 @@ class DOMTemplate extends DOMTemplateNode {
 		//fix and clean DOM's XML output:
 		return preg_replace (
 			//add space to self-closing	//fix broken self-closed tags
-			array ('/<(.*?[^ ])\/>/s',	'/<(div|[ou]l|textarea)(.*?) ?\/>/'),
+			array ('/<(.*?[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)(.*?) ?\/>/'),
 			array ('<$1 />',		'<$1$2></$1>'),
 			//should we remove the XML prolog?
 			!$this->keep_prolog
