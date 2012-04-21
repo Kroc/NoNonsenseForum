@@ -471,7 +471,7 @@ HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
 HTML
-,'@class="nnf_signed-out"/a'		=> 'Sign in'
+,'.nnf_signed-out/a'			=> 'Sign in'
 
 );
 

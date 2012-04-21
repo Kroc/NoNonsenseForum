@@ -482,7 +482,7 @@ if (count ($thread)) {
 	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//do the page links
-	$template->setValue ('.nnf_pages', theme_pageList (PATH_URL.$FILE, $PAGE, $PAGES), true);
+	theme_pageList ($template, PATH_URL.$FILE, $PAGE, $PAGES);
 	//slice the full list into the current page
 	$thread = array_slice ($thread, ($PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	

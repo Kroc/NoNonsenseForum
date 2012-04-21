@@ -21,7 +21,7 @@ function theme_nameList ($names) {
 
 //produces a truncated list of page numbers around the current page:
 //(you might want to do something different, like a combo box with a button)
-function theme_pageList ($url_slug, $page, $pages) {
+function theme_pageList ($template, $url_slug, $page, $pages) {
 	//always include the first page
 	$list[] = 1;
 	//more than one page?
@@ -41,17 +41,29 @@ function theme_pageList ($url_slug, $page, $pages) {
 		if ($page != $pages) $list[] = $pages;
 	}
 	
-	//turn it into HTML
-	foreach ($list as &$item) switch (true) {
-		case $item == $page:	$item = "<li><em>$item</em></li>"; 				break;
-		case $item:		$item = "<li><a href=\"$url_slug+$item\">$item</a></li>";	break;
-		default:		$item = '<li>…</li>';
+	//manipulate the page list in the template
+	$node = $template->repeat ('.nnf_pages/li');
+	//add a previous page link
+	if ($pages > 1 && $page > 1) $node->set (array (
+		'a@href'	=> "$url_slug+".($page-1),
+		'a'		=> '«'
+	))->next ();
+	//generate the list of pages,
+	foreach ($list as &$item) {
+		//create the link
+		$node->setValue ('a@href', "$url_slug+$item");
+		switch (true) {
+			//determine if this is the current page, a regular page number, or the “…” gap
+			case $item == $page:	$node->setValue ('a/em', $item)->next ();	break;
+			case $item:		$node->setValue ('a', $item)->next ();		break;
+			default:		$node->setValue ('.', '…')->next ();
+		}
 	}
-	//insert the previous / next links
-	if ($pages > 1 && $page > 1)	array_unshift ($list, "<li><a href=\"$url_slug+".($page-1)."\">«</a></li>");
-	if ($page < $pages)		array_push    ($list, "<li><a href=\"$url_slug+".($page+1)."\">»</a></li>");
-	
-	return implode ('', $list);
+	//add a next page link
+	if ($page < $pages) $node->set (array (
+		'a@href'	=> "$url_slug+".($page+1),
+		'a'		=> '»'
+	))->next ();
 }
 
 ?>

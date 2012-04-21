@@ -200,7 +200,7 @@ if ($folders = array_filter (
    ---------------------------------------------------------------------------------------------------------------------- */
 if ($threads) {
 	//do the page links (stickies are not included in the count as they appear on all pages)
-	$template->setValue ('.nnf_pages', theme_pageList (PATH_URL, $PAGE, $PAGES), true);
+	theme_pageList ($template, PATH_URL, $PAGE, $PAGES);
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, ($PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
