@@ -53,9 +53,7 @@ function prepareTemplate ($filepath, $title) {
 		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 	));
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
-	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-		$template->remove ('//link[contains(@href,"custom.css")]')
-	;
+	if (!file_exists (THEME_ROOT.'custom.css')) $template->remove ('//link[contains(@href,"custom.css")]');
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -332,7 +330,7 @@ function formatText ($text, $rss=NULL) {
 function indexRSS () {
 	/* create an RSS feed
 	   -------------------------------------------------------------------------------------------------------------- */
-	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
 		'/rss/channel/link'	=> FORUM_URL.PATH_URL
@@ -365,11 +363,15 @@ function indexRSS () {
 	//get list of sub-forums and include the root too
 	$folders = array ('') + array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-		preg_grep ('/^(\.|users$|themes$|lib$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
+		preg_grep ('/^(\.|users$|themes$|lib$)/', scandir (FORUM_ROOT.DIRECTORY_SEPARATOR), PREG_GREP_INVERT),
+		'is_dir'
 	);
 	
 	//start the XML file. this template has an XMLNS, so we have to prefix all our XPath queries :(
-	$xml = new DOMTemplate (FORUM_ROOT.'/lib/sitemap-template.xml', 'x', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+	$xml = new DOMTemplate (
+		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'sitemap-template.xml',
+		'x', 'http://www.sitemaps.org/schemas/sitemap/0.9'
+	);
 	
 	//generate a sitemap index file, to point to each index RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
@@ -377,14 +379,16 @@ function indexRSS () {
 	foreach ($folders as $folder)
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		if (@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml'))
+		if (@$rss = simplexml_load_file (
+			FORUM_ROOT.($folder ? DIRECTORY_SEPARATOR.$folder : '').DIRECTORY_SEPARATOR.'index.xml'
+		))
 		//if you delete the last thread in a folder, there won’t be anything in the RSS index file!
 		if (@$rss->channel->item[0]) $sitemap->set (array (
 			'./x:loc'	=> FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml',
 			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
 		))->next ()
 	;
-	file_put_contents (FORUM_ROOT.'/sitemap.xml', $xml->html ());
+	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml->html ());
 	
 	//you saw nothing, right?
 	clearstatcache ();

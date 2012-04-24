@@ -132,8 +132,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.html',
-		sprintf (THEME_TITLE_APPEND, $post->title)
+		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title)
 	
 	//the preview post
 	)->set (array (
@@ -282,8 +281,7 @@ if (isset ($_GET['delete'])) {
 	/* template the delete page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		FORUM_ROOT.'/themes/'.FORUM_THEME.'/delete.html',
-		sprintf (THEME_TITLE_DELETE, $post->title)
+		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title)
 	
 	//the preview post
 	)->set (array (
@@ -355,7 +353,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$url  = FORUM_URL.PATH_URL."$FILE+$page#".base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
-		$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+		$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
 			'/rss/channel/link'		=> FORUM_URL.PATH_URL.$FILE
@@ -420,7 +418,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html',
+	THEME_ROOT.'thread.html',
 	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
 	sprintf (THEME_TITLE,
 		//title of the thread, obviously

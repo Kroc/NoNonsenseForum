@@ -179,7 +179,7 @@ class DOMTemplateNode {
 		$this->DOMXPath = new DOMXPath ($DOMNode->ownerDocument);
 		//the painful bit. if you have an XMLNS in your template then XPath won’t work unless you:
 		// a. register a default namespace, and
-		// b. prefix all your XPath queries with this namespace
+		// b. prefix element names in your XPath queries with this namespace
 		$this->NS = $NS; $this->NS_URI = $NS_URI;
 		if ($this->NS && $this->NS_URI) $this->DOMXPath->registerNamespace ($this->NS, $this->NS_URI);
 	}

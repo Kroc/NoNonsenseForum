@@ -54,9 +54,10 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 define ('PAGE',     preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : false);
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
-//these two get used an awful lot
-define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));	//when outputting as part of a URL
-define ('PATH_DIR', !PATH ? '/' : '/'.PATH);					//serverside, like `chdir` / `unlink`
+//a shorthand for when PATH is used in URL construction for HTML use
+define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));
+//for serverside use, like `chdir` / `unlink` (replace the URL forward-slashes with backslashes on Windows)
+define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replace ('/', DIRECTORY_SEPARATOR, PATH));
 //if we are in nested sub-folders, the name of the current sub-forum, exluding the rest
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
@@ -93,7 +94,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
-	$user = FORUM_ROOT."/users/$name.txt";
+	$user = FORUM_ROOT.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR."$name.txt";
 	
 	//create the user, if new:
 	//- if registrations are allowed (`FORUM_NEWBIES` is true)
@@ -126,7 +127,7 @@ define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 // flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
-	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES)),
+	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.DIRECTORY_SEPARATOR.'mods.txt', FILE_IGNORE_NEW_LINES)),
 	//if in a sub-forum, the local 'mods.txt'
 	'LOCAL'	=> PATH ? array_filter ((array) @file ('mods.txt', FILE_IGNORE_NEW_LINES)) : array ()
 );
@@ -151,16 +152,18 @@ define ('CAN_POST', FORUM_ENABLED && (
 
 /* theme & translation
    ====================================================================================================================== */
+//shorthand to the server-side location of the particular theme folder (this gets used a lot)
+define ('THEME_ROOT', FORUM_ROOT.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.FORUM_THEME.DIRECTORY_SEPARATOR);
 //load the theme-specific functions
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.php') or die ('theme.php missing!');
+@(include THEME_ROOT.'theme.php') or die ('theme.php missing!');
 //load the user’s theme configuration, if it exists
-@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
+@include THEME_ROOT.'theme.config.php';
 //include the theme defaults
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
+@(include THEME_ROOT.'theme.config.default.php') or die ('theme.config.default.php missing!');
 
 //include the language translations
 $LANG = array ();
-foreach (explode (' ', THEME_LANGS) as $lang) @include FORUM_ROOT.'/themes/'.FORUM_THEME."/lang.$lang.php";
+foreach (explode (' ', THEME_LANGS) as $lang) @include THEME_ROOT."lang.$lang.php";
 
 //get / set the language to use
 define ('LANG',

@@ -10,7 +10,7 @@
 //or <camendesign.com/dom_templating> for documentation on how to template with it
 function theme_custom ($template) {
 	//set the logo
-	$template->setValue ('img#logo@src', FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO);
+	$template->setValue ('img#logo@src', THEME_ROOT.'img'.DIRECTORY_SEPARATOR.THEME_LOGO);
 }
 
 //produce an HTML list of names (used for the mods/members list)

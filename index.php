@@ -41,7 +41,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
-	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
 		'/rss/channel/link'		=> FORUM_URL.PATH_URL.$file,
@@ -100,7 +100,7 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details. `prepareTemplate` can be found in
 // 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
+	THEME_ROOT.'index.html',
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
