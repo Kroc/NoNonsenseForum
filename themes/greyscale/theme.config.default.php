@@ -7,24 +7,23 @@
 
 
 /* --- copy this file to 'theme.config.php' and customise to your liking,
-       don’t delete or modify 'theme.config.default.php'! --- */
+       DON’T DELETE OR MODIFY 'theme.config.default.php'! --- */
 
 
 /* required options: (used internally by NoNonsense Forum itself, all themes must provide these)
    ====================================================================================================================== */
-//the default written langauge of the your template files (i.e. `<html lang="en">`). this will be a standard language code,
-//see this web page for information on choosing a language code: <w3.org/International/questions/qa-choosing-language-tags>
-//of course, don’t actually change this value for an existing theme! this only applies if you are creating a new theme that
-//uses a different language by default! changing this value will *not* change the default language shown!
-@define ('THEME_LANG',		'en');
-
-//a space-delimited list of theme translations the user can choose, excluding the theme's default language (above).
-//each item in the list should be a standard language code, which therefore refers to the matching 'lang.*.php' file,
-//e.g. `fr de es it` for French, German, Spanish & Italian. See 'lang.example.php' for info on translations
+//a space-delimited list of theme translations the user can choose. each item should be a standard language code
+//(see <w3.org/International/questions/qa-choosing-language-tags> for information on choosing a language code)
+//which therefore refers to the matching 'lang.*.php' file, e.g. 'fr de es it' for French, German, Spanish & Italian.
+//see 'lang.example.php' for info on translations
 @define ('THEME_LANGS',		'');
 //(if you change the text in the theme ['*.html' files], you might want to change this option to blank '' so that users
-//can’t use the other translations, which may no longer match up with your default language's text, unless you intend to
+//can’t use the other translations--they may no longer match up with your default language's text--unless you intend to
 //update the additonal translations too!)
+
+//the translation to use by default. leave blank to use the theme's default language (which is what is written directly
+//into the HTML files), otherwise, enter the translation's language code to change the default language of your forum
+@define ('THEME_LANG',		'');
 
 //the `date` format code used to print human readable dates into the HTML,
 //see <php.net/manual/en/function.date.php> for documentation

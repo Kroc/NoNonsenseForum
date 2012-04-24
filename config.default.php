@@ -7,7 +7,7 @@
 
 
 /* --- copy this file to 'config.php' and customise to your liking,
-       don’t delete or modify 'config.default.php'! --- */
+       DON’T DELETE OR MODIFY 'config.default.php'! --- */
 
 
 //uncomment this if you want to show PHP errors in the browser

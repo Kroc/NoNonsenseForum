@@ -28,8 +28,8 @@ function prepareTemplate ($filepath, $title=NULL) {
 	if (@$LANG[LANG]) $template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG);
 	//template the language chooser
 	if (THEME_LANGS) {
-		//the first item in the template should be your default language
-		$item = $template->repeat ('.nnf_lang')->remove (array ('./@selected' => LANG != THEME_LANG))->next ();
+		//the first item in the template should be your default language (mark it as selected if LANG is not blank)
+		$item = $template->repeat ('.nnf_lang')->remove (array ('./@selected' => LANG))->next ();
 		//build the list for each additional language
 		foreach ($LANG as $code => $lang) $item->set (array (
 			'./@value'	=> $code,
@@ -44,7 +44,7 @@ function prepareTemplate ($filepath, $title=NULL) {
 	/* HTML <head>
 	   -------------------------------------------------------------------------------------------------------------- */
 	//if no title is provided, the one already in the template remains (likely for translation purposes)
-	if (!is_null ($title)) $template->set ('/html/head/title', $title);
+	if (!is_null ($title)) $template->setValue ('/html/head/title', $title);
 	//metadata for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
 	$template->set (array (
 		//application title (= forum / sub-forum name):
