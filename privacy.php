@@ -8,10 +8,7 @@
 //bootstrap the forum; you should read that file first
 require_once './start.php';
 
-$template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/privacy.html',
-	'Privacy Policy'
-);
+$template = prepareTemplate (THEME_ROOT.'privacy.html');
 
 theme_custom ($template);
 die ($template->html ());

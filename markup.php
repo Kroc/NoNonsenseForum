@@ -8,10 +8,7 @@
 //bootstrap the forum; you should read that file first
 require_once './start.php';
 
-$template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/markup.html',
-	'Markup'
-);
+$template = prepareTemplate (THEME_ROOT.'markup.html');
 
 theme_custom ($template);
 die ($template->html ());

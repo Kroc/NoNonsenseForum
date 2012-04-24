@@ -6,7 +6,7 @@
 */
 
 //the shared template stuff for all pages
-function prepareTemplate ($filepath, $title) {
+function prepareTemplate ($filepath, $title=NULL) {
 	global $LANG, $MODS, $MEMBERS;
 	
 	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
@@ -43,11 +43,11 @@ function prepareTemplate ($filepath, $title) {
 	
 	/* HTML <head>
 	   -------------------------------------------------------------------------------------------------------------- */
+	//if no title is provided, the one already in the template remains (likely for translation purposes)
+	if (!is_null ($title)) $template->set ('/html/head/title', $title);
+	//metadata for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
 	$template->set (array (
-		//HTML title (= forum / sub-forum name and page number)
-		'/html/head/title'					=> $title,
 		//application title (= forum / sub-forum name):
-		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
 		'//meta[@name="application-name"]/@content'		=> SUBFORUM ? SUBFORUM : FORUM_NAME,
 		//application URL (where the pinned site opens at)
 		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
