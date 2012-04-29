@@ -17,8 +17,9 @@ $FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') 
 $xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread = $xml->channel->xpath ('item');
 
+//handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
+$PAGES = count ($thread) % FORUM_POSTS == 1 ? floor (count ($thread) / FORUM_POSTS) : ceil (count ($thread) / FORUM_POSTS);
 //validate the page number, when no page number is specified default to the last page
-$PAGES = ceil (count ($thread) / FORUM_POSTS);
 $PAGE  = !PAGE || PAGE > $PAGES ? $PAGES : PAGE;
 
 //access rights for the current user

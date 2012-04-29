@@ -88,8 +88,11 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 		//remove the stickies from the thread list
 		$threads = array_diff ($threads, $stickies);
 	}
+	
+	//handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
+	$PAGES = count ($threads) % FORUM_THREADS == 1	? floor (count ($threads) / FORUM_THREADS)
+							: ceil  (count ($threads) / FORUM_THREADS);
 	//validate the given page number; an invalid page number returns the first instead
-	$PAGES = ceil (count ($threads) / FORUM_THREADS);
 	$PAGE  = !PAGE || PAGE > $PAGES ? 1 : PAGE;
 } else {
 	$PAGES = 1; $PAGE = 1;
