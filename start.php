@@ -168,7 +168,7 @@ foreach (explode (' ', THEME_LANGS) as $lang) @include THEME_ROOT."lang.$lang.ph
 //get / set the language to use
 define ('LANG',
 	//if the language selector has been used to choose a language:
-	@$_POST['lang'] && setcookie (
+	isset ($_POST['lang']) && setcookie (
 	//- set the language cookie for 1 year
 	"lang", $_POST['lang'], time ()+60*60*24*365, FORUM_PATH, $_SERVER['HTTP_HOST'], FORUM_HTTPS
 )	? $_POST['lang']
