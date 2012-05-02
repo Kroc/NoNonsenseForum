@@ -46,7 +46,7 @@ Options -MultiViews -Indexes
 		# this is a mess, and probably wrong
 		Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
 		Header set Pragma "no-cache"
-		Header set Expires "Sun, 1 Jan 2012 00:00:00 GMT"
+		Header set Expires "Sun, 01 Jan 2012 00:00:00 GMT"
 	</FilesMatch>
 </IfModule>
 
