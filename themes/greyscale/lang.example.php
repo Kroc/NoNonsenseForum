@@ -194,6 +194,7 @@ HTML
 /* markup page
    ---------------------------------------------------------------------------------------------------------------------- */
 //the markup documentation:
+,'/html[@class="markup"]/head/title'	=> 'Markup'
 ,'#markup'				=> <<<HTML
 
 <h1>Markup</h1>
@@ -379,6 +380,7 @@ HTML
 
 /* privacy policy page
    ---------------------------------------------------------------------------------------------------------------------- */
+,'/html[@class="privacy"]/head/title'	=> 'Privacy Policy'
 ,'#privacy'				=> <<<HTML
 
 <h1>Privacy Policy</h1>
