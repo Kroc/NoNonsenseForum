@@ -182,8 +182,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'#nnf_error-text'        => empty ($_POST) || TEXT
 	));
 	
-	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-	//this function is provided to allow custom themes to do their own additional templating
+	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
 	die ($template->html ());
 }
@@ -324,8 +323,7 @@ if (isset ($_GET['delete'])) {
 		'#nnf_error-name-delete' => empty ($_POST) || NAME
 	));
 	
-	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-	//this function is provided to allow custom themes to do their own additional templating
+	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
 	die ($template->html ());
 }
@@ -580,8 +578,7 @@ if (CAN_REPLY) $template->set (array (
 	'#nnf_error-text'  => empty ($_POST) || TEXT
 ));
 
-//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-//this function is provided to allow custom themes to do their own additional templating
+//call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
 die ($template->html ());
 

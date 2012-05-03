@@ -5,7 +5,9 @@ v19
 	-	Markup.txt removed, moved to a themed / translatable page
 	-	Privacy policy added (also translatable)
 	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
+*	Fixed a long-standing bug that caused page boundaries (i.e. posts per page) to be incorrectly calculated
 *	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
+*	Fixed bug with stickies not showing if no non-sticky threads exist (with thanks to "Sani")
 *	Moved `theme_pageList` from 'theme.config.default.php' and into a new 'theme.php' for storing the theme functions;
 	this allows each theme to use different types of lists without 'theme.config.php' having to be updated all the time
 *	Page numbers are now validated / bounded
