@@ -16,6 +16,7 @@ Contents:
 [2.3]   Favicon and touch-icon
 [2.4]   Adding a forum introduction (about.html)
 [2.5]   Custom CSS
+[3]     Translations
 
 
 [0]     Requirements:
@@ -23,7 +24,7 @@ Contents:
 *       Apache 2.1 or above, with .htaccess files enabled
 *       PHP 5.2.3 or above
 
-Browser support:
+Browser support: (default 'greyscale' theme)
 *       IE6, 7, 8, 9+
 *       Firefox 3+, Camino 2+
 *       Chrome Stable, Chrome Dev
@@ -35,7 +36,7 @@ Browser support:
 *       Android (all versions AFAIK)
 *       Firefox Mobile
 *       Opera Mobile & Mini
-*       Amazon Kindle
+*       Amazon Kindle (e-ink) & Fire
 *	IE9/Mobile (untested)
 
 Unsupported:
@@ -167,7 +168,29 @@ top of each forum to tell visitors what the forum is used for, rules
 etc., but since any HTML can be used you can add whatever you want --
 social buttons, links, images and so forth.
 
+If you are using translations, then you can also provide translations
+of 'about.html' to match by creating 'about_xx.html' files, where 'xx'
+is the language code of the translation; see section 3 for information
+about using and providing theme translations.
+
 [2.5]   Custom CSS:
 ------------------------------------------------------------------------
 Within the theme folder (that is where 'theme.css' is for the chosen
 theme) create a 'custom.css' file and it will be automatically included.
+
+
+[3]     Translations:
+========================================================================
+NoNonsense Froum themes can provide user-selectable translations.
+Translation files are stored as 'lang.xx.php' files in the theme's
+folder (where 'xx' is the language code). Refer to 'lang.example.php'
+in the 'greyscale' theme folder for full instructions on creating and
+enabling theme translations.
+
+Once a translation is provided and enabled, visitors to the site can
+select their preferred language, and if their browser specifies their
+language and that translation is available, it will be selected
+automatically for them.
+
+The user's choice of language is persisted with a cookie.
+A privacy policy is included to explain this.
