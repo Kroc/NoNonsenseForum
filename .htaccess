@@ -1,4 +1,4 @@
-# NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+# NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
 # licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 # you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 
@@ -46,7 +46,7 @@ Options -MultiViews -Indexes
 		# this is a mess, and probably wrong
 		Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
 		Header set Pragma "no-cache"
-		Header set Expires "Sun, 1 Jan 2012 00:00:00 GMT"
+		Header set Expires "Sun, 01 Jan 2012 00:00:00 GMT"
 	</FilesMatch>
 </IfModule>
 
@@ -79,15 +79,15 @@ Options -MultiViews -Indexes
 	RewriteRule ^ - [F]
 	
 	# page numbers on the root forum
-	RewriteRule ^:(\d+)$ ?page=$1 [QSA,L]
+	RewriteRule ^[:+](\d+)$ ?page=$1 [QSA,L]
 	
 	# a sub-forum
-	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?::\d+)?$
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1 -d
 	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ ?path=$1&page=$2 [QSA,L]
 	
 	# a thread
-	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?::\d+)?$
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1.rss -f
-	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?::(\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
+	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?:[:+](\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
 </IfModule>

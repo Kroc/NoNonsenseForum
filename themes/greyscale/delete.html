@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html><head>
+<html lang="en" class="delete"><head>
 	<meta charset="utf-8" />
-	<!-- NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+	<!-- NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 	<title>Delete Thread Title?</title>
@@ -31,10 +31,19 @@
 		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search"  /><!--
 	--></form>
 	
-	<nav><ol id="index">
-		<li><a href="/">Index</a></li>
-		<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
-	</ol></nav>
+	<nav>
+		<form id="nnf_lang" method="post">
+			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
+			<select name="lang" id="lang">
+				<option class="nnf_lang" value="" selected="selected">English</option>
+			</select>
+			<input type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set language" />
+		</form>
+		<ol id="index">
+			<li><a href="/">Index</a></li>
+			<li class="nnf_breadcrumb"> » <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
+		</ol>
+	</nav>
 </header>
 <!-- =================================================================================================================== -->
 <section id="delete">
@@ -66,11 +75,11 @@
 	</p><p id="nnf_error-none-reply" class="ok" >
 		To delete this post you must be either the original author or a designated moderator.<br />
 		The content of the post will be removed but the name and date will remain.
-	</p><p id="nnf_error-name" class="error">
+	</p><p id="nnf_error-name-delete" class="error">
 		Enter the name of either the original author or a moderator to be able to delete.
-	</p><p id="nnf_error-pass" class="error">
+	</p><p id="nnf_error-pass-delete" class="error">
 		Enter the password for either the original author or a moderator to be able to delete.
-	</p><p id="nnf_error-auth" class="error">
+	</p><p id="nnf_error-auth-delete" class="error">
 		Name / password mismatch! You must enter the name and password of either the original author,
 		or a designated moderator.
 	</p>
@@ -84,7 +93,7 @@
 		<li>Only posts on the last page of the thread can be removed completely (so as to not break permalinks)</li>
 	</ul></div>
 	
-	<p id="psubmit"><label for="submit">Delete
+	<p id="psubmit"><label for="submit"><span>Delete</span>
 		<input id="submit" name="submit" type="image" src="/themes/greyscale/img/submit.png"
 		       width="40" height="40" tabindex="4" alt="&gt;" />
 	</label></p>
@@ -120,19 +129,22 @@
 
 <footer><p>
 	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
-	© Kroc Camen of <a href="http://camendesign.com">Camen Design</a>
+	<a href="/privacy.php">privacy policy</a>
 </p><p id="signin" class="nnf_signed-in">
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
 </p><p id="signin" class="nnf_signed-out">
 	<a href="?signin">Sign in</a>
 </p></footer>
 
-<script><!--
+<script defer="defer"><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
 	var labels = document.getElementsByTagName ("label");
 	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
+//when the language selector is changed, submit immediately
+document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); }
 --></script>
+
 </body></html>

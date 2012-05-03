@@ -1,9 +1,13 @@
 <?php //bootstraps the forum
 /* ====================================================================================================================== */
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
+
+//default UTF-8 throughout
+mb_internal_encoding ('UTF-8');
+mb_regex_encoding    ('UTF-8');
 
 //correct PHP version?
 if (version_compare (PHP_VERSION, '5.2.3') < 0) die (
@@ -16,15 +20,11 @@ if (!@$_SERVER['HTTP_HTACCESS']) die (
 	"'.htaccess' file is missing, or not enabled."
 );
 
-require_once 'lib/functions.php';	//import shared functions
-require_once 'lib/domtemplate.php';	//import the templating engine
+require_once 'lib/functions.php';		//import shared functions
+require_once 'lib/domtemplate/domtemplate.php';	//import the templating engine
 
 /* configuration:
    ---------------------------------------------------------------------------------------------------------------------- */
-//default UTF-8 throughout
-mb_internal_encoding ('UTF-8');
-mb_regex_encoding    ('UTF-8');
-
 //try set the forum owner’s personal config ('config.php'), if it exists
 @include './config.php';
 //include the defaults: (for anything missing from the user’s config)
@@ -35,8 +35,9 @@ mb_regex_encoding    ('UTF-8');
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
 date_default_timezone_set (FORUM_TIMEZONE);
 
+
 /* constants: some stuff we don’t expect to change
-   ---------------------------------------------------------------------------------------------------------------------- */
+   ====================================================================================================================== */
 define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
 define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
 	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
@@ -47,19 +48,16 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	'://'.$_SERVER['HTTP_HOST']
 );
 
-//load the user’s theme configuration, if it exists
-@include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.php';
-//include the theme defaults
-@(include FORUM_ROOT.'/themes/'.FORUM_THEME.'/theme.config.default.php') or die ('theme.config.default.php missing!');
-
-
 /* common input
-   ====================================================================================================================== */
+   ---------------------------------------------------------------------------------------------------------------------- */
+//most pages allow for a page number; note that this is merely the user-input, it is not necessarily a valid page number!
+define ('PAGE',     preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : false);
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
-//these two get used an awful lot
-define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));	//when outputting as part of a URL
-define ('PATH_DIR', !PATH ? '/' : '/'.PATH);					//serverside, like `chdir` / `unlink`
+//a shorthand for when PATH is used in URL construction for HTML use
+define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));
+//for serverside use, like `chdir` / `unlink` (replace the URL forward-slashes with backslashes on Windows)
+define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replace ('/', DIRECTORY_SEPARATOR, PATH));
 //if we are in nested sub-folders, the name of the current sub-forum, exluding the rest
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
@@ -96,7 +94,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
-	$user = FORUM_ROOT."/users/$name.txt";
+	$user = FORUM_ROOT.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR."$name.txt";
 	
 	//create the user, if new:
 	//- if registrations are allowed (`FORUM_NEWBIES` is true)
@@ -125,11 +123,11 @@ define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 
 //get the list of moderators:
 //(`file` returns NULL if the file doesn’t exist; casting that to an array creates an array with a blank element, and
-//`array_filter` removes blank elements, including blank lines in the text file; we could use the `FILE_SKIP_EMPTY_LINES`
-//flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
+// `array_filter` removes blank elements, including blank lines in the text file; we could use the `FILE_SKIP_EMPTY_LINES`
+// flag, but `array_filter` kills two birds with one stone since we don’t have to check if the file exists beforehand.)
 $MODS = array (
 	//'mods.txt' on root for mods on all sub-forums
-	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.'/mods.txt', FILE_IGNORE_NEW_LINES)),
+	'GLOBAL'=>        array_filter ((array) @file (FORUM_ROOT.DIRECTORY_SEPARATOR.'mods.txt', FILE_IGNORE_NEW_LINES)),
 	//if in a sub-forum, the local 'mods.txt'
 	'LOCAL'	=> PATH ? array_filter ((array) @file ('mods.txt', FILE_IGNORE_NEW_LINES)) : array ()
 );
@@ -152,6 +150,43 @@ define ('CAN_POST', FORUM_ENABLED && (
 ));
 
 
+/* theme & translation
+   ====================================================================================================================== */
+//shorthand to the server-side location of the particular theme folder (this gets used a lot)
+define ('THEME_ROOT', FORUM_ROOT.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.FORUM_THEME.DIRECTORY_SEPARATOR);
+//load the theme-specific functions
+@(include THEME_ROOT.'theme.php') or die ('theme.php missing!');
+//load the user’s theme configuration, if it exists
+@include THEME_ROOT.'theme.config.php';
+//include the theme defaults
+@(include THEME_ROOT.'theme.config.default.php') or die ('theme.config.default.php missing!');
+
+//include the language translations
+$LANG = array ();
+foreach (explode (' ', THEME_LANGS) as $lang) @include THEME_ROOT."lang.$lang.php";
+
+//get / set the language to use
+define ('LANG',
+	//if the language selector has been used to choose a language:
+	isset ($_POST['lang']) && setcookie (
+	//- set the language cookie for 1 year
+	"lang", $_POST['lang'], time ()+60*60*24*365, FORUM_PATH, $_SERVER['HTTP_HOST'], FORUM_HTTPS
+)	? $_POST['lang']
+	//otherwise, does a cookie already exist to set the language?
+	: (@$_COOKIE['lang'] ? $_COOKIE['lang'] : (
+	//otherwise, try detect the language sent by the browser:
+	$lang = @array_shift (array_intersect (
+		//- find language codes in the HTTP header and compare with the theme provided languages
+		preg_replace ('/^([a-z0-9-]+).*/i', '$1', explode (',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])),
+		explode (' ', THEME_LANGS)
+	)) ? $lang
+	//all else failing, use the default language
+	: THEME_LANG))
+);
+//don’t treat language choice as an invalid form error
+if (isset ($_POST['lang'])) unset ($_POST);
+
+
 /* send HTTP headers
    ====================================================================================================================== */
 //if enabled, enforce HTTPS
@@ -167,7 +202,6 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 
 //if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
-//(these are trapped higher up as HTTP_AUTH_UN and HTTP_AUTH_PW and are authenticated the same as the regular post form)
 if (!HTTP_AUTH && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');

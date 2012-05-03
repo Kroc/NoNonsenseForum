@@ -1,27 +1,27 @@
+# ignore files that aren't part of NoNonsenseForum:
+# (in this folder we want to ignore the site's data -- RSS feeds, subforums and configuration)
 *
 !.gitignore
 
 # server
 !.htaccess
-!apple-touch-icon.default.png
-!favicon.default.ico
 !robots.txt
+!favicon.default.ico
+!apple-touch-icon.default.png
 
 # code
 !config.default.php
 !index.php
 !start.php
 !thread.php
-!lib/domtemplate.php
-!lib/functions.php
-!lib/rss-template.xml
-!lib/sitemap-template.xml
-!themes/*
-!users/*
+!markup.php
+!privacy.php
+!lib
+!themes
+!users
 
 # documentation
 !HISTORY.txt
+!INSTALL.txt
 !LICENCE.txt
-!markup.txt
 !README.txt
-

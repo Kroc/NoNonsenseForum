@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" class="markup"><head>
+	<meta charset="utf-8" />
+	<!-- NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2011
+	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
+	<title>Markup</title>
+	<!-- get rid of IE site compatibility button -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
+	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
+	<meta name="application-name" content="NoNonsense Forum" />
+	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
+	<meta name="msapplication-window" content="width=1024;height=600" />
+	<meta name="msapplication-navbutton-color" content="#222" />
+</head><body>
+<!-- =================================================================================================================== -->
+<header id="mast">
+	<h1><a href="/">
+		<img id="nnf_logo" src="/themes/greyscale/img/logo.png" width="32" height="32" alt="" /><!--
+		--><span class="nnf_forum-name">NoNonsense Forum</span>
+	</a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
+		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search" /><!--
+	--></form>
+	
+	<nav>
+		<form id="nnf_lang" method="post">
+			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
+			<select name="lang" id="lang">
+				<option class="nnf_lang" value="" selected="selected">English</option>
+			</select>
+			<input type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set language" />
+		</form>
+		<ol id="index">
+			<li><a href="/">Index</a></li>
+			<li class="nnf_breadcrumb">» <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
+		</ol>
+	</nav>
+</header>
+<!-- =================================================================================================================== -->
+<section id="markup">
+
+<h1>Markup</h1>
+<article>
+<header>
+<ol>
+	<li><a href="#links">» Links</a></li>
+	<li><a href="#names">» Names</a></li>
+	<li><a href="#bolditalic">» Bold &amp; italic</a></li>
+	<li><a href="#titles">» Titles</a></li>
+	<li><a href="#dividers">» Dividers</a></li>
+	<li><a href="#quotes">» Quotes</a></li>
+	<li><a href="#pre">» Monospace Text</a></li>
+</ol>
+</header>
+	
+<h2 id="links">Links:</h2>
+<p>
+	Clickable links will be created automatically on any web addresses in your text that begin with
+	"<samp>http://</samp>", "<samp>https://</samp>", "<samp>ftp://</samp>" or "<samp>irc://</samp>".
+	Also, e-mail addresses will be turned into clickable links for you.
+</p>
+<pre>
+YES:	http://www.google.com
+NO:	www.google.com
+YES:	email@email.com
+</pre>
+
+<h2 id="names">Names:</h2>
+<p>
+	You can refer to another person by prefixing their name with an	at-symbol. E.g. "<samp>@bob</samp>"
+	The name will link to the last reply made by that person in the current discussion thread.
+</p>
+
+<h2 id="bolditalic">Bold &amp; Italic</h2>
+<pre>
+*Write bold text like this*, and _italic text like this_.
+</pre>
+
+
+<h2 id="titles">Titles:</h2>
+<p>
+	For a title, start a line with two colons. Example:
+</p>
+<pre>
+:: Shopping list
+</pre>
+
+<h2 id="dividers">Dividers:</h2>
+<p>
+	To draw a line across your text, use three or more dashes:<br />
+	(this should be on its own line, with a blank line before and after)
+</p>
+<pre>
+---
+</pre>
+
+<h2 id="quotes">Quotes:</h2>
+<p>
+	To quote somebody else's text, place it on its own line with quote marks at the beginning and end.
+	This applies even if the quoted text is more than one paragraph, or contains quotes itself.
+</p><p>
+	There must be a blank line between any quote and other text:<br />
+	(a single line-break will not work)
+</p>
+<pre>
+YES:	This is my text
+	
+	"This is your text"
+	
+	This is my text
+</pre>
+<p>
+	There must be no text before or after the quote marks:
+</p>
+<pre>
+NO:	"This is your text".
+</pre>
+<p>
+	However, spaces before or after are allowed. When you copy and paste someone else's quote,
+	extra spaces might be included, these will be ignored.
+</p>
+<pre>
+YES:	This is my text
+
+	     "this is your text
+	
+	"
+	
+	This is my text
+</pre>
+<p>
+	A quote may span more than one line or paragraph:
+</p>
+<pre>
+YES:	This is my text
+	
+	"The quick brown fox
+	jumped over the lazy dog
+	
+	Jackdaws love my big
+	sphinx of quartz"
+	
+	This is my text
+</pre>
+<p>
+	Quotes can contain quotes:
+</p>
+<pre>
+YES:	"This is the first quote
+	
+	"This is the second quote"
+	
+	This is the first quote"
+</pre>
+<p>	
+	You may use three different kinds of quote marks:<br />
+	(but you can’t mismatch the ends)
+</p>
+<pre>
+YES:	"Plain speech marks"
+
+	“Curly quotes”
+	
+	«Guillemots»
+</pre>
+<p>
+	Different kinds of quotes can be nested:
+</p>
+<pre>
+YES:	"This is the first quote
+
+	“This is the second quote
+	
+	«This is a third quote»”"
+</pre>
+
+<h2 id="pre">Monospace Text:</h2>
+<p>
+	For small snippets of code or technical writing you want to appear as-is admidst other writing you can use
+	backticks (1 or more allowed) to enclose the monospace text; the text within will not be processed for bold /
+	italic and other markup.
+</p>
+<pre>
+Use `<samp>*bold*</samp>` for bold and ``<samp>_italic_</samp>`` for italics.
+</pre>
+<p>
+	When posting, all unnecessary white-space is automatically removed. If you have some text that relies upon a
+	monospace font (such as ASCII art), you can use a "code block".
+</p><p>
+	The code block begins with a percent sign, then your text (starting the next line),
+	and then the ending percent sign on the next line.
+</p>
+<pre>
+%
+      __...--~~~~~-._   _.-~~~~~--...__
+    //               `V'               \\ 
+   //                 |                 \\ 
+  //__...--~~~~~~-._  |  _.-~~~~~~--...__\\ 
+ //__.....----~~~~._\ | /_.~~~~----.....__\\
+====================\\|//====================
+                dwb `---`
+%
+</pre>
+<p>
+	Note that there should be a blank line between the code block and any other text before or after:
+</p><p>
+	You can include a title after the first percent sign, for example when inserting source code snippets you can state
+	the programming language used:
+</p>
+<pre>
+% CSS
+div	{color: red;}
+%
+</pre>
+<p>
+	Should you need to quote something that has percent symbols as the first character on a line, such as the LaTeX
+	programming language, you can simply use the dollar sign "<samp>$</samp>" as a delimiter instead.
+</p>
+
+</article></section>
+<!-- =================================================================================================================== -->
+<div id="mods"><p id="nnf_mods-local">
+	Moderators for this sub-forum:
+	<span id="nnf_mods-local-list"><b class="mod">Alice</b></span>
+</p><p id="nnf_mods">
+	Your friendly neighbourhood moderators:
+	<span id="nnf_mods-list"><b class="mod">Bob</b></span>
+</p><p id="nnf_members">
+	Members of this forum:
+	<span id="nnf_members-list"><b>Charlie</b></span>
+</p></div>
+
+<footer><p>
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	<a href="/privacy.php">privacy policy</a>
+</p><p id="signin" class="nnf_signed-in">
+	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
+</p><p id="signin" class="nnf_signed-out">
+	<a href="?signin">Sign in</a>
+</p></footer>
+
+<script defer="defer"><!--
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
+}
+//when the language selector is changed, submit immediately
+document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); }
+--></script>
+
+</body></html>

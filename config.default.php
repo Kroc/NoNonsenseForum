@@ -1,13 +1,13 @@
 <?php //site configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 
 /* --- copy this file to 'config.php' and customise to your liking,
-       don’t delete or modify 'config.default.php'! --- */
+       DON’T DELETE OR MODIFY 'config.default.php'! --- */
 
 
 //uncomment this if you want to show PHP errors in the browser

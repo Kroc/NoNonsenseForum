@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -17,11 +17,10 @@ $FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') 
 $xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
 $thread = $xml->channel->xpath ('item');
 
-//determine the page number, for threads no page number specified defaults to the last page
-define ('PAGE',
-	preg_match ('/^[1-9][0-9]*$/', @$_GET['page'])
-	? (int) $_GET['page'] : ceil (count ($thread) / FORUM_POSTS)
-);
+//handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
+$PAGES = count ($thread) % FORUM_POSTS == 1 ? floor (count ($thread) / FORUM_POSTS) : ceil (count ($thread) / FORUM_POSTS);
+//validate the page number, when no page number is specified default to the last page
+$PAGE  = !PAGE || PAGE > $PAGES ? $PAGES : PAGE;
 
 //access rights for the current user
 define ('CAN_REPLY', FORUM_ENABLED && (
@@ -124,7 +123,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.PATH_URL."$FILE+$PAGE#$ID", true, 303);
 		exit;
 	}
 	
@@ -134,8 +133,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		FORUM_ROOT.'/themes/'.FORUM_THEME.'/append.html',
-		sprintf (THEME_TITLE_APPEND, $post->title)
+		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title)
 	
 	//the preview post
 	)->set (array (
@@ -144,8 +142,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setHTML (
-		'#nnf_post-text', $post->description
+	))->setValue (
+		'#nnf_post-text', $post->description, true
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
@@ -166,26 +164,25 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
 		//don’t need the usual name / password fields and the deafult message for anonymous users
-		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
+		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none-append'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
 		: '#nnf_name-http, #nnf_error-none-http'
 		
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'#nnf_error-none, #nnf_error-none-http' => !empty ($_POST),
+		'#nnf_error-none-append, #nnf_error-none-http' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-append' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'#nnf_error-pass' => empty ($_POST) || !TEXT || !NAME || PASS,
+		'#nnf_error-pass-append' => empty ($_POST) || !TEXT || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'#nnf_error-name' => empty ($_POST) || !TEXT || NAME,
+		'#nnf_error-name-append' => empty ($_POST) || !TEXT || NAME,
 		//if the message text is valid, remove the error message
-		'#nnf_error-text' => empty ($_POST) || TEXT
+		'#nnf_error-text'        => empty ($_POST) || TEXT
 	));
 	
-	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-	//this function is provided to allow custom themes to do their own additional templating
+	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
 	die ($template->html ());
 }
@@ -244,7 +241,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.PATH_URL."$FILE:".PAGE."#$ID";
+			$url = FORUM_URL.PATH_URL."$FILE+$PAGE#$ID";
 		}
 		
 		//commit the data
@@ -284,8 +281,7 @@ if (isset ($_GET['delete'])) {
 	/* template the delete page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		FORUM_ROOT.'/themes/'.FORUM_THEME.'/delete.html',
-		sprintf (THEME_TITLE_DELETE, $post->title)
+		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title)
 	
 	//the preview post
 	)->set (array (
@@ -294,8 +290,8 @@ if (isset ($_GET['delete'])) {
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setHTML (
-		'#nnf_post-text', $post->description
+	))->setValue (
+		'#nnf_post-text', $post->description, true
 	);
 	
 	//if the user who made the post is a mod, also mark the whole post as by a mod
@@ -311,7 +307,7 @@ if (isset ($_GET['delete'])) {
 		'input#nnf_pass-field@maxlength'	=> SIZE_PASS
 		
 	//are we deleting the whole thread, or just one reply?
-	))->remove ($ID 
+	))->remove ($ID
 		? '#nnf_error-none-thread'
 		: '#nnf_error-none-reply, #nnf_remove'	//if deleting the whole thread, also remove the checkbox option
 		
@@ -320,15 +316,14 @@ if (isset ($_GET['delete'])) {
 		//if there's an error of any sort, remove the default messages
 		'#nnf_error-none-thread, #nnf_error-none-reply' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth' => empty ($_POST) || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-delete' => empty ($_POST) || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the erorr message
-		'#nnf_error-pass' => empty ($_POST) || !NAME || PASS,
+		'#nnf_error-pass-delete' => empty ($_POST) || !NAME || PASS,
 		//if the name is valid, remove the erorr message
-		'#nnf_error-name' => empty ($_POST) || NAME
+		'#nnf_error-name-delete' => empty ($_POST) || NAME
 	));
 	
-	//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-	//this function is provided to allow custom themes to do their own additional templating
+	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
 	die ($template->html ());
 }
@@ -354,10 +349,10 @@ if (CAN_REPLY && AUTH && TEXT) {
 	)) {
 		//where to?
 		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-		$url  = FORUM_URL.PATH_URL."$FILE:$page#".base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.PATH_URL."$FILE+$page#".base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
-		$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+		$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
 			'/rss/channel/link'		=> FORUM_URL.PATH_URL.$FILE
@@ -422,13 +417,13 @@ if (CAN_REPLY && AUTH && TEXT) {
 //load the template into DOM where we can manipulate it:
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/thread.html',
+	THEME_ROOT.'thread.html',
 	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
 	sprintf (THEME_TITLE,
 		//title of the thread, obviously
 		$xml->channel->title,
 		//if on page 2 or greater, include the page number in the title
-		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
 	
 //the thread itself is the RSS feed :)
@@ -438,7 +433,7 @@ $template = prepareTemplate (
 )->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
-	'#nnf_add, #nnf_reply-form'	=> !CAN_REPLY,
+	'#nnf_reply, #nnf_reply-form'	=> !CAN_REPLY,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
 	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts',
 	//is the user a mod and can lock / unlock the thread?
@@ -463,8 +458,8 @@ $template->set (array (
 	'#nnf_post-author'		=> $post->author,
 	'a#nnf_post-append@href'	=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
 	'a#nnf_post-delete@href'	=> '?delete'
-))->setHTML (
-	'#nnf_post-text', $post->description
+))->setValue (
+	'#nnf_post-text', $post->description, true
 );
 
 //if the user who made the post is a mod, also mark the whole post as by a mod
@@ -484,21 +479,15 @@ if (count ($thread)) {
 	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//do the page links
-	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setHTML ('.nnf_pages', theme_pageList (
-		//base URL to work with
-		PATH_URL.$FILE,
-		//page number,	number of pages
-		PAGE, 		ceil (count ($thread) / FORUM_POSTS)
-	));
+	theme_pageList ($template, PATH_URL.$FILE, $PAGE, $PAGES);
 	//slice the full list into the current page
-	$thread = array_slice ($thread, (PAGE-1) * FORUM_POSTS, FORUM_POSTS);
+	$thread = array_slice ($thread, ($PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_reply');
 	
 	//index number of the replies, accounting for which page we are on
-	$no = (PAGE-1) * FORUM_POSTS;
+	$no = ($PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$reply) {
 		//has the reply been deleted (blanked)?
 		if ($reply->xpath ("category[.='deleted']")) $item->addClass ('.', 'deleted');
@@ -509,12 +498,12 @@ if (count ($thread)) {
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> "$FILE:".PAGE.strstr ($reply->link, '#'),
+			'a.nnf_reply-number@href'	=> "$FILE+$PAGE".strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
-		))->setHTML (
-			'.nnf_reply-text', $reply->description
+		))->setValue (
+			'.nnf_reply-text', $reply->description, true
 		);
 		
 		//is this reply from the person who started the thread?
@@ -589,8 +578,7 @@ if (CAN_REPLY) $template->set (array (
 	'#nnf_error-text'  => empty ($_POST) || TEXT
 ));
 
-//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-//this function is provided to allow custom themes to do their own additional templating
+//call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
 die ($template->html ());
 

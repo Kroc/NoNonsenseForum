@@ -1,17 +1,16 @@
-NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
-========================================================
-The PHP / HTML / CSS and other resources of this project are licensed
-under a Creative Commons 3.0 Attribution Unported licence (unless
-otherwise stated), viewable here:
+DOMTemplate © Copyright (CC-BY) Kroc Camen 2012
+===============================================
+The code and other resources of this project are licensed under a
+Creative Commons 3.0 Attribution Unported licence (unless otherwise
+stated), viewable here:
 
 http://creativecommons.org/licenses/by/3.0/deed.en_GB
 
 What does this mean? This means that you may do anything you want with
 this code, as long as you give credit. How you decide to give credit is
-up to you, it can be visible in the web browser or just a comment in
-the HTML. An example attribution could be:
+up to you, an example attribution could be:
 
-<!-- based on NoNonsense Forum by Kroc Camen <camendesign.com> -->
+This project utilises DOMTemplate by Kroc Camen <camendesign.com>
 
 
 Warranty:

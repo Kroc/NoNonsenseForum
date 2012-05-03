@@ -1,16 +1,16 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 //the shared template stuff for all pages
-function prepareTemplate ($filepath, $title) {
-	global $MODS, $MEMBERS;
+function prepareTemplate ($filepath, $title=NULL) {
+	global $LANG, $MODS, $MEMBERS;
 	
 	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
-	//<camendesign.com/dom_templating> for documentation
+	//<camendesign.com/dom_templating> for documentation of this object
 	$template = new DOMTemplate ($filepath);
 	
 	//fix all absolute URLs (i.e. if NNF is running in a folder):
@@ -20,21 +20,40 @@ function prepareTemplate ($filepath, $title) {
 		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
 	;
 	
+	/* translate!
+	   ---------------------------------------------------------------------------------------------------------------*/
+	//before we start changing element content, we run through the language translation, if necessary;
+	//if the current user-chosen language is in the list of available language translations for this theme,
+	//execute the array of XPath string replacements in the translation. see the 'lang.*.php' files for details
+	if (@$LANG[LANG]) $template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG);
+	//template the language chooser
+	if (THEME_LANGS) {
+		//the first item in the template should be your default language (mark it as selected if LANG is not blank)
+		$item = $template->repeat ('.nnf_lang')->remove (array ('./@selected' => LANG))->next ();
+		//build the list for each additional language
+		foreach ($LANG as $code => $lang) $item->set (array (
+			'./@value'	=> $code,
+			'.'		=> $lang['name']
+		))->remove (array (
+			'./@selected'	=> !($code == LANG)
+		))->next ();
+	} else {
+		$template->remove ('#nnf_lang');
+	}
+	
 	/* HTML <head>
 	   -------------------------------------------------------------------------------------------------------------- */
+	//if no title is provided, the one already in the template remains (likely for translation purposes)
+	if (!is_null ($title)) $template->setValue ('/html/head/title', $title);
+	//metadata for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
 	$template->set (array (
-		//HTML title (= forum / sub-forum name and page number)
-		'/html/head/title'					=> $title,
 		//application title (= forum / sub-forum name):
-		//used for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
 		'//meta[@name="application-name"]/@content'		=> SUBFORUM ? SUBFORUM : FORUM_NAME,
 		//application URL (where the pinned site opens at)
 		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
 	));
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
-	if (!file_exists (FORUM_ROOT.FORUM_PATH.'themes/'.FORUM_THEME.'/custom.css'))
-		$template->remove ('//link[contains(@href,"custom.css")]')
-	;
+	if (!file_exists (THEME_ROOT.'custom.css')) $template->remove ('//link[contains(@href,"custom.css")]');
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -65,21 +84,21 @@ function prepareTemplate ($filepath, $title) {
 	/* site footer
 	   -------------------------------------------------------------------------------------------------------------- */
 	//are there any local mods?	create the list of local mods
-	if (!empty ($MODS['LOCAL'])):	$template->setHTML ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']));
-				else:	$template->remove  ('#nnf_mods-local');	//remove the local mods list section
+	if (!empty ($MODS['LOCAL'])):	$template->setValue ('#nnf_mods-local-list', theme_nameList ($MODS['LOCAL']), true);
+				else:	$template->remove   ('#nnf_mods-local');	//remove the local mods list section
 	endif;
 	//are there any site mods?	create the list of mods
-	if (!empty ($MODS['GLOBAL'])):	$template->setHTML ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']));
-				 else:	$template->remove  ('#nnf_mods');	//remove the mods list section
+	if (!empty ($MODS['GLOBAL'])):	$template->setValue ('#nnf_mods-list', theme_nameList ($MODS['GLOBAL']), true);
+				 else:	$template->remove   ('#nnf_mods');		//remove the mods list section
 	endif;
 	//are there any members?	create the list of members
-	if (!empty ($MEMBERS)):		$template->setHTML ('#nnf_members-list', theme_nameList ($MEMBERS));
-			  else:		$template->remove  ('#nnf_members');	//remove the members list section
+	if (!empty ($MEMBERS)):		$template->setValue ('#nnf_members-list', theme_nameList ($MEMBERS), true);
+			  else:		$template->remove   ('#nnf_members');		//remove the members list section
 	endif;
 	
 	//set the name of the signed-in user
 	$template->setValue ('.nnf_signed-in-name', NAME)->remove (
-		//removed the relevant section for signed-in / out
+		//remove the relevant section for signed-in / out
 		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
 	
@@ -311,7 +330,7 @@ function formatText ($text, $rss=NULL) {
 function indexRSS () {
 	/* create an RSS feed
 	   -------------------------------------------------------------------------------------------------------------- */
-	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
 		'/rss/channel/link'	=> FORUM_URL.PATH_URL
@@ -344,11 +363,15 @@ function indexRSS () {
 	//get list of sub-forums and include the root too
 	$folders = array ('') + array_filter (
 		//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-		preg_grep ('/^(\.|users$|themes$|lib$)/', scandir (FORUM_ROOT.'/'), PREG_GREP_INVERT), 'is_dir'
+		preg_grep ('/^(\.|users$|themes$|lib$)/', scandir (FORUM_ROOT.DIRECTORY_SEPARATOR), PREG_GREP_INVERT),
+		'is_dir'
 	);
 	
 	//start the XML file. this template has an XMLNS, so we have to prefix all our XPath queries :(
-	$xml = new DOMTemplate (FORUM_ROOT.'/lib/sitemap-template.xml', 'x', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+	$xml = new DOMTemplate (
+		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'sitemap-template.xml',
+		'x', 'http://www.sitemaps.org/schemas/sitemap/0.9'
+	);
 	
 	//generate a sitemap index file, to point to each index RSS file in the forum:
 	//<https://www.google.com/support/webmasters/bin/answer.py?answer=71453>
@@ -356,14 +379,16 @@ function indexRSS () {
 	foreach ($folders as $folder)
 		//get the time of the latest item in the RSS feed
 		//(the RSS feed may be missing as they are not generated in new folders until something is posted)
-		if (@$rss = simplexml_load_file (FORUM_ROOT.($folder ? "/$folder" : '').'/index.xml'))
+		if (@$rss = simplexml_load_file (
+			FORUM_ROOT.($folder ? DIRECTORY_SEPARATOR.$folder : '').DIRECTORY_SEPARATOR.'index.xml'
+		))
 		//if you delete the last thread in a folder, there won’t be anything in the RSS index file!
 		if (@$rss->channel->item[0]) $sitemap->set (array (
 			'./x:loc'	=> FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml',
 			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
 		))->next ()
 	;
-	file_put_contents (FORUM_ROOT.'/sitemap.xml', $xml->html ());
+	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml->html ());
 	
 	//you saw nothing, right?
 	clearstatcache ();

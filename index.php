@@ -1,15 +1,12 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 //bootstrap the forum; you should read that file first
 require_once './start.php';
-
-//get page number
-define ('PAGE', preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET['page'] : 1);
 
 //submitted info for making a new thread
 //(name / password already handled in 'start.php')
@@ -44,7 +41,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
-	$rss = new DOMTemplate (FORUM_ROOT.'/lib/rss-template.xml');
+	$rss = new DOMTemplate (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml');
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
 		'/rss/channel/link'		=> FORUM_URL.PATH_URL.$file,
@@ -73,32 +70,65 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 /* ======================================================================================================================
    template the page
    ====================================================================================================================== */
-//load the template into DOM where we can manipulate it:
+//first load the list of threads in the forum so that we can determine the number of pages and validate the page number,
+//the thread list won't be used until further down after templating begins
+if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
+	//order by last modified date
+	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+	
+	//get sticky list, trimming any files that no longer exist
+	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
+	if ($stickies = array_intersect (
+		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
+		//then `array_filter` removes blank items. this way saves having to check if the file exists first
+		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
+	)) {
+		//order the stickies by reverse date order
+		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
+		//remove the stickies from the thread list
+		$threads = array_diff ($threads, $stickies);
+	}
+	
+	//handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
+	$PAGES = count ($threads) % FORUM_THREADS == 1	? floor (count ($threads) / FORUM_THREADS)
+							: ceil  (count ($threads) / FORUM_THREADS);
+	//validate the given page number; an invalid page number returns the first instead
+	$PAGE  = !PAGE || PAGE > $PAGES ? 1 : PAGE;
+} else {
+	$PAGES = 1; $PAGE = 1;
+}
+
+/* load the template into DOM where we can manipulate it:
+   ---------------------------------------------------------------------------------------------------------------------- */
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details. `prepareTemplate` can be found in
 // 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
-	FORUM_ROOT.'/themes/'.FORUM_THEME.'/index.html',
+	THEME_ROOT.'index.html',
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
 		PATH ? SUBFORUM: FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
-		PAGE>1 ? sprintf (THEME_TITLE_PAGENO, PAGE) : ''
+		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
 )->remove (array (
 	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
 	//remove the "add thread" link and anything else (like the input form) related to posting
 	'#nnf_add, #nnf_new-form'	=> !CAN_POST,
 	//if the forum is not thread-locked (only mods can post, anybody can reply) then remove the warning message
-	'.nnf_forum-lock-threads'	=> FORUM_LOCK != 'threads' || IS_MOD,
+	'#nnf_forum-lock-threads'	=> FORUM_LOCK != 'threads' || IS_MOD,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
-	'.nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
+	'#nnf_forum-lock-posts'		=> FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
 ));
 
-//an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum
-if (file_exists ('about.html')) {
+//an 'about.html' file can be provided to add a description or other custom HTML to the forum / sub-forum,
+//for translations, 'about_en.html' can be used where 'en' is the language code for the translation
+//(see 'lang.example.php' in the themes folder for more details on translation)
+if ($about = @array_shift (array_filter (array (
+	@file_get_contents ('about_'.LANG.'.html'), @file_get_contents ('about.html')
+)))) {
 	//load the 'about.html' file and insert it into the page
-	$template->setHTML ('#nnf_about', file_get_contents ('about.html'));
+	$template->setValue ('#nnf_about', $about, true);
 } else {
 	//no file? remove the element reserved for it
 	$template->remove ('#nnf_about');
@@ -122,12 +152,12 @@ if ($folders = array_filter (
 		$lock = trim (@file_get_contents ('locked.txt'));
 		
 		//get a list of files in the folder to determine which one is newest
-		$threads = preg_grep ('/\.rss$/', scandir ('.'));
+		$files = preg_grep ('/\.rss$/', scandir ('.'));
 		//order by last modified date
-		array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+		array_multisort (array_map ('filemtime', $files), SORT_DESC, $files);
 		
 		//read the newest thread (folder could be empty though)
-		$last = ($xml = @simplexml_load_file ($threads[0])) ? $xml->channel->item[0] : '';
+		$last = ($xml = @simplexml_load_file ($files[0])) ? $xml->channel->item[0] : '';
 		
 		//start applying the data to the template
 		$item->set (array (
@@ -171,34 +201,11 @@ if ($folders = array_filter (
 
 /* threads
    ---------------------------------------------------------------------------------------------------------------------- */
-//get list of threads (if any--could be an empty folder)
-if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
-	//order by last modified date
-	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
-	
-	//get sticky list, trimming any files that no longer exist
-	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
-	if ($stickies = array_intersect (
-		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
-		//then `array_filter` removes blank items. this way saves having to check if the file exists first
-		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
-	)) {
-		//order the stickies by reverse date order
-		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
-		//remove the stickies from the thread list
-		$threads = array_diff ($threads, $stickies);
-	}
-	
+if ($threads || $stickies) {
 	//do the page links (stickies are not included in the count as they appear on all pages)
-	//(`theme_pageList` is defined in 'theme.config.php' if it exists, otherwise 'theme.config.default.php')
-	$template->setHTML ('.nnf_pages', theme_pageList (
-		//base URL to work with
-		PATH_URL,
-		//page number,	number of pages
-		PAGE, 		ceil (count ($threads) / FORUM_THREADS)
-	));
+	theme_pageList ($template, PATH_URL, $PAGE, $PAGES);
 	//slice the full list into the current page
-	$threads = array_merge ($stickies, array_slice ($threads, (PAGE-1) * FORUM_THREADS, FORUM_THREADS));
+	$threads = array_merge ($stickies, array_slice ($threads, ($PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_thread');
@@ -295,8 +302,7 @@ if (CAN_POST) $template->set (array (
 	'#nnf_error-title'=> empty ($_POST) || TITLE
 ));
 
-//call the user-defined function in 'theme.config.php' (if it exists), otherwise 'theme.config.default.php'.
-//this function is provided to allow custom themes to do their own additional templating
+//call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
 die ($template->html ());
 

@@ -1,4 +1,4 @@
-/* NoNonsense Forum v18 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -12,9 +12,9 @@
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
-html, body			{width: 100%; margin: 0; padding: 0; border: 0;}
+html, body			{width: 100%; margin: 0; padding: 0; border: 0; color: #888;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
-				 background: white url("img/bg.png") fixed repeat-x bottom center; word-wrap: break-word;
+				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
 				 /* CSS3 gradients for browsers that support it: */
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
@@ -22,19 +22,20 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
 	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
 	/* future! */		 background-image:         linear-gradient(white, #ddd);
+				 /* fix iPad stretching the gradient the height of the whole page, rather than the screen */
+				 background-size: 1024px 768px;
 				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
 				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
 				    manually insert a background colour for IE6 into the 32-bit PNGs) */
 				_background: #eee;}
-
-#mast nav, section, #mods,	/* page centering / width */
- #rights			{width: 80%; max-width: 1024px;}
+body, #mast h1 a		{/* page centering / width */
+				 width: 80%; max-width: 1024px; margin: 0 auto;}
 
 h1				{margin: 0; padding: 20px 0 20px 60px;
 				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
 				 background: #222;}
 
-p				{margin: 0; padding: 20px 0 0;
+p				{margin: 0; padding: 0 20px 20px;
 				 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
 				    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
 				 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
@@ -57,7 +58,7 @@ blockquote p:first-child	{padding-top: 0;}
 .qr				{position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
 
 pre				{overflow: auto; margin: 20px 0 0;}
-pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, monospace;}
+pre, code, samp			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, monospace;}
 
 /* code delimiters., top and bottom */
 .ct, .cb			{display: block; line-height: 19px;}
@@ -67,32 +68,18 @@ pre, code			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, m
 
 /* site header
    ====================================================================================================================== */
-#mast h1			{width: 100%; /*< IE6 */ padding: 0;
-				 font-size: 32px; line-height: 40px;}
-#mast h1 a			{display: block; margin: 0 auto 0 10%; padding: 10px 0 10px 60px;
-				 color: #f7f6f7;}
-#mast h1 a img			{position: absolute; margin: 4px 0 0 -45px; border: none;}
+#mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
+				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
+				 font-size: 32px; line-height: 40px; background: #222;}
+#mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;}
+#mast h1 a img			{float: left; margin: 4px 13px 0 15px; border: none;}
 
-#mast nav			{margin: 20px auto 0;
-				 text-transform: uppercase; color: #888;}
-#mast nav p			{display: block; padding: 0 20px 0 60px;}
-
-/* the breadcrumb for sub-forums */
-#index				{margin: 0; padding: 0 0 0 60px;
-				 background: url("img/here.png") no-repeat 24px 0;}
-#index li			{display: inline;}
-
-/* 'add' and 'rss' buttons */
-#nnf_add, #nnf_rss		{float: right; margin-left: 20px; padding-left: 25px;}
-#nnf_add			{background: url("img/add.png") no-repeat 0 50%;}
-#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
+#mast nav			{padding-top: 80px;}
 
 /* search box: */
-#search				{float: right; *float: none; /*< IE6 & 7 work without floating */
-				 height: 20px; width: 210px; /*< IE6/7 get height wrong */
-				 /* `auto` on the left margin (instead of `70%`) is required for IE6/7 to get this right */
-				 margin: -40px 10% 40px auto; padding: 0 10px 0 0; overflow: hidden;
-				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
+#search				{float: right; width: 210px; overflow: hidden; margin: 0; padding: 20px 10px 0;
+				*position: absolute; *right: 10%; /* IE6/7 have float conflicts with the language selector */ 
+				border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
 #query				{display: block; /*< removes magic-spacing / height on input box */
 				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
@@ -110,20 +97,53 @@ input[type=search]:focus	{outline: none;}
 
 #go				{position: relative; margin-left: -20px; top: -20px;}
 
-#rights				{margin: 0 auto; text-align: center; color: #888;}
-#rights a			{color: #666;}
+/* the breadcrumb for sub-forums */
+#index				{margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
+				 background: url("img/here.png") no-repeat 24px 0;}
+#index li			{display: inline; padding-right: 0.4em;}
+
+/* language selector: */
+#nnf_lang			{float: right; height: 20px; margin-bottom: 20px; padding-right: 10px; border: none;}
+#nnf_lang img			{vertical-align: middle;}
+#nnf_lang input			{vertical-align: bottom;}
+
+/* the admin's custom header message, 'about.html' */
+#nnf_about			{margin-bottom: 0; background: none;}
+
+/* the access warning message that appears on locked forums / threads */
+#info a				{color: #666;}
+
+/* 'Add' / 'Reply' and 'RSS' buttons */
+#nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;
+				 text-align: right; text-transform: uppercase; color: #222 !important;}
+#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
+#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
+
+/* what follows is a phenomenally complex system of floats that just somehow allows for an elegant collapsing of elements
+   under certain conditions, primarily so that if there is no language selector present, no 'about.html' and no sub-forums
+   then the RSS/ADD links will fit themselves into the blank space where the language selector would be */
+
+#index, #index li		{/* allow either the language selector or the RSS/ADD links to fit to the right of the
+				    breadcrumb. each breadcrumb item is allowed to wrap, so the whole block doesn’t clear */
+				 float: left;}
+#nnf_about			{/* if the admin's custom header is present the RSS/ADD links won’t be able to fit into
+				    the top if the language selector is missing */
+				 clear: left;}
+#info				{/* if the language selector and the RSS/ADD links are present, the won’t collide */
+				 clear: right;
+				 /* this solves a missing bottom-padding when the language selector and RSS/ADD links are
+				    above each other, but where `overflow: auto` causes the access warning message to
+				    not clear when it's visible. IE6 does not understand `min-height` */
+				 _height: 20px; min-height: 20px;}
+#nnf_forum-lock-threads,	 /* prevent the access warning message from trying to squeeze in */
+ #nnf_forum-lock-posts		{display: block; clear: left;}
 
 
 /* index page
    ====================================================================================================================== */
-section				{margin: 20px auto 0;
+section				{clear: both; margin: 0 0 20px; color: #222;
 				 background: #f7f6f7;}
 section h1			{background: #222 none no-repeat 15px 15px;}
-
-#nnf_about			{background: none; margin-top: 0; padding: 0 20px;
-				 -webkit-box-sizing: border-box;
-				    -moz-box-sizing: border-box;
-				         box-sizing: border-box;}
 
 /* page list */
 section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
@@ -143,8 +163,8 @@ ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40
 				 text-align: center;}
 ol.nnf_pages a			{display: block; width: 40px; height: 39px;
 				 color: #aaa; text-decoration: none;}
-ol.nnf_pages a:hover		{color: white; background-color: #888;}
-ol.nnf_pages em			{color: white; font-style: normal;}
+ol.nnf_pages a:hover		{color: white; font-style: normal; background-color: #888;}
+ol.nnf_pages em			{display: block; height: 39px; font-style: normal; color: white; background: #888;}
 
 /* item list (folders / threads) */
 ol.ui				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -172,25 +192,27 @@ ol.ui li a:hover time		{text-decoration: underline;}
 #nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png");}
 
 /* the last post name / date for sub-forums */
-#nnf_folders ol.ui li		{border-bottom: 1px solid #444; position: relative;}
-.nnf_subforum-post		{position: absolute; right: 20px;}
+#nnf_folders ol.ui li		{position: relative; border-bottom: 1px solid #444;}
+.nnf_subforum-post		{*position: absolute; *right: 20px; /* IE<8 fix */}
 
 /* the lock/sticky icon positioning */
 ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
 #nnf_folders ol.ui li img	{margin-left: -38px;}
+
 
 /* thread page
    ====================================================================================================================== */
 article				{padding: 0 20px 19px; border: 1px solid #444;
 				 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
 				 border-width: 0 1px 1px;}
+article p			{padding: 20px 0 0 0;}
 
 /* close the border within the 20px rhythm on the initial post */
 #nnf_post article		{padding-bottom: 19px !important; border-bottom-width: 1px;}
 
 #nnf_replies h1			{background-image: url("img/replies.png");}
 
-article header			{height: 38px; line-height: 38px; margin: -1px -20px 0; padding: 1px 20px;
+article header			{line-height: 20px; margin: -1px -20px 0; padding: 10px 20px 9px;
 				 border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
@@ -211,8 +233,8 @@ article header .ui,
 				      -o-transition: all .2s;
 				         transition: all .2s;}
 
-.delete				{background: url("img/delete.png") no-repeat right center;}
-.append				{background: url("img/append.png") no-repeat right center;}
+a.delete			{background: url("img/delete.png") no-repeat right center;}
+a.append			{background: url("img/append.png") no-repeat right center;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
@@ -234,21 +256,34 @@ p.appended			{color: #888; padding-top: 19px;
 				         user-select: none;}
 
 
+/* markup / privacy page
+   ====================================================================================================================== */
+#markup h1,			/* title icon */
+ #privacy h1			{background-image: url("img/help.png");}
+
+#markup header ol,		/* table of contents */
+ #privacy header ol		{margin: 0; padding: 0;}
+#markup header li,
+ #privacy header li		{display: inline; padding: 0 20px 0 0;
+				 /* do not line-break in the middle of a link on small screens, like mobiles */
+				 white-space: nowrap; }
+
+
 /* input forms
    ====================================================================================================================== */
-#nnf_new-form h1,
- #nnf_reply-form h1,
- #append h1			{background-image: url("img/new.png");}
+#nnf_new-form h1,		/* title icon */
+ #nnf_reply-form h1		{background-image: url("img/new.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
 input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sans-serif;}
 
-label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;}
+label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;
+				 cursor: pointer;}
 
 form p				{padding: 0; color: #888;}
-.ok, .error, #markup		{padding: 20px 20px 0 !important;}
+.ok, .error, #protip		{padding: 20px 20px 0 !important;}
 .error				{color: #d11;}
 
 
@@ -302,11 +337,11 @@ input[type=text],
 #psubmit			{clear: both; height: 40px;
 				 margin: 0 !important; padding: 0; text-align: right;
 				 background: #444;}
-#psubmit label			{display: inline-block; padding: 0 0 0 20px; cursor: pointer;
+#psubmit label			{display: inline-block; padding: 0 0 0 20px;
 				 color: #f7f6f7; text-transform: uppercase;}
 #submit				{vertical-align: middle;}
 
-/* delete, un/lock form
+/* delete form
    ---------------------------------------------------------------------------------------------------------------------- */
 #delete h1			{background-image: url("img/deletetitle.png");}
 #delete #psubmit		{margin-top: 20px !important;}
@@ -318,9 +353,6 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-#mods				{margin: 0 auto; padding-top: 20px; overflow: hidden;}
-#mods p				{padding: 0 20px 0; color: #888;}
-
 #nnf_admin			{float: right;}
 a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
@@ -328,14 +360,14 @@ a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform:
 a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%;}
 a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
 
-footer				{position: absolute; height: 60px; margin: 20px 0 0; padding: 0 0 20px; left: 0; right: 0;
-				 width: 100%; /*< IE6, which doesn't fully understand 'left; right' */
+footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
+				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
 				 background: #222;}
 
-footer p			{margin: 0 auto 0 10%; padding-left: 20px; font-size: .9em; color: #f7f6f7;}
+footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-p#signin			{margin: -60px 10% 0 auto; padding-right: 20px; text-align: right;}
+p#signin			{margin: -60px 10% 0 auto; text-align: right;}
 p#signin a			{text-transform: uppercase;}
 
 
@@ -350,20 +382,19 @@ html				{font-size: 14px; background: #ddd; /* mobile devices don't like fixed b
 html, body			{width: 100%; -webkit-text-size-adjust: none;}
 
 /* page width */
-#mast nav, section, #mods	{width: 95%;}
+body, #mast h1 a		{width: 95%;}
 
 /* header
    ---------------------------------------------------------------------------------------------------------------------- */
 /* reduce the title size */
 h1				{font-size: 20px !important;}
-#mast				{padding: 0;}
-#mast h1			{padding: 5px 0 0; line-height: 20px; min-height: 40px;}
+#mast h1			{height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
 #mast h1 a			{/* fit the logo in tighter */
-				 margin: 0; padding: 10px 0 0 55px;}
-#mast h1 a img			{margin-top: -6px;}
+				 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
+#mast h1 a img			{margin-left: -45px; margin-top: -6px;}
 
 /* re-position the search field below the title */
-#search				{width: 100%; height: 35px; margin: 0; padding: 0 10px 10px 50px;
+#search				{float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;
 				 -webkit-box-sizing: border-box;
 				    -moz-box-sizing: border-box;
 				         box-sizing: border-box;
@@ -378,12 +409,15 @@ h1				{font-size: 20px !important;}
 				         border-radius: 14px;}
 #go				{left: -5px; top: -23px;}
 
-/* fit the rss / add buttons into one line */
-#mast nav			{height: 40px; line-height: 40px; margin: 40px 0 -20px;
-				 overflow: hidden; /*< strange behaviour in webkit */}
+#nnf_lang			{float: right; margin-top: -55px; padding-right: 0; text-align: right;}
+#nnf_lang>img, #nnf_lang>input	{display: none;}
+
+
+
+#mast nav			{padding-top: 100px;}
 #mast nav p:last-child		{/* hide location marker */
 				 display: none;}
-#nnf_add			{margin-right: 0;}
+#nnf_add, #nnf_reply		{margin-right: 0;}
 #index				{display: none;}
 
 /* index page
@@ -446,27 +480,22 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 
-/* when landscape, shrink the size of the search field, and place the RSS / New Thread links in the header */
-#search				{width: 50%; float: left;}
-
-#mast nav			{width: 100%; margin-top: -5px; margin-bottom: 0; background: #222;}
-#mast nav a			{color: white;}
-#nnf_add			{padding-right: 5%;
-				 background-image: url("img/add_white.png");}
-#nnf_rss			{background-image: url("img/rss_white.png");}
-
-/* show the post time when in portrait */
+/* show the post time when in landscape */
 article header time		{display: inline;}
 
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 
+/* not enough room for the page list in the title, you’ll have to use the one at the bottom */
+#nnf_threads>h1 + nav,		/* the spaces between `+` are required here for WebKit! */
+ #nnf_replies>h1 + nav		{display: none !important;}
+
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
 footer				{padding-top: 60px;}
 footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
-p#signin			{margin-top: -120px;}
+p#signin			{margin-top: -100px;}
 
 }
 
@@ -475,7 +504,7 @@ p#signin			{margin-top: -120px;}
   ====================================================================================================================== */
 @media screen and (view-mode: minimized) {
 
-#mast h1			{padding-bottom: 5px}
+#mast h1			{height: 30px;}
 
 /* hide the search box, breadcrumb and rss / add links */
 #mast form, #mast nav,
@@ -508,10 +537,15 @@ article.nnf_reply:last-of-type	{display: block;}
 @media print {
 
 /* fix page width */
-section				{width: 100% !important;}
+body, #mast h1 a		{width: 100% !important;}
+
+#mast h1			{position: static;}
+#mast h1 a			{text-indent: 0;}
+#mast h1 a img			{display: none;}
 
 /* things to hide from printer: */
-#mast nav, #search,		/* - nav */
+#mast nav, #search, #info,	/* - nav */
+ #nnf_folders,			/* - subfolders list */
  #nnf_new-form, #nnf_reply-form,/* - input forms */
  #delete,			
  a.ui,				/* - delete / append buttons */

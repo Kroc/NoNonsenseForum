@@ -1,3 +1,24 @@
+v19	03.MAY.12
+*	Translation support
+	-	Themes can provide their own translations and admins can add more themselves easily
+		(no translations are provided with NNF, yet, this release just adds support)
+	-	Browser language is auto-detected, user can select one, and a default can be set by the admin
+	-	Markup.txt removed, moved to a themed / translatable page
+	-	Privacy policy added (also translatable)
+	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
+	-	Page titles on index / thread / append & delete cannot be translated just yet,
+		support for this will be added in a later release
+*	Fixed a long-standing bug that caused page boundaries (i.e. posts per page) to be incorrectly calculated
+*	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
+*	Fixed bug with stickies not showing if no non-sticky threads exist (with thanks to "Sani")
+*	Moved `theme_pageList` from 'theme.config.default.php' and into a new 'theme.php' for storing the theme functions;
+	this allows each theme to use different types of lists without 'theme.config.php' having to be updated all the time
+*	Page numbers are now validated / bounded
+*	Current page number more visible
+*	Added INSTALL.txt
+*	If a mod / member, threads in locked forums no longer show warning message
+	(similar to the change in v18 that removed the same warning from index pages)
+
 v18	05.MAR.12
 *	'delete.html' had been missing for some time!
 *	The sticky-thread icon had been missing for an equally long time

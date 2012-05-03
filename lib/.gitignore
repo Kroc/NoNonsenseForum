@@ -1,0 +1,12 @@
+# ignore files that aren't part of NoNonsenseForum:
+*
+!.gitignore
+
+# DOMTemplate is the templating engine which is included here, but without using git submodules, because GitHub downloads
+# don't include submodules and thus break NNF for casual users just wanting to download and run
+!domtemplate**
+
+# everything else
+!functions.php
+!rss-template.xml
+!sitemap-template.xml
