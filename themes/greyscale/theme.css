@@ -14,7 +14,7 @@ header, nav, section, article,	/* this doesn’t get set on browsers without an 
 
 html, body			{width: 100%; margin: 0; padding: 0; border: 0; color: #888;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
-				 background: white url("img/bg.png") fixed repeat-x bottom center; word-wrap: break-word;
+				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
 				 /* CSS3 gradients for browsers that support it: */
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
 	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
@@ -22,6 +22,8 @@ html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet M
 	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
 	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
 	/* future! */		 background-image:         linear-gradient(white, #ddd);
+				 /* fix iPad stretching the gradient the height of the whole page, rather than the screen */
+				 background-size: 1024px 768px;
 				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
 				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
 				    manually insert a background colour for IE6 into the 32-bit PNGs) */
@@ -69,11 +71,8 @@ pre, code, samp			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monosp
 #mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
 				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
 				 font-size: 32px; line-height: 40px; background: #222;}
-#mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;
-				 /* we can't use left-padding as this element is centered with a % width and 
-				    IE<8 don't support changing the box-model */
-				 text-indent: 60px;}
-#mast h1 a img			{position: absolute; margin: 4px 0 0 -45px; border: none;}
+#mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;}
+#mast h1 a img			{float: left; margin: 4px 13px 0 15px; border: none;}
 
 #mast nav			{padding-top: 80px;}
 
@@ -213,7 +212,7 @@ article p			{padding: 20px 0 0 0;}
 
 #nnf_replies h1			{background-image: url("img/replies.png");}
 
-article header			{height: 38px; line-height: 38px; margin: -1px -20px 0; padding: 1px 20px;
+article header			{line-height: 20px; margin: -1px -20px 0; padding: 10px 20px 9px;
 				 border-bottom: 1px dotted #444;
 				 color: #888; background: #ccc;}
 
@@ -265,7 +264,9 @@ p.appended			{color: #888; padding-top: 19px;
 #markup header ol,		/* table of contents */
  #privacy header ol		{margin: 0; padding: 0;}
 #markup header li,
- #privacy header li		{display: inline; padding: 0 20px 0 0;}
+ #privacy header li		{display: inline; padding: 0 20px 0 0;
+				 /* do not line-break in the middle of a link on small screens, like mobiles */
+				 white-space: nowrap; }
 
 
 /* input forms
@@ -390,7 +391,7 @@ h1				{font-size: 20px !important;}
 #mast h1			{height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
 #mast h1 a			{/* fit the logo in tighter */
 				 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
-#mast h1 a img			{margin-top: -6px;}
+#mast h1 a img			{margin-left: -45px; margin-top: -6px;}
 
 /* re-position the search field below the title */
 #search				{float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;

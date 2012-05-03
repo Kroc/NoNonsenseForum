@@ -191,7 +191,7 @@ See LICENCE.txt for licence details
 *       Richard van Velzen      - subfolder support / other fixes,
                                   additional markup implementation
 *       "Fyra"                  - UTF-8 fix for templates
-*       "Sani"			- Bugs
+*       "Sani"                  - Bugs
 
 *       The users of Camen Design Forum <forum.camendesign.com>
         for testing and support

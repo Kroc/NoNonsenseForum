@@ -184,7 +184,7 @@ define ('LANG',
 	: THEME_LANG))
 );
 //don’t treat language choice as an invalid form error
-if (@$_POST['lang']) unset ($_POST);
+if (isset ($_POST['lang'])) unset ($_POST);
 
 
 /* send HTTP headers
