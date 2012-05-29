@@ -272,7 +272,7 @@ p.appended			{color: #888; padding-top: 19px;
 /* input forms
    ====================================================================================================================== */
 #nnf_new-form h1,		/* title icon */
- #nnf_reply-form h1		{background-image: url("img/new.png");}
+ #nnf_reply-form h1, #append h1	{background-image: url("img/new.png");}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
