@@ -259,12 +259,14 @@ function formatText ($text, $rss=NULL) {
 		"\n\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
 		$text, -1, $c
 	); while ($c);
+	
 	//remove the extra linebreaks addeded between our theme quotes
 	//(required so that extra `<br />`s don’t get added!)
 	$text = preg_replace (
-		array ('/&ldquo;<\/span>\n/',	'/\n<span class="qr">/'),
-		array ('&ldquo;</span>',	'<span class="qr">'),
+		array ('/&ldquo;<\/span>\n(?!\n)/',	'/\n<span class="qr">/'),
+		array ('&ldquo;</span>',		'<span class="qr">'),
 	$text);
+	
 	
 	/* name references:
 	   -------------------------------------------------------------------------------------------------------------- */
