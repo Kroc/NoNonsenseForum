@@ -43,7 +43,7 @@ $LANG['en']['strings'] = array (
 ,'#nnf_lang/input@alt'			=> 'Set language'			//language chooser submit button
 
 //breadcrumb
-,'#index"/li[1]/a'			=> 'Index'				//breadcrumb root location
+,'#index/li[1]/a'			=> 'Index'				//breadcrumb root location
 
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
