@@ -267,7 +267,6 @@ function formatText ($text, $rss=NULL) {
 		array ('&ldquo;</span>',		'<span class="qr">'),
 	$text);
 	
-	
 	/* name references:
 	   -------------------------------------------------------------------------------------------------------------- */
 	//name references (e.g. "@bob") will link back to the last reply in the thread made by that person.
@@ -312,8 +311,8 @@ function formatText ($text, $rss=NULL) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
-		//if not a blockquote, title or hr, wrap in a paragraph
-		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&_/', $chunk))
+		//if not a blockquote, title, hr or pre-block, wrap in a paragraph
+		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&__PRE/', $chunk))
 			$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>"
 		;
 		$text = @$result .= "\n$chunk";
