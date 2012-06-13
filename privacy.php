@@ -11,6 +11,6 @@ require_once './start.php';
 $template = prepareTemplate (THEME_ROOT.'privacy.html');
 
 theme_custom ($template);
-die ($template->html ());
+exit ($template->html ());
 
 ?>

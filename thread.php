@@ -184,7 +184,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
-	die ($template->html ());
+	exit ($template->html ());
 }
 
 
@@ -325,7 +325,7 @@ if (isset ($_GET['delete'])) {
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
-	die ($template->html ());
+	exit ($template->html ());
 }
 
 
@@ -580,6 +580,6 @@ if (CAN_REPLY) $template->set (array (
 
 //call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
-die ($template->html ());
+exit ($template->html ());
 
 ?>
