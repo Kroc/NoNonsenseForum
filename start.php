@@ -5,40 +5,46 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+/* server configutation
+   ====================================================================================================================== */
 //default UTF-8 throughout
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
+//constants
+define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
+define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR. //location of the 'lib' folder
+				'lib'.DIRECTORY_SEPARATOR);
+define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
+	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
+	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
+));
+
+/* check environment for compatibility
+   ---------------------------------------------------------------------------------------------------------------------- */
 //correct PHP version?
-if (version_compare (PHP_VERSION, '5.2.3') < 0) require 'lib/error_phpver.php';
+if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.php';
 
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
-if (!@$_SERVER['HTTP_HTACCESS']) require 'lib/error_htaccess.php';
+if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
 
-require_once 'lib/functions.php';		//import shared functions
-require_once 'lib/domtemplate/domtemplate.php';	//import the templating engine
+require_once FORUM_LIB.'functions.php';				//import shared functions
+require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
 
-/* configuration:
+/* configuration
    ---------------------------------------------------------------------------------------------------------------------- */
 //try set the forum owner’s personal config ('config.php'), if it exists
-@include './config.php';
+@(include './config.php');
 //include the defaults: (for anything missing from the user’s config)
 //see that file for descriptions of the different available options
-@(include './config.default.php') or die ('config.default.php missing!');
+@(include './config.default.php') or require FORUM_LIB.'error_configdefault.php';
 
 //PHP 5.3 issues a warning if the timezone is not set when using date commands
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
 date_default_timezone_set (FORUM_TIMEZONE);
 
-
-/* constants: some stuff we don’t expect to change
-   ====================================================================================================================== */
-define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
-define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
-	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
-	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
-));
+//the full URL of the site is dependant on HTTPS configuration, so we wait until now to define it
 define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//- if HTTPS is enforced, links in RSS will use it
 	'://'.$_SERVER['HTTP_HOST']
@@ -52,7 +58,7 @@ define ('PAGE',     preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
 //a shorthand for when PATH is used in URL construction for HTML use
 define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));
-//for serverside use, like `chdir` / `unlink` (replace the URL forward-slashes with backslashes on Windows)
+//for serverside use, like `chdir` / `unlink` (must replace the URL forward-slashes with backslashes on Windows)
 define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replace ('/', DIRECTORY_SEPARATOR, PATH));
 //if we are in nested sub-folders, the name of the current sub-forum, exluding the rest
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
@@ -61,6 +67,8 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
+//TODO: that should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page
+//      may revist this if I create an NNF-provided 404 page
 
 
 /* access control
@@ -151,11 +159,11 @@ define ('CAN_POST', FORUM_ENABLED && (
 //shorthand to the server-side location of the particular theme folder (this gets used a lot)
 define ('THEME_ROOT', FORUM_ROOT.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.FORUM_THEME.DIRECTORY_SEPARATOR);
 //load the theme-specific functions
-@(include THEME_ROOT.'theme.php') or die ('theme.php missing!');
+@(include THEME_ROOT.'theme.php') or require FORUM_LIB.'error_theme.php';
 //load the user’s theme configuration, if it exists
-@include THEME_ROOT.'theme.config.php';
+@(include THEME_ROOT.'theme.config.php');
 //include the theme defaults
-@(include THEME_ROOT.'theme.config.default.php') or die ('theme.config.default.php missing!');
+@(include THEME_ROOT.'theme.config.default.php') or require FORUM_LIB.'error_configtheme.php';
 
 //include the language translations
 $LANG = array ();
@@ -201,7 +209,7 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 if (!HTTP_AUTH && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
-	//we don't die here so that if they cancel the login prompt, they won't get a blank page
+	//we don't die here so that if they cancel the login prompt, they shouldn't get a blank page
 }
 
 //stop browsers caching, so you don’t have to refresh every time to see changes

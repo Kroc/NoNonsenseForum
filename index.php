@@ -41,9 +41,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
-	$rss = new DOMTemplate (
-		file_get_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml')
-	);
+	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
 		'/rss/channel/link'		=> FORUM_URL.PATH_URL.$file,

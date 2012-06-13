@@ -331,9 +331,7 @@ function formatText ($text, $rss=NULL) {
 function indexRSS () {
 	/* create an RSS feed
 	   -------------------------------------------------------------------------------------------------------------- */
-	$rss = new DOMTemplate (
-		file_get_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'rss-template.xml')
-	);
+	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
 		'/rss/channel/link'	=> FORUM_URL.PATH_URL
@@ -372,7 +370,7 @@ function indexRSS () {
 	
 	//start the XML file. this template has an XMLNS, so we have to prefix all our XPath queries :(
 	$xml = new DOMTemplate (
-		file_get_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR.'sitemap-template.xml'),
+		file_get_contents (FORUM_LIB.'sitemap-template.xml'),
 		'x', 'http://www.sitemaps.org/schemas/sitemap/0.9'
 	);
 	
