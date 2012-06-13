@@ -10,15 +10,11 @@ mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
 //correct PHP version?
-if (version_compare (PHP_VERSION, '5.2.3') < 0) die (
-	'PHP version 5.2.3 or greater required, yours is: '.PHP_VERSION
-);
+if (version_compare (PHP_VERSION, '5.2.3') < 0) require 'lib/error_phpver.php';
 
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
-if (!@$_SERVER['HTTP_HTACCESS']) die (
-	"'.htaccess' file is missing, or not enabled."
-);
+if (!@$_SERVER['HTTP_HTACCESS']) require 'lib/error_htaccess.php';
 
 require_once 'lib/functions.php';		//import shared functions
 require_once 'lib/domtemplate/domtemplate.php';	//import the templating engine

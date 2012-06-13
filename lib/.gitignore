@@ -6,7 +6,13 @@
 # don't include submodules and thus break NNF for casual users just wanting to download and run
 !domtemplate**
 
-# everything else
+# code
 !functions.php
+
+# error messages
+!error_htaccess.php
+!error_phpver.php
+
+# templates
 !rss-template.xml
 !sitemap-template.xml
