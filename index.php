@@ -198,7 +198,7 @@ if ($folders = array_filter (
 
 /* threads
    ---------------------------------------------------------------------------------------------------------------------- */
-if ($threads || $stickies) {
+if ($threads || @$stickies) {
 	//do the page links (stickies are not included in the count as they appear on all pages)
 	theme_pageList ($template, PATH_URL, $PAGE, $PAGES);
 	//slice the full list into the current page

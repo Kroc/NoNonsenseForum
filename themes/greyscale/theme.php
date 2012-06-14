@@ -9,8 +9,22 @@
 //templating of your own. the `$template` object passed in is a DOMTemplate class, see '/lib/domtemplate/' for code
 //or <camendesign.com/dom_templating> for documentation on how to template with it
 function theme_custom ($template) {
-	//set the logo
-	$template->setValue ('img#logo@src', THEME_ROOT.'img'.DIRECTORY_SEPARATOR.THEME_LOGO);
+	$template->set (array (
+		//metadata for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
+		//application title (= forum / sub-forum name):
+		'//meta[@name="application-name"]/@content'          => SUBFORUM ? SUBFORUM : FORUM_NAME,
+		//application URL (where the pinned site opens at)
+		'//meta[@name="msapplication-starturl"]/@content'    => FORUM_URL.PATH_URL,
+		
+		//set the site logo
+		'img#nnf_logo@src'                                   => FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO,
+		
+		//set the forum URL for Google search-by-site
+		'//input[@name="as_sitesearch"]/@value'              => $_SERVER['HTTP_HOST'],
+		//if you're using a Google search, change it to HTTPS if enforced
+		'//form[@action="http://google.com/search"]/@action' => FORUM_HTTPS ? 'https://encrypted.google.com/search'
+		                                                                    : 'http://google.com/search'
+	));
 }
 
 //produce an HTML list of names (used for the mods/members list)

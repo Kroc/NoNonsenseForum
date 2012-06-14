@@ -45,28 +45,13 @@ function prepareTemplate ($filepath, $title=NULL) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	//if no title is provided, the one already in the template remains (likely for translation purposes)
 	if (!is_null ($title)) $template->setValue ('/html/head/title', $title);
-	//metadata for IE9+ pinned-sites: <msdn.microsoft.com/library/gg131029>
-	$template->set (array (
-		//application title (= forum / sub-forum name):
-		'//meta[@name="application-name"]/@content'		=> SUBFORUM ? SUBFORUM : FORUM_NAME,
-		//application URL (where the pinned site opens at)
-		'//meta[@name="msapplication-starturl"]/@content'	=> FORUM_URL.PATH_URL
-	));
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
 	if (!file_exists (THEME_ROOT.'custom.css')) $template->remove ('//link[contains(@href,"custom.css")]');
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
-	$template->set (array (
-		//site title
-		'.nnf_forum-name' => FORUM_NAME,
-		//set the forum URL for Google search-by-site
-		'//input[@name="as_sitesearch"]/@value' => $_SERVER['HTTP_HOST'],
-		//if you're using a Google search, change it to HTTPS if enforced
-		'//form[@action="http://google.com/search"]/@action'
-			=> FORUM_HTTPS	? 'https://encrypted.google.com/search'
-					: 'http://google.com/search'
-	));
+	//site title
+	$template->setValue ('.nnf_forum-name', FORUM_NAME);
 	
 	//are we in a sub-folder? if so, build the breadcrumb navigation
 	if (PATH) for (
