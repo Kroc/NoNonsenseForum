@@ -16,6 +16,7 @@
 !error_theme.php
 !error_configtheme.php
 !error_permissions.php
+!error_xml.php
 
 # templates
 !rss-template.xml

@@ -67,8 +67,8 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
-//TODO: that should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page
-//      may revist this if I create an NNF-provided 404 page
+//TODO: that should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page.
+//      I may revist this if I create an NNF-provided 404 page
 
 
 /* access control

@@ -12,9 +12,12 @@ require_once './start.php';
 define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 
 //which thread to show
+//TODO: an error here should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page.
+//      I may revist this if I create an NNF-provided 404 page
 $FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
+
 //load the thread (have to read lock status from the file)
-$xml    = @simplexml_load_file ("$FILE.rss") or die ('Malformed XML');
+$xml    = @simplexml_load_file ("$FILE.rss") or require FORUM_LIB.'error_xml.php';
 $thread = $xml->channel->xpath ('item');
 
 //handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
@@ -43,7 +46,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
 	//if there’s a "locked" category, remove it
 	if ((bool) $xml->channel->xpath ("category[.='locked']")) {
@@ -84,7 +87,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : false)) {
 	//get a write lock on the file so that between now and saving, no other posts could slip in
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
 	//find the post using the ID (we need to know the numerical index for later)
 	for ($i=0; $i<count ($xml->channel->item); $i++) if (strstr ($xml->channel->item[$i]->link, '#') == "#$ID") break;
@@ -198,7 +201,7 @@ if (isset ($_GET['delete'])) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	
 	//load the thread to get the post preview
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
 	//access the particular post. if no ID is provided (deleting the whole thread) use the last item in the RSS file
 	//(the first post), otherwise find the ID of the specific post
@@ -339,7 +342,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	//we have to read the XML using the file handle that's locked because in Windows, functions like
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
-	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or die ('Malformed XML');
+	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
