@@ -174,9 +174,9 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'#nnf_error-none-append, #nnf_error-none-http' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
 		'#nnf_error-auth-append' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
-		//if the password is valid, remove the erorr message
+		//if the password is valid, remove the error message
 		'#nnf_error-pass-append' => empty ($_POST) || !TEXT || !NAME || PASS,
-		//if the name is valid, remove the erorr message
+		//if the name is valid, remove the error message
 		'#nnf_error-name-append' => empty ($_POST) || !TEXT || NAME,
 		//if the message text is valid, remove the error message
 		'#nnf_error-text'        => empty ($_POST) || TEXT
@@ -317,9 +317,9 @@ if (isset ($_GET['delete'])) {
 		'#nnf_error-none-thread, #nnf_error-none-reply' => !empty ($_POST),
 		//if the username & password are correct, remove the error message
 		'#nnf_error-auth-delete' => empty ($_POST) || !NAME || !PASS || AUTH,
-		//if the password is valid, remove the erorr message
+		//if the password is valid, remove the error message
 		'#nnf_error-pass-delete' => empty ($_POST) || !NAME || PASS,
-		//if the name is valid, remove the erorr message
+		//if the name is valid, remove the error message
 		'#nnf_error-name-delete' => empty ($_POST) || NAME
 	));
 	
@@ -570,9 +570,9 @@ if (CAN_REPLY) $template->set (array (
 	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
 	//if the username & password are correct, remove the error message
 	'#nnf_error-auth'  => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
-	//if the password is valid, remove the erorr message
+	//if the password is valid, remove the error message
 	'#nnf_error-pass'  => empty ($_POST) || !TEXT || !NAME || PASS,
-	//if the name is valid, remove the erorr message
+	//if the name is valid, remove the error message
 	'#nnf_error-name'  => empty ($_POST) || !TEXT || NAME,
 	//if the message text is valid, remove the error message
 	'#nnf_error-text'  => empty ($_POST) || TEXT

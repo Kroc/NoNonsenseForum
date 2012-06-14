@@ -104,7 +104,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//- if registrations are allowed (`FORUM_NEWBIES` is true)
 	//- you can’t create new users with the HTTP_AUTH sign in
 	if (FORUM_NEWBIES && !isset ($_SERVER['PHP_AUTH_USER']) && !file_exists ($user))
-		file_put_contents ($user, hash ('sha512', $name.PASS))
+		file_put_contents ($user, hash ('sha512', $name.PASS)) or require FORUM_LIB.'error_permissions.php'
 	;
 	
 	//does password match?

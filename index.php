@@ -13,7 +13,6 @@ require_once './start.php';
 define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
 define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
-
 /* ======================================================================================================================
    new thread submitted
    ====================================================================================================================== */
@@ -54,9 +53,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	
-	file_put_contents ("$file.rss", $rss->html ()) or die (
-		"Failed to save thread. Folder permissions may be incorrect."
-	);
+	file_put_contents ("$file.rss", $rss->html ()) or require FORUM_LIB.'error_permissions.php';
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
@@ -292,13 +289,13 @@ if (CAN_POST) $template->set (array (
 	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
 	//if the username & password are correct, remove the error message
 	'#nnf_error-auth' => empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH,
-	//if the password is valid, remove the erorr message
+	//if the password is valid, remove the error message
 	'#nnf_error-pass' => empty ($_POST) || !TITLE || !TEXT || !NAME || PASS,
-	//if the name is valid, remove the erorr message
+	//if the name is valid, remove the error message
 	'#nnf_error-name' => empty ($_POST) || !TITLE || !TEXT || NAME,
 	//if the message text is valid, remove the error message
 	'#nnf_error-text' => empty ($_POST) || !TITLE || TEXT,
-	//if the title is valid, remove the erorr message
+	//if the title is valid, remove the error message
 	'#nnf_error-title'=> empty ($_POST) || TITLE
 ));
 
