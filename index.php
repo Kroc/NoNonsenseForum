@@ -176,10 +176,11 @@ if ($folders = array_filter (
 				//last post time (machine readable)
 				'time.nnf_post-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
 				//link to the last post
-				'a.nnf_post-link@href'		=> substr ($last->link, strpos ($last->link, '/', 9)),
+				'a.nnf_post-link@href'		=> substr ($last->link, strpos ($last->link, '/', 9))
+			))->remove (array (
+				//is the last author a mod?
+				'.nnf_post-author@class'	=> isMod ($last->author) ? false : 'mod'
 			));
-			//is the last author a mod?
-			if (isMod ($last->author)) $item->addClass ('.nnf_post-author', 'mod');
 		} else {
 			//no last post, remove the template for it
 			$item->remove ('.nnf_subforum-post');
@@ -211,45 +212,39 @@ if ($threads || @$stickies) {
 	foreach ($threads as $file) if (
 		//read the file, and refer to the last post made
 		$xml = @simplexml_load_file ($file)
-	) {
-		//is the thread sticky?
-		if (in_array ($file, $stickies)) $item->addClass ('.', 'sticky'); 
-		
-		//get the last post in the thread
-		$last = &$xml->channel->item[0];
-		
+	) if (	//get the last post in the thread
+		$last = &$xml->channel->item[0]
 		//apply the data to the template
-		$item->set (array (
-			//thread title and URL
-			'a.nnf_thread-name'		=> $xml->channel->title,
-			'a.nnf_thread-name@href'	=> pathinfo ($file, PATHINFO_FILENAME),
-			//number of replies
-			'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
-			
-			//last post info:
-			//link to the last post
-			'a.nnf_thread-post@href'	=> substr ($last->link, strpos ($last->link, '/', 9)),
-			//last post time (human readable)
-			'time.nnf_thread-time'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
-			//last post time (machine readable)
-			'time.nnf_thread-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
-			//last post author
-			'.nnf_thread-author'		=> $last->author
-		))->remove (array (
-			//if the thread isn’t locked, remove the lock icon
-			'.nnf_thread-locked'		=> !$xml->channel->xpath ("category[.='locked']"),
-			//if the thread is not sticky, remove the sticky icon
-			'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
-							//the lock-icon takes precedence over the sticky icon
-							|| $xml->channel->xpath ("category[.='locked']")
-		));
+	) $item->set (array (
+		//thread title and URL
+		'a.nnf_thread-name'		=> $xml->channel->title,
+		'a.nnf_thread-name@href'	=> pathinfo ($file, PATHINFO_FILENAME),
+		//number of replies
+		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		
+		//last post info:
+		//link to the last post
+		'a.nnf_thread-post@href'	=> substr ($last->link, strpos ($last->link, '/', 9)),
+		//last post time (human readable)
+		'time.nnf_thread-time'		=> date (DATE_FORMAT, strtotime ($last->pubDate)),
+		//last post time (machine readable)
+		'time.nnf_thread-time@datetime'	=> date ('c', strtotime ($last->pubDate)),
+		//last post author
+		'.nnf_thread-author'		=> $last->author
+	))->remove (array (
+		//if the thread isn’t locked, remove the lock icon
+		'.nnf_thread-locked'		=> !$xml->channel->xpath ("category[.='locked']"),
+		//if the thread isn't sticky, remove the 'sticky' class
+		'./@class'			=> !in_array ($file, $stickies) ? 'sticky' : false,
+		//if the thread isn't sticky, remove the sticky icon
+		'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
+						//the lock-icon takes precedence over the sticky icon
+						|| $xml->channel->xpath ("category[.='locked']"),
 		//is the last post author a mod?
-		if (isMod ($last->author)) $item->addClass ('.nnf_thread-author', 'mod');
-		
-		//attach the templated sub-forum item to the list
-		$item->next ();
-	}
+		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'mod' : false
+	
+	//attach the templated sub-forum item to the list
+	))->next ();
 	
 } else {
 	//no threads, remove the template stuff

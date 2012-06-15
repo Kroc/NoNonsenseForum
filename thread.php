@@ -138,7 +138,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	$template = prepareTemplate (
 		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title)
 	
-	//the preview post
+	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $xml->channel->title,
 		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
@@ -147,13 +147,13 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'#nnf_post-author'		=> $post->author
 	))->setValue (
 		'#nnf_post-text', $post->description, true
-	);
+	)->remove (array (
+		//if the user who made the post is a mod, also mark the whole post as by a mod
+		//(you might want to style any posts made by a mod differently)
+		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false
 	
-	//if the user who made the post is a mod, also mark the whole post as by a mod
-	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) $template->addClass ('#nnf_post, #nnf_post-author', 'mod');
-	
-	$template->set (array (
+	//the append form:
+	))->set (array (
 		//set the field values from what was typed in before
 		'input#nnf_name-field-http@value'	=> NAME,
 		'input#nnf_name-field@value'		=> NAME,
@@ -286,7 +286,7 @@ if (isset ($_GET['delete'])) {
 	$template = prepareTemplate (
 		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title)
 	
-	//the preview post
+	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $post->title,
 		'#nnf_post-title@id'		=> substr (strstr ($post->link, '#'), 1),
@@ -295,13 +295,13 @@ if (isset ($_GET['delete'])) {
 		'#nnf_post-author'		=> $post->author
 	))->setValue (
 		'#nnf_post-text', $post->description, true
-	);
+	)->remove (array (
+		//if the user who made the post is a mod, also mark the whole post as by a mod
+		//(you might want to style any posts made by a mod differently)
+		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false
 	
-	//if the user who made the post is a mod, also mark the whole post as by a mod
-	//(you might want to style any posts made by a mod differently)
-	if (isMod ($post->author)) $template->addClass ('post, post-author', 'mod');
-	
-	$template->set (array (
+	//the authentication form:
+	))->set (array (
 		//set the field values from what was typed in before
 		'input#nnf_name-field@value'		=> NAME,
 		'input#nnf_pass-field@value'		=> PASS,
@@ -463,15 +463,14 @@ $template->set (array (
 	'a#nnf_post-delete@href'	=> '?delete'
 ))->setValue (
 	'#nnf_post-text', $post->description, true
-);
-
-//if the user who made the post is a mod, also mark the whole post as by a mod
-//(you might want to style any posts made by a mod differently)
-if (isMod ($post->author)) $template->addClass ('#nnf_post, #nnf_post-author', 'mod');
-
-//append / delete links?
-if (!CAN_REPLY) $template->remove ('#nnf_post-append', '#nnf_post-delete');
-
+)->remove (array (
+	//if the user who made the post is a mod, also mark the whole post as by a mod
+	//(you might want to style any posts made by a mod differently)
+	'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false,
+	
+	//append / delete links?
+	'#nnf_post-append, #nnf_post-delete' => !CAN_REPLY
+));
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -492,9 +491,6 @@ if (count ($thread)) {
 	//index number of the replies, accounting for which page we are on
 	$no = ($PAGE-1) * FORUM_POSTS;
 	foreach ($thread as &$reply) {
-		//has the reply been deleted (blanked)?
-		if ($reply->xpath ("category[.='deleted']")) $item->addClass ('.', 'deleted');
-		
 		//apply the data to the template (a reply)
 		$item->set (array (
 			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
@@ -507,13 +503,17 @@ if (count ($thread)) {
 			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
 		))->setValue (
 			'.nnf_reply-text', $reply->description, true
-		);
-		
-		//is this reply from the person who started the thread?
-		if (strtolower ($reply->author) == strtolower ($author)) $item->addClass ('.', 'op');
-		//if the user who made the reply is a mod, also mark the whole post as by a mod
-		//(you might want to style any posts made by a mod differently)
-		if (isMod ($reply->author)) $item->addClass ('., .nnf_reply-author', 'mod');
+		)->remove (array (
+			//has the reply been deleted (blanked)?
+			'./@class'			=> $reply->xpath ("category[.='deleted']") ? false : 'deleted',
+		))->remove (array (
+			//is this reply from the person who started the thread?
+			'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'op'
+		))->remove (array (
+			//if the user who made the reply is a mod, also mark the whole post as by a mod
+			//(you might want to style any posts made by a mod differently)
+			'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
+		));
 		
 		//if the current user in the curent forum can append/delete the current reply:
 		if (CAN_REPLY && (
