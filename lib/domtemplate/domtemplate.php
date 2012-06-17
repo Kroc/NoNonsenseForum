@@ -1,12 +1,12 @@
 <?php
 
-//DOM Templating classes v12 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v13 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
 /*	Basic API:
 	
-	new DOMTemplate (xml, [namespace, namespace_URI])
+	new DOMTemplate (xml, [namespaces])
 
 	query (query)				make an XPath query
 	set (queries, [asHTML])			change HTML by specifying an array of ('XPath' => 'value')
@@ -29,8 +29,8 @@ class DOMTemplate extends DOMTemplateNode {
 	   -------------------------------------------------------------------------------------------------------------- */
 	public function __construct (
 		$xml,				//a string of the XML to form the template
-		$NS='',				//optional XML namespace if your document uses one
-		$NS_URI=''			//the namespace URI of the above
+		$namespaces=array ()		//an array of XML namespaces if your document uses them,
+						//in the format of `'namespace' => 'namespace URI'`
 	) {
 		//does this source have an XML prolog? if so, we’ll keep it as-is in the output
 		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
@@ -50,7 +50,7 @@ class DOMTemplate extends DOMTemplateNode {
 		);
 		//set the root node for all xpath searching
 		//(handled all internally by `DOMTemplateNode`)
-		parent::__construct ($this->DOMDocument->documentElement, $NS, $NS_URI);
+		parent::__construct ($this->DOMDocument->documentElement, $namespaces);
 	}
 	
 	/* html : output the complete HTML
@@ -75,8 +75,7 @@ abstract class DOMTemplateNode {
 	protected $DOMNode;		//reference to the actual PHP DOMNode being operated upon
 	private   $DOMXPath;		//an internal XPath object so you don't have to manage one externally
 	
-	protected $NS;			//optional XML namespace
-	protected $NS_URI;		//namespace URI
+	protected $namespaces;		//optional XML namespaces
 	
 	/* html_entity_decode : convert HTML entities back to UTF-8
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -199,7 +198,7 @@ abstract class DOMTemplateNode {
 	   -------------------------------------------------------------------------------------------------------------- */
 	//you cannot instantiate this class yourself, _always_ work through DOMTemplate! why? because you cannot mix nodes
 	//from different documents! DOMTemplateNodes _must_ come from DOMDocument kept privately inside DOMTemplate
-	public function __construct ($DOMNode, $NS='', $NS_URI='') {
+	public function __construct ($DOMNode, $namespaces=array ()) {
 		//use a DOMNode as a base point for all the XPath queries and whatnot
 		//(in DOMTemplate this will be the whole template, in DOMTemplateRepeater, it will be the chosen element)
 		$this->DOMNode  = $DOMNode;
@@ -207,9 +206,8 @@ abstract class DOMTemplateNode {
 		//the painful bit: if you have an XMLNS in your template then XPath won’t work unless you:
 		// a. register a default namespace, and
 		// b. prefix element names in your XPath queries with this namespace
-		if (list ($this->NS, $this->NS_URI) = array ($NS, $NS_URI))
-			$this->DOMXPath->registerNamespace ($NS, $NS_URI)
-		;
+		if (!empty ($namespaces)) foreach ($namespaces as $NS=>$URI) $this->DOMXPath->registerNamespace ($NS, $URI);
+		$this->namespaces = $namespaces;
 	}
 	
 	/* query : find node(s)
@@ -360,7 +358,7 @@ abstract class DOMTemplateNode {
 	public function repeat ($query) {
 		//NOTE: the provided XPath query could return more than one element! DOMTemplateRepeaterArray therefore
 		//	acts as a simple wrapper to propogate changes to all the matched nodes (DOMTemplateRepeater)
-		return new DOMTemplateRepeaterArray ($this->query ($query), $this->NS, $this->NS_URI);
+		return new DOMTemplateRepeaterArray ($this->query ($query), $this->namespaces);
 	}
 }
 
@@ -371,10 +369,10 @@ abstract class DOMTemplateNode {
 class DOMTemplateRepeaterArray {
 	private $nodes;
 	
-	public function __construct ($DOMNodeList, $NS='', $NS_URI='') {
+	public function __construct ($DOMNodeList, $namespaces=array ()) {
 		//convert the XPath query result into extended `DOMTemplateNode`s (`DOMTemplateRepeater`) so that you can
 		//modify the HTML with the same usual DOMTemplate API
-		foreach ($DOMNodeList as $DOMNode) $this->nodes[] = new DOMTemplateRepeater ($DOMNode, $NS, $NS_URI);
+		foreach ($DOMNodeList as $DOMNode) $this->nodes[] = new DOMTemplateRepeater ($DOMNode, $namespaces);
 	}
 	
 	public function next () {
@@ -409,14 +407,14 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 	private $refNode;		//the templated node will be added after this node
 	private $template;		//a copy of the original node to work from each time
 	
-	public function __construct ($DOMNode, $NS='', $NS_URI='') {
+	public function __construct ($DOMNode, $namespaces=array ()) {
 		//we insert the templated item after the reference node,
 		//which will always be the last item that was templated
 		$this->refNode  = $DOMNode;
 		//take a copy of the original node that we will use as a starting point each time we iterate
 		$this->template = $DOMNode->cloneNode (true);
 		//initialise the template with the current, original node
-		parent::__construct ($DOMNode, $NS, $NS_URI);
+		parent::__construct ($DOMNode, $namespaces);
 	}
 	
 	public function next () {

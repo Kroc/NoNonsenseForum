@@ -356,7 +356,7 @@ function indexRSS () {
 	//start the XML file. this template has an XMLNS, so we have to prefix all our XPath queries :(
 	$xml = new DOMTemplate (
 		file_get_contents (FORUM_LIB.'sitemap-template.xml'),
-		'x', 'http://www.sitemaps.org/schemas/sitemap/0.9'
+		array ('x' => 'http://www.sitemaps.org/schemas/sitemap/0.9')
 	);
 	
 	//generate a sitemap index file, to point to each index RSS file in the forum:
