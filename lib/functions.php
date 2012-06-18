@@ -173,8 +173,8 @@ function formatText ($text, $rss=NULL) {
 			((?:(?:http|ftp)s?|irc)?:\/\/)			# $1 = protocol
 		|	([a-z0-9\._%+\-]+@)				# $2 = email name
 		)(							# $3 = friendly URL (no protocol)
-			[^\p{Z}\p{C}\.\/&\x{23}@"”»]+			# domain name (not "separator", "other" and slash)
-			(?:\.[^\p{Z}\p{C}\.\/&\x{23}@"”»]+)+		# top-level domain
+			[\p{L}\p{M}\p{N}-]+				# domain (letters, diacritics, numbers & dash only)
+			(?:\.[\p{L}\p{M}\p{N}]+)+			# TLDs (also letters, diacritics & numbers only)
 		)(?(2)|							# email ends here
 			(\/)?						# $4 = slash is excluded from friendly URL
 			(?(4)(						# $5 = folders and filename, relative URL
