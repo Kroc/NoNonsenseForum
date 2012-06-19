@@ -1,4 +1,4 @@
-'security_closed_16.png' and 'security_open_16.png' are part of the
+'security_closed' and 'security_open' are part of the
 Pictorial Communication Language icon-set at <picol.org>, licenced
 under a Creative Commons Share-Alike 3.0 Licence:
 

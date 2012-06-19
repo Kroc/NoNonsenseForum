@@ -4,4 +4,4 @@
 !.gitignore
 
 # include the default theme
-!greyscale
+!greyscale/

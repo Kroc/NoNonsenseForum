@@ -1,4 +1,4 @@
-/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v20 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -71,15 +71,18 @@ pre, code, samp			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monosp
 #mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
 				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
 				 font-size: 32px; line-height: 40px; background: #222;}
-#mast h1 a			{display: block; padding: 10px 0; color: #f7f6f7;}
-#mast h1 a img			{float: left; margin: 4px 13px 0 15px; border: none;}
+#mast h1 a			{display: block; overflow: hidden; padding: 10px 0; color: #f7f6f7;}
+#mast h1 a img			{display: block; float: left; margin: 4px 13px 0 15px; border: none;}
+#mast .nnf_forum-name		{/* truncate the forum title if it overflows (not working in IE6) */
+				 display: block; height: 40px; overflow: hidden; margin-right: 220px;
+				 white-space: nowrap; text-overflow: ellipsis;}
 
 #mast nav			{padding-top: 80px;}
 
 /* search box: */
 #search				{float: right; width: 210px; overflow: hidden; margin: 0; padding: 20px 10px 0;
-				*position: absolute; *right: 10%; /* IE6/7 have float conflicts with the language selector */ 
-				border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
+				*position: absolute; *right: 10%; /* IE6/7 have float issues with the language selector */
+				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
 				 text-align: right; background: none;}
 #query				{display: block; /*< removes magic-spacing / height on input box */
 				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
@@ -88,7 +91,8 @@ pre, code, samp			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monosp
 				         border-radius: 10px;
 				 font-size: 12px !important;
 				 line-height: 20px; /*< equalises vertical position of search box in IE8 */
-				 background: white url("img/search.png") no-repeat 5px 50%;}
+				 background: white url("img/search.png") no-repeat 5px 50%;
+				 background-size: 13px 17px;}
 ::-webkit-search-decoration,	/* reset Safari custom search-box design */
  ::-webkit-search-cancel-button	{display: none;}
 input[type=search]		{-webkit-appearance: textfield;
@@ -99,7 +103,8 @@ input[type=search]:focus	{outline: none;}
 
 /* the breadcrumb for sub-forums */
 #index				{margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
-				 background: url("img/here.png") no-repeat 24px 0;}
+				 background: url("img/here.png") no-repeat 24px 0;
+				 background-size: 16px 20px;}
 #index li			{display: inline; padding-right: 0.4em;}
 
 /* language selector: */
@@ -116,8 +121,8 @@ input[type=search]:focus	{outline: none;}
 /* 'Add' / 'Reply' and 'RSS' buttons */
 #nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;
 				 text-align: right; text-transform: uppercase; color: #222 !important;}
-#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%;}
-#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%;}
+#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%; background-size: 16px 16px;}
 
 /* what follows is a phenomenally complex system of floats that just somehow allows for an elegant collapsing of elements
    under certain conditions, primarily so that if there is no language selector present, no 'about.html' and no sub-forums
@@ -188,8 +193,8 @@ ol.ui li a:hover time		{text-decoration: underline;}
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 /* titles */
-#nnf_folders h1			{background-image: url("img/folders.png");}
-#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png");}
+#nnf_folders h1			{background-image: url("img/folders.png"); background-size: 32px 32px;}
+#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png"); background-size: 32px 32px;}
 
 /* the last post name / date for sub-forums */
 #nnf_folders ol.ui li		{position: relative; border-bottom: 1px solid #444;}
@@ -210,7 +215,7 @@ article p			{padding: 20px 0 0 0;}
 /* close the border within the 20px rhythm on the initial post */
 #nnf_post article		{padding-bottom: 19px !important; border-bottom-width: 1px;}
 
-#nnf_replies h1			{background-image: url("img/replies.png");}
+#nnf_replies h1			{background-image: url("img/replies.png"); background-size: 32px 32px;}
 
 article header			{line-height: 20px; margin: -1px -20px 0; padding: 10px 20px 9px;
 				 border-bottom: 1px dotted #444;
@@ -233,8 +238,8 @@ article header .ui,
 				      -o-transition: all .2s;
 				         transition: all .2s;}
 
-a.delete			{background: url("img/delete.png") no-repeat right center;}
-a.append			{background: url("img/append.png") no-repeat right center;}
+a.delete			{background: url("img/delete.png") no-repeat right center; background-size: 16px 16px;}
+a.append			{background: url("img/add.png") no-repeat right center; background-size: 16px 16px;}
 
 article.op			{}
 article.op header		{background: #888; color: #eee;}
@@ -259,7 +264,7 @@ p.appended			{color: #888; padding-top: 19px;
 /* markup / privacy page
    ====================================================================================================================== */
 #markup h1,			/* title icon */
- #privacy h1			{background-image: url("img/help.png");}
+ #privacy h1			{background-image: url("img/help.png"); background-size: 32px 32px;}
 
 #markup header ol,		/* table of contents */
  #privacy header ol		{margin: 0; padding: 0;}
@@ -272,7 +277,7 @@ p.appended			{color: #888; padding-top: 19px;
 /* input forms
    ====================================================================================================================== */
 #nnf_new-form h1,		/* title icon */
- #nnf_reply-form h1, #append h1	{background-image: url("img/new.png");}
+ #nnf_reply-form h1, #append h1	{background-image: url("img/new.png"); background-size: 32px 32px;}
 
 form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
 				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
@@ -343,7 +348,7 @@ input[type=text],
 
 /* delete form
    ---------------------------------------------------------------------------------------------------------------------- */
-#delete h1			{background-image: url("img/deletetitle.png");}
+#delete h1			{background-image: url("img/deletetitle.png"); background-size: 32px 32px;}
 #delete #psubmit		{margin-top: 20px !important;}
 
 /* put the name / password fields side by side since there's no message box taking up the space */
@@ -357,8 +362,8 @@ input[type=text],
 a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
    <creativecommons.org/licenses/by-sa/3.0/> */
-a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%;}
-a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%;}
+a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%; background-size: 16px 16px;}
+a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%; background-size: 16px 16px;}
 
 footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
 				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
@@ -392,6 +397,7 @@ h1				{font-size: 20px !important;}
 #mast h1 a			{/* fit the logo in tighter */
 				 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
 #mast h1 a img			{margin-left: -45px; margin-top: -6px;}
+#mast .nnf_forum-name		{margin-right: 0; /*min-height: 40px;*/}
 
 /* re-position the search field below the title */
 #search				{float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;
@@ -487,6 +493,9 @@ article header time		{display: inline;}
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 
+/* ensure the language selector doesn’t overflow into the search box */
+#lang				{max-width: 100px; max-height: 20px; white-space: nowrap;}
+
 /* not enough room for the page list in the title, you’ll have to use the one at the bottom */
 #nnf_threads>h1 + nav,		/* the spaces between `+` are required here for WebKit! */
  #nnf_replies>h1 + nav		{display: none !important;}
@@ -496,6 +505,33 @@ article header time		{display: inline;}
 footer				{padding-top: 60px;}
 footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
 p#signin			{margin-top: -100px;}
+
+}
+
+/* ======================================================================================================================
+   HiDPI  / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ====================================================================================================================== */
+@media	(-webkit-min-device-pixel-ratio: 1.5),
+	(-o-min-device-pixel-ratio: 3/2),
+	(min--moz-device-pixel-ratio: 1.5),
+	(min-device-pixel-ratio: 1.5),
+	(min-resolution: 1.5dppx) {
+
+#query				{background-image: url("img/search_2x.png");}
+#index				{background-image: url("img/here_2x.png");}
+#nnf_add, #nnf_reply		{background-image: url("img/add_2x.png");}
+#nnf_rss			{background-image: url("img/rss_2x.png");}
+#nnf_folders h1			{background-image: url("img/folders_2x.png");}
+#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads_2x.png");}
+#nnf_replies h1			{background-image: url("img/replies_2x.png");}
+a.delete			{background-image: url("img/delete_2x.png");}
+a.append			{background-image: url("img/add_2x.png");}
+#markup h1, #privacy h1		{background-image: url("img/help_2x.png");}
+#nnf_new-form h1,
+ #nnf_reply-form h1, #append h1	{background-image: url("img/new_2x.png");}
+#delete h1			{background-image: url("img/deletetitle_2x.png");}
+a#nnf_lock			{background-image: url("img/security_closed_32.png");}
+a#nnf_unlock			{background-image: url("img/security_open_32.png");}
 
 }
 

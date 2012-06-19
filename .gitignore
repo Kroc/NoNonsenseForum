@@ -16,9 +16,9 @@
 !thread.php
 !markup.php
 !privacy.php
-!lib
-!themes
-!users
+!lib/
+!themes/
+!users/
 
 # documentation
 !HISTORY.txt

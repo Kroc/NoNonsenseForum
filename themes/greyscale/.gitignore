@@ -14,7 +14,7 @@
 # graphics
 !favicon.ico
 !apple-touch-icon.png
-!img
+!img/
 
 # code and configuration
 !theme.php

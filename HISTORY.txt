@@ -1,3 +1,12 @@
+v20	19.JUN.12
+*	HiDPI / Retina display graphics
+*	Massively improved error messages
+*	Using a blockquote directly within blockquote fixed
+*	Forum title truncated "…" if too long for screen size
+*	Google search and IE9 metadata was moved out of core and into 'theme.php'
+*	Typo in 'lang.example.php' that was causing errors when making translations
+*	Custom logo option had been broken for a long time, sorry!
+
 v19	03.MAY.12
 *	Translation support
 	-	Themes can provide their own translations and admins can add more themselves easily

@@ -1,6 +1,6 @@
 <?php //theme configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v19 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v20 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -72,7 +72,7 @@
 /* optional: (options unique to this theme)
    ====================================================================================================================== */
 //filename of the image to use as the site logo (assumed to be within the theme's folder)
-//- for this theme, it should be 32x32 px
+//- for this theme, it should be 64x64 px (HiDPI) but will appear as 32x32 on lo-DPI screens
 @define ('THEME_LOGO',		'logo.png');
 
 ?>
