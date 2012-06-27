@@ -15,7 +15,7 @@ function prepareTemplate ($filepath, $title=NULL) {
 	
 	//fix all absolute URLs (i.e. if NNF is running in a folder):
 	//(this also fixes the forum-title home link "/" when NNF runs in a folder)
-	foreach ($template->query ('//*/@href, //*/@src') as $node) if ($node->nodeValue[0] == '/')
+	foreach ($template->query ('//*/@href, //*/@src, //*/@content') as $node) if ($node->nodeValue[0] == '/')
 		//prepend the base path of the forum ('/' if on root, '/folder/' if running in a sub-folder)
 		$node->nodeValue = FORUM_PATH.ltrim ($node->nodeValue, '/')
 	;
