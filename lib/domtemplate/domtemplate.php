@@ -283,8 +283,7 @@ abstract class DOMTemplateNode {
 		} return $this;
 	}
 	
-	//add a className to an existing class attribute
-	//(this is shared between `setValue` & `addClass`)
+	//add a className to an existing class attribute (this is shared between `setValue` & `addClass`
 	private function setClassNode ($DOMNode, $class) {
 		//check if the class node already has the className (don't add twice)
 		if (!in_array ($class, explode (' ', $DOMNode->nodeValue)))
@@ -419,10 +418,6 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 	}
 	
 	public function next () {
-		//reset the template
-		//(this is done first due to a segfault with PHP-FPM 5.3.10 which appears to dislike using `insertBefore`
-		// with a node that already exists within the template. thanks goes to Iain Dooley for discovering this bug)
-		$this->DOMNode = $this->template->cloneNode (true);
 		//when we insert the newly templated item, use it as the reference node for the next item and so on.
 		$this->refNode = ($this->refNode->parentNode->lastChild === $this->DOMNode)
 			? $this->refNode->parentNode->appendChild ($this->DOMNode)
@@ -430,6 +425,8 @@ class DOMTemplateRepeater extends DOMTemplateNode {
 			//inbetween. this means that the list you are templating doesn't have to be wrapped in an element!
 			: $this->refNode->parentNode->insertBefore ($this->DOMNode, $this->refNode->nextSibling)
 		;
+		//reset the template
+		$this->DOMNode = $this->template->cloneNode (true);
 		return $this;
 	}
 }
