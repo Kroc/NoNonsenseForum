@@ -27,7 +27,8 @@ if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.
 
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
-if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
+define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
+//if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
 
 require_once FORUM_LIB.'functions.php';				//import shared functions
 require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine

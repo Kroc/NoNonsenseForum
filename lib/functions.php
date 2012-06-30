@@ -5,6 +5,39 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
+//formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available)
+function url (
+	$action='index',
+	$path=PATH_URL,
+	$file='',
+	$page=0,
+	$signin=false
+) {
+	return	//the domain is not included because it is not used universally throughout,
+		//if htaccess is on, then use pretty URLs:
+		(HTACCESS ? (
+			$path.$file.
+			($page ? "+$page" : '')
+			
+		//if htaccess is off, fallback to real URLs:
+		) : (	//begin with the subfolder the forum is in, if any (no-htaccess links must be absolute)
+			//(note that this begins with a slash and ends with one)
+			FORUM_PATH.
+			//which page to point to
+			"$action.php?".
+			//concatenate a query string
+			implode ('&', array_filter (array (
+				//if a file is specified (view thread, append, delete)
+				$file ? "file=$path$file" : '',
+				//page number
+				$page ? "page=$page" : '',
+				//if initiating sign-on
+				$signin ? 'signin' : ''
+			))
+		)
+	;
+}
+
 //the shared template stuff for all pages
 function prepareTemplate ($filepath, $title=NULL) {
 	global $LANG, $MODS, $MEMBERS;

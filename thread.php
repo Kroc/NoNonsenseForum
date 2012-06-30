@@ -17,6 +17,7 @@ define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
 $FILE   = (preg_match ('/^[_a-z0-9-]+$/', @$_GET['file']) ? $_GET['file'] : '') or die ('Malformed request');
 
 //load the thread (have to read lock status from the file)
+//TODO: if file is missing, give 404, as above
 $xml    = @simplexml_load_file ("$FILE.rss") or require FORUM_LIB.'error_xml.php';
 $thread = $xml->channel->xpath ('item');
 
@@ -369,7 +370,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$items->set (array (
 			//add the "RE:" prefix, and reply number to the title
 			//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
-			//in the theme's folder for the definition of `THEME_RE`)
+			// in the theme's folder for the definition of `THEME_RE`)
 			'./title'		=> sprintf (THEME_RE,
 				count ($xml->channel->item),	//number of the reply
 				$xml->channel->title		//thread title
