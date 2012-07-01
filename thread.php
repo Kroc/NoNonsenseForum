@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.PATH_URL."$FILE#nnf_reply-form";
+		$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.PATH_URL;
+		$url = FORUM_URL.url ('index', PATH_URL);
 	}
 	
 	//commit the data
@@ -87,7 +87,7 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
    ====================================================================================================================== */
 if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : false)) {
 	//get a write lock on the file so that between now and saving, no other posts could slip in
-	$f = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
+	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
 	//find the post using the ID (we need to know the numerical index for later)
@@ -127,7 +127,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.PATH_URL."$FILE+$PAGE#$ID", true, 303);
+		header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
 		exit;
 	}
 	
@@ -460,8 +460,9 @@ $template->set (array (
 	'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'#nnf_post-author'		=> $post->author,
-	'a#nnf_post-append@href'	=> '?append='.substr (strstr ($post->link, '#'), 1).'#append',
-	'a#nnf_post-delete@href'	=> '?delete'
+	'a#nnf_post-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+					        substr (strstr ($post->link, '#'), 1)).'#append',
+	'a#nnf_post-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE)
 ))->setValue (
 	'#nnf_post-text', $post->description, true
 )->remove (array (
@@ -497,11 +498,13 @@ if (count ($thread)) {
 			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
 			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
-			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> "$FILE+$PAGE".strstr ($reply->link, '#'),
 			'.nnf_reply-author'		=> $reply->author,
-			'a.nnf_reply-append@href'	=> '?append='.substr (strstr ($reply->link, '#'), 1).'#append',
-			'a.nnf_reply-delete@href'	=> '?delete='.substr (strstr ($reply->link, '#'), 1)
+			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
+			'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
+			'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+							        substr (strstr ($reply->link, '#'), 1)).'#append',
+			'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
+							        substr (strstr ($reply->link, '#'), 1))
 		))->setValue (
 			'.nnf_reply-text', $reply->description, true
 		)->remove (array (

@@ -5,37 +5,45 @@
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
-//formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available)
-function url (
-	$action='index',
-	$path=PATH_URL,
-	$file='',
-	$page=0,
-	$signin=false
-) {
-	return	//the domain is not included because it is not used universally throughout,
-		//if htaccess is on, then use pretty URLs:
-		(HTACCESS ? (
-			$path.$file.
-			($page ? "+$page" : '')
-			
-		//if htaccess is off, fallback to real URLs:
-		) : (	//begin with the subfolder the forum is in, if any (no-htaccess links must be absolute)
-			//(note that this begins with a slash and ends with one)
-			FORUM_PATH.
-			//which page to point to
-			"$action.php?".
-			//concatenate a query string
-			implode ('&', array_filter (array (
-				//if a file is specified (view thread, append, delete)
-				$file ? "file=$path$file" : '',
-				//page number
-				$page ? "page=$page" : '',
-				//if initiating sign-on
-				$signin ? 'signin' : ''
-			))
+//formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
+//the domain is not included because it is not used universally throughout
+function url ($action='index', $path='', $file='', $page=0, $id='') {
+	//the `path` querystring parameter must not begin with a slash
+	$path = ltrim ($path, '/');
+	
+	//if htaccess is on, then use pretty URLs:
+	return !HTACCESS ? (
+		//single actions without any ID (delete thread, lock, unlock)
+		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))
+		? "?$action"
+		//otherwise, actions with an ID?
+		: ($id || $action == 'delete'
+			? "?$action=$id"
+			//otherwise, link to a thread or sub-forum
+			: $path.$file.($page ? "+$page" : '')
 		)
-	;
+		
+	//if htaccess is off, fallback to real URLs:
+	) : (	//begin with the subfolder the forum is in, if any (no-htaccess URLs must be absolute)
+		//(note that this begins with a slash and ends with one)
+		FORUM_PATH.
+		//which page to point to; append / delete actions are a part of 'thread.php',
+		//"delete" can be done without an ID (delete whole thread)
+		($id || $action == 'delete' ? 'thread.php?' : "$action.php?").
+		//concatenate a query string
+		implode ('&', array_filter (array (
+			//actions without an ID
+			!$id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
+			//append or delete post
+			$id   ? "$action=$id" : '',
+			//if in a sub-forum
+			$path ? "path=$path" : '',
+			//if a file is specified (view thread, append, delete &c.)
+			$file ? "file=$file" : '',
+			//page number
+			$page ? "page=$page" : ''
+		)))
+	);
 }
 
 //the shared template stuff for all pages

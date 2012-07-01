@@ -28,6 +28,7 @@ if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.
 //is the htaccess working properly?
 //(.htaccess sets this variable for us)
 define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
+//TODO: if htaccess is off, check users folder is secure and error out if not
 //if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
 
 require_once FORUM_LIB.'functions.php';				//import shared functions
