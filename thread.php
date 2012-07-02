@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_reply-form';
+		$url = FORUM_URL.url ('thread', $FILE).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.url ('index', PATH_URL);
+		$url = FORUM_URL.url ('index');
 	}
 	
 	//commit the data
@@ -127,7 +127,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.url ('thread', $FILE, '', $PAGE)."#$ID", true, 303);
 		exit;
 	}
 	
@@ -237,7 +237,7 @@ if (isset ($_GET['delete'])) {
 			unset ($xml->channel->item[$i]);
 			
 			//we’ll redirect to the last page (which may have changed when the post was deleted)
-			$url = FORUM_URL.PATH_URL."$FILE#replies";
+			$url = FORUM_URL.url ('thread', $FILE).'#nnf_replies';
 		} else {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
@@ -245,7 +245,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.PATH_URL."$FILE+$PAGE#$ID";
+			$url = FORUM_URL.url ('thread', $FILE, '', $PAGE)."#$ID";
 		}
 		
 		//commit the data
@@ -275,7 +275,7 @@ if (isset ($_GET['delete'])) {
 		indexRSS ();
 		
 		//return to the index
-		header ('Location: '.FORUM_URL.PATH_URL, true, 303);
+		header ('Location: '.FORUM_URL.url ('index'), true, 303);
 		exit;
 	}
 	
@@ -352,16 +352,19 @@ if (CAN_REPLY && AUTH && TEXT) {
 		!$xml->channel->xpath ("category[.='locked']")
 	)) {
 		//where to?
-		$page = ceil (count ($xml->channel->item) / FORUM_POSTS);
-		$url  = FORUM_URL.PATH_URL."$FILE+$page#".base_convert (microtime (), 10, 36);
+		$page = (count ($thread)+1) % FORUM_POSTS == 1
+			? floor ((count ($thread)+1) / FORUM_POSTS)
+			: ceil  ((count ($thread)+1) / FORUM_POSTS)
+		;
+		$url  = FORUM_URL.url ('thread', $FILE, '', $page).'#'.base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
-			'/rss/channel/link'		=> FORUM_URL.PATH_URL.$FILE
+			'/rss/channel/link'		=> FORUM_URL.url ('thread', $FILE)
 		))->remove (array (
-			//is the thread is unlocked?
+			//is the thread unlocked?
 			'/rss/channel/category'		=> !$xml->channel->xpath ("category[.='locked']")
 		));
 		
@@ -396,7 +399,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./category'		=> !$item->xpath ('./category')
 		))->next ();
 		
-		//write the file: first move the write-head to 0, remove the file's contents, and then write new ones
+		//write the file: first move the write-head to 0, remove the file's contents, and then write new one
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->html ());
 	} else {
 		//if a double-post, link back to the previous post
@@ -460,9 +463,9 @@ $template->set (array (
 	'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'#nnf_post-author'		=> $post->author,
-	'a#nnf_post-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+	'a#nnf_post-append@href'	=> url ('append', $FILE, '', $PAGE,
 					        substr (strstr ($post->link, '#'), 1)).'#append',
-	'a#nnf_post-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE)
+	'a#nnf_post-delete@href'	=> url ('delete', $FILE, '', $PAGE)
 ))->setValue (
 	'#nnf_post-text', $post->description, true
 )->remove (array (
@@ -500,10 +503,10 @@ if (count ($thread)) {
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
-			'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+			'a.nnf_reply-number@href'	=> url ('thread', $FILE, '', $PAGE).strstr ($reply->link,'#'),
+			'a.nnf_reply-append@href'	=> url ('append', $FILE, '', $PAGE,
 							        substr (strstr ($reply->link, '#'), 1)).'#append',
-			'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
+			'a.nnf_reply-delete@href'	=> url ('delete', $FILE, '', $PAGE,
 							        substr (strstr ($reply->link, '#'), 1))
 		))->setValue (
 			'.nnf_reply-text', $reply->description, true

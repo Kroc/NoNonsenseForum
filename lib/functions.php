@@ -7,10 +7,7 @@
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout
-function url ($action='index', $path='', $file='', $page=0, $id='') {
-	//the `path` querystring parameter must not begin with a slash
-	$path = ltrim ($path, '/');
-	
+function url ($action='index', $file='', $path='', $page=0, $id='') {
 	//if htaccess is on, then use pretty URLs:
 	return !HTACCESS ? (
 		//single actions without any ID (delete thread, lock, unlock)
@@ -36,8 +33,8 @@ function url ($action='index', $path='', $file='', $page=0, $id='') {
 			!$id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 			//append or delete post
 			$id   ? "$action=$id" : '',
-			//if in a sub-forum
-			$path ? "path=$path" : '',
+			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
+			$path == safeURL (PATH) ? "path=$path" : 'path='.safeURL (PATH).$path,
 			//if a file is specified (view thread, append, delete &c.)
 			$file ? "file=$file" : '',
 			//page number
@@ -100,9 +97,11 @@ function prepareTemplate ($filepath, $title=NULL) {
 		$items = explode ('/', trim (PATH, '/')), $item = $template->repeat ('.nnf_breadcrumb'),
 		$i = 0; $i < count ($items); $i++
 	) $item->set (array (
-		'a.nnf_subforum-name'      => $items[$i],
-		//reconstruct the URL from each sub-forum up to the current one
-		'a.nnf_subforum-name@href' => FORUM_PATH.implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
+		'a.nnf_subforum-name'		=> $items[$i],
+		'a.nnf_subforum-name@href'	=> url ('index', '',
+			//reconstruct the URL from each sub-forum up to the current one
+			implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
+		)
 	))->next ();
 	//not in a sub-folder? remove the breadcrumb navigation
 	if (!PATH) $template->remove ('.nnf_breadcrumb');
@@ -126,6 +125,14 @@ function prepareTemplate ($filepath, $title=NULL) {
 	$template->setValue ('.nnf_signed-in-name', NAME)->remove (
 		//remove the relevant section for signed-in / out
 		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
+	);
+	
+	//set the sign-in link:
+	//split URL into querystring
+	$url = explode ('?', $_SERVER['REQUEST_URI'], 2);
+	//add the signin querystring to the end
+	$template->setValue ('.//a[@href="?signin"]/@href',
+		$url[0].'?'.ltrim (implode ('&', array_merge (explode ('&', @$url[1]), array ('signin'))), '&')
 	);
 	
 	return $template;
@@ -360,7 +367,7 @@ function indexRSS () {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
-		'/rss/channel/link'	=> FORUM_URL.PATH_URL
+		'/rss/channel/link'	=> FORUM_URL.url ('index')
 	));
 	
 	//get list of threads, sort by date; most recently modified first

@@ -43,10 +43,11 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
-		'/rss/channel/link'		=> FORUM_URL.PATH_URL.$file,
+		'/rss/channel/link'		=> FORUM_URL.url ('thread', $file),
 		//the thread's first post
 		'/rss/channel/item/title'	=> TITLE,
-		'/rss/channel/item/link'	=> FORUM_URL.PATH_URL."$file#".base_convert (microtime (), 10, 36),
+		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', $file).
+						   '#'.base_convert (microtime (), 10, 36),
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
 		'/rss/channel/item/description'	=> formatText (TEXT)
@@ -59,7 +60,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	indexRSS ();
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.PATH_URL.$file, true, 303);
+	header ('Location: '.FORUM_URL.url ('thread', $file), true, 303);
 	exit;
 }
 
@@ -108,6 +109,8 @@ $template = prepareTemplate (
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
+)->setValue (
+	'a#nnf_rss@href', PATH_URL.'index.xml'
 )->remove (array (
 	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
 	//remove the "add thread" link and anything else (like the input form) related to posting
@@ -158,8 +161,8 @@ if ($folders = array_filter (
 		
 		//start applying the data to the template
 		$item->set (array (
-			'a.nnf_folder-name'		=> $FOLDER,				//name of sub-forum
-			'a.nnf_folder-name@href'	=> PATH_URL.safeURL ($FOLDER).'/'	//URL to it
+			'a.nnf_folder-name'		=> $FOLDER,
+			'a.nnf_folder-name@href'	=> url ('index', '', safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -218,7 +221,7 @@ if ($threads || @$stickies) {
 	) $item->set (array (
 		//thread title and URL
 		'a.nnf_thread-name'		=> $xml->channel->title,
-		'a.nnf_thread-name@href'	=> pathinfo ($file, PATHINFO_FILENAME),
+		'a.nnf_thread-name@href'	=> url ('thread', pathinfo ($file, PATHINFO_FILENAME)),
 		//number of replies
 		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		
