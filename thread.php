@@ -432,12 +432,17 @@ $template = prepareTemplate (
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
-	
-//the thread itself is the RSS feed :)
-)->setValue (
-	'a#nnf_rss@href', PATH_URL."$FILE.rss"
-
-)->remove (array (
+)->set (array (
+	//the thread itself is the RSS feed :)
+	'a#nnf_rss@href'	=> PATH_URL."$FILE.rss",
+	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
+	'a#nnf_lock@href'	=> $_SERVER['SCRIPT_NAME'].'?'.implode ('&', array_filter (
+					array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('lock'))
+				)),
+	'a#nnf_unlock@href'	=> $_SERVER['SCRIPT_NAME'].'?'.implode ('&', array_filter (
+					array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('unlock'))
+				))
+))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
 	'#nnf_reply, #nnf_reply-form'	=> !CAN_REPLY,

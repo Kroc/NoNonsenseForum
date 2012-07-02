@@ -128,11 +128,9 @@ function prepareTemplate ($filepath, $title=NULL) {
 	);
 	
 	//set the sign-in link:
-	//split URL into querystring
-	$url = explode ('?', $_SERVER['REQUEST_URI'], 2);
-	//add the signin querystring to the end
-	$template->setValue ('.//a[@href="?signin"]/@href',
-		$url[0].'?'.ltrim (implode ('&', array_merge (explode ('&', @$url[1]), array ('signin'))), '&')
+	$template->setValue ('.//a[@href="?signin"]/@href', $_SERVER['SCRIPT_NAME'].
+		//add the signin querystring to the end
+		'?'.implode ('&', array_filter (array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('signin'))))
 	);
 	
 	return $template;
