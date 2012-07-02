@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.url ('thread', $FILE).'#nnf_reply-form';
+		$url = FORUM_URL.url ('thread', $FILE, safeURL (PATH)).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.url ('index');
+		$url = FORUM_URL.url ('index', '', safeURL (PATH));
 	}
 	
 	//commit the data
@@ -436,12 +436,8 @@ $template = prepareTemplate (
 	//the thread itself is the RSS feed :)
 	'a#nnf_rss@href'	=> PATH_URL."$FILE.rss",
 	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
-	'a#nnf_lock@href'	=> $_SERVER['SCRIPT_NAME'].'?'.implode ('&', array_filter (
-					array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('lock'))
-				)),
-	'a#nnf_unlock@href'	=> $_SERVER['SCRIPT_NAME'].'?'.implode ('&', array_filter (
-					array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('unlock'))
-				))
+	'a#nnf_lock@href'	=> url ('lock',   $FILE, safeURL (PATH), $PAGE),
+	'a#nnf_unlock@href'	=> url ('unlock', $FILE, safeURL (PATH), $PAGE)
 ))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting

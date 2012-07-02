@@ -165,13 +165,22 @@ FileETag None
 	# page numbers on the root forum
 	RewriteRule ^[:+](\d+)$ ?page=$1 [QSA,L]
 	
-	# a sub-forum
-	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$
-	RewriteCond %{DOCUMENT_ROOT}%1 -d
-	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ ?path=$1&page=$2 [QSA,L]
+	# avoid auto-conflict between folders and threads with the same name,
+	# but manually forward non-existant threads to existing-folders
+	# (the downside to this is that if your forum is running in a sub-forum, then links to the forum, *must*)
+	#DirectorySlash Off
+	#RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$
+	#RewriteCond %{DOCUMENT_ROOT}%1.rss !-f
+	#RewriteCond %{DOCUMENT_ROOT}%1 -d
+	#RewriteRule (.*) $1/ [R=301,L]
 	
 	# a thread
 	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1.rss -f
 	RewriteRule ^((?:[^\./&]+/)*)([_a-z0-9-]+)(?:[:+](\d+))?$ thread.php?path=$1&file=$2&page=$3 [QSA,L]
+	
+	# a sub-forum
+	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$
+	RewriteCond %{DOCUMENT_ROOT}%1 -d
+	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ index.php?path=$1&page=$2 [QSA,L]
 </IfModule>

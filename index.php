@@ -162,7 +162,7 @@ if ($folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,
-			'a.nnf_folder-name@href'	=> url ('index', '', safeURL ($FOLDER).'/')
+			'a.nnf_folder-name@href'	=> url ('index', '', safeURL (PATH).safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -221,7 +221,7 @@ if ($threads || @$stickies) {
 	) $item->set (array (
 		//thread title and URL
 		'a.nnf_thread-name'		=> $xml->channel->title,
-		'a.nnf_thread-name@href'	=> url ('thread', pathinfo ($file, PATHINFO_FILENAME)),
+		'a.nnf_thread-name@href'	=> url ('thread', pathinfo ($file, PATHINFO_FILENAME), safeURL (PATH)),
 		//number of replies
 		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		

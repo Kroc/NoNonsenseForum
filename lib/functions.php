@@ -8,25 +8,27 @@
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout
 function url ($action='index', $file='', $path='', $page=0, $id='') {
+	$filepath = FORUM_PATH."$path$file";
+	if (substr ($filepath, strlen (PATH_URL)) == PATH_URL) $filepath = substr ($filepath, strlen (PATH_URL)+1);
+	
+	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
+	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
+	//(note that `FORUM_PATH` begins with a slash and ends with one)
+	return (HTACCESS
 	//if htaccess is on, then use pretty URLs:
-	return !HTACCESS ? (
-		//single actions without any ID (delete thread, lock, unlock)
-		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))
-		? "?$action"
-		//otherwise, actions with an ID?
-		: ($id || $action == 'delete'
-			? "?$action=$id"
-			//otherwise, link to a thread or sub-forum
-			: $path.$file.($page ? "+$page" : '')
-		)
+	?	$filepath.($page ? "+$page" : '').(
+		//single actions without any ID
+		!$id && in_array ($action, array ('delete', 'lock', 'unlock')) 
+		?	"?$action"
+			//otherwise, actions with an ID?
+		:	($id ? "?$action=$id" : '')
+	)
 		
 	//if htaccess is off, fallback to real URLs:
-	) : (	//begin with the subfolder the forum is in, if any (no-htaccess URLs must be absolute)
-		//(note that this begins with a slash and ends with one)
-		FORUM_PATH.
+	:	FORUM_PATH.
 		//which page to point to; append / delete actions are a part of 'thread.php',
 		//"delete" can be done without an ID (delete whole thread)
-		($id || $action == 'delete' ? 'thread.php?' : "$action.php?").
+		($id || in_array ($action, array ('delete', 'lock', 'unlock')) ? 'thread.php?' : "$action.php?").
 		//concatenate a query string
 		implode ('&', array_filter (array (
 			//actions without an ID
