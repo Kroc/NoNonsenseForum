@@ -480,7 +480,9 @@ $template->set (array (
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
-if (count ($thread)) {
+if (!count ($thread)) {
+	$template->remove ('#nnf_replies');
+} else {
 	//sort the other way around
 	//<stackoverflow.com/questions/2119686/sorting-an-array-of-simplexml-objects/2120569#2120569>
 	foreach ($thread as &$node) $sort[] = strtotime ($node->pubDate);
@@ -496,35 +498,33 @@ if (count ($thread)) {
 	
 	//index number of the replies, accounting for which page we are on
 	$no = ($PAGE-1) * FORUM_POSTS;
-	foreach ($thread as &$reply) {
-		//apply the data to the template (a reply)
-		$item->set (array (
-			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
-			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
-			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
-			'.nnf_reply-author'		=> $reply->author,
-			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> url ('thread', $FILE, '', $PAGE).strstr ($reply->link,'#'),
-			'a.nnf_reply-append@href'	=> url ('append', $FILE, '', $PAGE,
-							        substr (strstr ($reply->link, '#'), 1)).'#append',
-			'a.nnf_reply-delete@href'	=> url ('delete', $FILE, '', $PAGE,
-							        substr (strstr ($reply->link, '#'), 1))
-		))->setValue (
-			'.nnf_reply-text', $reply->description, true
-		)->remove (array (
-			//has the reply been deleted (blanked)?
-			'./@class'			=> $reply->xpath ("category[.='deleted']") ? false : 'deleted',
-		))->remove (array (
-			//is this reply from the person who started the thread?
-			'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'op'
-		))->remove (array (
-			//if the user who made the reply is a mod, also mark the whole post as by a mod
-			//(you might want to style any posts made by a mod differently)
-			'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
-		));
-		
+	//apply the data to the template (a reply)
+	foreach ($thread as &$reply) $item->set (array (
+		'./@id'				=> substr (strstr ($reply->link, '#'), 1),
+		'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
+		'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
+		'.nnf_reply-author'		=> $reply->author,
+		'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
+		'a.nnf_reply-number@href'	=> url ('thread', $FILE, '', $PAGE).strstr ($reply->link,'#'),
+		'a.nnf_reply-append@href'	=> url ('append', $FILE, '', $PAGE,
+						        substr (strstr ($reply->link, '#'), 1)).'#append',
+		'a.nnf_reply-delete@href'	=> url ('delete', $FILE, '', $PAGE,
+						        substr (strstr ($reply->link, '#'), 1))
+	))->setValue (
+		'.nnf_reply-text', $reply->description, true
+	)->remove (array (
+		//has the reply been deleted (blanked)?
+		'./@class'			=> $reply->xpath ("category[.='deleted']") ? false : 'deleted',
+	))->remove (array (
+		//is this reply from the person who started the thread?
+		'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'op'
+	))->remove (array (
+		//if the user who made the reply is a mod, also mark the whole post as by a mod
+		//(you might want to style any posts made by a mod differently)
+		'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
+	))->remove (array (
 		//if the current user in the curent forum can append/delete the current reply:
-		if (CAN_REPLY && (
+		'.nnf_reply-append, .nnf_reply-delete' => !(CAN_REPLY && (
 			//moderators can always see append/delete links on all replies
 			IS_MOD ||
 			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
@@ -535,19 +535,12 @@ if (count ($thread)) {
 				//if the forum is post-locked, they must be a member to append/delete their own replies
 				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 			))
-		)) {	$item->remove (array (
-				//append link not available when the reply has been deleted
-				'.nnf_reply-append' => $reply->xpath ("category[.='deleted']"),
-				//delete link not available when the reply has been deleted, except to mods
-				'.nnf_reply-delete' => $reply->xpath ("category[.='deleted']") && !IS_MOD
-			));
-		} else {
-			$item->remove ('.nnf_reply-append, .nnf_reply-delete');
-		}
-		$item->next ();
-	}
-} else {
-	$template->remove ('#nnf_replies');
+		)),
+		//append link not available when the reply has been deleted
+		'.nnf_reply-append' => $reply->xpath ("category[.='deleted']"),
+		//delete link not available when the reply has been deleted, except to mods
+		'.nnf_reply-delete' => $reply->xpath ("category[.='deleted']") && !IS_MOD
+	))->next ();
 }
 
 /* reply form

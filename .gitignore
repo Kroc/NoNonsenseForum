@@ -9,6 +9,7 @@
 !robots.txt
 !favicon.default.ico
 !apple-touch-icon.default.png
+!metro-tile.default.png
 
 # code
 !config.default.php

@@ -155,6 +155,10 @@ FileETag None
 	RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon-precomposed\.png !-f
 	RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [NC,L]
 	
+	# custom windows tile icon?
+	RewriteCond %{DOCUMENT_ROOT}/metro-tile\.png !-f
+	RewriteRule ^metro-tile\.png$ /metro-tile.default.png [NC,L]
+	
 	# don’t allow any access to '/users' (this is accessed purely from the PHP)
 	RewriteRule ^users/.*$ - [NC,F]
 	
@@ -164,15 +168,6 @@ FileETag None
 	
 	# page numbers on the root forum
 	RewriteRule ^[:+](\d+)$ ?page=$1 [QSA,L]
-	
-	# avoid auto-conflict between folders and threads with the same name,
-	# but manually forward non-existant threads to existing-folders
-	# (the downside to this is that if your forum is running in a sub-forum, then links to the forum, *must*)
-	#DirectorySlash Off
-	#RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$
-	#RewriteCond %{DOCUMENT_ROOT}%1.rss !-f
-	#RewriteCond %{DOCUMENT_ROOT}%1 -d
-	#RewriteRule (.*) $1/ [R=301,L]
 	
 	# a thread
 	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)*[_a-z0-9-]+)(?:[:+]\d+)?$

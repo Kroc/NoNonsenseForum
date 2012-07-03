@@ -23,7 +23,6 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 			//otherwise, actions with an ID?
 		:	($id ? "?$action=$id" : '')
 	)
-		
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
 		//which page to point to; append / delete actions are a part of 'thread.php',

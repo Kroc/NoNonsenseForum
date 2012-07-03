@@ -1,5 +1,10 @@
-v21	
-*	
+v21	Support for running without HTAccess
+*	NoNonsenseForum will now auto-detect if ".htaccess" is missing or disabled and fall back to running without,
+	automatically rewriting URLs to full form. Note that to be able to use NNF without HTAccess, you will have to move
+	the "users" folder to a private location, using the feature below
+*	-- todo: change location of users folder
+*	Added Windows 8 Metro pinned-site tile "metro-tile.default.png",
+	you can override it by providing your own "metro-tile.png"
 
 v20	19.JUN.12
 *	HiDPI / Retina display graphics

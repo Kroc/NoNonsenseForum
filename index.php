@@ -110,6 +110,7 @@ $template = prepareTemplate (
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	)
 )->setValue (
+	//the RSS feed for this forum / sub-forum
 	'a#nnf_rss@href', PATH_URL.'index.xml'
 )->remove (array (
 	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
@@ -257,17 +258,12 @@ if ($threads || @$stickies) {
 /* new thread form
    ---------------------------------------------------------------------------------------------------------------------- */
 if (CAN_POST) $template->set (array (
-	//set the field values from what was typed in before
-	'input#nnf_title-field@value'		=> TITLE,
+	//set the field values from what was typed in before	//set the maximum field sizes
+	'input#nnf_title-field@value'		=> TITLE,	'input#nnf_title-field@maxlength'	=> SIZE_TITLE,
 	'input#nnf_name-field-http@value'	=> NAME,
-	'input#nnf_name-field@value'		=> NAME,
-	'input#nnf_pass-field@value'		=> PASS,
-	'textarea#nnf_text-field'		=> TEXT,
-	//set the maximum field sizes
-	'input#nnf_title-field@maxlength'	=> SIZE_TITLE,
-	'input#nnf_name-field@maxlength'	=> SIZE_NAME,
-	'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
-	'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
+	'input#nnf_name-field@value'		=> NAME,	'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+	'input#nnf_pass-field@value'		=> PASS,	'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
+	'textarea#nnf_text-field'		=> TEXT,	'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
 ))->remove (HTTP_AUTH
