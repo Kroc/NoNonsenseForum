@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.url ('thread', $FILE, safeURL (PATH)).'#nnf_reply-form';
+		$url = FORUM_URL.url ('thread', $FILE, PATH).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.url ('index', '', safeURL (PATH));
+		$url = FORUM_URL.url ('index', '', PATH);
 	}
 	
 	//commit the data
@@ -127,7 +127,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.url ('thread', $FILE, '', $PAGE)."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.url ('thread', $FILE, PATH, $PAGE)."#$ID", true, 303);
 		exit;
 	}
 	
@@ -237,7 +237,7 @@ if (isset ($_GET['delete'])) {
 			unset ($xml->channel->item[$i]);
 			
 			//we’ll redirect to the last page (which may have changed when the post was deleted)
-			$url = FORUM_URL.url ('thread', $FILE).'#nnf_replies';
+			$url = FORUM_URL.url ('thread', $FILE, PATH).'#nnf_replies';
 		} else {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
@@ -245,7 +245,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.url ('thread', $FILE, '', $PAGE)."#$ID";
+			$url = FORUM_URL.url ('thread', $FILE, PATH, $PAGE)."#$ID";
 		}
 		
 		//commit the data
@@ -356,7 +356,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 			? floor ((count ($thread)+1) / FORUM_POSTS)
 			: ceil  ((count ($thread)+1) / FORUM_POSTS)
 		;
-		$url  = FORUM_URL.url ('thread', $FILE, '', $page).'#'.base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.url ('thread', $FILE, safeURL (PATH), $page).'#'.base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));

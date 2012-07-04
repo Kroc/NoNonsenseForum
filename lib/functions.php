@@ -14,7 +14,7 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
 	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	//(note that `FORUM_PATH` begins with a slash and ends with one)
-	return (HTACCESS
+	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').(
 		//single actions without any ID
@@ -41,7 +41,7 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 			//page number
 			$page ? "page=$page" : ''
 		)))
-	);
+	;
 }
 
 //the shared template stuff for all pages
