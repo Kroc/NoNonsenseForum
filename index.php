@@ -60,7 +60,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	indexRSS ();
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.url ('thread', $file), true, 303);
+	header ('Location: '.FORUM_URL.url ('thread', $file, PATH), true, 303);
 	exit;
 }
 
