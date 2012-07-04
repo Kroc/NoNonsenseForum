@@ -59,13 +59,13 @@ function theme_pageList ($template, $file, $page, $pages) {
 	$node = $template->repeat ('.nnf_pages/li');
 	//add a previous page link
 	if ($pages > 1 && $page > 1) $node->set (array (
-		'a@href'	=> url ($file ? 'thread' : 'index', $file, '', $page-1),
+		'a@href'	=> url ($file ? 'thread' : 'index', $file, safeURL (PATH), $page-1),
 		'a'		=> '«'
 	))->next ();
 	//generate the list of pages,
 	foreach ($list as &$item) {
 		//create the link
-		$node->setValue ('a@href', url ($file ? 'thread' : 'index', $file, '', $item));
+		$node->setValue ('a@href', url ($file ? 'thread' : 'index', $file, safeURL (PATH), $item));
 		switch (true) {
 			//determine if this is the current page, a regular page number, or the “…” gap
 			case $item == $page:	$node->setValue ('a/em', $item)->next ();	break;
@@ -75,7 +75,7 @@ function theme_pageList ($template, $file, $page, $pages) {
 	}
 	//add a next page link
 	if ($page < $pages) $node->set (array (
-		'a@href'	=> url ($file ? 'thread' : 'index', $file, '', $page+1),
+		'a@href'	=> url ($file ? 'thread' : 'index', $file, safeURL (PATH), $page+1),
 		'a'		=> '»'
 	))->next ();
 }
