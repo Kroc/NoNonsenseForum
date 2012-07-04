@@ -489,7 +489,7 @@ if (!count ($thread)) {
 	array_multisort ($sort, SORT_ASC, $thread);
 	
 	//do the page links
-	theme_pageList ($template, PATH_URL.$FILE, $PAGE, $PAGES);
+	theme_pageList ($template, $FILE, $PAGE, $PAGES);
 	//slice the full list into the current page
 	$thread = array_slice ($thread, ($PAGE-1) * FORUM_POSTS, FORUM_POSTS);
 	

@@ -34,10 +34,10 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//old iconv versions and certain inputs may cause a nullstring. don't allow a blank filename
 	if (!$translit) $translit = '_';
 	
-	//if a thread already exsits with that name, append a number until an available filename is found
-	$c = 0;
-	do $file = $translit.($c++ ? '_'.($c-1) : '');
-	while (file_exists ("$file.rss"));
+	//if a thread already exsits with that name, append a number until an available filename is found.
+	//we also check for directories with the same name so as to avoid problematic Apache behaviour
+	$c = 0; do $file = $translit.($c++ ? '_'.($c-1) : '');
+	while (file_exists ("$file") || file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
@@ -163,7 +163,7 @@ if ($folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,
-			'a.nnf_folder-name@href'	=> url ('index', '', safeURL (PATH).safeURL ($FOLDER).'/')
+			'a.nnf_folder-name@href'	=> url ('index', '', safeURL(PATH).safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -205,7 +205,7 @@ if ($folders = array_filter (
    ---------------------------------------------------------------------------------------------------------------------- */
 if ($threads || @$stickies) {
 	//do the page links (stickies are not included in the count as they appear on all pages)
-	theme_pageList ($template, PATH_URL, $PAGE, $PAGES);
+	theme_pageList ($template, '', $PAGE, $PAGES);
 	//slice the full list into the current page
 	$threads = array_merge ($stickies, array_slice ($threads, ($PAGE-1) * FORUM_THREADS, FORUM_THREADS));
 	

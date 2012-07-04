@@ -35,7 +35,7 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 			//append or delete post
 			$id   ? "$action=$id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
-			$path == safeURL (PATH) ? "path=$path" : 'path='.safeURL (PATH).$path,
+			'path='.$path,
 			//if a file is specified (view thread, append, delete &c.)
 			$file ? "file=$file" : '',
 			//page number
