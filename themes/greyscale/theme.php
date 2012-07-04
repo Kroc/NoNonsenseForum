@@ -14,8 +14,10 @@ function theme_custom ($template) {
 		//application title (= forum / sub-forum name):
 		'//meta[@name="application-name"]/@content'          => SUBFORUM ? SUBFORUM : FORUM_NAME,
 		//application URL (where the pinned site opens at)
-		'//meta[@name="msapplication-starturl"]/@content'    => FORUM_URL.PATH_URL,
-		
+		'//meta[@name="msapplication-starturl"]/@content'    => FORUM_URL.url ('index', '', safeURL (PATH)),
+		//pinned site / metro colour to use
+		'//meta[@name="msapplication-navbutton-color"]/@content, //meta[@name="msapplication-TileColor"]/@content'
+		                                                     => METRO_COLOUR, 
 		//set the site logo
 		'img#nnf_logo@src'                                   => FORUM_PATH.'themes/'.FORUM_THEME.'/img/'.THEME_LOGO,
 		

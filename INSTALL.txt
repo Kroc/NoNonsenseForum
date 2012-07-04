@@ -13,7 +13,7 @@ Contents:
 [2]     Customising
 [2.1]   'config.php'
 [2.2]   'theme.config.php'
-[2.3]   Favicon and touch-icon
+[2.3]   Favicon, touch-icon and Metro tile
 [2.4]   Adding a forum introduction (about.html)
 [2.5]   Custom CSS
 [3]     Translations
@@ -21,11 +21,13 @@ Contents:
 
 [0]     Requirements:
 ========================================================================
-*       Apache 2.1 or above, with .htaccess files enabled
 *       PHP 5.2.3 or above
+*       Apache 2.1 or above, preferably with ".htaccess" files enabled
+	(though optional), or any other webserver, whereby NNF will
+	operate in "no-htaccess" mode
 
 Browser support: (default 'greyscale' theme)
-*       IE6, 7, 8, 9+
+*       IE6, 7, 8, 9, 10+
 *       Firefox 3+, Camino 2+
 *       Chrome Stable, Chrome Dev
 *       Safari 3+
@@ -149,13 +151,27 @@ explained within.
 DO NOT modify, delete or rename 'theme.config.default.php' as it is
 still required.
 
-[2.3]   Favicon and touch-icon:
+[2.3]   Favicon, touch-icon and Metro tile
 ------------------------------------------------------------------------
 The site will use '/favicon.default.ico' as the favicon and
 '/apple-touch-icon.deafult.png' for iOS home-screen icons by default,
 just provide your own 'favicon.ico' and 'apple-touch-icon.png' files
 to override. Each theme will have examples you can use in the theme
 folder, just copy those to webroot to use.
+
+Windows 8's Start Screen supports a custom icon when you pin a site to
+the Start Screen. '/metro-tile.default.png' is used by default, but you
+can override by providing your own 'metro-tile.png' file.
+
+Your image must be 144x144px, must have a transparent background,
+and the logo should fill the entire space, since Windows 8 already has
+padding around the image.
+
+NOTE: due to a bug in Windows 8, the 'metro-tile.png' file *must* be
+      a 32-bit PNG, and not 8-bit indexed (256-colour).
+
+You can change the colour of the Metro tile by changing the
+`METRO_COLOUR` setting in your theme config.
 
 [2.4]   Adding a forum introduction ('about.html'):
 ------------------------------------------------------------------------

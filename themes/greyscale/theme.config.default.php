@@ -75,4 +75,9 @@
 //- for this theme, it should be 64x64 px (HiDPI) but will appear as 32x32 on lo-DPI screens
 @define ('THEME_LOGO',		'logo.png');
 
+//colour for Windows 8 to use on the Start Screen when a user pins the site.
+//note that this colour is not guaranteed to be used as-is, Windows 8 changes the colour into a nearby colour that it knows
+//warning: you can’t use shorthand colour notation (i.e. "#222")
+@define ('METRO_COLOUR',	'#222222');
+
 ?>
