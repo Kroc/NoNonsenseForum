@@ -7,7 +7,7 @@
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout
-function url ($action='index', $file='', $path='', $page=0, $id='') {
+function url ($action='index', $file='', $path='', $page=0, $id='', $signin=false) {
 	$filepath = FORUM_PATH."$path$file";
 	if (substr ($filepath, strlen (PATH_URL)) == PATH_URL) $filepath = substr ($filepath, strlen (PATH_URL)+1);
 	
@@ -16,13 +16,14 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 	//(note that `FORUM_PATH` begins with a slash and ends with one)
 	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
-	?	$filepath.($page ? "+$page" : '').(
+	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
 		//single actions without any ID
-		!$id && in_array ($action, array ('delete', 'lock', 'unlock')) 
-		?	"?$action"
-			//otherwise, actions with an ID?
-		:	($id ? "?$action=$id" : '')
-	)
+		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))  ? $action : '',
+		//otherwise, actions with an ID?
+		$id	? "$action=$id" : '',
+		//signin link?
+		$signin	? "signin" : ''
+	))), '?')
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
 		//which page to point to; append / delete actions are a part of 'thread.php',
@@ -33,19 +34,27 @@ function url ($action='index', $file='', $path='', $page=0, $id='') {
 			//actions without an ID
 			!$id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 			//append or delete post
-			$id   ? "$action=$id" : '',
+			$id	? "$action=$id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
 			'path='.$path,
 			//if a file is specified (view thread, append, delete &c.)
-			$file ? "file=$file" : '',
+			$file	? "file=$file" : '',
 			//page number
-			$page ? "page=$page" : ''
+			$page	? "page=$page" : '',
+			//signin link?
+			$signin	? "signin" : ''
 		)))
 	;
 }
 
 //the shared template stuff for all pages
-function prepareTemplate ($filepath, $title=NULL) {
+function prepareTemplate (
+	$filepath,	//template file to load
+	$title=NULL,	//HTML title to use, if NULL, existing title is kept
+	
+	//these are used to create the signin link which points back to the same page but with the signin parameter added
+	$action='index', $file='', $path='', $page=0, $id=''
+) {
 	global $LANG, $MODS, $MEMBERS;
 	
 	//load the template into DOM for manipulation. see 'domtemplate.php' for code and
@@ -128,11 +137,8 @@ function prepareTemplate ($filepath, $title=NULL) {
 		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
 	
-	//set the sign-in link:
-	$template->setValue ('.//a[@href="?signin"]/@href', $_SERVER['SCRIPT_NAME'].
-		//add the signin querystring to the end
-		'?'.implode ('&', array_filter (array_merge (explode ('&', $_SERVER['QUERY_STRING']), array ('signin'))))
-	);
+	//set the sign-in link
+	$template->setValue ('.//a[@href="?signin"]/@href', url ($action, $file, $path, $page, $id, true));
 	
 	return $template;
 }
