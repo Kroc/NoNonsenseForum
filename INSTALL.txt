@@ -1,4 +1,4 @@
-NoNonsense Forum v20 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v21 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 
 
@@ -10,6 +10,7 @@ Contents:
 [1.2]   Install using GIT
 [1.3]   Installation (continued)
 [1.4]   Updating NoNonsense Forum
+[1.5]	Running without HTAccess
 [2]     Customising
 [2.1]   'config.php'
 [2.2]   'theme.config.php'
@@ -125,6 +126,20 @@ are required to alter your configuration or be aware of the impact of
 some new feature.
 
 <github.com/Kroc/NoNonsenseForum/commits/master>
+
+[1.5]	Running without HTAccess:
+------------------------------------------------------------------------
+NoNonsense Forum will automatically detect if the ".htaccess" file is
+missing or disabled and automatically switch to running without.
+
+HTAccess is used to provide "pretty" URLs, but also secure the "users"
+folder that contains the passwords, therefore in order to use NNF
+without HTAccess, you must relocate the "users" folder via the
+`FORUM_USERS` config option.
+
+You will automatically be provided with instructions on how to do this
+when NNF runs without HTAccess and the "users" folder is in its default,
+insecure location.
 
 
 [2]     Customising:

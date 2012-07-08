@@ -1,9 +1,9 @@
-v21	
+v21	08.JUL.12
 *	Support for running without HTAccess:
-	NoNonsenseForum will now auto-detect if ".htaccess" is missing or disabled and fall back to running without,
+	NoNonsenseForum will now auto-detect if '.htaccess' is missing or disabled and fall back to running without,
 	automatically rewriting URLs to full form. Note that to be able to use NNF without HTAccess,
 	you will have to move the "users" folder to a private location, using the feature below
-*	added `FORUM_USERS` option to config.default.php to set the location where the passwords are saved. you will need
+*	Added `FORUM_USERS` option to 'config.default.php' to set the location where the passwords are saved. you will need
 	to change this option to run NoNonsense Forum without HTAccess. It can also be used to share the same users between
 	multiple forums or even other compatible software
 *	Added Windows 8 Metro pinned-site tile "metro-tile.default.png",
