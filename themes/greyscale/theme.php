@@ -14,7 +14,7 @@ function theme_custom ($template) {
 		//application title (= forum / sub-forum name):
 		'//meta[@name="application-name"]/@content'          => SUBFORUM ? SUBFORUM : FORUM_NAME,
 		//application URL (where the pinned site opens at)
-		'//meta[@name="msapplication-starturl"]/@content'    => FORUM_URL.url ('index', '', safeURL (PATH)),
+		'//meta[@name="msapplication-starturl"]/@content'    => FORUM_URL.url ('index', PATH_URL),
 		//pinned site / metro colour to use
 		'//meta[@name="msapplication-navbutton-color"]/@content, //meta[@name="msapplication-TileColor"]/@content'
 		                                                     => METRO_COLOUR, 
@@ -61,13 +61,13 @@ function theme_pageList ($template, $file, $page, $pages) {
 	$node = $template->repeat ('.nnf_pages/li');
 	//add a previous page link
 	if ($pages > 1 && $page > 1) $node->set (array (
-		'a@href'	=> url ($file ? 'thread' : 'index', $file, safeURL (PATH), $page-1),
+		'a@href'	=> url ($file ? 'thread' : 'index', PATH_URL, $file, $page-1),
 		'a'		=> '«'
 	))->next ();
 	//generate the list of pages,
 	foreach ($list as &$item) {
 		//create the link
-		$node->setValue ('a@href', url ($file ? 'thread' : 'index', $file, safeURL (PATH), $item));
+		$node->setValue ('a@href', url ($file ? 'thread' : 'index', PATH_URL, $file, $item));
 		switch (true) {
 			//determine if this is the current page, a regular page number, or the “…” gap
 			case $item == $page:	$node->setValue ('a/em', $item)->next ();	break;
@@ -77,7 +77,7 @@ function theme_pageList ($template, $file, $page, $pages) {
 	}
 	//add a next page link
 	if ($page < $pages) $node->set (array (
-		'a@href'	=> url ($file ? 'thread' : 'index', $file, safeURL (PATH), $page+1),
+		'a@href'	=> url ($file ? 'thread' : 'index', PATH_URL, $file, $page+1),
 		'a'		=> '»'
 	))->next ();
 }

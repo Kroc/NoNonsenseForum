@@ -3,7 +3,53 @@
 /* NoNonsense Forum v20 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
-*/
+*//*
+   what gets defined here:
+	
+	const / var	attribs	description
+	--------------------------------------------------------------------------------------------------------------------
+	key:		/	ends with a slash
+			//	begins and ends with a slash
+			   ?	OS-dependent slashes (use `DIRECTORY_SEPERATOR` to concatenate)
+			   U	URL-encoded. use for HTML, do not use for server-side paths
+	--------------------------------------------------------------------------------------------------------------------
+	FORUM_ROOT	   ?	full server path to NNF's folder
+	FORUM_LIB	/  ?	full server path to the 'lib' folder
+	FORUM_PATH	// U	relative URL from the web-root, to NNF
+				if NNF is at root, this would be "/", otherwise the "/sub-folder/" NNF is within
+	HTACCESS		boolean if the ".htaccess" file is present and enabled or not
+	
+	-- everything in 'config.php' (if present) and 'config.default.php' --
+	
+	FORUM_URL		fully-qualified domain URL, e.g. "http://forum.camendesign.com"
+	PAGE			page-number given in the querystring -- not necessarily a valid page number!
+	PATH		/	current sub-forum the viewer is in
+				this is often used to test if the user is in a sub-forum or not
+	PATH_URL	/  U	URL-encoded version of `PATH` for use in constructing URLs
+	PATH_DIR	// ?	relative server path from NNF's root (`FORUM_ROOT`) to the current sub-forum
+	SUBFORUM		the name of the current sub-forum (regardless of nesting), not URL-encoded
+	
+	NAME			username given
+	PASS			password given
+	AUTH			boolean, if the username / password are correct
+	AUTH_HTTP		boolean, if the authentication was via HTTP_AUTH *and* was correct
+				(will be false if the username / password were wrong, even if HTTP_AUTH was used)
+	
+	FORUM_LOCK		the contents of 'locked.txt' which sets restrictions on the forum / sub-forums
+				see section 5 in the README file
+	$MODS			array of the names of moderators for the whole forum, and the current sub-forum
+	$MEMBERS		array of the names of members for the current sub-forum
+	IS_MOD			if the current viewer is a moderator for the current forum
+	IS_MEMBER		if the current viewer is a member of the current forum
+	
+	THEME_ROOT	/  ?	full server path to the currently selected theme
+	
+	-- everything in 'theme.config.php' (if present) and 'theme.config.default.php' --
+	
+	$LANG			array of language translations. see 'lang.example.php' for details
+	LANG			currently selected language, '' for default
+*/	
+
 
 /* server configutation
    ====================================================================================================================== */
@@ -11,14 +57,20 @@
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
-//constants
-define ('FORUM_ROOT',		dirname (__FILE__));		//full server-path for absolute references
-define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR. //location of the 'lib' folder
-				'lib'.DIRECTORY_SEPARATOR);
-define ('FORUM_PATH', 		str_replace (			//relative from webroot--if running in a folder:
+//full server path for absolute references, this includes the any sub-folders NNF might be in
+define ('FORUM_ROOT',		dirname (__FILE__));
+//location of the 'lib' folder, full server path
+define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
+
+require_once FORUM_LIB.'functions.php';				//import shared functions
+require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
+
+//location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
+//we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that
+define ('FORUM_PATH', 		safeURL (str_replace (
 	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
 	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
-));
+)));
 
 /* check environment for compatibility
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -30,9 +82,6 @@ if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.
 define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
 //TODO: if htaccess is off, check users folder is secure and error out if not
 //if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
-
-require_once FORUM_LIB.'functions.php';				//import shared functions
-require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
 
 /* configuration
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -59,10 +108,11 @@ define ('PAGE',     preg_match ('/^[1-9][0-9]*$/', @$_GET['page']) ? (int) $_GET
 //all our pages use 'path' (often optional) to specify the sub-forum being viewed, so this is done here
 define ('PATH',     preg_match ('/^(?:[^\.\/&]+\/)+$/', @$_GET['path']) ? $_GET['path'] : '');
 //a shorthand for when PATH is used in URL construction for HTML use
-define ('PATH_URL', !PATH ? FORUM_PATH : safeURL (FORUM_PATH.PATH, false));
+define ('PATH_URL', safeURL (PATH));
 //for serverside use, like `chdir` / `unlink` (must replace the URL forward-slashes with backslashes on Windows)
 define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replace ('/', DIRECTORY_SEPARATOR, PATH));
 //if we are in nested sub-folders, the name of the current sub-forum, exluding the rest
+//(not used in URLs, so we use `PATH` instead of `PATH_URL`)
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
@@ -114,10 +164,10 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	
 	//if signed in with HTTP_AUTH, confirm that it’s okay to use
 	//(e.g. the user could still have given the wrong password with HTTP_AUTH)
-	define ('HTTP_AUTH', @$_SERVER['PHP_AUTH_USER'] ? AUTH : false);
+	define ('AUTH_HTTP', @$_SERVER['PHP_AUTH_USER'] ? AUTH : false);
 } else {
 	define ('AUTH',      false);
-	define ('HTTP_AUTH', false);
+	define ('AUTH_HTTP', false);
 }
 
 /* access rights
@@ -145,15 +195,6 @@ $MEMBERS = array_filter ((array) @file ('members.txt', FILE_IGNORE_NEW_LINES));
 define ('IS_MOD',    isMod (NAME));
 //is the current user a member of this forum?
 define ('IS_MEMBER', isMember (NAME));
-
-//can the current user post new threads in the current forum?
-//(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
-define ('CAN_POST', FORUM_ENABLED && (
-	//- if the user is a moderator or member of the current forum, they can post
-	IS_MOD || IS_MEMBER ||
-	//- if the forum is unlocked (mods will have to log in to see the form)
-	!FORUM_LOCK
-));
 
 
 /* theme & translation
@@ -208,7 +249,7 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 
 //if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
-if (!HTTP_AUTH && isset ($_GET['signin'])) {
+if (!AUTH_HTTP && isset ($_GET['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 	//we don't die here so that if they cancel the login prompt, they shouldn't get a blank page

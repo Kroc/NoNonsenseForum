@@ -13,6 +13,15 @@ require_once './start.php';
 define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
 define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
 
+//can the current user post new threads in the current forum?
+//(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')
+define ('CAN_POST', FORUM_ENABLED && (
+	//- if the user is a moderator or member of the current forum, they can post
+	IS_MOD || IS_MEMBER ||
+	//- if the forum is unlocked (mods will have to log in to see the form)
+	!FORUM_LOCK
+));
+
 /* ======================================================================================================================
    new thread submitted
    ====================================================================================================================== */
@@ -43,10 +52,10 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
-		'/rss/channel/link'		=> FORUM_URL.url ('thread', $file),
+		'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $file),
 		//the thread's first post
 		'/rss/channel/item/title'	=> TITLE,
-		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', $file).
+		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).
 						   '#'.base_convert (microtime (), 10, 36),
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
@@ -60,7 +69,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	indexRSS ();
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.url ('thread', $file, PATH), true, 303);
+	header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $file), true, 303);
 	exit;
 }
 
@@ -105,16 +114,16 @@ $template = prepareTemplate (
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
-		PATH ? SUBFORUM: FORUM_NAME,
+		PATH ? SUBFORUM : FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	),
 	//provide the current page parameters to construct the signin link
-	'index', '', safeURL (PATH), $PAGE > 1 ? $PAGE : 0
+	'index', '', PATH_URL, $PAGE > 1 ? $PAGE : 0
 	
 )->setValue (
 	//the RSS feed for this forum / sub-forum
-	'a#nnf_rss@href', PATH_URL.'index.xml'
+	'a#nnf_rss@href', FORUM_PATH.PATH_URL.'index.xml'
 )->remove (array (
 	//if threads can't be added (forum is disabled / locked, user is not moderator / member),
 	//remove the "add thread" link and anything else (like the input form) related to posting
@@ -166,7 +175,7 @@ if ($folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,
-			'a.nnf_folder-name@href'	=> url ('index', '', safeURL(PATH).safeURL ($FOLDER).'/')
+			'a.nnf_folder-name@href'	=> url ('index', PATH_URL.safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -225,7 +234,7 @@ if ($threads || @$stickies) {
 	) $item->set (array (
 		//thread title and URL
 		'a.nnf_thread-name'		=> $xml->channel->title,
-		'a.nnf_thread-name@href'	=> url ('thread', pathinfo ($file, PATHINFO_FILENAME), safeURL (PATH)),
+		'a.nnf_thread-name@href'	=> url ('thread', PATH_URL, pathinfo ($file, PATHINFO_FILENAME)),
 		//number of replies
 		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		
@@ -269,7 +278,7 @@ if (CAN_POST) $template->set (array (
 	'textarea#nnf_text-field'		=> TEXT,	'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
-))->remove (HTTP_AUTH
+))->remove (AUTH_HTTP
 	//don’t need the usual name / password fields and the deafult message for anonymous users
 	? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
 	//user is not signed in, remove the "you are signed in as:" field and the message for signed in users

@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.url ('thread', $FILE, PATH).'#nnf_reply-form';
+		$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
 		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.url ('index', '', PATH);
+		$url = FORUM_URL.url ('index', PATH_URL);
 	}
 	
 	//commit the data
@@ -127,7 +127,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.url ('thread', $FILE, PATH, $PAGE)."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
 		exit;
 	}
 	
@@ -139,7 +139,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	$template = prepareTemplate (
 		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title),
 		//provide the current page parameters to construct the signin link
-		'append', $FILE, safeURL (PATH), $PAGE, $ID, true
+		'append', $FILE, PATH_URL, $PAGE, $ID, true
 	
 	//the preview post:
 	)->set (array (
@@ -164,7 +164,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		'textarea#nnf_text-field'		=> TEXT, 'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 		
 	//is the user already signed-in?
-	))->remove (HTTP_AUTH
+	))->remove (AUTH_HTTP
 		//don’t need the usual name / password fields and the deafult message for anonymous users
 		? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none-append'
 		//user is not signed in, remove the "you are signed in as:" field and the message for signed in users
@@ -235,7 +235,7 @@ if (isset ($_GET['delete'])) {
 			unset ($xml->channel->item[$i]);
 			
 			//we’ll redirect to the last page (which may have changed when the post was deleted)
-			$url = FORUM_URL.url ('thread', $FILE, PATH).'#nnf_replies';
+			$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_replies';
 		} else {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
@@ -243,7 +243,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ("category[.='deleted']")) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.url ('thread', $FILE, PATH, $PAGE)."#$ID";
+			$url = FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID";
 		}
 		
 		//commit the data
@@ -273,7 +273,7 @@ if (isset ($_GET['delete'])) {
 		indexRSS ();
 		
 		//return to the index
-		header ('Location: '.FORUM_URL.url ('index'), true, 303);
+		header ('Location: '.FORUM_URL.url ('index', PATH_URL), true, 303);
 		exit;
 	}
 	
@@ -285,7 +285,7 @@ if (isset ($_GET['delete'])) {
 	$template = prepareTemplate (
 		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title),
 		//provide the current page parameters to construct the signin link
-		'delete', $FILE, safeURL (PATH), $PAGE, $ID, true
+		'delete', $FILE, PATH_URL, $PAGE, $ID, true
 	
 	//the preview post:
 	)->set (array (
@@ -353,13 +353,13 @@ if (CAN_REPLY && AUTH && TEXT) {
 			? floor ((count ($thread)+1) / FORUM_POSTS)
 			: ceil  ((count ($thread)+1) / FORUM_POSTS)
 		;
-		$url  = FORUM_URL.url ('thread', $FILE, safeURL (PATH), $page).'#'.base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.base_convert (microtime (), 10, 36);
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
-			'/rss/channel/link'		=> FORUM_URL.url ('thread', $FILE)
+			'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $FILE)
 		))->remove (array (
 			//is the thread unlocked?
 			'/rss/channel/category'		=> !$xml->channel->xpath ("category[.='locked']")
@@ -430,14 +430,14 @@ $template = prepareTemplate (
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
 	),
 	//provide the current page parameters to construct the signin link
-	'thread', $FILE, safeURL (PATH), $PAGE, '', true
+	'thread', $FILE, PATH_URL, $PAGE, '', true
 	
 )->set (array (
 	//the thread itself is the RSS feed :)
-	'a#nnf_rss@href'	=> PATH_URL."$FILE.rss",
+	'a#nnf_rss@href'	=> FORUM_PATH.PATH_URL."$FILE.rss",
 	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
-	'a#nnf_lock@href'	=> url ('lock',   $FILE, safeURL (PATH), $PAGE),
-	'a#nnf_unlock@href'	=> url ('unlock', $FILE, safeURL (PATH), $PAGE)
+	'a#nnf_lock@href'	=> url ('lock',   PATH_URL, $FILE, $PAGE),
+	'a#nnf_unlock@href'	=> url ('unlock', PATH_URL, $FILE, $PAGE)
 ))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
@@ -464,9 +464,9 @@ $template->set (array (
 	'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'#nnf_post-author'		=> $post->author,
-	'a#nnf_post-append@href'	=> url ('append', $FILE, '', $PAGE,
+	'a#nnf_post-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
 					        substr (strstr ($post->link, '#'), 1)).'#append',
-	'a#nnf_post-delete@href'	=> url ('delete', $FILE, '', $PAGE)
+	'a#nnf_post-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE)
 ))->setValue (
 	'#nnf_post-text', $post->description, true
 )->remove (array (
@@ -505,10 +505,10 @@ if (!count ($thread)) {
 		'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 		'.nnf_reply-author'		=> $reply->author,
 		'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-		'a.nnf_reply-number@href'	=> url ('thread', $FILE, '', $PAGE).strstr ($reply->link,'#'),
-		'a.nnf_reply-append@href'	=> url ('append', $FILE, '', $PAGE,
+		'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
+		'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
 						        substr (strstr ($reply->link, '#'), 1)).'#append',
-		'a.nnf_reply-delete@href'	=> url ('delete', $FILE, '', $PAGE,
+		'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
 						        substr (strstr ($reply->link, '#'), 1))
 	))->setValue (
 		'.nnf_reply-text', $reply->description, true
@@ -529,7 +529,7 @@ if (!count ($thread)) {
 			IS_MOD ||
 			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
 			//if you are signed in, then only links on replies with your name will show
-			!HTTP_AUTH ||
+			!AUTH_HTTP ||
 			//if this reply is the by the owner (they can append/delete to their own replies)
 			(strtolower (NAME) == strtolower ($reply->author) && (
 				//if the forum is post-locked, they must be a member to append/delete their own replies
@@ -553,7 +553,7 @@ if (CAN_REPLY) $template->set (array (
 	'textarea#nnf_text-field'		=> TEXT, 'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
-))->remove (HTTP_AUTH
+))->remove (AUTH_HTTP
 	//don’t need the usual name / password fields and the deafult message for anonymous users
 	? '#nnf_name, #nnf_pass, #nnf_email, #nnf_error-none'
 	//user is not signed in, remove the "you are signed in as:" field and the message for signed in users

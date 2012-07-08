@@ -7,13 +7,14 @@
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout
-function url ($action='index', $file='', $path='', $page=0, $id='', $signin=false) {
+function url ($action='index', $path='', $file='', $page=0, $id='', $signin=false) {
 	$filepath = FORUM_PATH."$path$file";
-	if (substr ($filepath, strlen (PATH_URL)) == PATH_URL) $filepath = substr ($filepath, strlen (PATH_URL)+1);
+	if (substr ($filepath, strlen (FORUM_PATH.PATH_URL)) == FORUM_PATH.PATH_URL)
+		$filepath = substr ($filepath, strlen (FORUM_PATH.PATH_URL)+1)
+	;
 	
 	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
 	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
-	//(note that `FORUM_PATH` begins with a slash and ends with one)
 	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
@@ -108,7 +109,7 @@ function prepareTemplate (
 		$i = 0; $i < count ($items); $i++
 	) $item->set (array (
 		'a.nnf_subforum-name'		=> $items[$i],
-		'a.nnf_subforum-name@href'	=> url ('index', '',
+		'a.nnf_subforum-name@href'	=> url ('index',
 			//reconstruct the URL from each sub-forum up to the current one
 			implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
 		)
@@ -134,11 +135,11 @@ function prepareTemplate (
 	//set the name of the signed-in user
 	$template->setValue ('.nnf_signed-in-name', NAME)->remove (
 		//remove the relevant section for signed-in / out
-		HTTP_AUTH ? '.nnf_signed-out' : '.nnf_signed-in'
+		AUTH_HTTP ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
 	
 	//set the sign-in link
-	$template->setValue ('.//a[@href="?signin"]/@href', url ($action, $file, $path, $page, $id, true));
+	$template->setValue ('.//a[@href="?signin"]/@href', url ($action, $path, $file, $page, $id, true));
 	
 	return $template;
 }
@@ -172,12 +173,10 @@ function safeHTML ($text) {
 	//(`ENT_XHTML` & `ENT_SUBSTITUTE` are PHP5.4+ only)
 	return htmlspecialchars ($text, ENT_NOQUOTES | @ENT_XHTML | @ENT_SUBSTITUTE, 'UTF-8');
 }
-function safeURL ($text, $is_HTML=true) {
+function safeURL ($text) {
 	//encode a string to be used in a URL, keeping path separators
-	$text = str_replace ('%2F', '/', rawurlencode ($text));
-	//will the URL be outputted into HTML? (rather than, say, the HTTP headers)
-	//if so, encode for HTML too, e.g. "&" should be "&amp;" within URLs when in HTML
-	return $is_HTML ? safeHTML ($text) : $text;
+	//WARNING: this does not sanitise against HTML, it’s assumed text is passed through `safeHTML` before output
+	return str_replace ('%2F', '/', rawurlencode ($text));
 }
 
 //take the author's message, process markup, and encode it safely for the RSS feed
@@ -372,7 +371,7 @@ function indexRSS () {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
-		'/rss/channel/link'	=> FORUM_URL.url ('index')
+		'/rss/channel/link'	=> FORUM_URL.url ('index', PATH_URL)
 	));
 	
 	//get list of threads, sort by date; most recently modified first
