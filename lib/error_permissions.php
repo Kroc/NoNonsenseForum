@@ -7,7 +7,8 @@
 	Make the folder writable and refresh this page to save the data.
 </p><p>
 	This error will occur if either a thread cannot be saved because the forum / sub-forum folder is non-writable
-	or because a new user cannot be registered because the "users" folder is non-writable
+	or because a new user cannot be registered because the "users" folder is either non-writable, or your `FORUM_USERS`
+	path is incorrect.
 </p>
 <dl>
 

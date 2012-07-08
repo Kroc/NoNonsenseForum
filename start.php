@@ -62,6 +62,9 @@ define ('FORUM_ROOT',		dirname (__FILE__));
 //location of the 'lib' folder, full server path
 define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
 
+//correct PHP version?
+if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.php';
+
 require_once FORUM_LIB.'functions.php';				//import shared functions
 require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
 
@@ -72,18 +75,7 @@ define ('FORUM_PATH', 		safeURL (str_replace (
 	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
 )));
 
-/* check environment for compatibility
-   ---------------------------------------------------------------------------------------------------------------------- */
-//correct PHP version?
-if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.php';
-
-//is the htaccess working properly?
-//(.htaccess sets this variable for us)
-define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
-//TODO: if htaccess is off, check users folder is secure and error out if not
-//if (!@$_SERVER['HTTP_HTACCESS']) require FORUM_LIB.'error_htaccess.php';
-
-/* configuration
+/* site configuration
    ---------------------------------------------------------------------------------------------------------------------- */
 //try set the forum owner’s personal config ('config.php'), if it exists
 @(include './config.php');
@@ -100,6 +92,12 @@ define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//- if HTTPS is enforced, links in RSS will use it
 	'://'.$_SERVER['HTTP_HOST']
 );
+
+//is the htaccess working properly?
+//(.htaccess sets this variable for us)
+define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
+//if ".htaccess" is missing or disabled, and the "users" folder is in an insecure location, warn the site admin to move it
+if (!HTACCESS && FORUM_USERS == 'users') require FORUM_LIB.'error_htaccess.php';
 
 /* common input
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -150,7 +148,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
-	$user = FORUM_ROOT.DIRECTORY_SEPARATOR.'users'.DIRECTORY_SEPARATOR."$name.txt";
+	$user = FORUM_ROOT.DIRECTORY_SEPARATOR.FORUM_USERS.DIRECTORY_SEPARATOR."$name.txt";
 	
 	//create the user, if new:
 	//- if registrations are allowed (`FORUM_NEWBIES` is true)
