@@ -158,14 +158,10 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	//the append form:
 	))->set (array (
 		//set the field values from what was typed in before
-		'input#nnf_name-field-http@value'	=> NAME,
-		'input#nnf_name-field@value'		=> NAME,
-		'input#nnf_pass-field@value'		=> PASS,
-		'textarea#nnf_text-field'		=> TEXT,
-		//set the maximum field sizes
-		'input#nnf_name-field@maxlength'	=> SIZE_NAME,
-		'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
-		'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
+		'input#nnf_name-field-http@value'	=> NAME, //set the maximum field sizes
+		'input#nnf_name-field@value'		=> NAME, 'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+		'input#nnf_pass-field@value'		=> PASS, 'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
+		'textarea#nnf_text-field'		=> TEXT, 'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 		
 	//is the user already signed-in?
 	))->remove (HTTP_AUTH
@@ -307,12 +303,9 @@ if (isset ($_GET['delete'])) {
 	
 	//the authentication form:
 	))->set (array (
-		//set the field values from what was typed in before
-		'input#nnf_name-field@value'		=> NAME,
-		'input#nnf_pass-field@value'		=> PASS,
-		//set the maximum field sizes
-		'input#nnf_name-field@maxlength'	=> SIZE_NAME,
-		'input#nnf_pass-field@maxlength'	=> SIZE_PASS
+		//set the field values from input	 //set the maximum field sizes
+		'input#nnf_name-field@value'	=> NAME, 'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+		'input#nnf_pass-field@value'	=> PASS, 'input#nnf_pass-field@maxlength'	=> SIZE_PASS
 		
 	//are we deleting the whole thread, or just one reply?
 	))->remove ($ID
@@ -554,14 +547,10 @@ if (!count ($thread)) {
    ---------------------------------------------------------------------------------------------------------------------- */
 if (CAN_REPLY) $template->set (array (
 	//set the field values from what was typed in before
-	'input#nnf_name-field-http@value'	=> NAME,
-	'input#nnf_name-field@value'		=> NAME,
-	'input#nnf_pass-field@value'		=> PASS,
-	'textarea#nnf_text-field'		=> TEXT,
-	//set the maximum field sizes
-	'input#nnf_name-field@maxlength'	=> SIZE_NAME,
-	'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
-	'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
+	'input#nnf_name-field-http@value'	=> NAME, //set the maximum field sizes
+	'input#nnf_name-field@value'		=> NAME, 'input#nnf_name-field@maxlength'	=> SIZE_NAME,
+	'input#nnf_pass-field@value'		=> PASS, 'input#nnf_pass-field@maxlength'	=> SIZE_PASS,
+	'textarea#nnf_text-field'		=> TEXT, 'textarea#nnf_text-field@maxlength'	=> SIZE_TEXT
 	
 //is the user already signed-in?
 ))->remove (HTTP_AUTH
