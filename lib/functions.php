@@ -372,7 +372,8 @@ function indexRSS () {
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
 		'/rss/channel/link'	=> FORUM_URL.url ('index', PATH_URL)
-	));
+	//remove the locked / deleted categories
+	))->remove ('/rss/channel/category');
 	
 	//get list of threads, sort by date; most recently modified first
 	$threads = preg_grep ('/\.rss$/', scandir ('.'));
@@ -389,7 +390,9 @@ function indexRSS () {
 			'./author'	=> $item->author,
 			'./pubDate'	=> gmdate ('r', strtotime ($item->pubDate)),
 			'./description'	=> $item->description
-		))->next ();
+		))->remove (array (
+			'./category[.="deleted"]' => !$item->xpath ('category[.="deleted"]'),
+		))->next ()
 	;
 	file_put_contents ('index.xml', $rss->html ());
 	

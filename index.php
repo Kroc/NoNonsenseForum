@@ -249,13 +249,13 @@ if ($threads || @$stickies) {
 		'.nnf_thread-author'		=> $last->author
 	))->remove (array (
 		//if the thread isn’t locked, remove the lock icon
-		'.nnf_thread-locked'		=> !$xml->channel->xpath ("category[.='locked']"),
+		'.nnf_thread-locked'		=> !$xml->channel->xpath ('category[.="locked"]'),
 		//if the thread isn't sticky, remove the 'sticky' class
 		'./@class'			=> !in_array ($file, $stickies) ? 'sticky' : false,
 		//if the thread isn't sticky, remove the sticky icon
 		'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
 						//the lock-icon takes precedence over the sticky icon
-						|| $xml->channel->xpath ("category[.='locked']"),
+						|| $xml->channel->xpath ('category[.="locked"]'),
 		//is the last post author a mod?
 		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'mod' : false
 	
