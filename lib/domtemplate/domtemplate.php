@@ -255,10 +255,15 @@ abstract class DOMTemplateNode {
 				
 			//if the text is to be inserted as HTML that will be included into the output
 			case $asHTML:
-				$frag = $node->ownerDocument->createDocumentFragment ();
-				//if the HTML string is not valid XML, it won’t work!
-				$frag->appendXML (self::html_entity_decode ($value));
+				//remove exisiting element's content
 				$node->nodeValue = '';
+				//if supplied text is blank end here; you can't append a blank!
+				if (!$value) break;
+				
+				//NOTE: if the HTML string is not valid XML, it won’t work!
+				//TODO: need to error-handle this
+				$frag = $node->ownerDocument->createDocumentFragment ();
+				$frag->appendXML (self::html_entity_decode ($value));
 				$node->appendChild ($frag);
 				break;
 				
