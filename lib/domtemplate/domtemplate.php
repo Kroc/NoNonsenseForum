@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v13 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v14 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
@@ -174,8 +174,13 @@ abstract class DOMTemplateNode {
 		$use_relative=true	//by default, the converted XPath uses a relative prefix "//" to work around a bug
 					//in XPath matching. see <php.net/manual/en/domxpath.query.php#99760> for details
 	) {
+		//return from cache where possible
+		//(this doubles the speed of repeat loops)
+		static $cache = array ();
+		if (isset ($cache[$query])) return $cache[$query];
+		
 		//match the allowed format of shorthand
-		return preg_match (
+		return $cache[$query] = preg_match (
 			'/^(?!\/)([a-z0-9:-]+(\[\d+\])?)?(?:([\.#])([a-z0-9:_-]+))?(@[a-z-]+(="[^"]+")?)?(?:\/(.*))?$/i',
 		$query, $m)
 		?	($use_relative ? './/' : '').		//apply the relative prefix
