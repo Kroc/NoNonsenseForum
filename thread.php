@@ -517,7 +517,7 @@ if (!count ($thread)) {
 		'./@class'			=> $reply->xpath ('category[.="deleted"]') ? false : 'nnf_deleted',
 	))->remove (array (
 		//is this reply from the person who started the thread?
-		'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'op'
+		'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'nnf_op'
 	))->remove (array (
 		//if the user who made the reply is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
