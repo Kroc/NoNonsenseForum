@@ -31,7 +31,7 @@ function theme_custom ($template) {
 
 //produce an HTML list of names (used for the mods/members list)
 function theme_nameList ($names) {
-	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="mod"' : '').'>'.safeHTML ($name).'</b>';
+	foreach ($names as &$name) $name = '<b'.(isMod ($name) ? ' class="nnf_mod"' : '').'>'.safeHTML ($name).'</b>';
 	return implode (', ', $names);
 }
 

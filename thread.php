@@ -514,7 +514,7 @@ if (!count ($thread)) {
 		'.nnf_reply-text', $reply->description, true
 	)->remove (array (
 		//has the reply been deleted (blanked)?
-		'./@class'			=> $reply->xpath ('category[.="deleted"]') ? false : 'deleted',
+		'./@class'			=> $reply->xpath ('category[.="deleted"]') ? false : 'nnf_deleted',
 	))->remove (array (
 		//is this reply from the person who started the thread?
 		'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'op'

@@ -455,11 +455,11 @@ HTML
 
 ,'#nnf_mods-local'			=> <<<HTML
 	Moderators for this sub-forum:
-	<span id="nnf_mods-local-list"><b class="mod">Alice</b></span>
+	<span id="nnf_mods-local-list"><b class="nnf_mod">Alice</b></span>
 HTML
 ,'#nnf_mods'				=> <<<HTML
 	Your friendly neighbourhood moderators:
-	<span id="nnf_mods-list"><b class="mod">Bob</b></span>
+	<span id="nnf_mods-list"><b class="nnf_mod">Bob</b></span>
 HTML
 ,'#nnf_members'				=> <<<HTML
 	Members of this forum:

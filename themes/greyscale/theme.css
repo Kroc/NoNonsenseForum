@@ -43,7 +43,7 @@ p				{margin: 0; padding: 0 20px 20px;
 a				{color: #222; text-decoration: none; font-weight: bold;}
 a:hover				{color: #666; text-decoration: underline;}
 
-b.mod				{/* all moderators have underlined names */
+b.nnf_mod			{/* all moderators have underlined names */
 				 /*text-decoration: underline;*/}
 
 time				{font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-transform: uppercase;}
@@ -241,18 +241,18 @@ article header .ui,
 a.delete			{background: url("img/delete.png") no-repeat right center; background-size: 16px 16px;}
 a.append			{background: url("img/add.png") no-repeat right center; background-size: 16px 16px;}
 
-article.op			{}
-article.op header		{background: #888; color: #eee;}
+article.nnf_op			{}
+article.nnf_op header		{background: #888; color: #eee;}
 
-article.deleted			{color: #aaa;}
-article.deleted header		{background: #f7f6f7; color: #aaa;}
+article.nnf_deleted		{color: #aaa;}
+article.nnf_deleted header	{background: #f7f6f7; color: #aaa;}
 
 article h2			{margin: 20px 0 0; border-bottom: 1px dotted #222;
 				 font-size: 16px; line-height: 19px; font-weight: normal; font-style: normal;}
 article .hr			{height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
 				 border-bottom: 1px dotted #222; text-indent: -999em;}
 
-p.appended			{color: #888; padding-top: 19px;
+p.nnf_appended			{color: #888; padding-top: 19px;
 				 border-bottom: 1px dotted #222;
 				 /* don’t include the 'user X added on date Y' when copy/pasting */
 				 -webkit-user-select: none;

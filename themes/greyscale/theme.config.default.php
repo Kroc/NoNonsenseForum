@@ -62,7 +62,7 @@
 //"%1$s" - username of who posted
 //"%2$s" - timestamp formatted for use with HTML5 `<time>`
 //"%3$s" - human-readable time, as per `DATE_FORMAT`
-@define ('THEME_APPEND',	'<p class="appended"><b>%1$s</b> added on <time datetime="%2$s">%3$s</time></p>');
+@define ('THEME_APPEND',	'<p class="nnf_appended"><b>@%1$s</b> added on <time datetime="%2$s">%3$s</time></p>');
 
 //HTML that replaces a post when it's deleted (this is not rectroactive)
 @define ('THEME_DEL_USER',	'<p>This post was deleted by its owner</p>');
