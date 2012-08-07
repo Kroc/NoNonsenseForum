@@ -434,10 +434,11 @@ $template = prepareTemplate (
 	
 )->set (array (
 	//the thread itself is the RSS feed :)
-	'a#nnf_rss@href'	=> FORUM_PATH.PATH_URL."$FILE.rss",
+	'//link[@rel="alternate"]/@href, '.
+	'a#nnf_rss@href'		=> FORUM_PATH.PATH_URL."$FILE.rss",
 	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
-	'a#nnf_lock@href'	=> url ('lock',   PATH_URL, $FILE, $PAGE),
-	'a#nnf_unlock@href'	=> url ('unlock', PATH_URL, $FILE, $PAGE)
+	'a#nnf_lock@href'		=> url ('lock',   PATH_URL, $FILE, $PAGE),
+	'a#nnf_unlock@href'		=> url ('unlock', PATH_URL, $FILE, $PAGE)
 ))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
