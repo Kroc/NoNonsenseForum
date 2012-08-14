@@ -210,7 +210,7 @@ function formatText ($text, $rss=NULL) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	// example: `code` or ``code``
 	$code = array ();
-	while (preg_match ('/(?<=\s|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
+	while (preg_match ('/(?<=[\s\p{Z}\p{P}]|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
 		$code[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
 		//same as with normal code blocks, replace them with a placeholder
@@ -260,7 +260,7 @@ function formatText ($text, $rss=NULL) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	$text = preg_replace (
 		//example: _italic_ & *bold*
-		array ('/(?<!\S)_(?!_)(.*?)(?<!_)_(?!\S)/',	'/(?<![*\w])\*(?!\*)(.*?)(?<!\*)\*(?![*\w])/'),
+		array ('/(?<\S)_(?!_)(.*?)(?<!_)_(?!\S)/',	'/(?<![*\w])\*(?!\*)(.*?)(?<!\*)\*(?![*\w])/'),
 		array ('<em>_$1_</em>',				'<strong>*$1*</strong>'),
 	$text);
 	
