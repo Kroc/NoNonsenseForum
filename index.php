@@ -28,20 +28,8 @@ define ('CAN_POST', FORUM_ENABLED && (
 //has the user submitted a new thread?
 //(`AUTH` will be true if username and password submitted and correct, `TITLE` and `TEXT` are checked to not be blank)
 if (CAN_POST && AUTH && TITLE && TEXT) {
-	//the file on disk is a simplified version of the title:
-	$translit = preg_replace (
-		//replace non alphanumerics with underscores and don’t use more than 2 in a row
-		array ('/[^_a-z0-9-]/i', '/_{2,}/'), '_',
-		//remove the additional characters added by transliteration, e.g. "ñ" = "~n",
-		//has the added benefit of converting “microsoft's” to “microsofts” instead of “microsoft_s”
-		str_replace (array ("'", "`", "^", "~", "'", '"'), '', strtolower (
-			//unaccent: <php.net/manual/en/function.iconv.php>
-			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', TITLE)
-		))
-	);
-	
-	//old iconv versions and certain inputs may cause a nullstring. don't allow a blank filename
-	if (!$translit) $translit = '_';
+	//the file on disk is a simplified version of the title; see 'lib/functions.php' for `safeTransliterate`
+	$translit = safeTransliterate (TITLE);
 	
 	//if a thread already exsits with that name, append a number until an available filename is found.
 	//we also check for directories with the same name so as to avoid problematic Apache behaviour
