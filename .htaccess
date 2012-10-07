@@ -11,7 +11,7 @@ AddDefaultCharset utf-8
 # this ‘feature’ (MultiViews) drove me absolutely insane!
 # without this, Apache will give a 404 for a rewrite if a folder of the same name does not exist (e.g. “/blog/hello”)
 # <webmasterworld.com/apache/3808792.htm>
-Options -MultiViews -Indexes
+Options -MultiViews -Indexes +FollowSymLinks
 
 <IfModule mod_dir.c>
 	DirectoryIndex index.php

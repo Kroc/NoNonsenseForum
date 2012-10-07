@@ -1,3 +1,13 @@
+v22
+*	RSS URL in the HTML meta was wrong and had been for some time!
+*	Massively improved transliteration from thread title to filename / URL; if using PHP5.4 with the 'intl' extension
+	enabled, even Greek / Hebrew / Arabic / Japanese / Chinese (and more) will be transliterated into ASCII! 
+*	Fixed italics appearing in the middle of URLs
+*	Fixed bug with URL parsing with subdomains
+*	Improved code markup "`...`" parsing
+*	Improved templating speed, with thanks to Sani
+*	Improved .htaccess compatibility with Mac OS, with thanks to Zegnat
+
 v21	08.JUL.12
 *	Support for running without HTAccess:
 	NoNonsenseForum will now auto-detect if '.htaccess' is missing or disabled and fall back to running without,

@@ -179,7 +179,8 @@ function safeURL ($text) {
 	return str_replace ('%2F', '/', rawurlencode ($text));
 }
 
-//generate a safe (a-z0-9_) string, for use as filenames or URLs, from an arbitrary string:
+//safeTransliterate v2, copyright (cc-by 3.0) Kroc Camen <camendesign.com>
+//generate a safe (a-z0-9_) string, for use as filenames or URLs, from an arbitrary string
 function safeTransliterate ($text) {
 	//if available, this function uses PHP5.4's transliterate, which is capable of converting arabic, hebrew, greek,
 	//chinese, japanese and more into ASCII! however, we use our manual (and crude) fallback *first* instead because
@@ -201,7 +202,7 @@ function safeTransliterate ($text) {
 	   http://www.utf8-chartable.de/
 	*/
 	static $translit = array (
-		'a'	=> '/[ÀÁÂẦẤẪẨÃĀĂẰẮẴȦẲǠÄǞẢÅÅǺǍȀȂẠẬẶḀĄẚàáâầấẫẩãāăằắẵẳȧǡäǟảåǻǎȁȃạậặḁą]/u',
+		'a'	=> '/[ÀÁÂẦẤẪẨÃĀĂẰẮẴȦẲǠẢÅÅǺǍȀȂẠẬẶḀĄẚàáâầấẫẩãāăằắẵẳȧǡảåǻǎȁȃạậặḁą]/u',
 		'b'	=> '/[ḂḄḆḃḅḇ]/u',			'c'	=> '/[ÇĆĈĊČḈçćĉċčḉ]/u',
 		'd'	=> '/[ÐĎḊḌḎḐḒďḋḍḏḑḓð]/u',
 		'e'	=> '/[ÈËĒĔĖĘĚȄȆȨḔḖḘḚḜẸẺẼẾỀỂỄỆèëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]/u',
@@ -210,27 +211,27 @@ function safeTransliterate ($text) {
 		'j'	=> '/[Ĵĵǰ]/u',				'k'	=> '/[ĶǨḰḲḴKķǩḱḳḵ]/u',
 		'l'	=> '/[ĹĻĽĿḶḸḺḼĺļľŀḷḹḻḽ]/u',		'm'	=> '/[ḾṀṂḿṁṃ]/u',
 		'n'	=> '/[ÑŃŅŇǸṄṆṈṊñńņňǹṅṇṉṋ]/u',
-		'o'	=> '/[ÒÖŌŎŐƠǑǪǬȌȎȪȬȮȰṌṎṐṒỌỎỐỒỔỖỘỚỜỞỠỢØǾòöōŏőơǒǫǭȍȏȫȭȯȱṍṏṑṓọỏốồổỗộớờởỡợøǿ]/u',
+		'o'	=> '/[ÒŌŎŐƠǑǪǬȌȎȬȮȰṌṎṐṒỌỎỐỒỔỖỘỚỜỞỠỢØǾòōŏőơǒǫǭȍȏȭȯȱṍṏṑṓọỏốồổỗộớờởỡợøǿ]/u',
 		'p'	=> '/[ṔṖṕṗ]/u',				'r'	=> '/[ŔŖŘȐȒṘṚṜṞŕŗřȑȓṙṛṝṟ]/u',
 		's'	=> '/[ŚŜŞŠȘṠṢṤṦṨſśŝşšșṡṣṥṧṩ]/u',	'ss'	=> '/[ß]/u',
 		't'	=> '/[ŢŤȚṪṬṮṰţťțṫṭṯṱẗ]/u',		'th'	=> '/[Þþ]/u',
-		'u'	=> '/[ÙÜŨŪŬŮŰŲƯǓǕǗǙǛȔȖṲṴṶṸṺỤỦỨỪỬỮỰùüũūŭůűųưǔǖǘǚǜȕȗṳṵṷṹṻụủứừửữựµ]/u',
+		'u'	=> '/[ÙŨŪŬŮŰŲƯǓȔȖṲṴṶṸṺỤỦỨỪỬỮỰùũūŭůűųưǔȕȗṳṵṷṹṻụủứừửữựµ]/u',
 		'v'	=> '/[ṼṾṽṿ]/u',				'w'	=> '/[ŴẀẂẄẆẈŵẁẃẅẇẉẘ]/u',
 		'x'	=> '/[ẊẌẋẍ×]/u',			'y'	=> '/[ÝŶŸȲẎỲỴỶỸýÿŷȳẏẙỳỵỷỹ]/u',
 		'z'	=> '/[ŹŻŽẐẒẔźżžẑẓẕ]/u',				
 		//combined letters and ligatures:
-		'ae'	=> '/[ÆǼǢæǽǣ]/u',			'oe'	=> '/[Œœ]/u',
+		'ae'	=> '/[ÄǞÆǼǢäǟæǽǣ]/u',			'oe'	=> '/[ÖȪŒöȫœ]/u',
 		'dz'	=> '/[ǄǅǱǲǆǳ]/u',
 		'ff'	=> '/[ﬀ]/u',	'fi'	=> '/[ﬃﬁ]/u',	'ffl'	=> '/[ﬄﬂ]/u',
 		'ij'	=> '/[Ĳĳ]/u',	'lj'	=> '/[Ǉǈǉ]/u',	'nj'	=> '/[Ǌǋǌ]/u',
-		'no'	=> '/[№]/u',	'st'	=> '/[ﬅﬆ]/u',
+		'st'	=> '/[ﬅﬆ]/u',	'ue'	=> '/[ÜǕǗǙǛüǖǘǚǜ]/u',
 		//currencies:
 		'eur'   => '/[€]/u',	'cents'	=> '/[¢]/u',	'lira'	=> '/[₤]/u',	'dollars' => '/[$]/u',
 		'won'	=> '/[₩]/u',	'rs'	=> '/[₨]/u',	'yen'	=> '/[¥]/u',	'pounds'  => '/[£]/u',
 		'pts'	=> '/[₧]/u',
 		//misc:
 		'degc'	=> '/[℃]/u',	'degf'  => '/[℉]/u',
-		'tm'	=> '/[™]/u'
+		'no'	=> '/[№]/u',	'tm'	=> '/[™]/u'
 	);
 	//do the manual transliteration first
 	$text = preg_replace (array_values ($translit), array_keys ($translit), $text);
