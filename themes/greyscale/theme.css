@@ -248,7 +248,7 @@ article.nnf_deleted		{color: #aaa;}
 article.nnf_deleted header	{background: #f7f6f7; color: #aaa;}
 
 article h2			{margin: 20px 0 0; border-bottom: 1px dotted #222;
-				 font-size: 16px; line-height: 19px; font-weight: normal; font-style: normal;}
+				 font-size: 16px; line-height: 19px; font-weight: bold; font-style: normal;}
 article .hr			{height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
 				 border-bottom: 1px dotted #222; text-indent: -999em;}
 
