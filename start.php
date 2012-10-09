@@ -190,9 +190,9 @@ $MODS = array (
 $MEMBERS = array_filter ((array) @file ('members.txt', FILE_IGNORE_NEW_LINES));
 
 //is the current user a moderator in this forum?
-define ('IS_MOD',    isMod (NAME));
+define ('IS_MOD',    AUTH && isMod (NAME));
 //is the current user a member of this forum?
-define ('IS_MEMBER', isMember (NAME));
+define ('IS_MEMBER', AUTH && isMember (NAME));
 
 
 /* theme & translation
