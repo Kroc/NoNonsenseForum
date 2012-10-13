@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v14 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v15 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
@@ -223,12 +223,15 @@ abstract class DOMTemplateNode {
 	public function query (
 		$query			//an XPath/shorthand (see `shorthand2xpath`) string to search for nodes
 	) {
+		//convert each query to real XPath: (multiple targets are available by comma separating queries)
+		$xpath = implode ('|', array_map (array ('self', 'shorthand2xpath'), explode (', ', $query)));
+		
 		//run the real XPath query and return the DOMNodeList result
-		return $this->DOMXPath->query (implode ('|',
-			//convert each query to real XPath:
-			//(multiple targets are available by comma separating queries)
-			array_map (array ('self', 'shorthand2xpath'), explode (', ', $query))
-		), $this->DOMNode);
+		If ($result = @$this->DOMXPath->query ($xpath, $this->DOMNode)) {
+			return $result;
+		} else {
+			throw new Exception ("Invalid XPath Expression: $xpath");
+		}
 	}
 	
 	/* set : change multiple nodes in a simple fashion
@@ -268,8 +271,12 @@ abstract class DOMTemplateNode {
 				//NOTE: if the HTML string is not valid XML, it won’t work!
 				//TODO: need to error-handle this
 				$frag = $node->ownerDocument->createDocumentFragment ();
-				$frag->appendXML (self::html_entity_decode ($value));
-				$node->appendChild ($frag);
+				if (
+					!@$frag->appendXML (self::html_entity_decode ($value)) ||
+					!@$node->appendChild ($frag)
+				) {
+					throw new Exception ("Invalid HTML");
+				}
 				break;
 				
 			//otherwise, encode the text to display as-is

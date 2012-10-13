@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v21 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -468,9 +468,7 @@ $template->set (array (
 	'a#nnf_post-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
 					        substr (strstr ($post->link, '#'), 1)).'#append',
 	'a#nnf_post-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE)
-))->setValue (
-	'#nnf_post-text', $post->description, true
-)->remove (array (
+))->remove (array (
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
 	'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false,
@@ -478,6 +476,17 @@ $template->set (array (
 	//append / delete links?
 	'#nnf_post-append, #nnf_post-delete' => !CAN_REPLY
 ));
+
+//insert the post-text, dealing with an invalid HTML error
+try {
+	$template->setValue ('#nnf_post-text', $post->description, true);
+	$template->remove (array ('#nnf_post@class' => 'nnf_error'));
+} catch (Exception $e) {
+	//if the HTML was invalid, replace with the corruption message
+	$template->setValue ('#nnf_post-text', THEME_HTML_ERROR, true);
+	//remove the append button
+	$template->remove ('#nnf_post-append');
+}
 
 /* replies
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -500,48 +509,61 @@ if (!count ($thread)) {
 	//index number of the replies, accounting for which page we are on
 	$no = ($PAGE-1) * FORUM_POSTS;
 	//apply the data to the template (a reply)
-	foreach ($thread as &$reply) $item->set (array (
-		'./@id'				=> substr (strstr ($reply->link, '#'), 1),
-		'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
-		'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
-		'.nnf_reply-author'		=> $reply->author,
-		'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-		'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
-		'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
-						        substr (strstr ($reply->link, '#'), 1)).'#append',
-		'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
-						        substr (strstr ($reply->link, '#'), 1))
-	))->setValue (
-		'.nnf_reply-text', $reply->description, true
-	)->remove (array (
-		//has the reply been deleted (blanked)?
-		'./@class'			=> $reply->xpath ('category[.="deleted"]') ? false : 'nnf_deleted',
-	))->remove (array (
-		//is this reply from the person who started the thread?
-		'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'nnf_op'
-	))->remove (array (
-		//if the user who made the reply is a mod, also mark the whole post as by a mod
-		//(you might want to style any posts made by a mod differently)
-		'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
-	))->remove (array (
-		//if the current user in the curent forum can append/delete the current reply:
-		'.nnf_reply-append, .nnf_reply-delete' => !(CAN_REPLY && (
-			//moderators can always see append/delete links on all replies
-			IS_MOD ||
-			//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
-			//if you are signed in, then only links on replies with your name will show
-			!AUTH_HTTP ||
-			//if this reply is the by the owner (they can append/delete to their own replies)
-			(strtolower (NAME) == strtolower ($reply->author) && (
-				//if the forum is post-locked, they must be a member to append/delete their own replies
-				(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
-			))
-		)),
-		//append link not available when the reply has been deleted
-		'.nnf_reply-append' => $reply->xpath ('category[.="deleted"]'),
-		//delete link not available when the reply has been deleted, except to mods
-		'.nnf_reply-delete' => $reply->xpath ('category[.="deleted"]') && !IS_MOD
-	))->next ();
+	foreach ($thread as &$reply) {
+		$item->set (array (
+			'./@id'				=> substr (strstr ($reply->link, '#'), 1),
+			'time.nnf_reply-time'		=> date (DATE_FORMAT, strtotime ($reply->pubDate)),
+			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
+			'.nnf_reply-author'		=> $reply->author,
+			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
+			'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
+			'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+								substr (strstr ($reply->link, '#'), 1)).'#append',
+			'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
+								substr (strstr ($reply->link, '#'), 1))
+		))->remove (array (
+			//has the reply been deleted (blanked)?
+			'./@class'			=> $reply->xpath ('category[.="deleted"]') ? false : 'nnf_deleted',
+		))->remove (array (
+			//is this reply from the person who started the thread?
+			'./@class'			=> strtolower ($reply->author) == strtolower ($author) ? false :'nnf_op'
+		))->remove (array (
+			//if the user who made the reply is a mod, also mark the whole post as by a mod
+			//(you might want to style any posts made by a mod differently)
+			'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
+		))->remove (array (
+			//if the current user in the curent forum can append/delete the current reply:
+			'.nnf_reply-append, .nnf_reply-delete' => !(CAN_REPLY && (
+				//moderators can always see append/delete links on all replies
+				IS_MOD ||
+				//if you are not signed in, all append/delete links are shown (if forum/thread locking is off)
+				//if you are signed in, then only links on replies with your name will show
+				!AUTH_HTTP ||
+				//if this reply is the by the owner (they can append/delete to their own replies)
+				(strtolower (NAME) == strtolower ($reply->author) && (
+					//if the forum is post-locked, they must be a member to append/delete their own replies
+					(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
+				))
+			)),
+			//append link not available when the reply has been deleted
+			'.nnf_reply-append' => $reply->xpath ('category[.="deleted"]'),
+			//delete link not available when the reply has been deleted, except to mods
+			'.nnf_reply-delete' => $reply->xpath ('category[.="deleted"]') && !IS_MOD
+		));
+		
+		//insert the post-text, dealing with an invalid HTML error
+		try {
+			$item->setValue ('.nnf_reply-text', $reply->description, true);
+			$item->remove (array ('./@class' => 'nnf_error'));
+		} catch (Exception $e) {
+			//if the HTML was invalid, replace with the corruption message
+			$item->setValue ('.nnf_reply-text', THEME_HTML_ERROR, true);
+			//remove the append button
+			$item->remove ('.nnf_reply-append');
+		}
+		
+		$item->next ();
+	}
 }
 
 /* reply form

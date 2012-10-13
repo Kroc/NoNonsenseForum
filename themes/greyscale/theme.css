@@ -245,7 +245,11 @@ article.nnf_op			{}
 article.nnf_op header		{background: #888; color: #eee;}
 
 article.nnf_deleted		{color: #aaa;}
-article.nnf_deleted header	{background: #f7f6f7; color: #aaa;}
+article.nnf_deleted header,
+ article.nnf_error header	{background: #f7f6f7; color: #aaa;}
+article.nnf_error .nnf_reply-text,
+ article.nnf_error #nnf_post-text
+				{color: #d11; font-style: italic}
 
 article h2			{margin: 20px 0 0; border-bottom: 1px dotted #222;
 				 font-size: 16px; line-height: 19px; font-weight: bold; font-style: normal;}

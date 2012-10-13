@@ -1,4 +1,5 @@
-v22
+v22	13.OCT.12
+*	Posts with invalid HTML now display a message, rather than dumping PHP errors
 *	RSS URL in the HTML meta was wrong and had been for some time!
 *	Massively improved transliteration from thread title to filename / URL; if using PHP5.4 with the 'intl' extension
 	enabled, even Greek / Hebrew / Arabic / Japanese / Chinese (and more) will be transliterated into ASCII! 

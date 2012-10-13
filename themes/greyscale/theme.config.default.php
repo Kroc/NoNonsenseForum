@@ -1,6 +1,6 @@
 <?php //theme configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v21 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -67,6 +67,9 @@
 //HTML that replaces a post when it's deleted (this is not rectroactive)
 @define ('THEME_DEL_USER',	'<p>This post was deleted by its owner</p>');
 @define ('THEME_DEL_MOD', 	'<p>This post was deleted by a moderator</p>');
+
+//HTML used to replace an invalid post:
+@define ('THEME_HTML_ERROR',	'<p>This post is corrupted and cannot be displayed</p>');
 
 
 /* optional: (options unique to this theme)
