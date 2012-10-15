@@ -161,7 +161,7 @@ section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1p
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
+/*section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}*/
 
 ol.nnf_pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
 ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
@@ -376,9 +376,8 @@ footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left:
 footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-#signin				{margin: -60px 10% 0 auto; text-align: right;}
-#signin input			{float: right; /* < fix magic border bug in Firefox */
-				 margin: 0; padding: 0; border: none;
+#signin				{margin: -60px 10% 0 auto; text-align: right; border: none;}
+#signin input			{margin: 0; padding: 0; border: none;
 				 color: #f7f6f7; text-transform: uppercase;
 				 background: none; cursor: pointer;}
 
@@ -503,15 +502,21 @@ article header time		{display: inline;}
 /* ensure the language selector doesn’t overflow into the search box */
 #lang				{max-width: 100px; max-height: 20px; white-space: nowrap;}
 
-/* not enough room for the page list in the title, you’ll have to use the one at the bottom */
-#nnf_threads>h1 + nav,		/* the spaces between `+` are required here for WebKit! */
- #nnf_replies>h1 + nav		{display: none !important;}
-
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
 footer				{padding-top: 60px;}
-footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
-p#signin			{margin-top: -100px;}
+footer p			{margin-left: 0 !important; padding-left: 0 !important; padding-right: 0 !important;
+				 text-align: center !important;}
+#signin				{margin: -100px 0 0 0; text-align: center;}
+
+}
+
+@media screen and (min-width: 480px) {
+
+/* move the page list into the title for browsers that support the adjacent selector (IE7+);
+   this is not done for thin screens (portrait) because there's not enough width
+  (spaces are required between '+' here for WebKit!?) */
+section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
 
 }
 
