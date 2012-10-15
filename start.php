@@ -70,7 +70,7 @@ require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating e
 
 //location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
 //we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that
-define ('FORUM_PATH', 		safeURL (str_replace (
+define ('FORUM_PATH', safeURL (str_replace (
 	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
 	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
 )));
@@ -120,6 +120,9 @@ define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 //TODO: that should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page.
 //      I may revist this if I create an NNF-provided 404 page
 
+//was an input form submitted? (used to determine form error checking; this doesn't apply to the sign-in button)
+define ('FORM_SUBMIT', (isset ($_POST['x'], $_POST['y']) || isset ($_POST['submit_x'], $_POST['submit_y'])));
+
 
 /* access control
    ====================================================================================================================== */
@@ -139,12 +142,11 @@ define ('PASS', safeGet (@$_SERVER['PHP_AUTH_PW']   ? @$_SERVER['PHP_AUTH_PW']  
 if ((	//if HTTP authentication is used, we don’t need to validate the form fields
 	@$_SERVER['PHP_AUTH_USER'] && @$_SERVER['PHP_AUTH_PW']
 ) || (	//if an input form was submitted:
+	FORM_SUBMIT &&
 	//are the name and password non-blank?
 	NAME && PASS &&
 	//the email check is a fake hidden field in the form to try and fool spam bots
-	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
-	//I wonder what this does...?
-	(isset ($_POST['x'], $_POST['y']) || isset ($_POST['submit_x'], $_POST['submit_y']))
+	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com'
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
@@ -234,8 +236,6 @@ define ('LANG',
 	//all else failing, use the default language
 	: THEME_LANG))
 );
-//don’t treat language choice as an invalid form error
-if (isset ($_POST['lang'])) unset ($_POST);
 
 
 /* send HTTP headers

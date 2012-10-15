@@ -1,5 +1,6 @@
 v23	
 *	Sign-in is now a button instead of a link, this mostly paves the way for future improvements
+*	Page numbers now shown at the top when on portrait mobile display
 
 v22	13.OCT.12
 *	Posts with invalid HTML now display a message, rather than dumping PHP errors

@@ -173,15 +173,15 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'#nnf_error-none-append, #nnf_error-none-http' => !empty ($_POST),
+		'#nnf_error-none-append, #nnf_error-none-http' => FORM_SUBMIT,
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth-append' => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-append' => !FORM_SUBMIT || !TEXT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the error message
-		'#nnf_error-pass-append' => empty ($_POST) || !TEXT || !NAME || PASS,
+		'#nnf_error-pass-append' => !FORM_SUBMIT || !TEXT || !NAME || PASS,
 		//if the name is valid, remove the error message
-		'#nnf_error-name-append' => empty ($_POST) || !TEXT || NAME,
+		'#nnf_error-name-append' => !FORM_SUBMIT || !TEXT || NAME,
 		//if the message text is valid, remove the error message
-		'#nnf_error-text'        => empty ($_POST) || TEXT
+		'#nnf_error-text'        => !FORM_SUBMIT || TEXT
 	));
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
@@ -315,13 +315,13 @@ if (isset ($_GET['delete'])) {
 	//handle error messages
 	)->remove (array (
 		//if there's an error of any sort, remove the default messages
-		'#nnf_error-none-thread, #nnf_error-none-reply' => !empty ($_POST),
+		'#nnf_error-none-thread, #nnf_error-none-reply' => FORM_SUBMIT,
 		//if the username & password are correct, remove the error message
-		'#nnf_error-auth-delete' => empty ($_POST) || !NAME || !PASS || AUTH,
+		'#nnf_error-auth-delete' => !FORM_SUBMIT || !NAME || !PASS || AUTH,
 		//if the password is valid, remove the error message
-		'#nnf_error-pass-delete' => empty ($_POST) || !NAME || PASS,
+		'#nnf_error-pass-delete' => !FORM_SUBMIT || !NAME || PASS,
 		//if the name is valid, remove the error message
-		'#nnf_error-name-delete' => empty ($_POST) || NAME
+		'#nnf_error-name-delete' => !FORM_SUBMIT || NAME
 	));
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
@@ -590,15 +590,15 @@ if (CAN_REPLY) $template->set (array (
 //handle error messages
 )->remove (array (
 	//if there's an error of any sort, remove the default messages
-	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
+	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => FORM_SUBMIT,
 	//if the username & password are correct, remove the error message
-	'#nnf_error-auth'  => empty ($_POST) || !TEXT || !NAME || !PASS || AUTH,
+	'#nnf_error-auth'  => !FORM_SUBMIT || !TEXT || !NAME || !PASS || AUTH,
 	//if the password is valid, remove the error message
-	'#nnf_error-pass'  => empty ($_POST) || !TEXT || !NAME || PASS,
+	'#nnf_error-pass'  => !FORM_SUBMIT || !TEXT || !NAME || PASS,
 	//if the name is valid, remove the error message
-	'#nnf_error-name'  => empty ($_POST) || !TEXT || NAME,
+	'#nnf_error-name'  => !FORM_SUBMIT || !TEXT || NAME,
 	//if the message text is valid, remove the error message
-	'#nnf_error-text'  => empty ($_POST) || TEXT
+	'#nnf_error-text'  => !FORM_SUBMIT || TEXT
 ));
 
 //call the theme-specific templating function, in 'theme.php', before outputting

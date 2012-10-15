@@ -280,17 +280,17 @@ if (CAN_POST) $template->set (array (
 //handle error messages
 )->remove (array (
 	//if there's an error of any sort, remove the default messages
-	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
+	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => FORM_SUBMIT,
 	//if the username & password are correct, remove the error message
-	'#nnf_error-auth' => empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH,
+	'#nnf_error-auth' => !FORM_SUBMIT || !TITLE || !TEXT || !NAME || !PASS || AUTH,
 	//if the password is valid, remove the error message
-	'#nnf_error-pass' => empty ($_POST) || !TITLE || !TEXT || !NAME || PASS,
+	'#nnf_error-pass' => !FORM_SUBMIT || !TITLE || !TEXT || !NAME || PASS,
 	//if the name is valid, remove the error message
-	'#nnf_error-name' => empty ($_POST) || !TITLE || !TEXT || NAME,
+	'#nnf_error-name' => !FORM_SUBMIT || !TITLE || !TEXT || NAME,
 	//if the message text is valid, remove the error message
-	'#nnf_error-text' => empty ($_POST) || !TITLE || TEXT,
+	'#nnf_error-text' => !FORM_SUBMIT || !TITLE || TEXT,
 	//if the title is valid, remove the error message
-	'#nnf_error-title'=> empty ($_POST) || TITLE
+	'#nnf_error-title'=> !FORM_SUBMIT || TITLE
 ));
 
 //call the theme-specific templating function, in 'theme.php', before outputting
