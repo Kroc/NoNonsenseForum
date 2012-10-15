@@ -7,7 +7,7 @@
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout
-function url ($action='index', $path='', $file='', $page=0, $id='', $signin=false) {
+function url ($action='index', $path='', $file='', $page=0, $id='') {
 	$filepath = FORUM_PATH."$path$file";
 	if (substr ($filepath, strlen (FORUM_PATH.PATH_URL)) == FORUM_PATH.PATH_URL)
 		$filepath = substr ($filepath, strlen (FORUM_PATH.PATH_URL)+1)
@@ -21,9 +21,7 @@ function url ($action='index', $path='', $file='', $page=0, $id='', $signin=fals
 		//single actions without any ID
 		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))  ? $action : '',
 		//otherwise, actions with an ID?
-		$id	? "$action=$id" : '',
-		//signin link?
-		$signin	? "signin" : ''
+		$id	? "$action=$id" : ''
 	))), '?')
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
@@ -41,9 +39,7 @@ function url ($action='index', $path='', $file='', $page=0, $id='', $signin=fals
 			//if a file is specified (view thread, append, delete &c.)
 			$file	? "file=$file" : '',
 			//page number
-			$page	? "page=$page" : '',
-			//signin link?
-			$signin	? "signin" : ''
+			$page	? "page=$page" : ''
 		)))
 	;
 }
@@ -137,9 +133,6 @@ function prepareTemplate (
 		//remove the relevant section for signed-in / out
 		AUTH_HTTP ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
-	
-	//set the sign-in link
-	$template->setValue ('.//a[@href="?signin"]/@href', url ($action, $path, $file, $page, $id, true));
 	
 	return $template;
 }

@@ -128,9 +128,9 @@
 	<a href="/privacy.php">privacy policy</a>
 </p><p id="signin" class="nnf_signed-in">
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
-</p><p id="signin" class="nnf_signed-out">
-	<a href="?signin">Sign in</a>
-</p></footer>
+</p><form id="signin" class="nnf_signed-out" method="post">
+	<input type="submit" name="signin" value="Sign In" />
+</form></footer>
 
 <script defer="defer"><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript

@@ -163,6 +163,12 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//if signed in with HTTP_AUTH, confirm that it’s okay to use
 	//(e.g. the user could still have given the wrong password with HTTP_AUTH)
 	define ('AUTH_HTTP', @$_SERVER['PHP_AUTH_USER'] ? AUTH : false);
+	
+	//if the user clicked the sign-in button to authenticate, do a 303 redirect to the same URL to 'eat' the
+	//form-submission so that if they click the back-button, they don't get prompted to "resubmit the form data"
+	if (@$_POST['signin'] && AUTH_HTTP) header (
+		'Location: http'.(FORUM_HTTPS ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301
+	);
 } else {
 	define ('AUTH',      false);
 	define ('AUTH_HTTP', false);
@@ -245,9 +251,9 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 	header ('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
 }
 
-//if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
+//if the sign-in button was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
-if (!AUTH_HTTP && isset ($_GET['signin'])) {
+if (!AUTH_HTTP && isset ($_POST['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 	//we don't die here so that if they cancel the login prompt, they shouldn't get a blank page

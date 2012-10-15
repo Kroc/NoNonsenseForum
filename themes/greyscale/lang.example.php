@@ -61,12 +61,12 @@ $LANG['en']['strings'] = array (
 
 //access rights
 ,'#nnf_forum-lock-threads'		=> <<<HTML
-	Only <a href="#mods">moderators or members</a> can start new threads here [<a href="?signin">sign-in</a>],
+	Only <a href="#mods">moderators or members</a> can start new threads here,
 	but <em>anybody</em> can reply to existing threads.
 HTML
 ,'#nnf_forum-lock-posts'		=> <<<HTML
 	Only <a href="#mods">moderators or members</a> can participate here.
-	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+	Sign-in if you are a moderator or member in order to post.
 HTML
 
 //list of threads
@@ -87,7 +87,7 @@ HTML
 
 ,'.nnf_forum-locked'			=> <<<HTML
 	Only <a href="#mods">moderators or members</a> can reply to this thread.
-	<a href="?signin">Sign-in</a> if you are a moderator or member in order to post.
+	Sign-in if you are a moderator or member in order to post.
 HTML
 
 ,'#nnf_replies/h1'			=> 'Replies'				//title for replies list
@@ -473,7 +473,7 @@ HTML
 ,'.nnf_signed-in'			=> <<<HTML
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
 HTML
-,'.nnf_signed-out/a'			=> 'Sign in'
+,'.nnf_signed-out/input@value'		=> 'Sign in'
 
 );
 
