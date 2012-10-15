@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -37,17 +37,22 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file") || file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
+	$post_id = base_convert (microtime (), 10, 36);
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
-		'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $file),
+		'/rss/channel/link'		=> FORUM_URL.url (PATH_URL, $file),
 		//the thread's first post
 		'/rss/channel/item/title'	=> TITLE,
-		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).
-						   '#'.base_convert (microtime (), 10, 36),
+		'/rss/channel/item/link'	=> FORUM_URL.url (PATH_URL, $file).'#'.$post_id,
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
-		'/rss/channel/item/description'	=> formatText (TEXT)
+		'/rss/channel/item/description'	=> formatText (TEXT,  //process markup into HTML...
+							//provide a permalink so that title lines link to themselves
+							FORUM_URL.url (PATH_URL, $file, 1),
+							//also provide the post ID for title-linking and ID-uniqueness
+							$post_id
+						)
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	
@@ -57,7 +62,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	indexRSS ();
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $file), true, 303);
+	header ('Location: '.FORUM_URL.url (PATH_URL, $file), true, 303);
 	exit;
 }
 
@@ -99,16 +104,15 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 // 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
 	THEME_ROOT.'index.html',
+	//the canonical URL of this page
+	url (PATH_URL, '', $PAGE),
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
 		PATH ? SUBFORUM : FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
-	),
-	//provide the current page parameters to construct the signin link
-	'index', '', PATH_URL, $PAGE > 1 ? $PAGE : 0
-	
+	)
 )->setValue (
 	//the RSS feed for this forum / sub-forum
 	'a#nnf_rss@href', FORUM_PATH.PATH_URL.'index.xml'
@@ -140,7 +144,8 @@ if ($about = @array_shift (array_filter (array (
 if ($folders = array_filter (
 	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+	//TODO: need to do this check in a way that allows user expansion
+	preg_grep ('/^(\.|users$|themes$|lib$|cgi-bin$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_folder');
@@ -163,7 +168,7 @@ if ($folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,
-			'a.nnf_folder-name@href'	=> url ('index', PATH_URL.safeURL ($FOLDER).'/')
+			'a.nnf_folder-name@href'	=> url (PATH_URL.safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -183,7 +188,7 @@ if ($folders = array_filter (
 				'a.nnf_post-link@href'		=> substr ($last->link, strpos ($last->link, '/', 9))
 			))->remove (array (
 				//is the last author a mod?
-				'.nnf_post-author@class'	=> isMod ($last->author) ? false : 'mod'
+				'.nnf_post-author@class'	=> isMod ($last->author) ? false : 'nnf_mod'
 			));
 		} else {
 			//no last post, remove the template for it
@@ -222,7 +227,7 @@ if ($threads || @$stickies) {
 	) $item->set (array (
 		//thread title and URL
 		'a.nnf_thread-name'		=> $xml->channel->title,
-		'a.nnf_thread-name@href'	=> url ('thread', PATH_URL, pathinfo ($file, PATHINFO_FILENAME)),
+		'a.nnf_thread-name@href'	=> url (PATH_URL, pathinfo ($file, PATHINFO_FILENAME)),
 		//number of replies
 		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		
@@ -239,13 +244,13 @@ if ($threads || @$stickies) {
 		//if the thread isn’t locked, remove the lock icon
 		'.nnf_thread-locked'		=> !$xml->channel->xpath ('category[.="locked"]'),
 		//if the thread isn't sticky, remove the 'sticky' class
-		'./@class'			=> !in_array ($file, $stickies) ? 'sticky' : false,
+		'./@class'			=> !in_array ($file, $stickies) ? 'nnf_sticky' : false,
 		//if the thread isn't sticky, remove the sticky icon
 		'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
 						//the lock-icon takes precedence over the sticky icon
 						|| $xml->channel->xpath ('category[.="locked"]'),
 		//is the last post author a mod?
-		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'mod' : false
+		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'nnf_mod' : false
 	
 	//attach the templated sub-forum item to the list
 	))->next ();
@@ -280,17 +285,17 @@ if (CAN_POST) $template->set (array (
 //handle error messages
 )->remove (array (
 	//if there's an error of any sort, remove the default messages
-	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => !empty ($_POST),
+	'#nnf_error-none, #nnf_error-none-http, #nnf_error-newbies' => FORM_SUBMIT,
 	//if the username & password are correct, remove the error message
-	'#nnf_error-auth' => empty ($_POST) || !TITLE || !TEXT || !NAME || !PASS || AUTH,
+	'#nnf_error-auth' => !FORM_SUBMIT || !TITLE || !TEXT || !NAME || !PASS || AUTH,
 	//if the password is valid, remove the error message
-	'#nnf_error-pass' => empty ($_POST) || !TITLE || !TEXT || !NAME || PASS,
+	'#nnf_error-pass' => !FORM_SUBMIT || !TITLE || !TEXT || !NAME || PASS,
 	//if the name is valid, remove the error message
-	'#nnf_error-name' => empty ($_POST) || !TITLE || !TEXT || NAME,
+	'#nnf_error-name' => !FORM_SUBMIT || !TITLE || !TEXT || NAME,
 	//if the message text is valid, remove the error message
-	'#nnf_error-text' => empty ($_POST) || !TITLE || TEXT,
+	'#nnf_error-text' => !FORM_SUBMIT || !TITLE || TEXT,
 	//if the title is valid, remove the error message
-	'#nnf_error-title'=> empty ($_POST) || TITLE
+	'#nnf_error-title'=> !FORM_SUBMIT || TITLE
 ));
 
 //call the theme-specific templating function, in 'theme.php', before outputting

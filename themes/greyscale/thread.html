@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="thread"><head>
 	<meta charset="utf-8" />
-	<!-- NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
+	<!-- NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 	<title>Thread Title</title>
@@ -11,7 +11,8 @@
 	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
 	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
 	<link rel="alternate" type="application/rss+xml" href="thread_title.rss" />
-	<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+	<link rel="canonical" href="/thread_title+1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 	<meta name="application-name" content="NoNonsense Forum" />
 	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
@@ -54,8 +55,8 @@
 	
 	<article id="nnf_post" class="nnf_op nnf_error">
 		<header>
-			<a id="nnf_post-append" class="ui append" rel="noindex nofollow" href="thread_title?append=abcd">append</a>
-			<a id="nnf_post-delete" class="ui delete" rel="noindex nofollow" href="thread_title?delete">delete</a>
+			<a id="nnf_post-append" class="ui append" rel="noindex nofollow noarchive" href="thread_title?append=abcd">append</a>
+			<a id="nnf_post-delete" class="ui delete" rel="noindex nofollow noarchive" href="thread_title?delete">delete</a>
 			<time id="nnf_post-time" datetime="2012-01-01T00:00:00+00:00" pubdate="pubdate">01 Jan ’12 · 00:00</time>
 			<b id="nnf_post-author" class="nnf_mod">Author</b>
 		</header>
@@ -84,8 +85,8 @@
 	
 	<article class="nnf_reply nnf_deleted nnf_op nnf_mod nnf_error" id="1234">
 		<header>
-			<a class="nnf_reply-append ui append" rel="noindex nofollow" href="thread_title?append=abcd">append</a>
-			<a class="nnf_reply-delete ui delete" rel="noindex nofollow" href="thread_title?delete=abcd">delete</a>
+			<a class="nnf_reply-append ui append" rel="noindex nofollow noarchive" href="thread_title?append=abcd">append</a>
+			<a class="nnf_reply-delete ui delete" rel="noindex nofollow noarchive" href="thread_title?delete=abcd">delete</a>
 			<time class="nnf_reply-time" datetime="2012-01-01T00:00:00+00:00" pubdate="pubdate">01 Jan ’12 · 00:00</time>
 			<a class="nnf_reply-number" href="/thread-title:1#abcd">#1.</a>
 			<b class="nnf_reply-author nnf_mod">Author</b>
@@ -110,11 +111,11 @@
 			<!-- if the user is signed in using HTTP_AUTH -->
 			<label for="nnf_name-field-http">You are signed in as:</label>
 			<input id="nnf_name-field-http" name="username" type="text" size="28" tabindex="0"
-			       disabled="disabled" value="" />
+			       disabled="disabled" value="" spellcheck="false" />
 		</p><p id="nnf_name">
 			<label for="nnf_name-field">Name:</label>
 			<input id="nnf_name-field" name="username" type="text" size="28" maxlength="20" tabindex="2"
-			       autocomplete="on" required="required" placeholder="Your name" value="" />
+			       autocomplete="on" required="required" placeholder="Your name" value="" spellcheck="false" />
 		</p><p id="nnf_pass">
 			<label for="nnf_pass-field">Password:</label>
 			<input id="nnf_pass-field" name="password" type="password" size="28" maxlength="20" tabindex="3"
@@ -150,7 +151,7 @@
 			<label for="nnf_text-field">Message:</label>
 			<span id="wtext">
 				<textarea id="nnf_text-field" name="text" cols="40" rows="14" maxlength="50000" tabindex="1"
-				          required="required" placeholder="Type your message here…"
+				          required="required" placeholder="Type your message here…" spellcheck="true"
 				></textarea>
 			</span>
 		</p>
@@ -165,7 +166,7 @@
 </section>
 <!-- =================================================================================================================== -->
 <div id="mods"><p id="nnf_admin">
-	<a id="nnf_lock" href="?lock" rel="noindex nofollow">Lock</a><a id="nnf_unlock" href="?unlock" rel="noindex nofollow">Unlock</a>
+	<a id="nnf_lock" href="?lock" rel="noindex nofollow noarchive">Lock</a><a id="nnf_unlock" href="?unlock" rel="noindex nofollow noarchive">Unlock</a>
 </p><p id="nnf_mods-local">
 	Moderators for this sub-forum:
 	<span id="nnf_mods-local-list"><b class="nnf_mod">Alice</b></span>
@@ -182,9 +183,9 @@
 	<a href="/privacy.php">privacy policy</a>
 </p><p id="signin" class="nnf_signed-in">
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
-</p><p id="signin" class="nnf_signed-out">
-	<a href="?signin">Sign in</a>
-</p></footer>
+</p><form id="signin" class="nnf_signed-out" method="post">
+	<input type="submit" name="signin" value="Sign In" />
+</form></footer>
 
 <script defer="defer"><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript

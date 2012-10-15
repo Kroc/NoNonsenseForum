@@ -1,4 +1,4 @@
-NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 
 
@@ -121,9 +121,16 @@ GIT will download and apply new features and fixes, without touching
 your configuration or existing threads. This will not work if you have
 modified any NoNonsense Forum files.
 
-You should *always* check the change log before you update in case you
-are required to alter your configuration or be aware of the impact of
-some new feature.
+Alternatively, download the latest version and unzip the contents.
+Copy everything within (ensuring you include the hidden ".htaccess"
+file) and paste these into your existing installation; your personal
+data will be left untouched, only the NNF files will be replaced.
+However, you should always back up your forum before upgrading or
+doing any changes.
+
+You should *always* check the HISTORY.txt file or change log before
+you update in case you are required to alter your configuration or be
+aware of the impact of some new feature.
 
 <github.com/Kroc/NoNonsenseForum/commits/master>
 

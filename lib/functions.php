@@ -1,49 +1,50 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
-//the domain is not included because it is not used universally throughout
-function url ($action='index', $path='', $file='', $page=0, $id='', $signin=false) {
+//the domain is not included because it is not used universally throughout (absolute-base / relative links)
+function url (
+	$path='',	//sub-forum path
+	$file='',	//a thread file name (sans extension)
+	$page=0,	//page number
+	$action='',	//an action such as "append", "delete", "lock" or "unlock" 
+	$action_id=''	//an optional post-id to go with the action above
+) {
+	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
+	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	$filepath = FORUM_PATH."$path$file";
 	if (substr ($filepath, strlen (FORUM_PATH.PATH_URL)) == FORUM_PATH.PATH_URL)
 		$filepath = substr ($filepath, strlen (FORUM_PATH.PATH_URL)+1)
 	;
 	
-	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
-	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
 		//single actions without any ID
-		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))  ? $action : '',
+		!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 		//otherwise, actions with an ID?
-		$id	? "$action=$id" : '',
-		//signin link?
-		$signin	? "signin" : ''
+		$action_id ? "$action=$action_id" : ''
 	))), '?')
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
-		//which page to point to; append / delete actions are a part of 'thread.php',
-		//"delete" can be done without an ID (delete whole thread)
-		($id || in_array ($action, array ('delete', 'lock', 'unlock')) ? 'thread.php?' : "$action.php?").
+		//which page to point to; if a file is given, it's always a thread
+		($file ? 'thread.php' : 'index.php').
 		//concatenate a query string
 		implode ('&', array_filter (array (
 			//actions without an ID
-			!$id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
+			!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 			//append or delete post
-			$id	? "$action=$id" : '',
+			$action_id ? "$action=$action_id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
 			'path='.$path,
 			//if a file is specified (view thread, append, delete &c.)
 			$file	? "file=$file" : '',
 			//page number
-			$page	? "page=$page" : '',
-			//signin link?
-			$signin	? "signin" : ''
+			$page	? "page=$page" : ''
 		)))
 	;
 }
@@ -51,10 +52,8 @@ function url ($action='index', $path='', $file='', $page=0, $id='', $signin=fals
 //the shared template stuff for all pages
 function prepareTemplate (
 	$filepath,	//template file to load
-	$title=NULL,	//HTML title to use, if NULL, existing title is kept
-	
-	//these are used to create the signin link which points back to the same page but with the signin parameter added
-	$action='index', $file='', $path='', $page=0, $id=''
+	$canonical='',	//the canonical URL for the page, so that search engines can ignore querystring spam from links
+	$title=NULL	//HTML title to use, if NULL, existing `<title>` is kept
 ) {
 	global $LANG, $MODS, $MEMBERS;
 	
@@ -96,6 +95,8 @@ function prepareTemplate (
 	if (!is_null ($title)) $template->setValue ('/html/head/title', $title);
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
 	if (!file_exists (THEME_ROOT.'custom.css')) $template->remove ('//link[contains(@href,"custom.css")]');
+	//set the canonical URL
+	if ($canonical) $template->setValue ('/html/head/meta[@rel="canonical"]/@href', $canonical);
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -109,7 +110,7 @@ function prepareTemplate (
 		$i = 0; $i < count ($items); $i++
 	) $item->set (array (
 		'a.nnf_subforum-name'		=> $items[$i],
-		'a.nnf_subforum-name@href'	=> url ('index',
+		'a.nnf_subforum-name@href'	=> url (
 			//reconstruct the URL from each sub-forum up to the current one
 			implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
 		)
@@ -137,9 +138,6 @@ function prepareTemplate (
 		//remove the relevant section for signed-in / out
 		AUTH_HTTP ? '.nnf_signed-out' : '.nnf_signed-in'
 	);
-	
-	//set the sign-in link
-	$template->setValue ('.//a[@href="?signin"]/@href', url ($action, $path, $file, $page, $id, true));
 	
 	return $template;
 }
@@ -278,9 +276,18 @@ function safeTransliterate ($text) {
 }
 
 //take the author's message, process markup, and encode it safely for the RSS feed
-function formatText ($text, $rss=NULL) {
+function formatText (
+	$text,		//the text to process into HTML
+	$permalink='',	//optional full URL to the thread this text will be a part of, used to make title links permanent
+	$post_id='',	//optional HTML ID of the post that this text will form, used for title self-links
+	$rss=NULL	//optional simpleXML object of the whole thread, to link to other user's posts
+) {
 	//unify carriage returns between Windows / UNIX, and sanitise HTML against injection
 	$text = safeHTML (preg_replace ('/\r\n?/', "\n", $text));
+	
+	//this array will hold any portions of text that have to be temporarily removed to avoid interference with the
+	//markup processing, i.e code spans / blocks
+	$safe = array ();
 	
 	/* preformatted text (code blocks):
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -290,10 +297,9 @@ function formatText ($text, $rss=NULL) {
 		⋮			⋮
 		%			$
 	*/
-	$pre = array ();
 	while (preg_match ('/^(?-s:(\h*)([%$])(.*?))\n(.*?)\n\h*\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$pre[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
+		$safe[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
 		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
@@ -301,18 +307,17 @@ function formatText ($text, $rss=NULL) {
 		//replace the code block with a placeholder:
 		//(we will have to remove the code chunks from the source text to avoid the other markup processing from
 		//munging it and then restore the chunks back later)
-		$text = substr_replace ($text, "\n&__PRE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, "\n&_".(count ($safe)-1).';'.$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* inline code / teletype text:
 	   -------------------------------------------------------------------------------------------------------------- */
 	// example: `code` or ``code``
-	$code = array ();
 	while (preg_match ('/(?<=[\s\p{Z}\p{P}]|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$code[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
+		$safe[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
 		//same as with normal code blocks, replace them with a placeholder
-		$text = substr_replace ($text, "&__CODE__;", $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, '&_'.(count ($safe)-1).';', $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* hyperlinks:
@@ -343,13 +348,18 @@ function formatText ($text, $rss=NULL) {
 		@($m[0][1] + strlen ($replace))
 		
 	//replace the URL in the source text with a hyperlinked version:
+	//(we record the HTML in `$replace` so that we can skip forward that much for the next search iteration)
 	)) $text = substr_replace ($text, $replace =
-		'<a href="'.(@$m[2][0]	? 'mailto:'.$m[2][0]			//is this an e-mail address?
-					: ($m[1][0] ? $m[1][0] : 'http://'))	//has a protocol been given?
-		//rest of the URL [domain . slash . everything-else]
-		//(encode double-quotes without double-encoding existing ampersands; this is the PHP5.2.3 requirement)
-		.htmlspecialchars ($m[3][0].@$m[4][0].@$m[5][0], ENT_COMPAT, 'UTF-8', false).'" rel="nofollow">'
-		.$m[0][0].'</a>',
+		'<a href="'.($p=(@$m[2][0] ? 'mailto:'.$m[2][0]                     //is this an e-mail address?
+		                           : ($m[1][0] ? $m[1][0] : 'http://')))    //has a protocol been given?
+			//rest of the URL [domain . slash . everything-else]
+			//(encode double-quotes without double-encoding existing ampersands; this is the PHP5.2.3 req.)
+			.htmlspecialchars ($m[3][0].@$m[4][0].@$m[5][0], ENT_COMPAT, 'UTF-8', false).'"'
+			//is the URL external? if so add the rel attributes
+			.($p.$m[3][0] !== FORUM_URL ? ' rel="nofollow external"' : '')
+		.'>'	//the link-text
+			.$m[0][0]
+		.'</a>',
 		//where to substitute
 		$m[0][1], strlen ($m[0][0])
 	);
@@ -362,15 +372,10 @@ function formatText ($text, $rss=NULL) {
 		array ('<em>_$1_</em>',					'<strong>*$1*</strong>'),
 	$text);
 	
-	/* titles and dividers
+	/* divider: "---"
 	   -------------------------------------------------------------------------------------------------------------- */
-	/* example: (titles)	/	(dividers)
-		
-		:: title		---
-	*/
-	$text = preg_replace(
-		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m'),
-		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\">$1</p>\n"),
+	$text = preg_replace (
+		'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m',			"\n\n<p class=\"hr\">$1</p>\n",
 	$text);
 	
 	/* blockquotes:
@@ -391,7 +396,9 @@ function formatText ($text, $rss=NULL) {
 	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
 		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
 		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
-		"\n\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
+		"\n\n<blockquote>\n\n".
+			"<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n".
+		"</blockquote>\n",
 		$text, -1, $c
 	); while ($c);
 	
@@ -410,9 +417,9 @@ function formatText ($text, $rss=NULL) {
 		//first, produce a list of all authors in the thread
 		$names = array ();
 		foreach ($rss->channel->xpath ('./item/author') as $name) $names[] = $name[0];
+		$names = array_unique ($names);			//remove duplicates
 		$names = array_map ('strtolower', $names);	//set all to lowercase
 		$names = array_map ('safeHTML',   $names);	//HTML encode names as they will be in the source text
-		$names = array_unique ($names);			//remove duplicates
 		//sort the list of names Z-A so that longer names and names with spaces occur first,
 		//this is so that we don’t choose "Bob" over "Bob Monkhouse" when matching names
 		rsort ($names);
@@ -428,7 +435,9 @@ function formatText ($text, $rss=NULL) {
 				foreach ($rss->channel->item as $item) if (safeHTML (strtolower ($item->author)) == $name)
 			{	//replace the reference with the link to the post
 				$text = substr_replace ($text,
-					'<a href="'.$item->link.'">'.substr ($m[1][0], 0, strlen ($name)+1).'</a>',
+					'<a href="'.$item->link.'"'.(isMod ($name) ? ' class="nnf_mod"' : '').'>'.
+						substr ($m[1][0], 0, strlen ($name)+1).
+					'</a>',
 					$m[1][1], strlen ($name)+1
 				);
 				//move on to the next reference, no need to check any further names for this one
@@ -442,6 +451,36 @@ function formatText ($text, $rss=NULL) {
 		};
 	}
 	
+	/* titles
+	   -------------------------------------------------------------------------------------------------------------- */
+	//example: :: title
+	$replace = ''; $titles=array (); while (preg_match (
+		'/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',
+		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
+		$text, $m, PREG_OFFSET_CAPTURE,
+		//use an offset to search from so we don’t get stuck in an infinite loop
+		//(this isn’t valid the first time around obviously so gives 0)
+		@($m[0][1] + strlen ($replace))
+	)) {
+		//generate a unique HTML ID for the title:
+		//flatten the title text into a URL-safe string of [a-z0-9_]
+		$translit = safeTransliterate (strip_tags ($m[1][0]));
+		//if a title already exsits with that ID, append a number until an available ID is found.
+		$c = 0; do $id = $translit.($c++ ? '_'.($c-1) : ''); while (in_array ($id, $titles));
+		//add the current ID to the list of used IDs
+		$titles[] = $id;
+		//remove hyperlinks in the title (since the title will be a hyperlink too)
+		//if a user-link is present, keep the mod class if present
+		$m[1][0] = preg_replace ('/<a href="[^"]+"( class="nnf_mod")?>(.*?)<\/a>/', "<b$1>$2</b>", $m[1][0]);
+		//create the replacement HTML, including an anchor link
+		$text = substr_replace ($text, $replace =
+			//(note: code spans in titles don't transliterate since they've been replaced with placeholders)
+			"\n\n<h2 id=\"$post_id::$id\"><a href=\"$permalink#$post_id::$id\">".$m[1][0]."</a></h2>\n",
+			//where to substitute
+			$m[0][1], strlen ($m[0][0])
+		);
+	}
+	
 	/* finalise:
 	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
@@ -453,9 +492,8 @@ function formatText ($text, $rss=NULL) {
 		$text = @$result .= "\n$chunk";
 	}
 	
-	//restore code blocks/spans
-	foreach ($pre  as $html) $text = preg_replace ('/&__PRE__;/',  $html, $text, 1);
-	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	//restore code spans/blocks
+	foreach ($safe as $i => $html) $text = str_replace ("&_$i;", $html, $text);
 	
 	return $text;
 }
@@ -469,7 +507,7 @@ function indexRSS () {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
-		'/rss/channel/link'	=> FORUM_URL.url ('index', PATH_URL)
+		'/rss/channel/link'	=> FORUM_URL.url (PATH_URL)
 	//remove the locked / deleted categories
 	))->remove ('/rss/channel/category');
 	

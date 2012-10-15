@@ -1,3 +1,21 @@
+v23	24.DEC.12
+*	Duplicate appends are now ignored
+*	Title lines (":: ...") within posts now link to themselves, allowing external links directly to title lines
+*	Fixed mods not being able to reply to locked threads
+*	Improved denying access to NNF's folders and a "cgi-bin" folder no longer shows as a sub-forum
+*	`$1` no longer being stripped from code spans / blocks, with thanks to Zegnat
+*	`THEME_APPEND` has been removed, `THEME_APPENDED` is a plain-text (but markup allowed) replacement.
+	This is necessary to ensure that title links are always unique when appending text to a post.
+	This also means that the class `nnf_appended` is gone, old appended dividers won't be styled
+*	"@user" names in posts are now classed ("nnf_mod") if the user is a moderator
+*	Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
+*	Canonical URL `<link>` added to "index.html" / "thread.html" / "markup.html" and "privacy.html"
+*	Sign-in is now a button instead of a link, this mostly paves the way for future improvements
+*	Page numbers now shown at the top when on portrait mobile display
+*	External links now use `rel="nofollow external"`, internal links do not use `nofollow`, with thanks to Zegnat
+*	Title field is now spellchecked
+*	Simplified the `url` function, note that this will affect your 'theme.php', just drop the first parameter
+
 v22	13.OCT.12
 *	Posts with invalid HTML now display a message, rather than dumping PHP errors
 *	RSS URL in the HTML meta was wrong and had been for some time!

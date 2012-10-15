@@ -1,4 +1,4 @@
-/* NoNonsense Forum v21 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -161,7 +161,7 @@ section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1p
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
+/*section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}*/
 
 ol.nnf_pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
 ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
@@ -180,7 +180,7 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
 				 padding: 9.999px 20px 9px 60px; line-height: 20px;}
 
-ol.ui li.sticky			{background: #eee;}
+ol.ui li.nnf_sticky		{background: #eee;}
 
 ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
@@ -256,14 +256,6 @@ article h2			{margin: 20px 0 0; border-bottom: 1px dotted #222;
 article .hr			{height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
 				 border-bottom: 1px dotted #222; text-indent: -999em;}
 
-p.nnf_appended			{color: #888; padding-top: 19px;
-				 border-bottom: 1px dotted #222;
-				 /* don’t include the 'user X added on date Y' when copy/pasting */
-				 -webkit-user-select: none;
-				    -moz-user-select: none;
-				     -ms-user-select: none;
-				         user-select: none;}
-
 
 /* markup / privacy page
    ====================================================================================================================== */
@@ -280,6 +272,12 @@ p.nnf_appended			{color: #888; padding-top: 19px;
 
 /* input forms
    ====================================================================================================================== */
+/* truncate placeholder text with ".." in input fields if too short, e.g. mobile
+   taken shamelessly from: <davidwalsh.name/placeholder-overflow> */
+input[placeholder]		{text-overflow: ellipsis;}
+::-moz-placeholder		{text-overflow: ellipsis;} /* firefox 19+ */
+input:-moz-placeholder		{text-overflow: ellipsis;}
+
 #nnf_new-form h1,		/* title icon */
  #nnf_reply-form h1, #append h1	{background-image: url("img/new.png"); background-size: 32px 32px;}
 
@@ -376,8 +374,11 @@ footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left:
 footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-p#signin			{margin: -60px 10% 0 auto; text-align: right;}
-p#signin a			{text-transform: uppercase;}
+#signin				{position: static; /* override default on form, this interferes with z-ordering in the footer */
+				 margin: -60px 10% 0 auto; text-align: right; border: none;}
+#signin input			{margin: 0; padding: 0; border: none;
+				 color: #f7f6f7; text-transform: uppercase;
+				 background: none; cursor: pointer;}
 
 
 /* ======================================================================================================================
@@ -500,15 +501,21 @@ article header time		{display: inline;}
 /* ensure the language selector doesn’t overflow into the search box */
 #lang				{max-width: 100px; max-height: 20px; white-space: nowrap;}
 
-/* not enough room for the page list in the title, you’ll have to use the one at the bottom */
-#nnf_threads>h1 + nav,		/* the spaces between `+` are required here for WebKit! */
- #nnf_replies>h1 + nav		{display: none !important;}
-
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
 footer				{padding-top: 60px;}
-footer p			{padding-left: 0 !important; padding-right: 0 !important; text-align: center !important;}
-p#signin			{margin-top: -100px;}
+footer p			{margin-left: 0 !important; padding-left: 0 !important; padding-right: 0 !important;
+				 text-align: center !important;}
+#signin				{margin: -100px 0 0 0; text-align: center;}
+
+}
+
+@media screen and (min-width: 480px) {
+
+/* move the page list into the title for browsers that support the adjacent selector (IE7+);
+   this is not done for thin screens (portrait) because there's not enough width
+  (spaces are required between '+' here for WebKit!?) */
+section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
 
 }
 
@@ -549,7 +556,7 @@ a#nnf_unlock			{background-image: url("img/security_open_32.png");}
 /* hide the search box, breadcrumb and rss / add links */
 #mast form, #mast nav,
  /* index page stuff */
- #nnf_about, #nnf_folders, #nnf_threads>h1, .nnf_thread.sticky, #nnf_threads>nav, #nnf_new-form,
+ #nnf_about, #nnf_folders, #nnf_threads>h1, .nnf_thread.nnf_sticky, #nnf_threads>nav, #nnf_new-form,
  /* thread pages stuff */
  #nnf_post, #nnf_replies>h1, .nnf_reply, #nnf_replies>nav, #nnf_reply-form,
  /* reply stuff */
@@ -593,7 +600,7 @@ body, #mast h1 a		{width: 100% !important;}
 
 /* remove background colours, set text-colour */
 html, h1, h1 a, section,
- nav, li.sticky, header,
+ nav, li.nnf_sticky, header,
  ol.nnf_pages em		{color: black !important; background: none !important;}
 
 /* remove padding added to hold background images */

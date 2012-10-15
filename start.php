@@ -1,6 +1,6 @@
 <?php //bootstraps the forum
 /* ====================================================================================================================== */
-/* NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2012
+/* NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 *//*
@@ -8,7 +8,8 @@
 	
 	const / var	attribs	description
 	--------------------------------------------------------------------------------------------------------------------
-	key:		/	ends with a slash
+	key:		b	boolean (true / false)
+			/	ends with a slash
 			//	begins and ends with a slash
 			   ?	OS-dependent slashes (use `DIRECTORY_SEPERATOR` to concatenate)
 			   U	URL-encoded. use for HTML, do not use for server-side paths
@@ -17,7 +18,7 @@
 	FORUM_LIB	/  ?	full server path to the 'lib' folder
 	FORUM_PATH	// U	relative URL from the web-root, to NNF
 				if NNF is at root, this would be "/", otherwise the "/sub-folder/" NNF is within
-	HTACCESS		boolean if the ".htaccess" file is present and enabled or not
+	HTACCESS	b	if the ".htaccess" file is present and enabled or not
 	
 	-- everything in 'config.php' (if present) and 'config.default.php' --
 	
@@ -28,19 +29,20 @@
 	PATH_URL	/  U	URL-encoded version of `PATH` for use in constructing URLs
 	PATH_DIR	// ?	relative server path from NNF's root (`FORUM_ROOT`) to the current sub-forum
 	SUBFORUM		the name of the current sub-forum (regardless of nesting), not URL-encoded
+	FORM_SUBMIT	b	if an input form has been submitted (new-thread / reply / delete / append)
 	
 	NAME			username given
 	PASS			password given
-	AUTH			boolean, if the username / password are correct
-	AUTH_HTTP		boolean, if the authentication was via HTTP_AUTH *and* was correct
+	AUTH		b	if the username / password are correct
+	AUTH_HTTP	b	if the authentication was via HTTP_AUTH *and* was correct
 				(will be false if the username / password were wrong, even if HTTP_AUTH was used)
 	
 	FORUM_LOCK		the contents of 'locked.txt' which sets restrictions on the forum / sub-forums
 				see section 5 in the README file
 	$MODS			array of the names of moderators for the whole forum, and the current sub-forum
 	$MEMBERS		array of the names of members for the current sub-forum
-	IS_MOD			if the current viewer is a moderator for the current forum
-	IS_MEMBER		if the current viewer is a member of the current forum
+	IS_MOD		b	if the current viewer is a moderator for the current forum
+	IS_MEMBER	b	if the current viewer is a member of the current forum
 	
 	THEME_ROOT	/  ?	full server path to the currently selected theme
 	
@@ -57,6 +59,10 @@
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
+//attempt to fix a small regex backtrace limit in PHP<5.3.7 that might cause the blockquote markup processing to fail
+//source: <www.kavoir.com/2009/12/php-regular-expression-matching-input-subject-string-length-limit.html>
+@ini_set ('pcre.backtrack_limit', 1000000);
+
 //full server path for absolute references, this includes the any sub-folders NNF might be in
 define ('FORUM_ROOT',		dirname (__FILE__));
 //location of the 'lib' folder, full server path
@@ -70,7 +76,7 @@ require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating e
 
 //location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
 //we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that
-define ('FORUM_PATH', 		safeURL (str_replace (
+define ('FORUM_PATH', safeURL (str_replace (
 	array ('\\', '//'), '/',				//- replace Windows forward-slash with backslash
 	dirname ($_SERVER['SCRIPT_NAME']).'/'			//- always starts with a slash and ends in one
 )));
@@ -113,12 +119,19 @@ define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replac
 //(not used in URLs, so we use `PATH` instead of `PATH_URL`)
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
+//deny access to some folders
+//TODO: this should generate a 403, but we don't have a 403 page designed yet
+foreach (array ('users/', 'lib/', 'themes/', 'cgi-bin/') as $_) if (stripos ($_, PATH) === 0) die ();
+
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
 @chdir (FORUM_ROOT.PATH_DIR) or die ('Invalid path');
 //TODO: that should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page.
 //      I may revist this if I create an NNF-provided 404 page
+
+//was an input form submitted? (used to determine form error checking; this doesn't apply to the sign-in button)
+define ('FORM_SUBMIT', (isset ($_POST['x'], $_POST['y']) || isset ($_POST['submit_x'], $_POST['submit_y'])));
 
 
 /* access control
@@ -139,12 +152,11 @@ define ('PASS', safeGet (@$_SERVER['PHP_AUTH_PW']   ? @$_SERVER['PHP_AUTH_PW']  
 if ((	//if HTTP authentication is used, we don’t need to validate the form fields
 	@$_SERVER['PHP_AUTH_USER'] && @$_SERVER['PHP_AUTH_PW']
 ) || (	//if an input form was submitted:
+	FORM_SUBMIT &&
 	//are the name and password non-blank?
 	NAME && PASS &&
 	//the email check is a fake hidden field in the form to try and fool spam bots
-	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com' &&
-	//I wonder what this does...?
-	(isset ($_POST['x'], $_POST['y']) || isset ($_POST['submit_x'], $_POST['submit_y']))
+	isset ($_POST['email']) && @$_POST['email'] == 'example@abc.com'
 )) {
 	//users are stored as text files based on the hash of the given name
 	$name = hash ('sha512', strtolower (NAME));
@@ -163,6 +175,12 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//if signed in with HTTP_AUTH, confirm that it’s okay to use
 	//(e.g. the user could still have given the wrong password with HTTP_AUTH)
 	define ('AUTH_HTTP', @$_SERVER['PHP_AUTH_USER'] ? AUTH : false);
+	
+	//if the user clicked the sign-in button to authenticate, do a 303 redirect to the same URL to 'eat' the
+	//form-submission so that if they click the back-button, they don't get prompted to "resubmit the form data"
+	if (@$_POST['signin'] && AUTH_HTTP) header (
+		'Location: http'.(FORUM_HTTPS ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301
+	);
 } else {
 	define ('AUTH',      false);
 	define ('AUTH_HTTP', false);
@@ -228,8 +246,6 @@ define ('LANG',
 	//all else failing, use the default language
 	: THEME_LANG))
 );
-//don’t treat language choice as an invalid form error
-if (isset ($_POST['lang'])) unset ($_POST);
 
 
 /* send HTTP headers
@@ -245,9 +261,9 @@ if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 	header ('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301);
 }
 
-//if the sign-in link was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
+//if the sign-in button was clicked, (and they're not already signed-in), invoke a HTTP_AUTH request in the browser:
 //the browser will pop up a login box itself (no HTML involved) and continue to send the name & password with each request
-if (!AUTH_HTTP && isset ($_GET['signin'])) {
+if (!AUTH_HTTP && isset ($_POST['signin'])) {
 	header ('WWW-Authenticate: Basic');
 	header ('HTTP/1.0 401 Unauthorized');
 	//we don't die here so that if they cancel the login prompt, they shouldn't get a blank page

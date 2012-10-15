@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="privacy"><head>
 	<meta charset="utf-8" />
-	<!-- NoNonsense Forum v22 © Copyright (CC-BY) Kroc Camen 2011
+	<!-- NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2011
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 	<title>Privacy Policy</title>
@@ -10,7 +10,8 @@
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
 	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
-	<meta name="viewport" content="width=device-width, maximum-scale=1, user-scalable=no" />
+	<link rel="canonical" href="/privacy.php" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
 	<meta name="application-name" content="NoNonsense Forum" />
 	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
@@ -128,9 +129,9 @@
 	<a href="/privacy.php">privacy policy</a>
 </p><p id="signin" class="nnf_signed-in">
 	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
-</p><p id="signin" class="nnf_signed-out">
-	<a href="?signin">Sign in</a>
-</p></footer>
+</p><form id="signin" class="nnf_signed-out" method="post">
+	<input type="submit" name="signin" value="Sign In" />
+</form></footer>
 
 <script defer="defer"><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
