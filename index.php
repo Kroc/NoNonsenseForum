@@ -140,7 +140,8 @@ if ($about = @array_shift (array_filter (array (
 if ($folders = array_filter (
 	//get a list of folders:
 	//include only directories, but ignore directories starting with ‘.’ and the users / themes folders
-	preg_grep ('/^(\.|users$|themes$|lib$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
+	//TODO: need to do this check in a way that allows user expansion
+	preg_grep ('/^(\.|users$|themes$|lib$|cgi-bin$)/', scandir ('.'), PREG_GREP_INVERT), 'is_dir'
 )) {
 	//get the dummy list-item to repeat (removes it and takes a copy)
 	$item = $template->repeat ('.nnf_folder');

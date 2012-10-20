@@ -115,6 +115,10 @@ define ('PATH_DIR', !PATH ? DIRECTORY_SEPARATOR : DIRECTORY_SEPARATOR.str_replac
 //(not used in URLs, so we use `PATH` instead of `PATH_URL`)
 define ('SUBFORUM', @end (explode ('/', trim (PATH, '/'))));
 
+//deny access to some folders
+//TODO: this should generate a 403, but we don't have a 403 page designed yet
+foreach (array ('users/', 'lib/', 'themes/', 'cgi-bin/') as $_) if (stripos ($_, PATH) === 0) die ();
+
 //we have to change directory for `is_dir` to work, see <uk3.php.net/manual/en/function.is-dir.php#70005>
 //being in the right directory is also assumed for reading 'mods.txt' and when generating the RSS (`indexRSS`)
 //(oddly with `chdir` the path must end in a slash)
