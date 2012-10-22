@@ -272,6 +272,10 @@ function formatText ($text, $rss=NULL) {
 	//unify carriage returns between Windows / UNIX, and sanitise HTML against injection
 	$text = safeHTML (preg_replace ('/\r\n?/', "\n", $text));
 	
+	//this array will hold any portions of text that have to be temporarily removed to avoid interference with the
+	//markup processing, i.e code spans / blocks
+	$safe = array ();
+	
 	/* preformatted text (code blocks):
 	   -------------------------------------------------------------------------------------------------------------- */
 	/* example:			or: (latex in partiular since it uses % as a comment marker)
@@ -280,10 +284,9 @@ function formatText ($text, $rss=NULL) {
 		⋮			⋮
 		%			$
 	*/
-	$pre = array ();
 	while (preg_match ('/^(?-s:(\h*)([%$])(.*?))\n(.*?)\n\h*\2(["”»]?)$/msu', $text, $m, PREG_OFFSET_CAPTURE)) {
 		//format the code block
-		$pre[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
+		$safe[] = "<pre><span class=\"ct\">{$m[2][0]}{$m[3][0]}</span>\n"
 			 //unindent code blocks that have been quoted
 		         .(strlen ($m[1][0]) ? preg_replace ("/^\s{1,".strlen ($m[1][0])."}/m", '', $m[4][0]) : $m[4][0])
 		         ."\n<span class=\"cb\">{$m[2][0]}</span></pre>"
@@ -291,18 +294,18 @@ function formatText ($text, $rss=NULL) {
 		//replace the code block with a placeholder:
 		//(we will have to remove the code chunks from the source text to avoid the other markup processing from
 		//munging it and then restore the chunks back later)
-		$text = substr_replace ($text, "\n&__PRE__;".$m[5][0], $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, "\n&_".(count ($safe)-1).';'.$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* inline code / teletype text:
 	   -------------------------------------------------------------------------------------------------------------- */
 	// example: `code` or ``code``
-	$code = array ();
 	while (preg_match ('/(?<=[\s\p{Z}\p{P}]|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
+		print_r ($m);
 		//format the code block
-		$code[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
+		$safe[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
 		//same as with normal code blocks, replace them with a placeholder
-		$text = substr_replace ($text, "&__CODE__;", $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, '&_'.(count ($safe)-1).';', $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* hyperlinks:
@@ -443,9 +446,8 @@ function formatText ($text, $rss=NULL) {
 		$text = @$result .= "\n$chunk";
 	}
 	
-	//restore code blocks/spans
-	foreach ($pre  as $html) $text = preg_replace ('/&__PRE__;/',  $html, $text, 1);
-	foreach ($code as $html) $text = preg_replace ('/&__CODE__;/', $html, $text, 1);
+	//restore code spans/blocks
+	foreach ($safe as $i => $html) $text = str_replace ("&_$i;", $html, $text);
 	
 	return $text;
 }
