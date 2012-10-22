@@ -105,10 +105,7 @@ $template = prepareTemplate (
 		PATH ? SUBFORUM : FORUM_NAME,
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
-	),
-	//provide the current page parameters to construct the signin link
-	'index', '', PATH_URL, $PAGE > 1 ? $PAGE : 0
-	
+	)
 )->setValue (
 	//the RSS feed for this forum / sub-forum
 	'a#nnf_rss@href', FORUM_PATH.PATH_URL.'index.xml'

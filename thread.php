@@ -137,10 +137,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title),
-		//provide the current page parameters to construct the signin link
-		'append', $FILE, PATH_URL, $PAGE, $ID, true
-	
+		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title)
 	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $xml->channel->title,
@@ -283,10 +280,7 @@ if (isset ($_GET['delete'])) {
 	/* template the delete page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title),
-		//provide the current page parameters to construct the signin link
-		'delete', $FILE, PATH_URL, $PAGE, $ID, true
-	
+		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title)
 	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $post->title,
@@ -428,10 +422,7 @@ $template = prepareTemplate (
 		$xml->channel->title,
 		//if on page 2 or greater, include the page number in the title
 		$PAGE>1 ? sprintf (THEME_TITLE_PAGENO, $PAGE) : ''
-	),
-	//provide the current page parameters to construct the signin link
-	'thread', $FILE, PATH_URL, $PAGE, '', true
-	
+	)
 )->set (array (
 	//the thread itself is the RSS feed :)
 	'//link[@rel="alternate"]/@href, '.

@@ -6,7 +6,7 @@
 */
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
-//the domain is not included because it is not used universally throughout
+//the domain is not included because it is not used universally throughout (absolute-base / relative links)
 function url ($action='index', $path='', $file='', $page=0, $id='') {
 	$filepath = FORUM_PATH."$path$file";
 	if (substr ($filepath, strlen (FORUM_PATH.PATH_URL)) == FORUM_PATH.PATH_URL)
@@ -47,10 +47,7 @@ function url ($action='index', $path='', $file='', $page=0, $id='') {
 //the shared template stuff for all pages
 function prepareTemplate (
 	$filepath,	//template file to load
-	$title=NULL,	//HTML title to use, if NULL, existing title is kept
-	
-	//these are used to create the signin link which points back to the same page but with the signin parameter added
-	$action='index', $file='', $path='', $page=0, $id=''
+	$title=NULL	//HTML title to use, if NULL, existing `<title>` is kept
 ) {
 	global $LANG, $MODS, $MEMBERS;
 	
