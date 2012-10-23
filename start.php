@@ -59,6 +59,10 @@
 mb_internal_encoding ('UTF-8');
 mb_regex_encoding    ('UTF-8');
 
+//attempt to fix a small regex backtrace limit in PHP<5.3.7 that might cause the blockquote markup processing to fail
+//source: <www.kavoir.com/2009/12/php-regular-expression-matching-input-subject-string-length-limit.html>
+@ini_set ('pcre.backtrack_limit', 1000000);
+
 //full server path for absolute references, this includes the any sub-folders NNF might be in
 define ('FORUM_ROOT',		dirname (__FILE__));
 //location of the 'lib' folder, full server path
