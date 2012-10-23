@@ -336,13 +336,18 @@ function formatText ($text, $rss=NULL) {
 		@($m[0][1] + strlen ($replace))
 		
 	//replace the URL in the source text with a hyperlinked version:
+	//(we record the HTML in `$replace` so that we can skip forward that much for the next search iteration)
 	)) $text = substr_replace ($text, $replace =
-		'<a href="'.(@$m[2][0]	? 'mailto:'.$m[2][0]			//is this an e-mail address?
-					: ($m[1][0] ? $m[1][0] : 'http://'))	//has a protocol been given?
-		//rest of the URL [domain . slash . everything-else]
-		//(encode double-quotes without double-encoding existing ampersands; this is the PHP5.2.3 requirement)
-		.htmlspecialchars ($m[3][0].@$m[4][0].@$m[5][0], ENT_COMPAT, 'UTF-8', false).'" rel="nofollow">'
-		.$m[0][0].'</a>',
+		'<a href="'.($p=(@$m[2][0] ? 'mailto:'.$m[2][0]                     //is this an e-mail address?
+		                           : ($m[1][0] ? $m[1][0] : 'http://')))    //has a protocol been given?
+			//rest of the URL [domain . slash . everything-else]
+			//(encode double-quotes without double-encoding existing ampersands; this is the PHP5.2.3 req.)
+			.htmlspecialchars ($m[3][0].@$m[4][0].@$m[5][0], ENT_COMPAT, 'UTF-8', false).'"'
+			//is the URL external? if so add the rel attributes
+			.($p.$m[3][0] !== FORUM_URL ? ' rel="nofollow external"' : '')
+		.'>'	//the link-text
+			.$m[0][0]
+		.'</a>',
 		//where to substitute
 		$m[0][1], strlen ($m[0][0])
 	);
