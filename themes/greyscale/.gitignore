@@ -4,14 +4,12 @@
 !.gitignore
 
 # the theme's HTML templates
+!theme.css
 !append.html
 !delete.html
 !index.html
 !markup.html
 !privacy.html
-
-!theme.css
-!html5shiv.js
 
 # graphics
 !favicon.ico

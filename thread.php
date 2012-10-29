@@ -468,7 +468,8 @@ $template->set (array (
 	'#nnf_post-append, #nnf_post-delete' => !CAN_REPLY
 ));
 
-try {	//insert the post-text, dealing with an invalid HTML error
+//insert the post-text, dealing with an invalid HTML error
+try {
 	$template->setValue ('#nnf_post-text', $post->description, true);
 	$template->remove (array ('#nnf_post@class' => 'nnf_error'));
 } catch (Exception $e) {
@@ -541,7 +542,8 @@ if (!count ($thread)) {
 			'.nnf_reply-delete' => $reply->xpath ('category[.="deleted"]') && !IS_MOD
 		));
 		
-		try {	//insert the post-text, dealing with an invalid HTML error
+		//insert the post-text, dealing with an invalid HTML error
+		try {
 			$item->setValue ('.nnf_reply-text', $reply->description, true);
 			$item->remove (array ('./@class' => 'nnf_error'));
 		} catch (Exception $e) {

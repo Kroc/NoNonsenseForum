@@ -2,7 +2,6 @@ v23
 *	Improved denying access to NNF's folders and a "cgi-bin" folder no longer shows as a sub-forum
 *	Sign-in is now a button instead of a link, this mostly paves the way for future improvements
 *	Page numbers now shown at the top when on portrait mobile display
-*	Switched to using own copy of HTML5 Shiv for better privacy
 *	`$1` no longer being stripped from code spans / blocks, with thanks to Zegnat
 *	External hyperlinks now use `rel="nofollow external"`, internal hyperlinks do not use `nofollow`,
 	with thanks to Zegnat

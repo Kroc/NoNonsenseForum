@@ -8,8 +8,7 @@
 	
 	const / var	attribs	description
 	--------------------------------------------------------------------------------------------------------------------
-	key:		b	boolean (true / false)
-			/	ends with a slash
+	key:		/	ends with a slash
 			//	begins and ends with a slash
 			   ?	OS-dependent slashes (use `DIRECTORY_SEPERATOR` to concatenate)
 			   U	URL-encoded. use for HTML, do not use for server-side paths
@@ -18,7 +17,7 @@
 	FORUM_LIB	/  ?	full server path to the 'lib' folder
 	FORUM_PATH	// U	relative URL from the web-root, to NNF
 				if NNF is at root, this would be "/", otherwise the "/sub-folder/" NNF is within
-	HTACCESS	b	if the ".htaccess" file is present and enabled or not
+	HTACCESS		boolean if the ".htaccess" file is present and enabled or not
 	
 	-- everything in 'config.php' (if present) and 'config.default.php' --
 	
@@ -29,20 +28,19 @@
 	PATH_URL	/  U	URL-encoded version of `PATH` for use in constructing URLs
 	PATH_DIR	// ?	relative server path from NNF's root (`FORUM_ROOT`) to the current sub-forum
 	SUBFORUM		the name of the current sub-forum (regardless of nesting), not URL-encoded
-	FORM_SUBMIT	b	if an input form has been submitted (new-thread / reply / delete / append)
 	
 	NAME			username given
 	PASS			password given
-	AUTH		b	if the username / password are correct
-	AUTH_HTTP	b	if the authentication was via HTTP_AUTH *and* was correct
+	AUTH			boolean, if the username / password are correct
+	AUTH_HTTP		boolean, if the authentication was via HTTP_AUTH *and* was correct
 				(will be false if the username / password were wrong, even if HTTP_AUTH was used)
 	
 	FORUM_LOCK		the contents of 'locked.txt' which sets restrictions on the forum / sub-forums
 				see section 5 in the README file
 	$MODS			array of the names of moderators for the whole forum, and the current sub-forum
 	$MEMBERS		array of the names of members for the current sub-forum
-	IS_MOD		b	if the current viewer is a moderator for the current forum
-	IS_MEMBER	b	if the current viewer is a member of the current forum
+	IS_MOD			if the current viewer is a moderator for the current forum
+	IS_MEMBER		if the current viewer is a member of the current forum
 	
 	THEME_ROOT	/  ?	full server path to the currently selected theme
 	
