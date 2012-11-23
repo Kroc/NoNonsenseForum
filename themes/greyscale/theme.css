@@ -376,7 +376,8 @@ footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left:
 footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-#signin				{margin: -60px 10% 0 auto; text-align: right; border: none;}
+#signin				{position: static; /* override default on form, this interferes with z-ordering in the footer */
+				 margin: -60px 10% 0 auto; text-align: right; border: none;}
 #signin input			{margin: 0; padding: 0; border: none;
 				 color: #f7f6f7; text-transform: uppercase;
 				 background: none; cursor: pointer;}
