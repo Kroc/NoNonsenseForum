@@ -73,12 +73,12 @@
 			<!-- if the user is signed in using HTTP_AUTH -->
 			<label for="nnf_name-field-http">You are signed in as:</label>
 			<input id="nnf_name-field-http" name="username" type="text" size="28" tabindex="0"
-			       disabled="disabled" value="" />
+			       disabled="disabled" value="" spellcheck="false" />
 		</p>
 		<p id="nnf_name">
 			<label for="nnf_name-field">Name:</label>
 			<input id="nnf_name-field" name="username" type="text" size="28" maxlength="20" tabindex="2"
-			       autocomplete="on" required="required" placeholder="Your name" value="" />
+			       autocomplete="on" required="required" placeholder="Your name" value="" spellcheck="false" />
 		</p><p id="nnf_pass">
 			<label for="nnf_pass-field">Password:</label>
 			<input id="nnf_pass-field" name="password" type="password" size="28" maxlength="20" tabindex="3"
@@ -112,7 +112,7 @@
 			<label for="nnf_text-field">Message:</label>
 			<span id="wtext">
 				<textarea id="nnf_text-field" name="text" cols="40" rows="14" maxlength="50000" tabindex="1"
-				          required="required" placeholder="Type your message here…"
+				          required="required" placeholder="Type your message here…" spellcheck="true"
 				></textarea>
 			</span>
 		</p>
