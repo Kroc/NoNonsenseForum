@@ -111,7 +111,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			safeHTML (NAME),		//author
 			gmdate ('r', time ()),		//machine-readable time
 			date (DATE_FORMAT, time ())	//human-readable time
-		).formatText (TEXT, $xml);
+		).formatText (TEXT, $ID, $xml);
 		
 		//commit the data
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
@@ -336,9 +336,12 @@ if (CAN_REPLY && AUTH && TEXT) {
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
+	$post_id = base_convert (microtime (), 10, 36);
+	
 	if (!(
 		//ignore a double-post (could be an accident with the back button)
-		NAME == $xml->channel->item[0]->author && formatText (TEXT, $xml) == $xml->channel->item[0]->description &&
+		NAME == $xml->channel->item[0]->author &&
+		formatText (TEXT, $post_id, $xml) == $xml->channel->item[0]->description &&
 		//can’t post if the thread is locked
 		!$xml->channel->xpath ('category[.="locked"]')
 	)) {
@@ -347,7 +350,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 			? floor ((count ($thread)+1) / FORUM_POSTS)
 			: ceil  ((count ($thread)+1) / FORUM_POSTS)
 		;
-		$url  = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.base_convert (microtime (), 10, 36);
+		$url  = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.$post_id;
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
@@ -366,13 +369,13 @@ if (CAN_REPLY && AUTH && TEXT) {
 			//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
 			// in the theme's folder for the definition of `THEME_RE`)
 			'./title'		=> sprintf (THEME_RE,
-				count ($xml->channel->item),	//number of the reply
-				$xml->channel->title		//thread title
-			),
+							count ($xml->channel->item),	//number of the reply
+							$xml->channel->title		//thread title
+						),
 			'./link'		=> $url,
 			'./author'		=> NAME,
 			'./pubDate'		=> gmdate ('r'),
-			'./description'		=> formatText (TEXT, $xml)
+			'./description'		=> formatText (TEXT, $post_id, $xml)
 		))->remove (
 			//the new reply isn’t deleted, so remove the category marker
 			'./category'

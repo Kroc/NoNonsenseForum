@@ -37,17 +37,17 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	while (file_exists ("$file") || file_exists ("$file.rss"));
 	
 	//write out the new thread as an RSS file:
+	$post_id = base_convert (microtime (), 10, 36);
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
 		'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $file),
 		//the thread's first post
 		'/rss/channel/item/title'	=> TITLE,
-		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).
-						   '#'.base_convert (microtime (), 10, 36),
+		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).'#'.$post_id,
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
-		'/rss/channel/item/description'	=> formatText (TEXT)
+		'/rss/channel/item/description'	=> formatText (TEXT, $post_id)
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	
