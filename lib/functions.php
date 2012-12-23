@@ -301,7 +301,6 @@ function formatText ($text, $rss=NULL) {
 	   -------------------------------------------------------------------------------------------------------------- */
 	// example: `code` or ``code``
 	while (preg_match ('/(?<=[\s\p{Z}\p{P}]|^)(`+)(.*?)(?<!`)\1(?!`)/m', $text, $m, PREG_OFFSET_CAPTURE)) {
-		print_r ($m);
 		//format the code block
 		$safe[] = '<code>'.$m[1][0].$m[2][0].$m[1][0].'</code>';
 		//same as with normal code blocks, replace them with a placeholder
@@ -360,16 +359,32 @@ function formatText ($text, $rss=NULL) {
 		array ('<em>_$1_</em>',					'<strong>*$1*</strong>'),
 	$text);
 	
-	/* titles and dividers
+	/* divider: "---"
 	   -------------------------------------------------------------------------------------------------------------- */
-	/* example: (titles)	/	(dividers)
-		
-		:: title		---
-	*/
-	$text = preg_replace(
-		array ('/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',	'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m'),
-		array ("\n\n<h2>$1</h2>\n",			"\n\n<p class=\"hr\">$1</p>\n"),
+	$text = preg_replace (
+		'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m',			"\n\n<p class=\"hr\">$1</p>\n",
 	$text);
+	
+	/* titles
+	   -------------------------------------------------------------------------------------------------------------- */
+	//example: :: title
+	$replace = ''; while (preg_match (
+		'/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',
+		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
+		$text, $m, PREG_OFFSET_CAPTURE,
+		//use an offset to search from so we don’t get stuck in an infinite loop
+		//(this isn’t valid the first time around obviously so gives 0)
+		@($m[0][1] + strlen ($replace))
+	)) $text = substr_replace ($text, $replace =
+		//create the replacement HTML, including an anchor link
+		//(note: inline code spans in titles don't transliterate since they've been replaced with placeholders)
+		//TODO: check for ID uniqueness (within the page of replies)? (will require `$RSS`)
+		"\n\n<h2 id=\"::".safeTransliterate (strip_tags ($m[1][0])).'">'.
+			'<a href="#::'.safeTransliterate (strip_tags ($m[1][0])).'">'.$m[1][0].'</a>'.
+		"</h2>\n",
+		//where to substitute
+		$m[0][1], strlen ($m[0][0])
+	);
 	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -389,7 +404,9 @@ function formatText ($text, $rss=NULL) {
 	),	//extra quote marks are inserted in the spans for both themeing, and so that when you copy a quote, the
 		//nesting is preserved for you. there must be a line break between spans and the text otherwise it prevents
 		//the regex from finding quote marks at the ends of lines (these extra linebreaks are removed next)
-		"\n\n<blockquote>\n\n<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n</blockquote>\n",
+		"\n\n<blockquote>\n\n".
+			"<span class=\"ql\">&ldquo;</span>\n$2\n<span class=\"qr\">&rdquo;</span>\n\n".
+		"</blockquote>\n",
 		$text, -1, $c
 	); while ($c);
 	
