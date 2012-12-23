@@ -180,7 +180,7 @@ ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
 				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
 				 padding: 9.999px 20px 9px 60px; line-height: 20px;}
 
-ol.ui li.sticky			{background: #eee;}
+ol.ui li.nnf_sticky		{background: #eee;}
 
 ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
 				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
@@ -558,7 +558,7 @@ a#nnf_unlock			{background-image: url("img/security_open_32.png");}
 /* hide the search box, breadcrumb and rss / add links */
 #mast form, #mast nav,
  /* index page stuff */
- #nnf_about, #nnf_folders, #nnf_threads>h1, .nnf_thread.sticky, #nnf_threads>nav, #nnf_new-form,
+ #nnf_about, #nnf_folders, #nnf_threads>h1, .nnf_thread.nnf_sticky, #nnf_threads>nav, #nnf_new-form,
  /* thread pages stuff */
  #nnf_post, #nnf_replies>h1, .nnf_reply, #nnf_replies>nav, #nnf_reply-form,
  /* reply stuff */
@@ -602,7 +602,7 @@ body, #mast h1 a		{width: 100% !important;}
 
 /* remove background colours, set text-colour */
 html, h1, h1 a, section,
- nav, li.sticky, header,
+ nav, li.nnf_sticky, header,
  ol.nnf_pages em		{color: black !important; background: none !important;}
 
 /* remove padding added to hold background images */

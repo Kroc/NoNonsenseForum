@@ -181,7 +181,7 @@ if ($folders = array_filter (
 				'a.nnf_post-link@href'		=> substr ($last->link, strpos ($last->link, '/', 9))
 			))->remove (array (
 				//is the last author a mod?
-				'.nnf_post-author@class'	=> isMod ($last->author) ? false : 'mod'
+				'.nnf_post-author@class'	=> isMod ($last->author) ? false : 'nnf_mod'
 			));
 		} else {
 			//no last post, remove the template for it
@@ -237,13 +237,13 @@ if ($threads || @$stickies) {
 		//if the thread isn’t locked, remove the lock icon
 		'.nnf_thread-locked'		=> !$xml->channel->xpath ('category[.="locked"]'),
 		//if the thread isn't sticky, remove the 'sticky' class
-		'./@class'			=> !in_array ($file, $stickies) ? 'sticky' : false,
+		'./@class'			=> !in_array ($file, $stickies) ? 'nnf_sticky' : false,
 		//if the thread isn't sticky, remove the sticky icon
 		'.nnf_thread-sticky'		=> !in_array ($file, $stickies)
 						//the lock-icon takes precedence over the sticky icon
 						|| $xml->channel->xpath ('category[.="locked"]'),
 		//is the last post author a mod?
-		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'mod' : false
+		'.nnf_thread-author@class'	=> !isMod ($last->author) ? 'nnf_mod' : false
 	
 	//attach the templated sub-forum item to the list
 	))->next ();

@@ -150,7 +150,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	)->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false
+		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
 	
 	//the append form:
 	))->set (array (
@@ -293,7 +293,7 @@ if (isset ($_GET['delete'])) {
 	)->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false
+		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
 	
 	//the authentication form:
 	))->set (array (
@@ -462,7 +462,7 @@ $template->set (array (
 ))->remove (array (
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'mod' : false,
+	'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false,
 	
 	//append / delete links?
 	'#nnf_post-append, #nnf_post-delete' => !CAN_REPLY
@@ -520,7 +520,7 @@ if (!count ($thread)) {
 		))->remove (array (
 			//if the user who made the reply is a mod, also mark the whole post as by a mod
 			//(you might want to style any posts made by a mod differently)
-			'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'mod'
+			'./@class, .nnf_reply-author@class' => isMod ($reply->author) ? false : 'nnf_mod'
 		))->remove (array (
 			//if the current user in the curent forum can append/delete the current reply:
 			'.nnf_reply-append, .nnf_reply-delete' => !(CAN_REPLY && (

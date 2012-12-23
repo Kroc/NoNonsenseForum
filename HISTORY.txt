@@ -7,6 +7,7 @@ v23
 *	External hyperlinks now use `rel="nofollow external"`, internal hyperlinks do not use `nofollow`,
 	with thanks to Zegnat
 *	Title field is now spellchecked
+*	Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
 
 v22	13.OCT.12
 *	Posts with invalid HTML now display a message, rather than dumping PHP errors
