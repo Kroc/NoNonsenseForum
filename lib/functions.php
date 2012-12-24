@@ -378,33 +378,6 @@ function formatText (
 		'/(?:\n|\A)\h*(---+)\h*(?:\n?$|\Z)/m',			"\n\n<p class=\"hr\">$1</p>\n",
 	$text);
 	
-	/* titles
-	   -------------------------------------------------------------------------------------------------------------- */
-	//example: :: title
-	$replace = ''; $titles=array (); while (preg_match (
-		'/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',
-		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
-		$text, $m, PREG_OFFSET_CAPTURE,
-		//use an offset to search from so we don’t get stuck in an infinite loop
-		//(this isn’t valid the first time around obviously so gives 0)
-		@($m[0][1] + strlen ($replace))
-	)) {
-		//generate a unique HTML ID for the title:
-		//flatten the title text into a URL-safe string of [a-z0-9_]
-		$translit = safeTransliterate (strip_tags ($m[1][0]));
-		//if a title already exsits with that ID, append a number until an available ID is found.
-		$c = 0; do $id = $translit.($c++ ? '_'.($c-1) : ''); while (in_array ($id, $titles));
-		//add the current ID to the list of used IDs
-		$titles[] = $id;
-		//create the replacement HTML, including an anchor link
-		$text = substr_replace ($text, $replace =
-			//(note: code spans in titles don't transliterate since they've been replaced with placeholders)
-			"\n\n<h2 id=\"$post_id::$id\"><a href=\"$permalink#$post_id::$id\">".$m[1][0]."</a></h2>\n",
-			//where to substitute
-			$m[0][1], strlen ($m[0][0])
-		);
-	}
-	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
 	/* example:
@@ -462,7 +435,9 @@ function formatText (
 				foreach ($rss->channel->item as $item) if (safeHTML (strtolower ($item->author)) == $name)
 			{	//replace the reference with the link to the post
 				$text = substr_replace ($text,
-					'<a href="'.$item->link.'">'.substr ($m[1][0], 0, strlen ($name)+1).'</a>',
+					'<a href="'.$item->link.'"'.(isMod ($name) ? ' class="nnf_mod"' : '').'>'.
+						substr ($m[1][0], 0, strlen ($name)+1).
+					'</a>',
 					$m[1][1], strlen ($name)+1
 				);
 				//move on to the next reference, no need to check any further names for this one
@@ -474,6 +449,36 @@ function formatText (
 			//(avoid getting stuck in an infinite loop)
 			$offset = $m[1][1] + 1;
 		};
+	}
+	
+	/* titles
+	   -------------------------------------------------------------------------------------------------------------- */
+	//example: :: title
+	$replace = ''; $titles=array (); while (preg_match (
+		'/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',
+		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
+		$text, $m, PREG_OFFSET_CAPTURE,
+		//use an offset to search from so we don’t get stuck in an infinite loop
+		//(this isn’t valid the first time around obviously so gives 0)
+		@($m[0][1] + strlen ($replace))
+	)) {
+		//generate a unique HTML ID for the title:
+		//flatten the title text into a URL-safe string of [a-z0-9_]
+		$translit = safeTransliterate (strip_tags ($m[1][0]));
+		//if a title already exsits with that ID, append a number until an available ID is found.
+		$c = 0; do $id = $translit.($c++ ? '_'.($c-1) : ''); while (in_array ($id, $titles));
+		//add the current ID to the list of used IDs
+		$titles[] = $id;
+		//remove hyperlinks in the title (since the title will be a hyperlink too)
+		//if a user-link is present, keep the mod class if present
+		$m[1][0] = preg_replace ('/<a href="[^"]+"( class="nnf_mod")?>(.*?)<\/a>/', "<b$1>$2</b>", $m[1][0]);
+		//create the replacement HTML, including an anchor link
+		$text = substr_replace ($text, $replace =
+			//(note: code spans in titles don't transliterate since they've been replaced with placeholders)
+			"\n\n<h2 id=\"$post_id::$id\"><a href=\"$permalink#$post_id::$id\">".$m[1][0]."</a></h2>\n",
+			//where to substitute
+			$m[0][1], strlen ($m[0][0])
+		);
 	}
 	
 	/* finalise:

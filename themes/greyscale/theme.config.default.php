@@ -58,11 +58,11 @@
 //"%2$s" - the thread title
 @define ('THEME_RE',		'RE[%1$u]: %2$s');
 
-//HTML used when appending to a post:
+//text used when appending to a post:
+//(markup can be used as this is run through `formatText`)
 //"%1$s" - username of who posted
-//"%2$s" - timestamp formatted for use with HTML5 `<time>`
-//"%3$s" - human-readable time, as per `DATE_FORMAT`
-@define ('THEME_APPEND',	'<p class="nnf_appended"><b>%1$s</b> added on <time datetime="%2$s">%3$s</time></p>');
+//"%2$s" - human-readable time, as per `DATE_FORMAT`
+@define ('THEME_APPENDED',	':: @%1$s added on %2$s');
 
 //HTML that replaces a post when it's deleted (this is not rectroactive)
 @define ('THEME_DEL_USER',	'<p>This post was deleted by its owner</p>');

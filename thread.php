@@ -107,14 +107,14 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		//TODO: check for duplicate appends
 	)) {
 		//append the given text to the reply
-		//(see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPEND`)
-		//TODO: change THEME_APPEND to markup, instead of HTML, so that we can verify appended text for title ID
-		//      uniqueness by using `strip_tags` on the post text, adding the divider, the append, then format it
-		$post->description .= "\n".sprintf (THEME_APPEND,
-			safeHTML (NAME),		//author
-			gmdate ('r', time ()),		//machine-readable time
-			date (DATE_FORMAT, time ())	//human-readable time
-		).formatText (TEXT,			//process markup into HTML...
+		$post->description = formatText (
+			//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
+			//in order to ensure that title links in the appended section do not duplicate title links in the
+			//existing text, we convert the HTML back to markup in the original and add the appended text
+			//(see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPENDED`)
+			strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
+				safeHTML (NAME), date (DATE_FORMAT, time ())
+			)."\n\n".TEXT,
 			//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
 			FORUM_URL.url (PATH_URL, $FILE, $PAGE), $ID,
 			//provide access to the whole discussion thread to be able to link "@user" names
