@@ -55,13 +55,13 @@ if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
 		//      in the future the specific "locked" category needs to be removed
 		unset ($xml->channel->category);
 		//when unlocking, go to the thread
-		$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_reply-form';
+		$url = FORUM_URL.url (PATH_URL, $FILE).'#nnf_reply-form';
 	} else {
 		//if no "locked" category, add it
 		$xml->channel->category[] = 'locked';
 		//if locking, return to the index
-		//(todo: could return to the particular page in the index the thread is on--complex!)
-		$url = FORUM_URL.url ('index', PATH_URL);
+		//(TODO: could return to the particular page in the index the thread is on--complex!)
+		$url = FORUM_URL.url (PATH_URL);
 	}
 	
 	//commit the data
@@ -114,7 +114,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			date (DATE_FORMAT, time ())	//human-readable time
 		).formatText (TEXT,			//process markup into HTML...
 			//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
-			FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE), $ID,
+			FORUM_URL.url (PATH_URL, $FILE, $PAGE), $ID,
 			//provide access to the whole discussion thread to be able to link "@user" names
 			$xml
 		);
@@ -133,7 +133,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 		indexRSS ();
 		
 		//return to the appended post
-		header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
+		header ('Location: '.FORUM_URL.url (PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
 		exit;
 	}
 	
@@ -238,7 +238,7 @@ if (isset ($_GET['delete'])) {
 			unset ($xml->channel->item[$i]);
 			
 			//we’ll redirect to the last page (which may have changed number when the post was deleted)
-			$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_replies';
+			$url = FORUM_URL.url (PATH_URL, $FILE).'#nnf_replies';
 		} else {
 			//remove the post text and replace with the deleted messgae
 			$post->description = (NAME == (string) $post->author) ? THEME_DEL_USER : THEME_DEL_MOD;
@@ -246,7 +246,7 @@ if (isset ($_GET['delete'])) {
 			if (!$post->xpath ('category[.="deleted"]')) $post->category[] = 'deleted';
 			
 			//need to know what page this post is on to redirect back to it
-			$url = FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE)."#$ID";
+			$url = FORUM_URL.url (PATH_URL, $FILE, $PAGE)."#$ID";
 		}
 		
 		//commit the data
@@ -276,7 +276,7 @@ if (isset ($_GET['delete'])) {
 		indexRSS ();
 		
 		//return to the index
-		header ('Location: '.FORUM_URL.url ('index', PATH_URL), true, 303);
+		header ('Location: '.FORUM_URL.url (PATH_URL), true, 303);
 		exit;
 	}
 	
@@ -360,13 +360,13 @@ if (CAN_REPLY && AUTH && TEXT) {
 			? floor ((count ($thread)+1) / FORUM_POSTS)
 			: ceil  ((count ($thread)+1) / FORUM_POSTS)
 		;
-		$url = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.$post_id;
+		$url = FORUM_URL.url (PATH_URL, $FILE, $page).'#'.$post_id;
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 		$rss->set (array (
 			'/rss/channel/title'		=> $xml->channel->title,
-			'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $FILE)
+			'/rss/channel/link'		=> FORUM_URL.url (PATH_URL, $FILE)
 		))->remove (array (
 			//is the thread unlocked?
 			'/rss/channel/category'		=> !$xml->channel->xpath ('category[.="locked"]')
@@ -387,7 +387,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./pubDate'		=> gmdate ('r'),
 			'./description'		=> formatText (TEXT,  //process markup into HTML
 							//provide a permalink and post ID for title self-links
-							FORUM_URL.url ('thread', PATH_URL, $FILE, $page), $post_id,
+							FORUM_URL.url (PATH_URL, $FILE, $page), $post_id,
 							//provide reference to the thread to link "@user" names
 							$xml
 						)
@@ -443,8 +443,8 @@ $template = prepareTemplate (
 	'//link[@rel="alternate"]/@href, '.
 	'a#nnf_rss@href'		=> FORUM_PATH.PATH_URL."$FILE.rss",
 	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
-	'a#nnf_lock@href'		=> url ('lock',   PATH_URL, $FILE, $PAGE),
-	'a#nnf_unlock@href'		=> url ('unlock', PATH_URL, $FILE, $PAGE)
+	'a#nnf_lock@href'		=> url (PATH_URL, $FILE, $PAGE, 'lock'),
+	'a#nnf_unlock@href'		=> url (PATH_URL, $FILE, $PAGE, 'unlock')
 ))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
@@ -471,9 +471,9 @@ $template->set (array (
 	'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 	'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 	'#nnf_post-author'		=> $post->author,
-	'a#nnf_post-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+	'a#nnf_post-append@href'	=> url (PATH_URL, $FILE, $PAGE, 'append',
 					        substr (strstr ($post->link, '#'), 1)).'#append',
-	'a#nnf_post-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE)
+	'a#nnf_post-delete@href'	=> url (PATH_URL, $FILE, $PAGE, 'delete')
 ))->remove (array (
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
@@ -521,10 +521,10 @@ if (!count ($thread)) {
 			'time.nnf_reply-time@datetime'	=> gmdate ('r', strtotime ($reply->pubDate)),
 			'.nnf_reply-author'		=> $reply->author,
 			'a.nnf_reply-number'		=> sprintf (THEME_REPLYNO, ++$no),
-			'a.nnf_reply-number@href'	=> url ('thread', PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
-			'a.nnf_reply-append@href'	=> url ('append', PATH_URL, $FILE, $PAGE,
+			'a.nnf_reply-number@href'	=> url (PATH_URL, $FILE, $PAGE).strstr ($reply->link,'#'),
+			'a.nnf_reply-append@href'	=> url (PATH_URL, $FILE, $PAGE, 'append',
 								substr (strstr ($reply->link, '#'), 1)).'#append',
-			'a.nnf_reply-delete@href'	=> url ('delete', PATH_URL, $FILE, $PAGE,
+			'a.nnf_reply-delete@href'	=> url (PATH_URL, $FILE, $PAGE, 'delete',
 								substr (strstr ($reply->link, '#'), 1))
 		))->remove (array (
 			//has the reply been deleted (blanked)?

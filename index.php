@@ -41,15 +41,15 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'		=> TITLE,
-		'/rss/channel/link'		=> FORUM_URL.url ('thread', PATH_URL, $file),
+		'/rss/channel/link'		=> FORUM_URL.url (PATH_URL, $file),
 		//the thread's first post
 		'/rss/channel/item/title'	=> TITLE,
-		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).'#'.$post_id,
+		'/rss/channel/item/link'	=> FORUM_URL.url (PATH_URL, $file).'#'.$post_id,
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
 		'/rss/channel/item/description'	=> formatText (TEXT,  //process markup into HTML...
 							//provide a permalink so that title lines link to themselves
-							FORUM_URL.url ('thread', PATH_URL, $file, 1),
+							FORUM_URL.url (PATH_URL, $file, 1),
 							//also provide the post ID for title-linking and ID-uniqueness
 							$post_id
 						)
@@ -62,7 +62,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	indexRSS ();
 	
 	//redirect to newley created thread
-	header ('Location: '.FORUM_URL.url ('thread', PATH_URL, $file), true, 303);
+	header ('Location: '.FORUM_URL.url (PATH_URL, $file), true, 303);
 	exit;
 }
 
@@ -166,7 +166,7 @@ if ($folders = array_filter (
 		//start applying the data to the template
 		$item->set (array (
 			'a.nnf_folder-name'		=> $FOLDER,
-			'a.nnf_folder-name@href'	=> url ('index', PATH_URL.safeURL ($FOLDER).'/')
+			'a.nnf_folder-name@href'	=> url (PATH_URL.safeURL ($FOLDER).'/')
 		
 		//remove the lock icons if not required
 		))->remove (array (
@@ -225,7 +225,7 @@ if ($threads || @$stickies) {
 	) $item->set (array (
 		//thread title and URL
 		'a.nnf_thread-name'		=> $xml->channel->title,
-		'a.nnf_thread-name@href'	=> url ('thread', PATH_URL, pathinfo ($file, PATHINFO_FILENAME)),
+		'a.nnf_thread-name@href'	=> url (PATH_URL, pathinfo ($file, PATHINFO_FILENAME)),
 		//number of replies
 		'.nnf_thread-replies'		=> count ($xml->channel->item) - 1,
 		

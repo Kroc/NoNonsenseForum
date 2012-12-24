@@ -7,7 +7,13 @@
 
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout (absolute-base / relative links)
-function url ($action='index', $path='', $file='', $page=0, $id='') {
+function url (
+	$path='',	//sub-forum path
+	$file='',	//a thread file name (sans extension)
+	$page=0,	//page number
+	$action='',	//an action such as "append", "delete", "lock" or "unlock" 
+	$action_id=''	//an optional post-id to go with the action above
+) {
 	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
 	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	$filepath = FORUM_PATH."$path$file";
@@ -19,21 +25,20 @@ function url ($action='index', $path='', $file='', $page=0, $id='') {
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
 		//single actions without any ID
-		!$id && in_array ($action, array ('delete', 'lock', 'unlock'))  ? $action : '',
+		!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 		//otherwise, actions with an ID?
-		$id	? "$action=$id" : ''
+		$action_id ? "$action=$action_id" : ''
 	))), '?')
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
-		//which page to point to; append / delete actions are a part of 'thread.php',
-		//"delete" can be done without an ID (delete whole thread)
-		($id || in_array ($action, array ('delete', 'lock', 'unlock')) ? 'thread.php?' : "$action.php?").
+		//which page to point to; if a file is given, it's always a thread
+		($file ? 'thread.php' : 'index.php').
 		//concatenate a query string
 		implode ('&', array_filter (array (
 			//actions without an ID
-			!$id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
+			!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
 			//append or delete post
-			$id	? "$action=$id" : '',
+			$action_id ? "$action=$action_id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
 			'path='.$path,
 			//if a file is specified (view thread, append, delete &c.)
@@ -102,7 +107,7 @@ function prepareTemplate (
 		$i = 0; $i < count ($items); $i++
 	) $item->set (array (
 		'a.nnf_subforum-name'		=> $items[$i],
-		'a.nnf_subforum-name@href'	=> url ('index',
+		'a.nnf_subforum-name@href'	=> url (
 			//reconstruct the URL from each sub-forum up to the current one
 			implode ('/', array_map ('safeURL', array_slice ($items, 0, $i+1))).'/'
 		)
@@ -488,7 +493,7 @@ function indexRSS () {
 	$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
 	$rss->set (array (
 		'/rss/channel/title'	=> FORUM_NAME.(PATH ? str_replace ('/', ' / ', PATH) : ''),
-		'/rss/channel/link'	=> FORUM_URL.url ('index', PATH_URL)
+		'/rss/channel/link'	=> FORUM_URL.url (PATH_URL)
 	//remove the locked / deleted categories
 	))->remove ('/rss/channel/category');
 	
