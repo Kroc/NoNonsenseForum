@@ -47,7 +47,12 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 		'/rss/channel/item/link'	=> FORUM_URL.url ('thread', PATH_URL, $file).'#'.$post_id,
 		'/rss/channel/item/author'	=> NAME,
 		'/rss/channel/item/pubDate'	=> gmdate ('r'),
-		'/rss/channel/item/description'	=> formatText (TEXT, $post_id)
+		'/rss/channel/item/description'	=> formatText (TEXT,  //process markup into HTML...
+							//provide a permalink so that title lines link to themselves
+							FORUM_URL.url ('thread', PATH_URL, $file, 1),
+							//also provide the post ID for title-linking and ID-uniqueness
+							$post_id
+						)
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	

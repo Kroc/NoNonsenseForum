@@ -8,13 +8,13 @@
 //formulate a URL (used to automatically fallback to non-pretty URLs when htaccess is not available),
 //the domain is not included because it is not used universally throughout (absolute-base / relative links)
 function url ($action='index', $path='', $file='', $page=0, $id='') {
+	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
+	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	$filepath = FORUM_PATH."$path$file";
 	if (substr ($filepath, strlen (FORUM_PATH.PATH_URL)) == FORUM_PATH.PATH_URL)
 		$filepath = substr ($filepath, strlen (FORUM_PATH.PATH_URL)+1)
 	;
 	
-	//begin with the subfolder the forum is in, if any. all URLs must be absolute to be able to juggle the mix of
-	//htaccess vs. no-htaccess + running in root vs. running in a sub-folder
 	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
@@ -269,7 +269,8 @@ function safeTransliterate ($text) {
 
 //take the author's message, process markup, and encode it safely for the RSS feed
 function formatText (
-	$text,		//the text to process
+	$text,		//the text to process into HTML
+	$permalink='',	//optional full URL to the thread this text will be a part of, used to make title links permanent
 	$post_id='',	//optional HTML ID of the post that this text will form, used for title self-links
 	$rss=NULL	//optional simpleXML object of the whole thread, to link to other user's posts
 ) {
@@ -384,7 +385,7 @@ function formatText (
 		//(note: inline code spans in titles don't transliterate since they've been replaced with placeholders)
 		//TODO: check for ID uniqueness
 		"\n\n<h2 id=\"$post_id::".safeTransliterate (strip_tags ($m[1][0])).'">'.
-			"<a href=\"#$post_id::".safeTransliterate (strip_tags ($m[1][0])).'">'.$m[1][0].'</a>'.
+			"<a href=\"$permalink#$post_id::".safeTransliterate (strip_tags ($m[1][0])).'">'.$m[1][0].'</a>'.
 		"</h2>\n",
 		//where to substitute
 		$m[0][1], strlen ($m[0][0])

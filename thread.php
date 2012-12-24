@@ -104,6 +104,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			//if the forum is post-locked, they must be a member to append to their own posts
 			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 		))
+		//TODO: check for duplicate appends
 	)) {
 		//append the given text to the reply
 		//(see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPEND`)
@@ -111,7 +112,12 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			safeHTML (NAME),		//author
 			gmdate ('r', time ()),		//machine-readable time
 			date (DATE_FORMAT, time ())	//human-readable time
-		).formatText (TEXT, $ID, $xml);
+		).formatText (TEXT,			//process markup into HTML...
+			//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
+			FORUM_URL.url ('thread', PATH_URL, $FILE, $PAGE), $ID,
+			//provide access to the whole discussion thread to be able to link "@user" names
+			$xml
+		);
 		
 		//commit the data
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
@@ -231,7 +237,7 @@ if (isset ($_GET['delete'])) {
 			//remove the post from the thread entirely
 			unset ($xml->channel->item[$i]);
 			
-			//we’ll redirect to the last page (which may have changed when the post was deleted)
+			//we’ll redirect to the last page (which may have changed number when the post was deleted)
 			$url = FORUM_URL.url ('thread', PATH_URL, $FILE).'#nnf_replies';
 		} else {
 			//remove the post text and replace with the deleted messgae
@@ -336,21 +342,25 @@ if (CAN_REPLY && AUTH && TEXT) {
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
-	$post_id = base_convert (microtime (), 10, 36);
-	
-	if (!(
+	if (	//can’t post if the thread is locked
+		$xml->channel->xpath ('category[.="locked"]') ||
 		//ignore a double-post (could be an accident with the back button)
-		NAME == $xml->channel->item[0]->author &&
-		formatText (TEXT, $post_id, $xml) == $xml->channel->item[0]->description &&
-		//can’t post if the thread is locked
-		!$xml->channel->xpath ('category[.="locked"]')
-	)) {
-		//where to?
+		(	//same author?
+			NAME == $xml->channel->item[0]->author &&
+			//check if the markup text is the same (strips out HTML due to possible unique HTML IDs)
+			strip_tags ($xml->channel->item[0]->description) == strip_tags (formatText (TEXT))
+		)
+	) {
+		//if you can't post / double-post, redirect back to the previous post
+		$url = $xml->channel->item[0]->link;
+	} else {
+		//where will this post exist?
+		$post_id = base_convert (microtime (), 10, 36);
 		$page = (count ($thread)+1) % FORUM_POSTS == 1
 			? floor ((count ($thread)+1) / FORUM_POSTS)
 			: ceil  ((count ($thread)+1) / FORUM_POSTS)
 		;
-		$url  = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.$post_id;
+		$url = FORUM_URL.url ('thread', PATH_URL, $FILE, $page).'#'.$post_id;
 		
 		//re-template the whole thread:
 		$rss = new DOMTemplate (file_get_contents (FORUM_LIB.'rss-template.xml'));
@@ -375,7 +385,12 @@ if (CAN_REPLY && AUTH && TEXT) {
 			'./link'		=> $url,
 			'./author'		=> NAME,
 			'./pubDate'		=> gmdate ('r'),
-			'./description'		=> formatText (TEXT, $post_id, $xml)
+			'./description'		=> formatText (TEXT,  //process markup into HTML
+							//provide a permalink and post ID for title self-links
+							FORUM_URL.url ('thread', PATH_URL, $FILE, $page), $post_id,
+							//provide reference to the thread to link "@user" names
+							$xml
+						)
 		))->remove (
 			//the new reply isn’t deleted, so remove the category marker
 			'./category'
@@ -395,9 +410,6 @@ if (CAN_REPLY && AUTH && TEXT) {
 		
 		//write the file: first move the write-head to 0, remove the file's contents, and then write new one
 		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->html ());
-	} else {
-		//if a double-post, link back to the previous post
-		$url = $xml->channel->item[0]->link;
 	}
 	
 	//close the lock / file
