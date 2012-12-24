@@ -280,6 +280,12 @@ p.nnf_appended			{color: #888; padding-top: 19px;
 
 /* input forms
    ====================================================================================================================== */
+/* truncate placeholder text with ".." in input fields if too short, e.g. mobile
+   taken shamelessly from: <davidwalsh.name/placeholder-overflow> */
+input[placeholder]		{text-overflow: ellipsis;}
+::-moz-placeholder		{text-overflow: ellipsis;} /* firefox 19+ */
+input:-moz-placeholder		{text-overflow: ellipsis;}
+
 #nnf_new-form h1,		/* title icon */
  #nnf_reply-form h1, #append h1	{background-image: url("img/new.png"); background-size: 32px 32px;}
 
