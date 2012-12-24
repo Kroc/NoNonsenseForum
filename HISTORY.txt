@@ -1,4 +1,5 @@
-v23	
+v23	24.DEC.12
+*	Duplicate appends are now ignored
 *	Improved denying access to NNF's folders and a "cgi-bin" folder no longer shows as a sub-forum
 *	`$1` no longer being stripped from code spans / blocks, with thanks to Zegnat
 *	`THEME_APPEND` has been removed, `THEME_APPENDED` is a plain-text (but markup allowed) replacement.
