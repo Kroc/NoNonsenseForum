@@ -7,6 +7,7 @@ v23	24.DEC.12
 	This also means that the class `nnf_appended` is gone, old appended dividers won't be styled
 *	"@user" names in posts are now classed ("nnf_mod") if the user is a moderator
 *	Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
+*	Canonical URL `<link>` added to "index.html" / "thread.html" / "markup.html" and "privacy.html"
 *	Sign-in is now a button instead of a link, this mostly paves the way for future improvements
 *	Page numbers now shown at the top when on portrait mobile display
 *	Title lines (":: ...") within posts now link to themselves, allowing external links directly to title lines
