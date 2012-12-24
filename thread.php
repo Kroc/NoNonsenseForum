@@ -350,14 +350,11 @@ if (CAN_REPLY && AUTH && TEXT) {
 	//`get_file_contents`, or even `simplexml_load_file`, won't work due to the lock
 	$xml = simplexml_load_string (fread ($f, filesize ("$FILE.rss"))) or require FORUM_LIB.'error_xml.php';
 	
-	if (	//can’t post if the thread is locked
-		$xml->channel->xpath ('category[.="locked"]') ||
-		//ignore a double-post (could be an accident with the back button)
-		(	//same author?
-			NAME == $xml->channel->item[0]->author &&
-			//check if the markup text is the same (strips out HTML due to possible unique HTML IDs)
-			strip_tags ($xml->channel->item[0]->description) == strip_tags (formatText (TEXT))
-		)
+	//ignore a double-post (could be an accident with the back button)
+	if (	//same author?
+		NAME == $xml->channel->item[0]->author &&
+		//check if the markup text is the same (strips out HTML due to possible unique HTML IDs)
+		strip_tags ($xml->channel->item[0]->description) == strip_tags (formatText (TEXT))
 	) {
 		//if you can't post / double-post, redirect back to the previous post
 		$url = $xml->channel->item[0]->link;
