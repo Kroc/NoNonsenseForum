@@ -378,23 +378,29 @@ function formatText (
 	/* titles
 	   -------------------------------------------------------------------------------------------------------------- */
 	//example: :: title
-	$replace = ''; while (preg_match (
+	$replace = ''; $titles=array (); while (preg_match (
 		'/(?:\n|\A)(::.*)(?:\n?$|\Z)/mu',
 		//capture the starting point of the match, so that `$m[x][0]` is the text and $m[x][1] is the offset
 		$text, $m, PREG_OFFSET_CAPTURE,
 		//use an offset to search from so we don’t get stuck in an infinite loop
 		//(this isn’t valid the first time around obviously so gives 0)
 		@($m[0][1] + strlen ($replace))
-	)) $text = substr_replace ($text, $replace =
+	)) {
+		//generate a unique HTML ID for the title:
+		//flatten the title text into a URL-safe string of [a-z0-9_]
+		$translit = safeTransliterate (strip_tags ($m[1][0]));
+		//if a title already exsits with that ID, append a number until an available ID is found.
+		$c = 0; do $id = $translit.($c++ ? '_'.($c-1) : ''); while (in_array ($id, $titles));
+		//add the current ID to the list of used IDs
+		$titles[] = $id;
 		//create the replacement HTML, including an anchor link
-		//(note: inline code spans in titles don't transliterate since they've been replaced with placeholders)
-		//TODO: check for ID uniqueness
-		"\n\n<h2 id=\"$post_id::".safeTransliterate (strip_tags ($m[1][0])).'">'.
-			"<a href=\"$permalink#$post_id::".safeTransliterate (strip_tags ($m[1][0])).'">'.$m[1][0].'</a>'.
-		"</h2>\n",
-		//where to substitute
-		$m[0][1], strlen ($m[0][0])
-	);
+		$text = substr_replace ($text, $replace =
+			//(note: code spans in titles don't transliterate since they've been replaced with placeholders)
+			"\n\n<h2 id=\"$post_id::$id\"><a href=\"$permalink#$post_id::$id\">".$m[1][0]."</a></h2>\n",
+			//where to substitute
+			$m[0][1], strlen ($m[0][0])
+		);
+	}
 	
 	/* blockquotes:
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -435,9 +441,9 @@ function formatText (
 		//first, produce a list of all authors in the thread
 		$names = array ();
 		foreach ($rss->channel->xpath ('./item/author') as $name) $names[] = $name[0];
+		$names = array_unique ($names);			//remove duplicates
 		$names = array_map ('strtolower', $names);	//set all to lowercase
 		$names = array_map ('safeHTML',   $names);	//HTML encode names as they will be in the source text
-		$names = array_unique ($names);			//remove duplicates
 		//sort the list of names Z-A so that longer names and names with spaces occur first,
 		//this is so that we don’t choose "Bob" over "Bob Monkhouse" when matching names
 		rsort ($names);

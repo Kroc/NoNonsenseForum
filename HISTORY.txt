@@ -8,6 +8,7 @@ v23
 	with thanks to Zegnat
 *	Title field is now spellchecked
 *	Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
+*	Simplified the `url` function, note that this will affect your 'theme.php', just drop the first parameter
 
 v22	13.OCT.12
 *	Posts with invalid HTML now display a message, rather than dumping PHP errors
