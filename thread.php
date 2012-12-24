@@ -104,35 +104,39 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			//if the forum is post-locked, they must be a member to append to their own posts
 			(!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
 		))
-		//TODO: check for duplicate appends
 	)) {
-		//append the given text to the reply
-		$post->description = formatText (
-			//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
-			//in order to ensure that title links in the appended section do not duplicate title links in the
-			//existing text, we convert the HTML back to markup in the original and add the appended text
-			//(see 'theme.config.php' if it exists, otherwise 'theme.config.default.php' for `THEME_APPENDED`)
-			strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
-				safeHTML (NAME), date (DATE_FORMAT, time ())
-			)."\n\n".TEXT,
-			//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
-			FORUM_URL.url (PATH_URL, $FILE, $PAGE), $ID,
-			//provide access to the whole discussion thread to be able to link "@user" names
-			$xml
-		);
-		
-		//commit the data
-		rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
-		//close the lock / file
-		flock ($f, LOCK_UN); fclose ($f);
-		
-		//try set the modified date of the file back to the time of the last reply
-		//(appending to a post does not push the thread back to the top of the index)
-		//note: this may fail if the file is not owned by the Apache process
-		@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
-		
-		//regenerate the folder's RSS file
-		indexRSS ();
+		//check for duplicate append:
+		if (	//normalise the original post and the append, and check the end of the original for a match
+			substr (strip_tags ($post->description), -strlen ($_ = strip_tags (formatText (TEXT)))) !== $_
+		) {
+			//append the given text to the reply
+			$post->description = formatText (
+				//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
+				//to ensure that appended title links do not duplicate title links in the existing text, we
+				//convert the original HTML back to markup and add the appended text (see 'theme.config.php'
+				//if it exists, otherwise 'theme.config.default.php' for `THEME_APPENDED`)
+				strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
+					safeHTML (NAME), date (DATE_FORMAT, time ())
+				)."\n\n".TEXT,
+				//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
+				FORUM_URL.url (PATH_URL, $FILE, $PAGE), $ID,
+				//provide access to the whole discussion thread to be able to link "@user" names
+				$xml
+			);
+			
+			//commit the data
+			rewind ($f); ftruncate ($f, 0); fwrite ($f, $xml->asXML ());
+			//close the lock / file
+			flock ($f, LOCK_UN); fclose ($f);
+			
+			//try set the modified date of the file back to the time of the last reply
+			//(appending to a post does not push the thread back to the top of the index)
+			//note: this may fail if the file is not owned by the Apache process
+			@touch ("$FILE.rss", strtotime ($xml->channel->item[0]->pubDate));
+			
+			//regenerate the folder's RSS file
+			indexRSS ();
+		}
 		
 		//return to the appended post
 		header ('Location: '.FORUM_URL.url (PATH_URL, $FILE, $PAGE)."#$ID", true, 303);
