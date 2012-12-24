@@ -104,6 +104,8 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 // 'lib/functions.php' and handles some shared templating done across all pages)
 $template = prepareTemplate (
 	THEME_ROOT.'index.html',
+	//the canonical URL of this page
+	url (PATH_URL, '', $PAGE),
 	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name

@@ -145,7 +145,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	/* template the append page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		THEME_ROOT.'append.html', sprintf (THEME_TITLE_APPEND, $post->title)
+		//template, no canonical URL  //HTML title
+		THEME_ROOT.'append.html', '', sprintf (THEME_TITLE_APPEND, $post->title)
 	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $xml->channel->title,
@@ -288,7 +289,8 @@ if (isset ($_GET['delete'])) {
 	/* template the delete page
 	   -------------------------------------------------------------------------------------------------------------- */
 	$template = prepareTemplate (
-		THEME_ROOT.'delete.html', sprintf (THEME_TITLE_DELETE, $post->title)
+		//template, no canonical URL  //HTML title
+		THEME_ROOT.'delete.html', '', sprintf (THEME_TITLE_DELETE, $post->title)
 	//the preview post:
 	)->set (array (
 		'#nnf_post-title'		=> $post->title,
@@ -433,6 +435,8 @@ if (CAN_REPLY && AUTH && TEXT) {
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
 	THEME_ROOT.'thread.html',
+	//canonical URL of this thread
+	url (PATH_URL, $FILE, $PAGE),
 	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
 	sprintf (THEME_TITLE,
 		//title of the thread, obviously

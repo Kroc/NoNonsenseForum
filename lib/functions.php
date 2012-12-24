@@ -52,6 +52,7 @@ function url (
 //the shared template stuff for all pages
 function prepareTemplate (
 	$filepath,	//template file to load
+	$canonical='',	//the canonical URL for the page, so that search engines can ignore querystring spam from links
 	$title=NULL	//HTML title to use, if NULL, existing `<title>` is kept
 ) {
 	global $LANG, $MODS, $MEMBERS;
@@ -94,6 +95,8 @@ function prepareTemplate (
 	if (!is_null ($title)) $template->setValue ('/html/head/title', $title);
 	//remove 'custom.css' stylesheet if 'custom.css' is missing
 	if (!file_exists (THEME_ROOT.'custom.css')) $template->remove ('//link[contains(@href,"custom.css")]');
+	//set the canonical URL
+	if ($canonical) $template->setValue ('/html/head/meta[@rel="canonical"]/@href', $canonical);
 	
 	/* site header
 	   -------------------------------------------------------------------------------------------------------------- */
