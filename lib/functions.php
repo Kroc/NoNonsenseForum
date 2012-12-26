@@ -307,7 +307,7 @@ function formatText (
 		//replace the code block with a placeholder:
 		//(we will have to remove the code chunks from the source text to avoid the other markup processing from
 		//munging it and then restore the chunks back later)
-		$text = substr_replace ($text, "\n&_".(count ($safe)-1).';'.$m[5][0], $m[0][1], strlen ($m[0][0]));
+		$text = substr_replace ($text, "\n&_".(count ($safe)-1).";\n".$m[5][0], $m[0][1], strlen ($m[0][0]));
 	}
 	
 	/* inline code / teletype text:
@@ -486,7 +486,7 @@ function formatText (
 	//add paragraph tags between blank lines
 	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, title, hr or pre-block, wrap in a paragraph
-		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&__PRE/', $chunk))
+		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&_/', $chunk))
 			$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>"
 		;
 		$text = @$result .= "\n$chunk";
@@ -494,7 +494,6 @@ function formatText (
 	
 	//restore code spans/blocks
 	foreach ($safe as $i => $html) $text = str_replace ("&_$i;", $html, $text);
-	
 	return $text;
 }
 
