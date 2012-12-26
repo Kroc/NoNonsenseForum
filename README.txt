@@ -184,14 +184,100 @@ password as their NoNonsense Forum username.
 ========================================================================
 See LICENCE.txt for licence details
 
-*       Jon Gjengset            - Original theme / mobile theme
-*       "JJ"                    - Quote syntax
-*       "Martijn"               - Lynx support
-*       "Temukki"               - Bugs
-*       Richard van Velzen      - subfolder support / other fixes,
-                                  additional markup implementation
-*       "Fyra"                  - UTF-8 fix for templates
-*       "Sani"                  - Bugs
+I'd like to thank the following individuals for suggesting ideas or
+contributing directly to NoNonsense Forum.
 
-*       The users of Camen Design Forum <forum.camendesign.com>
-        for testing and support
+I'd like to also thank the users of Camen Design Forum
+<forum.camendesign.com> for testing and support.
+
+Name	Issue
+------------------------------------------------------------------------
+bh8(dot)vn & zuchto
+*	Suggestion to improve transliteration further
+*	Fallback if "iconv" is missing
+
+David Hund
+*	Code typo in `DOMDocument`
+
+fyra
+*	IDN URLs
+*	UTF-8 characters no longer hex-encoded in the output
+
+JBark
+*	Use `clearstatcache` to ensure index ordering is right
+*	Accidental double-`<link>` to favicon
+
+JJ
+*	Wrong usage of PHP header function
+*	Add "noindex, nofollow" to delete page
+*	Blockquote syntax idea
+
+Jon Gjengset / Jonhoo
+*	Original "Grayscale" theme
+*	Original mobile theme
+*	`$` alternative syntax for code blocks
+*	Help with HTTPS support
+*	Raised issue with PHP short tags
+*	Delete message the same when deleting thread and post
+
+Jose Pedro Arvela / jparvela
+*	Changing `static::` to `self::`
+*	Suggestion for "@user" syntax
+
+macsupport.gr
+*	Regex backtrace limit
+
+Martijn / Zegnat
+*	Lynx support
+
+nkrs
+*	Opera speed dial help
+
+Nicolai
+*	Unecessary ChromeFrame header in ".htaccess"
+
+Nikolai
+*	Changing `static::` to `self::`
+*	Opera speed dial help
+
+oldtimes
+*	Original suggestion to transliterate thread titles
+
+Paul M
+*	Lock button sometimes showing by accident
+
+Philip Butkiewicz
+*	Fix up `<script>` outputting in DOMTemplate
+
+Richard van Velzen / rvanvelzen
+*	Running in a sub-folder
+*	Remove "/users/" from "robots.txt"
+*	CSS fixes
+*	Inline code, heading and divider markup implementation
+*	Fault with adding new threads
+*	Improved ".htaccess" compatibility with Mac OS
+*	URL parsing with subdomains containing a dash
+*	`$1` being stripped from code spans / blocks
+*	Use `rel="nofollow external"` on external links
+*	Duplicate appends
+*	Title-line self links (this was quite complex)
+*	Suggestion to improve error messages
+*	Closing bracket in URL when URL is last text in a quote
+*	Block quote regex fixes
+*	Post starting with code block doesn't show that block
+
+Sani
+*	Better tag matching when repairing output HTML
+*	Stickies not showing if no other threads
+*	Add leading '0' to "Expires" header to comply with spec
+*	Debugging DOMTemplate speed
+*	Suggestion for HiDPI graphics
+
+Steve Bir
+*	Pages not working in sub forums
+
+Temukki
+*	Delete page missing
+*	Timezone option
+
+Anybody else forgotten along the way, get in touch.
