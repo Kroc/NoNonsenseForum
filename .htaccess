@@ -177,5 +177,5 @@ FileETag None
 	# a sub-forum
 	RewriteCond %{REQUEST_URI} ^(/(?:[^\./&]+/)+)(?:[:+]\d+)?$
 	RewriteCond %{DOCUMENT_ROOT}%1 -d
-	RewriteRule ^((?:[^\./&]+/)+)(?::(\d+))?$ index.php?path=$1&page=$2 [QSA,L]
+	RewriteRule ^((?:[^\./&]+/)+)(?:[:+](\d+))?$ index.php?path=$1&page=$2 [QSA,L]
 </IfModule>
