@@ -216,6 +216,7 @@ Jon Gjengset / Jonhoo
 *	Original "Grayscale" theme
 *	Original mobile theme
 *	`$` alternative syntax for code blocks
+*	Read-locking of threads during writes
 *	Help with HTTPS support
 *	Raised issue with PHP short tags
 *	Delete message the same when deleting thread and post
@@ -227,8 +228,12 @@ Jose Pedro Arvela / jparvela
 macsupport.gr
 *	Regex backtrace limit
 
-Martijn / Zegnat
+Martijn
 *	Lynx support
+*	Use `rel="nofollow external"` on external links
+*	Improved ".htaccess" compatibility with Mac OS
+*	Title-line self links (this was quite complex)
+*	Duplicate appends
 
 nkrs
 *	Opera speed dial help
@@ -255,12 +260,8 @@ Richard van Velzen / rvanvelzen
 *	CSS fixes
 *	Inline code, heading and divider markup implementation
 *	Fault with adding new threads
-*	Improved ".htaccess" compatibility with Mac OS
 *	URL parsing with subdomains containing a dash
 *	`$1` being stripped from code spans / blocks
-*	Use `rel="nofollow external"` on external links
-*	Duplicate appends
-*	Title-line self links (this was quite complex)
 *	Suggestion to improve error messages
 *	Closing bracket in URL when URL is last text in a quote
 *	Block quote regex fixes
