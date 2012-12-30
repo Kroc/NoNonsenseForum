@@ -1,4 +1,4 @@
-NoNonsense Forum v23 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2012
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -220,6 +220,7 @@ Jon Gjengset / Jonhoo
 *	Help with HTTPS support
 *	Raised issue with PHP short tags
 *	Delete message the same when deleting thread and post
+*	Many HTML & CSS fixes
 
 Jose Pedro Arvela / jparvela
 *	Changing `static::` to `self::`
@@ -256,6 +257,7 @@ Philip Butkiewicz
 
 Richard van Velzen / rvanvelzen
 *	Running in a sub-folder
+*	HTTPS support
 *	Remove "/users/" from "robots.txt"
 *	CSS fixes
 *	Inline code, heading and divider markup implementation
