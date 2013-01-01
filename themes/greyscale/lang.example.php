@@ -107,8 +107,8 @@ HTML
 ,'#delete/h1'				=> 'Delete'				//delete form title
 
 ,'label@for="remove"/span'		=> 'Remove completely (moderators only)'
-,'#nnf_remove"/ul/li[1]'		=> 'The post will be removed completely from the thread, rather than blanked'
-,'#nnf_remove"/ul/li[2]'		=> 'Only posts on the last page of the thread can be removed completely (so as to not break permalinks)'
+,'#nnf_remove/ul/li[1]'			=> 'The post will be removed completely from the thread, rather than blanked'
+,'#nnf_remove/ul/li[2]'			=> 'Only posts on the last page of the thread can be removed completely (so as to not break permalinks)'
 
 ,'#delete/form/p/'.
  'label@for="submit"/span'		=> 'Delete'				//form submit button
