@@ -229,16 +229,17 @@ function safeTransliterate ($text) {
 		'pts'	=> '/[₧]/u',
 		//misc:
 		'degc'	=> '/[℃]/u',	'degf'  => '/[℉]/u',
-		'no'	=> '/[№]/u',	'tm'	=> '/[™]/u'
+		'no'	=> '/[№]/u',	'-tm'	=> '/[™]/u'
 	);
 	//do the manual transliteration first
 	$text = preg_replace (array_values ($translit), array_keys ($translit), $text);
 	
-	//flatten the text down to just a-z0-9 and dash, with underscores instead of spaces
+	//flatten the text down to just a-z0-9 underscore and dash for spaces
+	//(<www.mattcutts.com/blog/dashes-vs-underscores/>)
 	$text = preg_replace (
-		//remove punctuation	//replace non a-z	//deduplicate	//trim underscores from start & end
-		array ('/\p{P}/u',	'/[^_a-z0-9-]/i',	'/_{2,}/',	'/^_|_$/'),
-		array ('',		'_',			'_',		''),
+		//replace non a-z		//deduplicate	//trim from start & end
+		array ('/[^_a-z0-9-]/i',	'/-{2,}/',	'/^-|-$/'),
+		array ('-',			'-',		''       ),
 		
 		//attempt transliteration with PHP5.4's transliteration engine (best):
 		//(this method can handle near anything, including converting chinese and arabic letters to ASCII.
