@@ -159,8 +159,10 @@ function isMember ($name) {
 function safeGet ($data, $len=0, $trim=true) {
 	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
 	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
-	//remove useless whitespace. can be skipped (i.e for passwords)
-	if ($trim) $data = trim ($data);
+	//remove useless whitespace. can be skipped (i.e for passwords).
+	//PHP `trim` doesn't cover a wide variety of unicode; the private-use area is left, should the Apple logo be used
+	//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
+	if ($trim) $data = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $data);
 	//clip the length in case of a fake crafted request
 	return $len ? mb_substr ($data, 0, $len) : $data;
 }
