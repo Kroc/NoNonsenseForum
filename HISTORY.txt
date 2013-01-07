@@ -1,6 +1,7 @@
 v24	
-*	Pages were not working on sub-forums
+*	Pages were not working on sub-forums, with thanks to Steve Bir
 *	Removed extra space that was being added around code blocks
+*	Fixed critical typo in "lang.example.php" with thanks to "gardener"
 
 v23	24.DEC.12
 *	Duplicate appends are now ignored

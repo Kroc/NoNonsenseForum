@@ -1,4 +1,4 @@
-NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2012
+NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -202,6 +202,9 @@ David Hund
 fyra
 *	IDN URLs
 *	UTF-8 characters no longer hex-encoded in the output
+
+gardener
+*	Critical typo in "lang.example.php"
 
 JBark
 *	Use `clearstatcache` to ensure index ordering is right
