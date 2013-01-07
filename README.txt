@@ -238,6 +238,8 @@ Martijn
 *	Improved ".htaccess" compatibility with Mac OS
 *	Title-line self links (this was quite complex)
 *	Duplicate appends
+*	Help with various transliteration aspects
+*	Better whitespace trimming
 
 nkrs
 *	Opera speed dial help
