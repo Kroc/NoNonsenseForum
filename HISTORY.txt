@@ -1,6 +1,9 @@
 v24	
 *	Pages were not working on sub-forums, with thanks to Steve Bir
 *	Removed extra space that was being added around code blocks
+*	Fixed duplicate ID `nnf_post`, with thanks to Bruno Héridet
+	NOTE: `<article id="nnf_post" class="...` was changed to `<article class="nnf_post ...` in "append.html",
+	"delete.html" and "thread.html". No changes required in the CSS.
 *	Fixed critical typo in "lang.example.php" with thanks to "gardener"
 
 v23	24.DEC.12
