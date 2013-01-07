@@ -163,7 +163,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	)->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
+		'.nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
 	
 	//the append form:
 	))->set (array (
@@ -307,7 +307,7 @@ if (isset ($_GET['delete'])) {
 	)->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
-		'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
+		'.nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
 	
 	//the authentication form:
 	))->set (array (
@@ -484,7 +484,7 @@ $template->set (array (
 ))->remove (array (
 	//if the user who made the post is a mod, also mark the whole post as by a mod
 	//(you might want to style any posts made by a mod differently)
-	'#nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false,
+	'.nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false,
 	
 	//append / delete links?
 	'#nnf_post-append, #nnf_post-delete' => !CAN_REPLY
@@ -492,7 +492,7 @@ $template->set (array (
 
 try {	//insert the post-text, dealing with an invalid HTML error
 	$template->setValue ('#nnf_post-text', $post->description, true);
-	$template->remove (array ('#nnf_post@class' => 'nnf_error'));
+	$template->remove (array ('.nnf_post@class' => 'nnf_error'));
 } catch (Exception $e) {
 	//if the HTML was invalid, replace with the corruption message
 	$template->setValue ('#nnf_post-text', THEME_HTML_ERROR, true);

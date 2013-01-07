@@ -196,6 +196,9 @@ bh8(dot)vn & zuchto
 *	Suggestion to improve transliteration further
 *	Fallback if "iconv" is missing
 
+Bruno Héridet
+*	Duplicate ID in the HTML
+
 David Hund
 *	Code typo in `DOMDocument`
 
