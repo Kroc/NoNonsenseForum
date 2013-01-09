@@ -1,10 +1,19 @@
 v24	
-*	Pages were not working on sub-forums, with thanks to Steve Bir
-*	Removed extra space that was being added around code blocks
+*	Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
+	not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:
+	-	These strings are now stored in `$LANG['']` (the default language) in 'theme.php' instead of, as before,
+		as constants in 'theme.config.default.php', therefore it is advised that you make a new 'theme.config.php'
+		file by making a copy of the updated 'theme.config.default.php' file
+	-	If you've modified the 'theme.php' file at all, you should update to the new version
+	-	If you've written any translations, you will need to update those with the new set of strings at the top
+		of 'lang.example.php'
 *	Fixed duplicate ID `nnf_post`, with thanks to Bruno Héridet
 	NOTE: `<article id="nnf_post" class="...` was changed to `<article class="nnf_post ...` in "append.html",
 	"delete.html" and "thread.html". No changes required in the CSS.
 *	Fixed critical typo in "lang.example.php" with thanks to "gardener"
+*	Pages were not working on sub-forums, with thanks to Steve Bir
+*	Removed extra space that was being added around code blocks
+
 
 v23	24.DEC.12
 *	Duplicate appends are now ignored
