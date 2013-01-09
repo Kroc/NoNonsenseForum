@@ -113,8 +113,9 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 			$post->description = formatText (
 				//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
 				//to ensure that appended title links do not duplicate title links in the existing text, we
-				//convert the original HTML back to markup and add the appended text (see 'theme.config.php'
-				//if it exists, otherwise 'theme.config.default.php' for `THEME_APPENDED`)
+				//convert the original HTML back to markup and add the appended text.
+				//(`THEME_APPENDED` is defined in 'start.php' and is a shorthand to the translated string
+				// used as a divider when appending text to a post)
 				strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
 					safeHTML (NAME), date (DATE_FORMAT, time ())
 				)."\n\n".TEXT,
@@ -381,8 +382,6 @@ if (CAN_REPLY && AUTH && TEXT) {
 		$items = $rss->repeat ('/rss/channel/item');
 		$items->set (array (
 			//add the "RE:" prefix, and reply number to the title
-			//(see 'theme.config.php' if it exists, otherwise 'theme.config.deafult.php',
-			// in the theme's folder for the definition of `THEME_RE`)
 			'./title'		=> sprintf (THEME_RE,
 							count ($xml->channel->item),	//number of the reply
 							$xml->channel->title		//thread title
@@ -438,7 +437,7 @@ $template = prepareTemplate (
 	THEME_ROOT.'thread.html',
 	//canonical URL of this thread
 	url (PATH_URL, $FILE, $PAGE),
-	//HTML title: (this is defined in 'theme.config.php' if it exists, else 'theme.config.default.php')
+	//HTML title:
 	sprintf (THEME_TITLE,
 		//title of the thread, obviously
 		$xml->channel->title,

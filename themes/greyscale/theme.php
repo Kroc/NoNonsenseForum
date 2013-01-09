@@ -1,9 +1,71 @@
-<?php //theme-specific template functions
+<?php //theme-specific template strings / functions
 /* ====================================================================================================================== */
 /* NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
+
+/* translatable strings for the default language
+   ====================================================================================================================== */
+/* the default language is hard-coded into the templates, we override it with search/replace (see 'lang.example.php')
+   the following are a set of dynamic strings which can't be stored in the HTML, these are also overrided by language
+   translations (see 'lang.example.php')
+*/
+
+//name of the language, as the user will use to select it;
+//therefore should be the name of the language, written in that language - i.e. "Espanol" (Spanish)
+$LANG['']['name']    		= 'English';
+
+//the `date` format code used to print human readable dates into the HTML,
+//see <php.net/manual/en/function.date.php> for documentation
+$LANG['']['date_format'] 	= 'd M ’y · H:i';
+
+//the following template replacements are done using `sprintf`,
+//see <php.net/manual/en/function.sprintf.php> for details
+
+//the HTML title for index and thread pages
+//"%1$s" - the title
+//"%2$s" - if on page 2 or greater, `THEME_TITLE_PAGENO` will be inserted here, otherwise it will be removed
+$LANG['']['title']		= '%1$s%2$s';
+
+//the page number, added to the titles of index pages and threads
+//"%1$u" - the page number
+$LANG['']['title_pagenum']	= ' + %1$u';
+
+//the title for append pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+$LANG['']['title_append']	= 'Append to %1$s';
+
+//the title for delete pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+$LANG['']['title_delete']	= 'Delete %1$s?';
+
+//reply number shown in threads as a permalink
+//"%1$u" - the number of the reply
+$LANG['']['replynum']		= '#%1$u.';
+
+//title format for each reply
+//"%1$u" - number of the reply
+//"%2$s" - the thread title
+$LANG['']['re']			= 'RE[%1$u]: %2$s';
+
+//text used when appending to a post:
+//(markup can be used as this is run through `formatText`)
+//"%1$s" - username of who posted
+//"%2$s" - human-readable time, as per `DATE_FORMAT`
+$LANG['']['appended']		= ':: @%1$s added on %2$s';
+
+//HTML that replaces a post when it's deleted (this is not rectroactive)
+$LANG['']['delete_user']	= '<p>This post was deleted by its owner</p>';
+$LANG['']['delete_mod']		= '<p>This post was deleted by a moderator</p>';
+
+//HTML used to replace an invalid post:
+$LANG['']['corrupted']		= '<p>This post is corrupted and cannot be displayed</p>';
+
+
+/* theme-specific templating
+   ====================================================================================================================== */
+/* these functions are used to do additional templating usually unique to this particular theme */
 
 //this function is called just before a templated page is outputted so that you have an opportunity to do any extra
 //templating of your own. the `$template` object passed in is a DOMTemplate class, see '/lib/domtemplate/' for code
