@@ -25,9 +25,57 @@ how to create a theme translation:
 
 //name of the language, as the user will use to select it;
 //therefore should be the name of the language, written in that language - i.e. "Espanol" (Spanish)
-$LANG['en']['name']    = 'English';
+$LANG['en']['name']    		= 'English';
 
-$LANG['en']['strings'] = array (
+//the `date` format code used to print human readable dates into the HTML,
+//see <php.net/manual/en/function.date.php> for documentation
+$LANG['en']['date_format'] 	= 'd M ’y · H:i';
+
+//the following template replacements are done using `sprintf`,
+//see <php.net/manual/en/function.sprintf.php> for details
+
+//the HTML title for index and thread pages
+//"%1$s" - the title
+//"%2$s" - if on page 2 or greater, `THEME_TITLE_PAGENO` will be inserted here, otherwise it will be removed
+$LANG['en']['title']		= '%1$s%2$s';
+
+//the page number, added to the titles of index pages and threads
+//"%1$u" - the page number
+$LANG['en']['title_pagenum']	= ' + %1$u';
+
+//the title for append pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+$LANG['en']['title_append']	= 'Append to %1$s';
+
+//the title for delete pages
+//"%1$s" - the post title (will come from `THEME_RE` for replies)
+$LANG['en']['title_delete']	= 'Delete %1$s?';
+
+//reply number shown in threads as a permalink
+//"%1$u" - the number of the reply
+$LANG['en']['replynum']		= '#%1$u.';
+
+//title format for each reply
+//"%1$u" - number of the reply
+//"%2$s" - the thread title
+$LANG['en']['re']		= 'RE[%1$u]: %2$s';
+
+//text used when appending to a post:
+//(markup can be used as this is run through `formatText`)
+//"%1$s" - username of who posted
+//"%2$s" - human-readable time, as per `DATE_FORMAT`
+$LANG['en']['appended']		= ':: @%1$s added on %2$s';
+
+//HTML that replaces a post when it's deleted (this is not rectroactive)
+$LANG['en']['delete_user']	= '<p>This post was deleted by its owner</p>';
+$LANG['en']['delete_mod']	= '<p>This post was deleted by a moderator</p>';
+
+//HTML used to replace an invalid post:
+$LANG['en']['corrupt']		= '<p>This post is corrupted and cannot be displayed</p>';
+
+
+//the translation strings
+$LANG['en']['strings']		= array (
 
 /* xpath/shorthand:			replacement text:			description:
    ====================================================================================================================== */

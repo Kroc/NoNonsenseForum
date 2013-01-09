@@ -73,11 +73,10 @@ function prepareTemplate (
 	//before we start changing element content, we run through the language translation, if necessary;
 	//if the current user-chosen language is in the list of available language translations for this theme,
 	//execute the array of XPath string replacements in the translation. see the 'lang.*.php' files for details
-	if (@$LANG[LANG]) $template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG);
+	if (isset ($LANG[LANG]['strings'])) $template->set ($LANG[LANG]['strings'], true)->setValue ('/html/@lang', LANG);
 	//template the language chooser
 	if (THEME_LANGS) {
-		//the first item in the template should be your default language (mark it as selected if LANG is not blank)
-		$item = $template->repeat ('.nnf_lang')->remove (array ('./@selected' => LANG))->next ();
+		$item = $template->repeat ('.nnf_lang');
 		//build the list for each additional language
 		foreach ($LANG as $code => $lang) $item->set (array (
 			'./@value'	=> $code,

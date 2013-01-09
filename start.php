@@ -46,10 +46,25 @@
 	
 	THEME_ROOT	/  ?	full server path to the currently selected theme
 	
+	-- everything in 'theme.php' (some dynamic strings for the default language) --
+	
 	-- everything in 'theme.config.php' (if present) and 'theme.config.default.php' --
 	
-	$LANG			array of language translations. see 'lang.example.php' for details
-	LANG			currently selected language, '' for default
+	-- depending on `THEME_LANGS`, the contents of the 'lang.*.php' files --
+	
+	LANG			currently user-selected language, '' for default
+	
+	DATE_FORMAT		the human-readable date format of the currently user-selected language
+	THEME_TITLE		the `sprintf`-formatted `<title>` string of index / thread pages in the selected language
+	THEME_TITLE_PAGENO	the `sprintf`-formatted optional page-number portion of the title, in the selected lang.
+	THEME_TITLE_APPEND	the `sprintf`-formatted `<title>` string for the append page, in the selected language
+	THEME_TITLE_DELETE	the `sprintf`-formatted `<title>` string for the delete page, in the selected language
+	THEME_REPLYNO		the `sprintf`-formatted string for post numbering in threads, in the selected language
+	THEME_RE		the `sprintf`-formatted prefix for reply titles (e.g. "RE[1]:..."), in the selected lang.
+	THEME_APPENDED		the plain-text markup divider inserted when appending posts, in the forum's default lang.
+	THEME_DEL_USER		the HTML message used when a user deletes their own post, in the forum's default language
+	THEME_DEL_MOD		the HTML message used when a mod deletes a post, in the forum's default langugae
+	THEME_HTML_ERROR	the HTML message used when a post is corrupt (malformed HTML), in the forum's default lang.
 */	
 
 
@@ -93,16 +108,16 @@ define ('FORUM_PATH', safeURL (str_replace (
 //(`FORUM_TIMEZONE` is set in the config and defaults to 'UTC')
 date_default_timezone_set (FORUM_TIMEZONE);
 
-//the full URL of the site is dependant on HTTPS configuration, so we wait until now to define it
+//the full URL of the site is dependent on HTTPS configuration, so we wait until now to define it
 define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
 	(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//- if HTTPS is enforced, links in RSS will use it
 	'://'.$_SERVER['HTTP_HOST']
 );
 
 //is the htaccess working properly?
-//(.htaccess sets this variable for us)
+//('.htaccess' sets this variable for us)
 define ('HTACCESS', (bool) @$_SERVER['HTTP_HTACCESS']);
-//if ".htaccess" is missing or disabled, and the "users" folder is in an insecure location, warn the site admin to move it
+//if '.htaccess' is missing or disabled, and the 'users' folder is in an insecure location, warn the site admin to move it
 if (!HTACCESS && FORUM_USERS == 'users') require FORUM_LIB.'error_htaccess.php';
 
 /* common input
@@ -215,6 +230,8 @@ define ('IS_MEMBER', AUTH && isMember (NAME));
 
 /* theme & translation
    ====================================================================================================================== */
+/* load the theme configuration
+   ---------------------------------------------------------------------------------------------------------------------- */
 //shorthand to the server-side location of the particular theme folder (this gets used a lot)
 define ('THEME_ROOT', FORUM_ROOT.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATOR.FORUM_THEME.DIRECTORY_SEPARATOR);
 //load the theme-specific functions
@@ -224,11 +241,13 @@ define ('THEME_ROOT', FORUM_ROOT.DIRECTORY_SEPARATOR.'themes'.DIRECTORY_SEPARATO
 //include the theme defaults
 @(include THEME_ROOT.'theme.config.default.php') or require FORUM_LIB.'error_configtheme.php';
 
+/* load translations and select one
+   ---------------------------------------------------------------------------------------------------------------------- */
 //include the language translations
-$LANG = array ();
 foreach (explode (' ', THEME_LANGS) as $lang) @include THEME_ROOT."lang.$lang.php";
 
 //get / set the language to use
+//(note that the actual translation of the HTML is done in `prepareTemplate` in 'lib/functions.php')
 define ('LANG',
 	//if the language selector has been used to choose a language:
 	isset ($_POST['lang']) && setcookie (
@@ -246,6 +265,23 @@ define ('LANG',
 	//all else failing, use the default language
 	: THEME_LANG))
 );
+
+//for curtness, and straight-forward compatibility with older versions of NNF, we shorthand these translations;
+//the defaults (`LANG`='') are defined in 'theme.php' and overrided if the user selects a language ('lang.*.php') 
+//(the purpose of each of these constants are described in the list at the top of this page)
+@define ('DATE_FORMAT',	$LANG[LANG]['date_format']);
+@define ('THEME_TITLE',	$LANG[LANG]['title']);
+@define ('THEME_TITLE_PAGENO',	$LANG[LANG]['title_pagenum']);
+@define ('THEME_TITLE_APPEND',	$LANG[LANG]['title_append']);
+@define ('THEME_TITLE_DELETE',	$LANG[LANG]['title_delete']);
+@define ('THEME_REPLYNO',	$LANG[LANG]['replynum']);
+//these texts get permenantly inserted into the RSS, so we don't refer to the user-selected language
+//but the default language set for the whole forum
+@define ('THEME_RE',		$LANG[THEME_LANG]['re']);
+@define ('THEME_APPENDED',	$LANG[THEME_LANG]['appended']);
+@define ('THEME_DEL_USER',	$LANG[THEME_LANG]['delete_user']);
+@define ('THEME_DEL_MOD', 	$LANG[THEME_LANG]['delete_mod']);
+@define ('THEME_HTML_ERROR',	$LANG[THEME_LANG]['corrupted']);
 
 
 /* send HTTP headers

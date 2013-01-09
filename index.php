@@ -106,7 +106,8 @@ $template = prepareTemplate (
 	THEME_ROOT.'index.html',
 	//the canonical URL of this page
 	url (PATH_URL, '', $PAGE),
-	//`THEME_TITLE` is defined in 'theme.config.php' if it exists, else 'theme.config.default.php'
+	//the HTML title is both templated and translatable. `THEME_TITLE` is defined in 'start.php' and is a shorthand to
+	//either the default language string in 'theme.php' or the translated string in 'lang.*.php'
 	sprintf (THEME_TITLE,
 		//if in a sub-forum use the folder name, else the site's name
 		PATH ? SUBFORUM : FORUM_NAME,
