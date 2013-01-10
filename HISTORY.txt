@@ -1,4 +1,4 @@
-v24	
+v24	10.01.13
 *	Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
 	not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:
 	-	These strings are now stored in `$LANG['']` (the default language) in 'theme.php' instead of, as before,
