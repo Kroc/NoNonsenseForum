@@ -14,7 +14,6 @@ v24	10.01.13
 *	Pages were not working on sub-forums, with thanks to Steve Bir
 *	Removed extra space that was being added around code blocks
 
-
 v23	24.DEC.12
 *	Duplicate appends are now ignored
 *	Title lines (":: ...") within posts now link to themselves, allowing external links directly to title lines
