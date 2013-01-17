@@ -243,6 +243,7 @@ Martijn
 *	Duplicate appends
 *	Help with various transliteration aspects
 *	Better whitespace trimming
+*	Help fixing missing "?" in no-HTACCESS URLs
 
 nkrs
 *	Opera speed dial help
@@ -283,6 +284,9 @@ Sani
 *	Add leading '0' to "Expires" header to comply with spec
 *	Debugging DOMTemplate speed
 *	Suggestion for HiDPI graphics
+
+starbeamrainbowlab
+*	Discovering missing "?" in no-HTACCESS URLs
 
 Steve Bir
 *	Pages not working in sub forums
