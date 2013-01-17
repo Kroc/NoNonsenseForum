@@ -32,7 +32,7 @@ function url (
 	//if htaccess is off, fallback to real URLs:
 	:	FORUM_PATH.
 		//which page to point to; if a file is given, it's always a thread
-		($file ? 'thread.php' : 'index.php').
+		($file ? 'thread.php' : 'index.php').rtrim ('?'.
 		//concatenate a query string
 		implode ('&', array_filter (array (
 			//actions without an ID
@@ -40,12 +40,12 @@ function url (
 			//append or delete post
 			$action_id ? "$action=$action_id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root
-			'path='.$path,
+			$path   ? "path=$path" : '',
 			//if a file is specified (view thread, append, delete &c.)
 			$file	? "file=$file" : '',
 			//page number
 			$page	? "page=$page" : ''
-		)))
+		))), '?')
 	;
 }
 
