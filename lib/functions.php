@@ -500,6 +500,12 @@ function formatText (
 	return $text;
 }
 
+//reverse the text formatting, turning HTML back into plain-text markup,
+//this is used to append text to existing posts whilst ensuring unique heading IDs
+function unformatText ($text) {
+	return html_entity_decode (strip_tags ($text), ENT_COMPAT, 'UTF-8');
+}
+
 /* ====================================================================================================================== */
 
 //regenerate a folder's RSS file (all changes happening in a folder)

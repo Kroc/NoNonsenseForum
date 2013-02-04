@@ -288,6 +288,9 @@ Sani
 starbeamrainbowlab
 *	Discovering missing "?" in no-HTACCESS URLs
 
+Stephen Taylor
+*	Reported bug with appends double-encoding HTML
+
 Steve Bir
 *	Pages not working in sub forums
 

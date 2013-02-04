@@ -107,8 +107,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	)) {
 		//check for duplicate append:
 		if (	//normalise the original post and the append, and check the end of the original for a match
-			substr (strip_tags ($post->description), -strlen ($_ = strip_tags (formatText (TEXT)))) !== $_
-		) {
+			substr (unformatText ($post->description), -strlen ($_ = unformatText (formatText (TEXT)))) !== $_
+		) {	
 			//append the given text to the reply
 			$post->description = formatText (
 				//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
@@ -116,7 +116,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 				//convert the original HTML back to markup and add the appended text.
 				//(`THEME_APPENDED` is defined in 'start.php' and is a shorthand to the translated string
 				// used as a divider when appending text to a post)
-				strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
+				unformatText ($post->description)."\n\n".sprintf (THEME_APPENDED,
 					safeHTML (NAME), date (DATE_FORMAT, time ())
 				)."\n\n".TEXT,
 				//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
