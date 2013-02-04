@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v15 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v16 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
@@ -13,7 +13,7 @@
 	setValue (query, value, [asHTML])	change a single HTML value with an XPath query
 	addClass (query, new_class)		add a class to an HTML element
 	remove (query)				remove one or more HTML elements, attributes or classes
-	html ()					get the current HTML code
+	html					the current code formatted as HTML
 	repeat (query)				return one (or more) elements as sub-templates
 		
 		next ()				append the sub-template to the list and reset its content
@@ -36,7 +36,7 @@ class DOMTemplate extends DOMTemplateNode {
 		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
 		
 		//load the template file to work with:
-		//* this must be valid XML (but not XHTML)
+		//* this must be valid XML (but not XHTML, i.e with an XMLNS)
 		//* must have only one root (wrapping) element; e.g. `<html>`
 		$this->DOMDocument = new DOMDocument ();
 		if (!$this->DOMDocument->loadXML (
@@ -44,7 +44,7 @@ class DOMTemplate extends DOMTemplateNode {
 			//see <php.net/manual/en/domdocument.loadxml.php#94291>
 			(!$this->keep_prolog ? "<?xml version=\"1.0\" encoding=\"utf-8\"?>" : '').
 			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
-			self::html_entity_decode ($xml), @LIBXML_COMPACT | @LIBXML_NONET
+			self::html_entity_decode ($xml), @LIBXML_COMPACT || @LIBXML_NONET
 		)) trigger_error (
 			"Template '$filepath' is invalid XML", E_USER_ERROR
 		);
@@ -53,17 +53,19 @@ class DOMTemplate extends DOMTemplateNode {
 		parent::__construct ($this->DOMDocument->documentElement, $namespaces);
 	}
 	
-	/* html : output the complete HTML
-	   -------------------------------------------------------------------------------------------------------------- */
-	public function html () {
+	public function __get ($property) { switch ($property) {
+		/* html : output as formatted HTML for a browser (which won't be valid strict-XML)
+		   ------------------------------------------------------------------------------------------------------ */
+		case 'html':
 		//should we remove the XML prolog?
 		return	!$this->keep_prolog
-			//we defer to DOMTemplateNode's `html` method which returns the HTML for any node,
+			//we defer to DOMTemplateNode's `html` property which returns the HTML for any node,
 			//the top-level template only needs to consider the prolog
-			? preg_replace ('/^<\?xml.*?>\n/', '', parent::html ())
-			: parent::html ()
+			? preg_replace ('/^<\?xml[^<]*>\n/', '', parent::__get ('html'))
+			: parent::__get ('html')
 		;
-	}
+		break;
+	} }
 }
 
 /* class DOMTemplateNode
@@ -347,21 +349,23 @@ abstract class DOMTemplateNode {
 		} return $this;
 	}
 	
-	/* html : return the formatted source of the classes' bound node and children
-	   -------------------------------------------------------------------------------------------------------------- */
-	public function html () {
+	public function __get ($property) { switch ($property) {
+		/* html : return the formatted source of the classes' bound node and children
+		   ------------------------------------------------------------------------------------------------------ */
+		case 'html':
 		//fix and clean DOM's XML output:
 		return preg_replace (
 			//add space to self-closing	//fix broken self-closed tags
-			array ('/<(.*?[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
+			array ('/<([^<]*[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
 			array ('<$1 />',		'<$1$2></$1>'),
 			$this->DOMNode->ownerDocument->saveXML (
 				//if you’re calling this function from the template-root,
-				//don’t specify a node otherwise the DOCTYPE won’t be included
-				get_class ($this) == 'DOMTemplate'  ? NULL : $this->DOMNode
+				//we don’t specify a node otherwise the DOCTYPE won’t be included
+				get_class ($this) == 'DOMTemplate' ? NULL : $this->DOMNode
 			)
 		);
-	}
+		break;
+	} }
 	
 	/* repeat : iterate a node
 	   -------------------------------------------------------------------------------------------------------------- */

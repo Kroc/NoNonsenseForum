@@ -532,7 +532,7 @@ function indexRSS () {
 			'./category[.="deleted"]' => !$item->xpath ('category[.="deleted"]'),
 		))->next ()
 	;
-	file_put_contents ('index.xml', $rss->html ());
+	file_put_contents ('index.xml', $rss->html);
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -567,7 +567,7 @@ function indexRSS () {
 			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
 		))->next ()
 	;
-	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml->html ());
+	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml->html);
 	
 	//you saw nothing, right?
 	clearstatcache ();

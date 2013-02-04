@@ -1,3 +1,6 @@
+v25	
+*	Updated to DOMTemplate v16, `html` is now a property, not a method
+
 v24	10.01.13
 *	Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
 	not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:
