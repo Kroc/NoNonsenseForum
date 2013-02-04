@@ -1,4 +1,6 @@
 v25	
+*	Fixed unable to delete corrupted posts unless signed in
+	NOTE: the class `nnf_error` was added to `<article class="nnf_post nnf_op">` in "delete.html"
 *	Updated to DOMTemplate v16, `html` is now a property, not a method
 
 v24	10.01.13

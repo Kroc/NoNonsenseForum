@@ -303,9 +303,7 @@ if (isset ($_GET['delete'])) {
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setValue (
-		'#nnf_post-text', $post->description, true
-	)->remove (array (
+	))->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
 		'.nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
@@ -332,6 +330,14 @@ if (isset ($_GET['delete'])) {
 		//if the name is valid, remove the error message
 		'#nnf_error-name-delete' => !FORM_SUBMIT || NAME
 	));
+	
+	try {	//insert the post-text, dealing with an invalid HTML error
+		$template->setValue ('#nnf_post-text', $post->description, true);
+		$template->remove (array ('.nnf_post@class' => 'nnf_error'));
+	} catch (Exception $e) {
+		//if the HTML was invalid, replace with the corruption message
+		$template->setValue ('#nnf_post-text', THEME_HTML_ERROR, true);
+	}
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
