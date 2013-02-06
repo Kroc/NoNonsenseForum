@@ -14,6 +14,7 @@
 	addClass (query, new_class)		add a class to an HTML element
 	remove (query)				remove one or more HTML elements, attributes or classes
 	html					the current code formatted as HTML
+	xml					the current code as strict-XML (for RSS &c.)
 	repeat (query)				return one (or more) elements as sub-templates
 		
 		next ()				append the sub-template to the list and reset its content
@@ -64,6 +65,12 @@ class DOMTemplate extends DOMTemplateNode {
 			? preg_replace ('/^<\?xml[^<]*>\n/', '', parent::__get ('html'))
 			: parent::__get ('html')
 		;
+		break;
+		
+		/* xml : output as strict XML (no DOCTYPE), for RSS &c.
+		   ------------------------------------------------------------------------------------------------------ */
+		case 'xml':
+		return parent::__get ('xml');
 		break;
 	} }
 }
@@ -349,23 +356,34 @@ abstract class DOMTemplateNode {
 		} return $this;
 	}
 	
-	public function __get ($property) { switch ($property) {
-		/* html : return the formatted source of the classes' bound node and children
-		   ------------------------------------------------------------------------------------------------------ */
-		case 'html':
-		//fix and clean DOM's XML output:
-		return preg_replace (
-			//add space to self-closing	//fix broken self-closed tags
-			array ('/<([^<]*[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
-			array ('<$1 />',		'<$1$2></$1>'),
-			$this->DOMNode->ownerDocument->saveXML (
-				//if you’re calling this function from the template-root,
-				//we don’t specify a node otherwise the DOCTYPE won’t be included
-				get_class ($this) == 'DOMTemplate' ? NULL : $this->DOMNode
-			)
+	public function __get ($property) {
+		//get the document's code, we'll process it differently depending on desired output format
+		$text = $this->DOMNode->ownerDocument->saveXML (
+			//if you’re calling this function from the template-root we don’t specify a node,
+			//otherwise the DOCTYPE / XML prolog won’t be included
+			get_class ($this) == 'DOMTemplate' ? NULL : $this->DOMNode
 		);
-		break;
-	} }
+		
+		switch ($property) {
+			/* html : return the formatted source of the classes' bound node and children
+			   ---------------------------------------------------------------------------------------------- */
+			case 'html':
+			//fix and clean DOM's XML into HTML:
+			return preg_replace (
+				//add space to self-closing	//fix broken self-closed tags
+				array ('/<([^<]*[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
+				array ('<$1 />',		'<$1$2></$1>'),
+				$text
+			);
+			break;
+			
+			/* xml : return strict-XML (for RSS &c.)
+			   ---------------------------------------------------------------------------------------------- */
+			case 'xml':
+			return $text;
+			break;
+		}
+	}
 	
 	/* repeat : iterate a node
 	   -------------------------------------------------------------------------------------------------------------- */

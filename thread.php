@@ -419,7 +419,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		))->next ();
 		
 		//write the file: first move the write-head to 0, remove the file's contents, and then write new one
-		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->html);
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->xml);
 	}
 	
 	//close the lock / file

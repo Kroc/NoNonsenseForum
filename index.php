@@ -56,7 +56,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	
-	file_put_contents ("$file.rss", $rss->html) or require FORUM_LIB.'error_permissions.php';
+	file_put_contents ("$file.rss", $rss->xml) or require FORUM_LIB.'error_permissions.php';
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
