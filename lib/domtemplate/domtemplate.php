@@ -367,14 +367,22 @@ abstract class DOMTemplateNode {
 		switch ($property) {
 			/* html : return the formatted source of the classes' bound node and children
 			   ---------------------------------------------------------------------------------------------- */
-			case 'html':
 			//fix and clean DOM's XML into HTML:
-			return preg_replace (
-				//add space to self-closing	//fix broken self-closed tags
-				array ('/<([^<]*[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
-				array ('<$1 />',		'<$1$2></$1>'),
-				$text
-			);
+			case 'html':
+			
+			//add space to self-closing tags, only beneficial for prettiness and very old browsers
+			$text = preg_replace ('/<([^<]*[^ ])\/>/s', '<$1 />', $text);
+			//fix broken self-closed tags; e.g. `<script ...></script>` will automatically be converted to
+			//`<script ... />` on loading the document, this breaks in browsers so we have to fix it on output
+			$text = preg_replace ('/<(div|[ou]l|textarea|script)([^>]*) ?\/>/i', '<$1$2></$1>', $text);
+			//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
+			//this needs to be repeated until none are left as we must anchor each to the opening bracket of
+			//the element, otherwise content text might be hit too
+			while (preg_match ('/(<[^>]+)([a-z-]+)=([\'"]?)\2\3/i', $text, $m, PREG_OFFSET_CAPTURE)) {
+				$text =substr_replace ($text, $m[1][0].$m[2][0], $m[0][1], strlen ($m[0][0]));
+			}
+			
+			return $text;
 			break;
 			
 			/* xml : return strict-XML (for RSS &c.)
