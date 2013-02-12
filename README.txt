@@ -294,6 +294,9 @@ Stephen Taylor
 Steve Bir
 *	Pages not working in sub forums
 
+TCB
+*	iOS testing for the rotation / zooming bug
+
 Temukki
 *	Delete page missing
 *	Timezone option

@@ -1,4 +1,5 @@
 v25	
+*	Fixed iOS rotation / zooming with the help of TCB
 *	Fixed appends double-encoding HTML, with thanks to Stephen Taylor
 *	Fixed unable to delete corrupted posts unless signed in
 	NOTE: the class `nnf_error` was added to `<article class="nnf_post nnf_op">` in "delete.html"
