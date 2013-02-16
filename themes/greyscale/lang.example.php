@@ -190,12 +190,12 @@ HTML
 			or a designated moderator.
 HTML
 ,'#nnf_error-none-reply'		=> <<<HTML
-			To delete this post you must be either the original author or a designated moderator.<br />
+			To delete this post you must be either the original author or a designated moderator.<br>
 			The content of the post will be removed but the name and date will remain.
 HTML
 ,'#nnf_error-newbies'			=> <<<HTML
 			<!-- if the `FORUM_NEWBIES` option is false, only existing users can post -->
-			Only registered users can post.<br />No new registrations are allowed.
+			Only registered users can post.<br>No new registrations are allowed.
 HTML
 ,'#nnf_error-title'			=> <<<HTML
 			You need to enter the title of your new discussion thread.
@@ -293,7 +293,7 @@ YES:	email@email.com
 
 <h2 id="dividers">Dividers:</h2>
 <p>
-	To draw a line across your text, use three or more dashes:<br />
+	To draw a line across your text, use three or more dashes:<br>
 	(this should be on its own line, with a blank line before and after)
 </p>
 <pre>
@@ -305,7 +305,7 @@ YES:	email@email.com
 	To quote somebody else's text, place it on its own line with quote marks at the beginning and end.
 	This applies even if the quoted text is more than one paragraph, or contains quotes itself.
 </p><p>
-	There must be a blank line between any quote and other text:<br />
+	There must be a blank line between any quote and other text:<br>
 	(a single line-break will not work)
 </p>
 <pre>
@@ -359,7 +359,7 @@ YES:	"This is the first quote
 	This is the first quote"
 </pre>
 <p>	
-	You may use three different kinds of quote marks:<br />
+	You may use three different kinds of quote marks:<br>
 	(but you can’t mismatch the ends)
 </p>
 <pre>
@@ -455,7 +455,7 @@ HTML
 <h2 id="stored">Information Stored:</h2>
 <ul>
 	<li><p>
-		The name and message you provide is stored as part of the discussion feed and made public.<br />
+		The name and message you provide is stored as part of the discussion feed and made public.<br>
 		The name can be any text and you do not have to use your real name or any identifying moniker
 	</p></li>
 	<li><p>
@@ -515,11 +515,11 @@ HTML
 HTML
 
 ,'/html/body/footer/p[1]'		=> <<<HTML
-	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br>
 	<a href="/privacy.php">privacy policy</a>
 HTML
 ,'.nnf_signed-in'			=> <<<HTML
-	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
+	Signed in as<br><b class="nnf_signed-in-name">Kroc</b>
 HTML
 ,'.nnf_signed-out/input@value'		=> 'Sign in'
 

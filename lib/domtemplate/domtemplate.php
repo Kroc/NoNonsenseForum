@@ -44,10 +44,10 @@ class DOMTemplate extends DOMTemplateNode {
 			//if the document doesn't already have an XML prolog, add one to avoid mangling unicode characters
 			//see <php.net/manual/en/domdocument.loadxml.php#94291>
 			(!$this->keep_prolog ? "<?xml version=\"1.0\" encoding=\"utf-8\"?>" : '').
-			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
-			self::html_entity_decode ($xml), @LIBXML_COMPACT || @LIBXML_NONET
+			//convert the HTML into safe XML for the DOM
+			self::toXML ($xml), @LIBXML_COMPACT || @LIBXML_NONET
 		)) trigger_error (
-			"Template '$filepath' is invalid XML", E_USER_ERROR
+			"Source is invalid XML", E_USER_ERROR
 		);
 		//set the root node for all xpath searching
 		//(handled all internally by `DOMTemplateNode`)
@@ -166,6 +166,32 @@ abstract class DOMTemplateNode {
 		'&spades;'      => '♠', '&clubs;'       => '♣', '&hearts;'      => '♥', '&diams;'       => '♦'
 	);
 	
+	/* toXML : convert string input to safe XML for inporting into DOM
+	   -------------------------------------------------------------------------------------------------------------- */
+	public static function toXML ($text) {
+		//[1] because everything is XML, HTML named entities like "&copy;" will cause blank output.
+		//we need to convert these named entities back to real UTF-8 characters (which XML doesn’t mind)
+		$text = self::html_entity_decode ($text);
+		
+		//[2] properly self-close some elments
+		$text = preg_replace (
+			'/<(base|basefont|br|col|img|input|link|meta|param|source|track)([^>]*)(?<!\/)>(?!<\/$1>)/is',
+			'<$1$2 />', $text
+		);
+		
+		//[3] convert HTML-style attributes (`<a attr>`) to XML style attributes (`<a attr="attr">`)
+		while (preg_match (
+			'/(?>(<(?!!)[a-z-]+(?:\s|[a-z-]+="[^"]*")+))([a-z-]+)(?=[>\s])/is', $text, $m, PREG_OFFSET_CAPTURE
+		)) $text = substr_replace (
+			$text, $m[1][0].$m[2][0].'="'.$m[2][0].'"', $m[0][1], strlen ($m[0][0])
+		);
+		
+		//[4] properly escape JavaScript with CDATA
+		$text = preg_replace ('/(<script[^>]*>)(.*?)(<\/script>)/is', "$1<![CDATA[$2]]>$3", $text);
+		
+		return $text;
+	}
+	
 	/* shorthand2xpath : convert our shorthand XPath syntax to full XPath
 	   -------------------------------------------------------------------------------------------------------------- */
 	//actions are performed on elements using xpath, but for brevity a shorthand is also recognised in the format of:
@@ -281,7 +307,7 @@ abstract class DOMTemplateNode {
 				//TODO: need to error-handle this
 				$frag = $node->ownerDocument->createDocumentFragment ();
 				if (
-					!@$frag->appendXML (self::html_entity_decode ($value)) ||
+					!@$frag->appendXML (self::toXML ($value)) ||
 					!@$node->appendChild ($frag)
 				) {
 					throw new Exception ("Invalid HTML");
@@ -371,16 +397,18 @@ abstract class DOMTemplateNode {
 			case 'html':
 			
 			//add space to self-closing tags, only beneficial for prettiness and very old browsers
-			$text = preg_replace ('/<([^<]*[^ ])\/>/s', '<$1 />', $text);
+			$text = preg_replace ('/<([^<]*[^ ])\/>/', '<$1 />', $text);
 			//fix broken self-closed tags; e.g. `<script ...></script>` will automatically be converted to
 			//`<script ... />` on loading the document, this breaks in browsers so we have to fix it on output
 			$text = preg_replace ('/<(div|[ou]l|textarea|script)([^>]*) ?\/>/i', '<$1$2></$1>', $text);
 			//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
 			//this needs to be repeated until none are left as we must anchor each to the opening bracket of
 			//the element, otherwise content text might be hit too
-			while (preg_match ('/(<[^>]+)([a-z-]+)=([\'"]?)\2\3/i', $text, $m, PREG_OFFSET_CAPTURE)) {
-				$text =substr_replace ($text, $m[1][0].$m[2][0], $m[0][1], strlen ($m[0][0]));
-			}
+			while (preg_match ('/(<(?!!)[^>]+)([a-z-]+)=([\'"]?)\2\3/i', $text, $m, PREG_OFFSET_CAPTURE))
+				$text = substr_replace ($text, $m[1][0].$m[2][0], $m[0][1], strlen ($m[0][0]))
+			;
+			//strip out CDATA sections
+			$text = preg_replace ('/<!\[CDATA\[(.*?)\]\]>/s', '$1', $text);
 			
 			return $text;
 			break;
@@ -388,6 +416,7 @@ abstract class DOMTemplateNode {
 			/* xml : return strict-XML (for RSS &c.)
 			   ---------------------------------------------------------------------------------------------- */
 			case 'xml':
+			//PHP DOM already uses XML for its internal representation, no specific work needs to be done
 			return $text;
 			break;
 		}
