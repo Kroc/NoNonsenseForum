@@ -11,6 +11,6 @@ require_once './start.php';
 $template = prepareTemplate (THEME_ROOT.'markup.html', '/markup.php');
 
 theme_custom ($template);
-exit ($template->html);
+exit ($template);
 
 ?>
