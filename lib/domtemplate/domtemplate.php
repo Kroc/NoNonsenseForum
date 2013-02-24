@@ -396,7 +396,7 @@ abstract class DOMTemplateNode {
 		$source = preg_replace ('/<([^<]*[^ ])\/>/', '<$1 />', $source);
 		//fix broken self-closed tags; e.g. `<script ...></script>` will automatically be converted to
 		//`<script ... />` on loading the document, this breaks in browsers so we have to fix it on output
-		$source = preg_replace ('/<(div|[ou]l|textarea|script)([^>]*) ?\/>/i', '<$1$2></$1>', $source);
+		$source = preg_replace ('/<(div|[ou]l|script|textarea|title)([^>]*) ?\/>/i', '<$1$2></$1>', $source);
 		//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
 		//this needs to be repeated until none are left as we must anchor each to the opening bracket of
 		//the element, otherwise content text might be hit too
