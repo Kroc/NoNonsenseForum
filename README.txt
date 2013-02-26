@@ -1,4 +1,4 @@
-NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
 ========================================================================
 A simple forum that focuses on discussion and simplicity.
 http://camendesign.com/nononsense_forum
@@ -288,8 +288,14 @@ Sani
 starbeamrainbowlab
 *	Discovering missing "?" in no-HTACCESS URLs
 
+Stephen Taylor
+*	Reported bug with appends double-encoding HTML
+
 Steve Bir
 *	Pages not working in sub forums
+
+TCB
+*	iOS testing for the rotation / zooming bug
 
 Temukki
 *	Delete page missing

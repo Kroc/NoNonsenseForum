@@ -1,19 +1,20 @@
 <?php
 
-//DOM Templating classes v15 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v16 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
 /*	Basic API:
 	
-	new DOMTemplate (xml, [namespaces])
-
+	new DOMTemplate (source, [namespaces])
+	
+	(string)				to output the HTML / XML, cast the DOMTemplate object to a string,
+						i.e. `echo $template;`
 	query (query)				make an XPath query
 	set (queries, [asHTML])			change HTML by specifying an array of ('XPath' => 'value')
 	setValue (query, value, [asHTML])	change a single HTML value with an XPath query
 	addClass (query, new_class)		add a class to an HTML element
 	remove (query)				remove one or more HTML elements, attributes or classes
-	html ()					get the current HTML code
 	repeat (query)				return one (or more) elements as sub-templates
 		
 		next ()				append the sub-template to the list and reset its content
@@ -23,46 +24,50 @@
    ====================================================================================================================== */
 class DOMTemplate extends DOMTemplateNode {
 	private $DOMDocument;			//internal reference to the PHP DOMDocument for the template's XML
-	private $keep_prolog = false;		//if an XML prolog is present in it will be kept when outputted
+	
+	//what type of data are we processing?
+	protected $type = self::HTML;
+	const HTML = 0;
+	const XML  = 1;
 	
 	/* new DOMTemplate : instantiation
 	   -------------------------------------------------------------------------------------------------------------- */
 	public function __construct (
-		$xml,				//a string of the XML to form the template
+		$source,			//a string of the HTML or XML to form the template
 		$namespaces=array ()		//an array of XML namespaces if your document uses them,
 						//in the format of `'namespace' => 'namespace URI'`
 	) {
-		//does this source have an XML prolog? if so, we’ll keep it as-is in the output
-		if (substr_compare ($xml, '<?xml', 0, 4, true) === 0) $this->keep_prolog = true;
+		//detect the content type; HTML or XML. HTML will need filtering during input and output
+		//does this source have an XML prolog?
+		$this->type = substr_compare ($source, '<?xml', 0, 4, true) === 0 ? self::XML : self::HTML;
 		
-		//load the template file to work with:
-		//* this must be valid XML (but not XHTML)
-		//* must have only one root (wrapping) element; e.g. `<html>`
+		//load the template file to work with,
+		//it _must_ have only one root (wrapping) element; e.g. `<html>`
 		$this->DOMDocument = new DOMDocument ();
 		if (!$this->DOMDocument->loadXML (
-			//if the document doesn't already have an XML prolog, add one to avoid mangling unicode characters
-			//see <php.net/manual/en/domdocument.loadxml.php#94291>
-			(!$this->keep_prolog ? "<?xml version=\"1.0\" encoding=\"utf-8\"?>" : '').
-			//replace HTML entities (e.g. "&copy;") with real unicode characters to prevent invalid XML
-			self::html_entity_decode ($xml), @LIBXML_COMPACT | @LIBXML_NONET
+			//if the source is HTML add an XML prolog to avoid mangling unicode characters,
+			//see <php.net/manual/en/domdocument.loadxml.php#94291>. also convert it to XML for PHP DOM use
+			$this->type == self::HTML
+			? "<?xml version=\"1.0\" encoding=\"utf-8\"?>".self::toXML ($source)
+			: $source,
+			@LIBXML_COMPACT || @LIBXML_NONET
 		)) trigger_error (
-			"Template '$filepath' is invalid XML", E_USER_ERROR
+			"Source is invalid XML", E_USER_ERROR
 		);
-		//set the root node for all xpath searching
+		//set the root node for all XPath searching
 		//(handled all internally by `DOMTemplateNode`)
 		parent::__construct ($this->DOMDocument->documentElement, $namespaces);
 	}
 	
-	/* html : output the complete HTML
+	/* output the source code (cast the object to a string, i.e. `echo $template;`)
 	   -------------------------------------------------------------------------------------------------------------- */
-	public function html () {
-		//should we remove the XML prolog?
-		return	!$this->keep_prolog
-			//we defer to DOMTemplateNode's `html` method which returns the HTML for any node,
+	public function __toString () {
+		//if the input was HTML, remove the XML prolog on output
+		return $this->type == self::HTML
+		?	//we defer to DOMTemplateNode which returns the HTML for any node,
 			//the top-level template only needs to consider the prolog
-			? preg_replace ('/^<\?xml.*?>\n/', '', parent::html ())
-			: parent::html ()
-		;
+			preg_replace ('/^<\?xml[^<]*>\n/', '', parent::__toString ())
+		:	parent::__toString ();
 	}
 }
 
@@ -156,6 +161,32 @@ abstract class DOMTemplateNode {
 		'&rfloor;'      => '⌋', '&lang;'        => '〈', '&rang;'        => '〉', '&loz;'         => '◊',
 		'&spades;'      => '♠', '&clubs;'       => '♣', '&hearts;'      => '♥', '&diams;'       => '♦'
 	);
+	
+	/* toXML : convert string input to safe XML for inporting into DOM
+	   -------------------------------------------------------------------------------------------------------------- */
+	public static function toXML ($text) {
+		//[1] because everything is XML, HTML named entities like "&copy;" will cause blank output.
+		//we need to convert these named entities back to real UTF-8 characters (which XML doesn’t mind)
+		$text = self::html_entity_decode ($text);
+		
+		//[2] properly self-close some elments
+		$text = preg_replace (
+			'/<(base|basefont|br|col|img|input|link|meta|param|source|track)([^>]*)(?<!\/)>(?!<\/$1>)/is',
+			'<$1$2 />', $text
+		);
+		
+		//[3] convert HTML-style attributes (`<a attr>`) to XML style attributes (`<a attr="attr">`)
+		while (preg_match (
+			'/(?>(<(?!!)[a-z-]+(?:\s|[a-z-]+="[^"]*")+))([a-z-]+)(?=[>\s])/is', $text, $m, PREG_OFFSET_CAPTURE
+		)) $text = substr_replace (
+			$text, $m[1][0].$m[2][0].'="'.$m[2][0].'"', $m[0][1], strlen ($m[0][0])
+		);
+		
+		//[4] properly escape JavaScript with CDATA
+		$text = preg_replace ('/(<script[^>]*>)(.*?)(<\/script>)/is', "$1<![CDATA[$2]]>$3", $text);
+		
+		return $text;
+	}
 	
 	/* shorthand2xpath : convert our shorthand XPath syntax to full XPath
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -268,15 +299,14 @@ abstract class DOMTemplateNode {
 				//if supplied text is blank end here; you can't append a blank!
 				if (!$value) break;
 				
-				//NOTE: if the HTML string is not valid XML, it won’t work!
-				//TODO: need to error-handle this
+				//attch the HTML to the node
 				$frag = $node->ownerDocument->createDocumentFragment ();
-				if (
-					!@$frag->appendXML (self::html_entity_decode ($value)) ||
+				if (	!@$frag->appendXML (
+						//if the source document is HTML, filter it
+						$this->type == DOMTemplate::HTML ? self::toXML ($value) : $value
+					) ||
 					!@$node->appendChild ($frag)
-				) {
-					throw new Exception ("Invalid HTML");
-				}
+				) throw new Exception ("Invalid HTML");
 				break;
 				
 			//otherwise, encode the text to display as-is
@@ -347,20 +377,36 @@ abstract class DOMTemplateNode {
 		} return $this;
 	}
 	
-	/* html : return the formatted source of the classes' bound node and children
+	/* output the source code (cast the object to a string, i.e. `echo $template;`)
 	   -------------------------------------------------------------------------------------------------------------- */
-	public function html () {
-		//fix and clean DOM's XML output:
-		return preg_replace (
-			//add space to self-closing	//fix broken self-closed tags
-			array ('/<(.*?[^ ])\/>/s',	'/<(div|[ou]l|textarea|script)([^>]*) ?\/>/'),
-			array ('<$1 />',		'<$1$2></$1>'),
-			$this->DOMNode->ownerDocument->saveXML (
-				//if you’re calling this function from the template-root,
-				//don’t specify a node otherwise the DOCTYPE won’t be included
-				get_class ($this) == 'DOMTemplate'  ? NULL : $this->DOMNode
-			)
+	public function __toString () {
+		//get the document's code, we'll process it differently depending on desired output format
+		$source = $this->DOMNode->ownerDocument->saveXML (
+			//if you’re calling this function from the template-root we don’t specify a node,
+			//otherwise the DOCTYPE / XML prolog won’t be included
+			get_class ($this) == 'DOMTemplate' ? NULL : $this->DOMNode
 		);
+		
+		//XML is already used for the internal representation; if outputting XML no filtering is needed
+		if ($this->type == $this::XML) return $source;
+		
+		//fix and clean DOM's XML into HTML:
+		//----------------------------------
+		//add space to self-closing tags, only beneficial for prettiness and very old browsers
+		$source = preg_replace ('/<([^<]*[^ ])\/>/', '<$1 />', $source);
+		//fix broken self-closed tags; e.g. `<script ...></script>` will automatically be converted to
+		//`<script ... />` on loading the document, this breaks in browsers so we have to fix it on output
+		$source = preg_replace ('/<(div|[ou]l|script|textarea|title)([^>]*) ?\/>/i', '<$1$2></$1>', $source);
+		//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
+		//this needs to be repeated until none are left as we must anchor each to the opening bracket of
+		//the element, otherwise content text might be hit too
+		while (preg_match ('/(<(?!!)[^>]+)([a-z-]+)=([\'"]?)\2\3/i', $source, $m, PREG_OFFSET_CAPTURE))
+			$source = substr_replace ($source, $m[1][0].$m[2][0], $m[0][1], strlen ($m[0][0]))
+		;
+		//strip out CDATA sections
+		$source = preg_replace ('/<!\[CDATA\[(.*?)\]\]>/s', '$1', $source);
+		
+		return $source;
 	}
 	
 	/* repeat : iterate a node
@@ -423,6 +469,8 @@ class DOMTemplateRepeaterArray {
 class DOMTemplateRepeater extends DOMTemplateNode {
 	private $refNode;		//the templated node will be added after this node
 	private $template;		//a copy of the original node to work from each time
+	
+	protected $type;
 	
 	public function __construct ($DOMNode, $namespaces=array ()) {
 		//we insert the templated item after the reference node,

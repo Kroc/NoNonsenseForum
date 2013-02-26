@@ -1,3 +1,10 @@
+v25	26.02.13
+*	Fixed iOS rotation / zooming with the help of TCB
+*	Fixed appends double-encoding HTML, with thanks to Stephen Taylor
+*	Fixed unable to delete corrupted posts unless signed in
+	NOTE: the class `nnf_error` was added to `<article class="nnf_post nnf_op">` in "delete.html"
+*	Updated to DOMTemplate v16, much better handling of HTML / XML
+
 v24	10.01.13
 *	Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
 	not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:

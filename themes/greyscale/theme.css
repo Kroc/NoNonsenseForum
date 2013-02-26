@@ -1,4 +1,4 @@
-/* NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
 /* ====================================================================================================================== */
@@ -12,7 +12,7 @@
 header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
  footer				{display: block;}
 
-html, body			{width: 100%; margin: 0; padding: 0; border: 0; color: #888;}
+html, body			{width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
 				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
 				 /* CSS3 gradients for browsers that support it: */

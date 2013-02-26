@@ -1,4 +1,4 @@
-NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
 =============================================================
 The PHP / HTML / CSS and other resources of this project are licensed
 under a Creative Commons 3.0 Attribution Unported licence (unless

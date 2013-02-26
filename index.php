@@ -1,6 +1,6 @@
 <?php //display the index of threads in a folder
 /* ====================================================================================================================== */
-/* NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -56,7 +56,7 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 	//remove the locked / deleted categories
 	))->remove ('//category');
 	
-	file_put_contents ("$file.rss", $rss->html ()) or require FORUM_LIB.'error_permissions.php';
+	file_put_contents ("$file.rss", $rss) or require FORUM_LIB.'error_permissions.php';
 	
 	//regenerate the folder's RSS file
 	indexRSS ();
@@ -301,6 +301,6 @@ if (CAN_POST) $template->set (array (
 
 //call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
-exit ($template->html ());
+exit ($template);
 
 ?>

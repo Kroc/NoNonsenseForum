@@ -1,6 +1,6 @@
 <?php //shared functions
 /* ====================================================================================================================== */
-/* NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -500,6 +500,12 @@ function formatText (
 	return $text;
 }
 
+//reverse the text formatting, turning HTML back into plain-text markup,
+//this is used to append text to existing posts whilst ensuring unique heading IDs
+function unformatText ($text) {
+	return html_entity_decode (strip_tags ($text), ENT_COMPAT, 'UTF-8');
+}
+
 /* ====================================================================================================================== */
 
 //regenerate a folder's RSS file (all changes happening in a folder)
@@ -532,7 +538,7 @@ function indexRSS () {
 			'./category[.="deleted"]' => !$item->xpath ('category[.="deleted"]'),
 		))->next ()
 	;
-	file_put_contents ('index.xml', $rss->html ());
+	file_put_contents ('index.xml', $rss);
 	
 	/* sitemap
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -567,7 +573,7 @@ function indexRSS () {
 			'./x:lastmod'	=> gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
 		))->next ()
 	;
-	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml->html ());
+	file_put_contents (FORUM_ROOT.DIRECTORY_SEPARATOR.'sitemap.xml', $xml);
 	
 	//you saw nothing, right?
 	clearstatcache ();

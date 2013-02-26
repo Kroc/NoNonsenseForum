@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="en" class="markup"><head>
-	<meta charset="utf-8" />
-	<!-- NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+	<meta charset="utf-8">
+	<!-- NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
 	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
 	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
 	<title>Markup</title>
 	<!-- get rid of IE site compatibility button -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-	<link rel="stylesheet" href="/themes/greyscale/theme.css" />
-	<link rel="stylesheet" href="/themes/greyscale/custom.css" />
-	<link rel="canonical" href="/markup.php" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="/themes/greyscale/theme.css">
+	<link rel="stylesheet" href="/themes/greyscale/custom.css">
+	<link rel="canonical" href="/markup.php">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
-	<meta name="application-name" content="NoNonsense Forum" />
-	<meta name="msapplication-starturl" content="http://forum.camendesign.com/" />
-	<meta name="msapplication-window" content="width=1024;height=600" />
-	<meta name="msapplication-navbutton-color" content="#222" />
+	<meta name="application-name" content="NoNonsense Forum">
+	<meta name="msapplication-starturl" content="http://forum.camendesign.com/">
+	<meta name="msapplication-window" content="width=1024;height=600">
+	<meta name="msapplication-navbutton-color" content="#222">
 	<!-- Windows 8 Tile icon / colour -->
-	<meta name="msapplication-TileImage" content="/metro-tile.png" />
-	<meta name="msapplication-TileColor" content="#222" />
+	<meta name="msapplication-TileImage" content="/metro-tile.png">
+	<meta name="msapplication-TileColor" content="#222">
 </head><body>
 <!-- =================================================================================================================== -->
 <header id="mast">
 	<h1><a href="/">
-		<img id="nnf_logo" src="/themes/greyscale/img/logo.png" width="32" height="32" alt="" /><!--
+		<img id="nnf_logo" src="/themes/greyscale/img/logo.png" width="32" height="32" alt=""><!--
 		--><span class="nnf_forum-name">NoNonsense Forum</span>
 	</a></h1>
 	
 	<form id="search" method="get" action="http://google.com/search"><!--
-		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com" /><!--
-		--><input id="query" type="search" name="as_q" placeholder="Google Search…" /><!--
-		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search" /><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com"><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…"><!--
+		--><input id="go" type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Search"><!--
 	--></form>
 	
 	<nav>
 		<form id="nnf_lang" method="post">
-			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:" />
+			<img src="/themes/greyscale/img/lang.png" width="20" height="20" alt="Language:" title="Language:">
 			<select name="lang" id="lang">
-				<option class="nnf_lang" value="" selected="selected">English</option>
+				<option class="nnf_lang" value="" selected>English</option>
 			</select>
-			<input type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set language" />
+			<input type="image" src="/themes/greyscale/img/go.png" width="20" height="20" alt="Set language">
 		</form>
 		<ol id="index">
 			<li><a href="/">Index</a></li>
@@ -99,7 +99,7 @@ YES:	email@email.com
 
 <h2 id="dividers">Dividers:</h2>
 <p>
-	To draw a line across your text, use three or more dashes:<br />
+	To draw a line across your text, use three or more dashes:<br>
 	(this should be on its own line, with a blank line before and after)
 </p>
 <pre>
@@ -111,7 +111,7 @@ YES:	email@email.com
 	To quote somebody else's text, place it on its own line with quote marks at the beginning and end.
 	This applies even if the quoted text is more than one paragraph, or contains quotes itself.
 </p><p>
-	There must be a blank line between any quote and other text:<br />
+	There must be a blank line between any quote and other text:<br>
 	(a single line-break will not work)
 </p>
 <pre>
@@ -165,7 +165,7 @@ YES:	"This is the first quote
 	This is the first quote"
 </pre>
 <p>	
-	You may use three different kinds of quote marks:<br />
+	You may use three different kinds of quote marks:<br>
 	(but you can’t mismatch the ends)
 </p>
 <pre>
@@ -243,15 +243,15 @@ div	{color: red;}
 </p></div>
 
 <footer><p>
-	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br />
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br>
 	<a href="/privacy.php">privacy policy</a>
 </p><p id="signin" class="nnf_signed-in">
-	Signed in as<br /><b class="nnf_signed-in-name">Kroc</b>
+	Signed in as<br><b class="nnf_signed-in-name">Kroc</b>
 </p><form id="signin" class="nnf_signed-out" method="post">
-	<input type="submit" name="signin" value="Sign In" />
+	<input type="submit" name="signin" value="Sign In">
 </form></footer>
 
-<script defer="defer"><!--
+<script defer><!--
 //in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
 if (document.getElementsByTagName !== undefined) {
 	var labels = document.getElementsByTagName ("label");
@@ -259,7 +259,16 @@ if (document.getElementsByTagName !== undefined) {
 	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
 }
 //when the language selector is changed, submit immediately
-document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); }
+document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); };
+
+/*! A fix for the iOS orientationchange zoom bug. Script by @scottjehl, rebound by @wilto.MIT / GPLv2 License.*/
+(function(a){function m(){d.setAttribute("content",g),h=!0}function n(){d.setAttribute("content",f),h=!1}
+function o(b){l=b.accelerationIncludingGravity,i=Math.abs(l.x),j=Math.abs(l.y),k=Math.abs(l.z),
+(!a.orientation||a.orientation===180)&&(i>7||(k>6&&j<8||k<8&&j>6)&&i>5)?h&&n():h||m()}var b=navigator.userAgent;
+if(!(/iPhone|iPad|iPod/.test(navigator.platform)&&/OS [1-5]_[0-9_]* like Mac OS X/i.test(b)&&b.indexOf("AppleWebKit")>-1))
+return;var c=a.document;if(!c.querySelector)return;var d=c.querySelector("meta[name=viewport]"),
+e=d&&d.getAttribute("content"),f=e+",maximum-scale=1",g=e+",maximum-scale=10",h=!0,i,j,k,l;if(!d)return;
+a.addEventListener("orientationchange",m,!1),a.addEventListener("devicemotion",o,!1)})(this);
 --></script>
 
 </body></html>

@@ -1,6 +1,6 @@
 <?php //display a particular thread’s contents
 /* ====================================================================================================================== */
-/* NoNonsense Forum v24 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -107,8 +107,8 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	)) {
 		//check for duplicate append:
 		if (	//normalise the original post and the append, and check the end of the original for a match
-			substr (strip_tags ($post->description), -strlen ($_ = strip_tags (formatText (TEXT)))) !== $_
-		) {
+			substr (unformatText ($post->description), -strlen ($_ = unformatText (formatText (TEXT)))) !== $_
+		) {	
 			//append the given text to the reply
 			$post->description = formatText (
 				//NNF's markup is unique in that it is fully reversable just by stripping the HTML tags!
@@ -116,7 +116,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 				//convert the original HTML back to markup and add the appended text.
 				//(`THEME_APPENDED` is defined in 'start.php' and is a shorthand to the translated string
 				// used as a divider when appending text to a post)
-				strip_tags ($post->description)."\n\n".sprintf (THEME_APPENDED,
+				unformatText ($post->description)."\n\n".sprintf (THEME_APPENDED,
 					safeHTML (NAME), date (DATE_FORMAT, time ())
 				)."\n\n".TEXT,
 				//provide the permalink to the thread and the post ID for title's self-link ID uniqueness
@@ -197,7 +197,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
 	
 	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
-	exit ($template->html ());
+	exit ($template);
 }
 
 
@@ -303,9 +303,7 @@ if (isset ($_GET['delete'])) {
 		'time#nnf_post-time'		=> date (DATE_FORMAT, strtotime ($post->pubDate)),
 		'time#nnf_post-time@datetime'	=> gmdate ('r', strtotime ($post->pubDate)),
 		'#nnf_post-author'		=> $post->author
-	))->setValue (
-		'#nnf_post-text', $post->description, true
-	)->remove (array (
+	))->remove (array (
 		//if the user who made the post is a mod, also mark the whole post as by a mod
 		//(you might want to style any posts made by a mod differently)
 		'.nnf_post@class, #nnf_post-author@class' => !isMod ($post->author) ? 'nnf_mod' : false
@@ -333,9 +331,17 @@ if (isset ($_GET['delete'])) {
 		'#nnf_error-name-delete' => !FORM_SUBMIT || NAME
 	));
 	
+	try {	//insert the post-text, dealing with an invalid HTML error
+		$template->setValue ('#nnf_post-text', $post->description, true);
+		$template->remove (array ('.nnf_post@class' => 'nnf_error'));
+	} catch (Exception $e) {
+		//if the HTML was invalid, replace with the corruption message
+		$template->setValue ('#nnf_post-text', THEME_HTML_ERROR, true);
+	}
+	
 	//call the theme-specific templating function, in 'theme.php', before outputting
 	theme_custom ($template);
-	exit ($template->html ());
+	exit ($template);
 }
 
 
@@ -413,7 +419,7 @@ if (CAN_REPLY && AUTH && TEXT) {
 		))->next ();
 		
 		//write the file: first move the write-head to 0, remove the file's contents, and then write new one
-		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss->html ());
+		rewind ($f); ftruncate ($f, 0); fwrite ($f, $rss);
 	}
 	
 	//close the lock / file
@@ -613,6 +619,6 @@ if (CAN_REPLY) $template->set (array (
 
 //call the theme-specific templating function, in 'theme.php', before outputting
 theme_custom ($template);
-exit ($template->html ());
+exit ($template);
 
 ?>
