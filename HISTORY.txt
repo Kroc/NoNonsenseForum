@@ -1,3 +1,6 @@
+v26
+*	
+
 v25	26.02.13
 *	Fixed iOS rotation / zooming with the help of TCB
 *	Fixed appends double-encoding HTML, with thanks to Stephen Taylor

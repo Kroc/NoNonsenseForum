@@ -1,6 +1,6 @@
 <?php //theme configuration defaults
 /* ====================================================================================================================== */
-/* NoNonsense Forum v25 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v26 © Copyright (CC-BY) Kroc Camen 2010-2013
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 */
@@ -16,7 +16,7 @@
 //(see <w3.org/International/questions/qa-choosing-language-tags> for information on choosing a language code)
 //which therefore refers to the matching 'lang.*.php' file, e.g. 'fr de es it' for French, German, Spanish & Italian.
 //see 'lang.example.php' for info on translations
-@define ('THEME_LANGS',	'');
+@define ('THEME_LANGS',		'');
 //(if you change the text in the theme ['*.html' files], you might want to change this option to blank '' so that users
 //can’t use the other translations--they may no longer match up with your default language's text--unless you intend to
 //update the additonal translations too!)
