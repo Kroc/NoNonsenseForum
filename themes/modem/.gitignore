@@ -1,0 +1,23 @@
+# ignore files that aren't part of NoNonsenseForum:
+# (in this folder we want to ignore the admin's custom theme configuration)
+*
+!.gitignore
+
+# the theme's HTML templates
+!theme.css
+!append.html
+!delete.html
+!index.html
+!markup.html
+!privacy.html
+
+# graphics
+!favicon.ico
+!apple-touch-icon.png
+!metro-tile.png
+!img/
+
+# code and configuration
+!theme.php
+!theme.config.default.php
+!lang.example.php

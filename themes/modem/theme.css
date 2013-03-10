@@ -1,0 +1,130 @@
+/* NoNonsense Forum v26 © Copyright (CC-BY) Kroc Camen 2010-2013
+   licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+   you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> */
+/* ====================================================================================================================== */
+/* original Grayscale theme on which Modem is based by Jon Gjengset <thesquareplanet.com>,
+   Modem theme by Kroc Camen, please modify to suit your needs
+*//*
+   IDs and classes prefixed with "nnf_" are those required by the templating logic
+   (see '/lib/domtemplate.php' or <camendesign.com/dom_templating> for documentation)
+*/
+
+header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
+ footer				{display: block;}
+
+/* This is an em-based design. all measurements are in ems so that increasing the base-font size scales the whole design
+   very cleanly for large-screens or high-density small screens without having to adjust px paddings / margins throughout.
+   the default em size is 16px with a line-height of 20px (1.25em); bear in mind these common figures based on this:
+   
+   0.0625em	"1px" (for borders and the like)	1.1875em	"19px" (baseline minus a border)
+   1.25em	"20px" (the baseline)			2.5em		"40px" (2 lines)
+   3.75em	"60px" (3 lines)			5em		"80px" (4 lines)
+*/
+html, body			{width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
+html				{/* default em size, based on 1024+ screen, for the benefit of
+				    legacy browsers without CSS3 media queries */
+				 font: 16px/1.25em Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
+				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
+				 /* CSS3 gradients for browsers that support it: */
+	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
+	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
+	/* FF3.6+ */		 background-image:    -moz-linear-gradient(white, #ddd);
+	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
+	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
+	/* future! */		 background-image:         linear-gradient(white, #ddd);
+				 /* fix iPad stretching the gradient the height of the whole page, rather than the screen */
+				 background-size: 1024px 768px;
+				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
+				    that the fallback background colours in the PNG files compensate. (a background colour
+				    for IE6 has been embedded into the 32-bit PNGs) */
+				_background: #eee;}
+body, #mast h1 a		{/* page centering / width */
+				 width: 80%; margin: 0 auto;}
+
+/* ======================================================================================================================
+   Print /  / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ====================================================================================================================== */
+@media print {
+}
+
+/* ======================================================================================================================
+   HIGH RESOLUTIONS
+   ====================================================================================================================== */
+/* as the screen size or density increases (remember that a 1920x1080 screen could be either a 52" TV *or* a 10" tablet!)
+   scale the entire design to fill the screen more neatly. don't think in terms of screen-size, think only in resolutions!
+   a rough metric of 64-ems-per-line are maintained as we scale -- i.e. 1024/64 = 16px, 1280/64 = 20px, 1600/64 = 25px */
+/* ----------------------------------------------------------------------------------------------------------------------
+   Hi-DPI / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ---------------------------------------------------------------------------------------------------------------------- */
+/* apply hires images for "Retina" / Hi-DPI screens & IE when zoomed. with thanks to H5BP & WordPress for sluething:
+   - https://github.com/h5bp/html5-boilerplate/issues/1127
+   - http://core.trac.wordpress.org/changeset/22629 */
+@media print, (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+
+
+
+}
+/* ----------------------------------------------------------------------------------------------------------------------
+   1280+ Resolution / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ---------------------------------------------------------------------------------------------------------------------- */
+@media (min-width: 1280px) {
+
+/* at 1280 (1x) and above, increase in size */
+html				{font-size: 20px;}
+
+}
+/* ----------------------------------------------------------------------------------------------------------------------
+   1366+ Resolution / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ---------------------------------------------------------------------------------------------------------------------- */
+@media (min-width: 1366px) {
+
+/* at 1366 (1x) and above, increase in size */
+html				{font-size: 21px;}
+
+}
+/* ----------------------------------------------------------------------------------------------------------------------
+   1600+ Resolution / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ---------------------------------------------------------------------------------------------------------------------- */
+@media (min-width: 1600px) {
+
+/* at 1600 (1x) and above, increase in size */
+html				{font-size: 25px;}
+
+}
+/* ----------------------------------------------------------------------------------------------------------------------
+   "HD" Resolution  / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+   ---------------------------------------------------------------------------------------------------------------------- */
+@media (min-width: 1920px) {
+
+/* at 1920 assume either TV or very HiDPI screen */
+html				{font-size: 30px;}
+
+}
+
+/* ======================================================================================================================
+   LOW RESOLUTIONS
+   ====================================================================================================================== */
+/* semi-narrow screens, largely in portrait mode (such as tablets / e-readers) */
+/* at 1024 and above, the default (16px) base size is used */
+@media (max-width: 1023px) {
+
+html				{font-size: 14px;}
+
+}
+
+/* for narrow screens such as mobile phones */
+@media (max-width: 480px) {
+
+html				{font-size: 12px;}
+
+}
+
+/* for very-narrow screens such as dumb phones */
+@media (max-width: 319px;) {
+}
+
+/* ======================================================================================================================
+   opera speed dial / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
+  ====================================================================================================================== */
+@media screen and (view-mode: minimized) {
+}

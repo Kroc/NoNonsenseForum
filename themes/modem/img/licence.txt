@@ -1,0 +1,13 @@
+'security_closed' and 'security_open' are part of the
+Pictorial Communication Language icon-set at <picol.org>, licenced
+under a Creative Commons Share-Alike 3.0 Licence:
+
+<creativecommons.org/licenses/by-sa/3.0/>
+
+All other icons are derived from Brightmix Iconset v2 (provided in
+original form in 'refs/brightmixIconset_v02.eps') and also available at
+<brightmix.com/blog/more-icons-in-the-brightmix-icon-set-free-for-all>,
+licenced under the WTFPL licence:
+
+<en.wikipedia.org/en/wiki/WTFPL>
+

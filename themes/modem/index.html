@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" class="index"><head>
+	<meta charset="utf-8">
+	<!-- NoNonsense Forum v26 © Copyright (CC-BY) Kroc Camen 2010-2013
+	     licensed under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
+	     you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com> -->
+	<title>NoNonsense Forum</title>
+	<!-- get rid of IE site compatibility button -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link rel="stylesheet" href="/themes/modem/theme.css">
+	<link rel="stylesheet" href="/themes/modem/custom.css">
+	<link rel="alternate" type="application/rss+xml" href="index.xml">
+	<link rel="canonical" href="/">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Microsoft’s insane IE9+ pinned site syntax: <msdn.microsoft.com/library/gg131029> -->
+	<meta name="application-name" content="NoNonsense Forum">
+	<meta name="msapplication-starturl" content="http://forum.camendesign.com/">
+	<meta name="msapplication-window" content="width=1024;height=600">
+	<meta name="msapplication-navbutton-color" content="#222">
+	<!-- Windows 8 Tile icon / colour -->
+	<meta name="msapplication-TileImage" content="/metro-tile.png">
+	<meta name="msapplication-TileColor" content="#222">
+</head><body>
+<!-- =================================================================================================================== -->
+<header id="mast">
+	<h1><a href="/">
+		<img id="nnf_logo" src="/themes/modem/img/logo.png" width="32" height="32" alt=""><!--
+		--><span class="nnf_forum-name">NoNonsense Forum</span>
+	</a></h1>
+	
+	<form id="search" method="get" action="http://google.com/search"><!--
+		--><input type="hidden" name="as_sitesearch" value="forum.camendesign.com"><!--
+		--><input id="query" type="search" name="as_q" placeholder="Google Search…"><!--
+		--><input id="go" type="image" src="/themes/modem/img/go.png" width="20" height="20" alt="Search"><!--
+	--></form>
+	
+	<nav>
+		<form id="nnf_lang" method="post">
+			<img src="/themes/modem/img/lang.png" width="20" height="20" alt="Language:" title="Language:">
+			<select name="lang" id="lang">
+				<option class="nnf_lang" value="" selected>English</option>
+			</select>
+			<input type="image" src="/themes/modem/img/go.png" width="20" height="20" alt="Set language">
+		</form>
+		<ol id="index">
+			<li><a href="/">Index</a></li>
+			<li class="nnf_breadcrumb">» <a class="nnf_subforum-name" href="/sub-forum">Sub-forum</a></li>
+		</ol>
+	</nav>
+</header>
+<!-- =================================================================================================================== -->
+<section id="nnf_about"><p>
+	If a fourm / sub-forum contains an ‘about.html’ file, its contents will be loaded into this element.
+	If ‘about.html’ doesn’t exist the whole element will be removed.
+</p></section>
+
+<section id="nnf_folders">
+	<h1>Sub-Forums</h1>
+	<ol class="ui"><li class="nnf_folder">
+		<img class="nnf_lock-threads" src="/themes/modem/img/security_open_32.png" width="16" height="16" alt="Replies-only:" title="Replies-only"><img class="nnf_lock-posts" src="/themes/modem/img/security_closed_32.png" width="16" height="16" alt="Read-only:" title="Read-only">
+		<a class="nnf_folder-name" href="/sub-forum/">Sub-forum</a>
+		<span class="nnf_subforum-post"><a class="nnf_post-link" href="/forum/thread#postid"><time class="nnf_post-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a> <b class="nnf_post-author nnf_mod">author</b></span>
+	</li></ol>
+</section>
+
+<p id="info">
+	<a id="nnf_add" href="#nnf_new-form">Add Thread</a>
+	<a id="nnf_rss" href="index.xml">RSS</a>
+	
+	<span id="nnf_forum-lock-threads">
+		Only <a href="#mods">moderators or members</a> can start new threads here,
+		but <em>anybody</em> can reply to existing threads.
+	</span>
+	<span id="nnf_forum-lock-posts">
+		Only <a href="#mods">moderators or members</a> can participate here.
+		Sign-in if you are a moderator or member in order to post.
+	</span>
+</p>
+
+<section id="nnf_threads">
+	<h1>Threads</h1>
+	<nav><ol class="nnf_pages">
+		<li><a href="/thread_title:1"><em>1</em></a></li>
+	</ol></nav>
+	<ol class="ui"><li class="nnf_thread nnf_sticky">
+		<a class="nnf_thread-post" href="/thread#id"><time class="nnf_thread-time" datetime="2012-01-01T00:00:00+00:00">01 Jan ’12 · 00:00</time></a>
+		<i class="nnf_thread-replies">99</i> <b class="nnf_thread-author nnf_mod">Kroc</b> <img class="nnf_thread-sticky" src="/themes/modem/img/sticky.png" width="16" height="16" alt="Announcement:" title="Announcement:"><img class="nnf_thread-locked" src="/themes/modem/img/security_closed_32.png" width="16" height="16" alt="Locked:" title="Locked:">
+		<a class="nnf_thread-name" href="thread_title">The quick brown fox jumps over the lazy dog</a>
+	</li></ol>
+	<nav><ol class="nnf_pages">
+		<li><a href="/thread_title:1"><em>1</em></a></li>
+	</ol></nav>
+</section>
+<!-- =================================================================================================================== -->
+<section id="nnf_new-form">
+	<h1>Add Thread</h1>
+	<form method="post" action="#nnf_new-form" enctype="application/x-www-form-urlencoded;charset=utf-8" autocomplete="on">
+	
+	<p id="ptitle">
+		<label for="nnf_title-field">Title:</label>
+		<input id="nnf_title-field" name="title" type="text" size="28" maxlength="100" tabindex="1"
+		       autocomplete="off" required placeholder="Type thread title here…" value=""
+		       spellcheck="true">
+	</p>
+	
+	<div id="rightcol">
+		<p id="nnf_name-http">
+			<!-- if the user is signed in using HTTP_AUTH -->
+			<label for="nnf_name-field-http">You are signed in as:</label>
+			<input id="nnf_name-field-http" name="username" type="text" size="28" tabindex="0"
+			       disabled value="" spellcheck="false">
+		</p><p id="nnf_name">
+			<label for="nnf_name-field">Name:</label>
+			<input id="nnf_name-field" name="username" type="text" size="28" maxlength="20" tabindex="3"
+			       autocomplete="on" required placeholder="Your name" value="" spellcheck="false">
+		</p><p id="nnf_pass">
+			<label for="nnf_pass-field">Password:</label>
+			<input id="nnf_pass-field" name="password" type="password" size="28" maxlength="20" tabindex="4"
+			       autocomplete="on" required placeholder="A password to keep your name" value="">
+		</p><p id="nnf_email">
+			<label for="email">Email:</label>
+			<input id="email" name="email" type="text" tabindex="0"
+			       autocomplete="off" required value="example@abc.com">
+			(Leave this as-is, it’s a trap!)
+		</p>
+		<p id="nnf_error-none" class="ok">
+			<!-- this is shown by default as long as new users aren't disabled and the user isn't signed in -->
+			There is no need to “register”, just enter the same name + password of your choice every time.
+		</p><p id="nnf_error-none-http" class="ok">
+			<!-- this is shown by default if the user is signed in -->
+			(Quit your browser or clear the browser cache to sign out.)
+		</p><p id="nnf_error-newbies" class="error">
+			<!-- if the `FORUM_NEWBIES` option is false, only existing users can post -->
+			Only registered users can post.<br>No new registrations are allowed.
+		</p><p id="nnf_error-title" class="error">
+			You need to enter the title of your new discussion thread.
+		</p><p id="nnf_error-name" class="error">
+			Enter a name. You’ll need to use this with the password each time.
+		</p><p id="nnf_error-pass" class="error">
+			Enter a password. It’s so you can re-use your name each time.
+		</p><p id="nnf_error-text" class="error">
+			Well, write a message!
+		</p><p id="nnf_error-auth" class="error">
+			That name is taken. Provide the password for it, or choose another name. (password typo?)
+		</p><p id="protip">
+			Pro tip: Use <a href="/markup.php">markup</a> to add links, quotes and more.
+		</p>
+	</div><div id="leftcol">
+		<p id="ptext">
+			<label for="nnf_text-field">Message:</label>
+			<span id="wtext">
+				<textarea id="nnf_text-field" name="text" cols="40" rows="14" maxlength="50000" tabindex="2"
+				          required placeholder="Type your message here…" spellcheck="true"
+				></textarea>
+			</span>
+		</p>
+	</div>
+	
+	<p id="psubmit"><label for="submit"><span>Submit</span>
+		<input id="submit" name="submit" type="image" src="/themes/modem/img/submit.png"
+		       width="40" height="40" tabindex="5" alt="&gt;">
+	</label></p>
+	
+	</form>
+</section>
+<!-- =================================================================================================================== -->
+<div id="mods"><p id="nnf_mods-local">
+	Moderators for this sub-forum:
+	<span id="nnf_mods-local-list"><b class="nnf_mod">Alice</b></span>
+</p><p id="nnf_mods">
+	Your friendly neighbourhood moderators:
+	<span id="nnf_mods-list"><b class="nnf_mod">Bob</b></span>
+</p><p id="nnf_members">
+	Members of this forum:
+	<span id="nnf_members-list"><b>Charlie</b></span>
+</p></div>
+
+<footer><p>
+	Powered by <a href="http://camendesign.com/nononsense_forum">NoNonsense Forum</a><br>
+	<a href="/privacy.php">privacy policy</a>
+</p><p id="signin" class="nnf_signed-in">
+	Signed in as<br><b class="nnf_signed-in-name">Kroc</b>
+</p><form id="signin" class="nnf_signed-out" method="post">
+	<input type="submit" name="signin" value="Sign In">
+</form></footer>
+
+<script defer><!--
+//in iOS tapping a label doesn't click the related input element, we'll add this back in using JavaScript
+if (document.getElementsByTagName !== undefined) {
+	var labels = document.getElementsByTagName ("label");
+	//for reasons completely unknown, one only has to reset the onclick event, not actually make it do anything!!
+	for (i=0; i<labels.length; i++) if (labels[i].getAttribute ("for")) labels[i].onclick = function (){}
+}
+//when the language selector is changed, submit immediately
+document.getElementById ("lang").onchange = function (){ document.getElementById ("nnf_lang").submit (); };
+
+/*! A fix for the iOS orientationchange zoom bug. Script by @scottjehl, rebound by @wilto.MIT / GPLv2 License.*/
+(function(a){function m(){d.setAttribute("content",g),h=!0}function n(){d.setAttribute("content",f),h=!1}
+function o(b){l=b.accelerationIncludingGravity,i=Math.abs(l.x),j=Math.abs(l.y),k=Math.abs(l.z),
+(!a.orientation||a.orientation===180)&&(i>7||(k>6&&j<8||k<8&&j>6)&&i>5)?h&&n():h||m()}var b=navigator.userAgent;
+if(!(/iPhone|iPad|iPod/.test(navigator.platform)&&/OS [1-5]_[0-9_]* like Mac OS X/i.test(b)&&b.indexOf("AppleWebKit")>-1))
+return;var c=a.document;if(!c.querySelector)return;var d=c.querySelector("meta[name=viewport]"),
+e=d&&d.getAttribute("content"),f=e+",maximum-scale=1",g=e+",maximum-scale=10",h=!0,i,j,k,l;if(!d)return;
+a.addEventListener("orientationchange",m,!1),a.addEventListener("devicemotion",o,!1)})(this);
+--></script>
+
+</body></html>
