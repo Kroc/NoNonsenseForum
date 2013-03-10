@@ -2,6 +2,7 @@
 !.gitignore
 
 !generate_imgs.sh
+!generate_imgs.bat
 
 !add.png
 !add_2x.png

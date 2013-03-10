@@ -231,7 +231,7 @@ do
 	echo "optimising $FILE..."
 	pngout $FILE -c4 -kbKGD -y -q
 	optipng -o7 -clobber -quiet $FILE
-	pngcrush -brute -keep bKGD -l 9 -ow -reduce -q
+	pngcrush -brute -keep bKGD -l 9 -ow -reduce -q $FILE
 done
 
 rm ../../../apple-touch-icon.default.png
@@ -255,7 +255,7 @@ echo "optimising metro-tile.png..."
 # "-nx" preserves bit-depth and colour-type
 optipng -o7 -zm1-9 -clobber -quiet -nx metro-tile.png
 # "-bit_depth 8 -c 6" preserves bit-depth and colour-type
-pngcrush -bit_depth 8 -c 6 -l 9 -loco -ow -q
+pngcrush -bit_depth 8 -c 6 -l 9 -loco -ow -q metro-tile.png
 
 rm ../../../metro-tile.default.png
 cp metro-tile.png ../../../metro-tile.default.png
