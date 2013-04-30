@@ -23,7 +23,8 @@ header, nav, section, article,	/* this doesn’t get set on browsers without an 
 html, body			{width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
 html				{/* default em size, based on 1024+ screen, for the benefit of
 				    legacy browsers without CSS3 media queries */
-				 font: 16px/1.25em Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
+				 line-height: 1.25em;
+				 font-family: Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
 				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
 				 /* CSS3 gradients for browsers that support it: */
 	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
