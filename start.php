@@ -269,8 +269,8 @@ define ('LANG',
 //for curtness, and straight-forward compatibility with older versions of NNF, we shorthand these translations;
 //the defaults (`LANG`='') are defined in 'theme.php' and overrided if the user selects a language ('lang.*.php') 
 //(the purpose of each of these constants are described in the list at the top of this page)
-@define ('DATE_FORMAT',	$LANG[LANG]['date_format']);
-@define ('THEME_TITLE',	$LANG[LANG]['title']);
+@define ('DATE_FORMAT',		$LANG[LANG]['date_format']);
+@define ('THEME_TITLE',		$LANG[LANG]['title']);
 @define ('THEME_TITLE_PAGENO',	$LANG[LANG]['title_pagenum']);
 @define ('THEME_TITLE_APPEND',	$LANG[LANG]['title_append']);
 @define ('THEME_TITLE_DELETE',	$LANG[LANG]['title_delete']);
@@ -286,6 +286,12 @@ define ('LANG',
 
 /* send HTTP headers
    ====================================================================================================================== */
+//spell out the obvious, enforcing UTF-8 in the unlikely event of UTF-7 XSS attacks
+header ('Content-Type: text/html; charset=UTF-8');
+//stop browsers caching, so you don’t have to refresh every time to see changes
+header ('Cache-Control: no-cache', true);
+header ('Expires: 0', true);
+
 //if enabled, enforce HTTPS
 if (FORUM_HTTPS) if (@$_SERVER['HTTPS'] == 'on') {
 	//if forced-HTTPS is on and a HTTPS connection is being used, send the 30-day HSTS header
@@ -304,9 +310,5 @@ if (!AUTH_HTTP && isset ($_POST['signin'])) {
 	header ('HTTP/1.0 401 Unauthorized');
 	//we don't die here so that if they cancel the login prompt, they shouldn't get a blank page
 }
-
-//stop browsers caching, so you don’t have to refresh every time to see changes
-header ('Cache-Control: no-cache', true);
-header ('Expires: 0', true);
 
 ?>
