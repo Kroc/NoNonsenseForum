@@ -244,6 +244,7 @@ Martijn
 *	Help with various transliteration aspects
 *	Better whitespace trimming
 *	Help fixing missing "?" in no-HTACCESS URLs
+*	Constant support improving the UTF-8 handling
 
 nkrs
 *	Opera speed dial help

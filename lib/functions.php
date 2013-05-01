@@ -154,129 +154,6 @@ function isMember ($name) {
 
 /* ====================================================================================================================== */
 
-//sanitise input:
-function safeGet ($data, $len=0, $trim=true) {
-	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
-	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
-	//remove useless whitespace. can be skipped (i.e for passwords).
-	//PHP `trim` doesn't cover a wide variety of unicode; the private-use area is left, should the Apple logo be used
-	//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
-	if ($trim) $data = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $data);
-	//clip the length in case of a fake crafted request
-	return $len ? mb_substr ($data, 0, $len) : $data;
-}
-
-//sanitise output:
-function safeHTML ($text) {
-	//encode a string for insertion into an HTML element
-	//(`ENT_XHTML` & `ENT_SUBSTITUTE` are PHP5.4+ only)
-	return htmlspecialchars ($text, ENT_NOQUOTES | @ENT_XHTML | @ENT_SUBSTITUTE, 'UTF-8');
-}
-function safeURL ($text) {
-	//encode a string to be used in a URL, keeping path separators
-	//WARNING: this does not sanitise against HTML, it’s assumed text is passed through `safeHTML` before output
-	return str_replace ('%2F', '/', rawurlencode ($text));
-}
-
-//safeTransliterate v2, copyright (cc-by 3.0) Kroc Camen <camendesign.com>
-//generate a safe (a-z0-9_) string, for use as filenames or URLs, from an arbitrary string
-function safeTransliterate ($text) {
-	//if available, this function uses PHP5.4's transliterate, which is capable of converting arabic, hebrew, greek,
-	//chinese, japanese and more into ASCII! however, we use our manual (and crude) fallback *first* instead because
-	//we will take the liberty of transliterating some things into more readable ASCII-friendly forms,
-	//e.g. "100℃" > "100degc" instead of "100oc"
-	
-	/* manual transliteration list:
-	   -------------------------------------------------------------------------------------------------------------- */
-	/* this list is supposed to be practical, not comprehensive, representing:
-	   1. the most common accents and special letters that get typed, and
-	   2. the most practical transliterations for readability;
-	   
-	   given that I know nothing of other languages, I will need your assistance to improve this list,
-	   mail kroc@camendesign.com with help and suggestions.
-	   
-	   this data was produced with the help of:
-	   http://www.unicode.org/charts/normalization/
-	   http://www.yuiblog.com/sandbox/yui/3.3.0pr3/api/text-data-accentfold.js.html
-	   http://www.utf8-chartable.de/
-	*/
-	static $translit = array (
-		'a'	=> '/[ÀÁÂẦẤẪẨÃĀĂẰẮẴȦẲǠẢÅÅǺǍȀȂẠẬẶḀĄẚàáâầấẫẩãāăằắẵẳȧǡảåǻǎȁȃạậặḁą]/u',
-		'b'	=> '/[ḂḄḆḃḅḇ]/u',			'c'	=> '/[ÇĆĈĊČḈçćĉċčḉ]/u',
-		'd'	=> '/[ÐĎḊḌḎḐḒďḋḍḏḑḓð]/u',
-		'e'	=> '/[ÈËĒĔĖĘĚȄȆȨḔḖḘḚḜẸẺẼẾỀỂỄỆèëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]/u',
-		'f'	=> '/[Ḟḟ]/u',				'g'	=> '/[ĜĞĠĢǦǴḠĝğġģǧǵḡ]/u',
-		'h'	=> '/[ĤȞḢḤḦḨḪĥȟḣḥḧḩḫẖ]/u',		'i'	=> '/[ÌÏĨĪĬĮİǏȈȊḬḮỈỊiìïĩīĭįǐȉȋḭḯỉị]/u',
-		'j'	=> '/[Ĵĵǰ]/u',				'k'	=> '/[ĶǨḰḲḴKķǩḱḳḵ]/u',
-		'l'	=> '/[ĹĻĽĿḶḸḺḼĺļľŀḷḹḻḽ]/u',		'm'	=> '/[ḾṀṂḿṁṃ]/u',
-		'n'	=> '/[ÑŃŅŇǸṄṆṈṊñńņňǹṅṇṉṋ]/u',
-		'o'	=> '/[ÒŌŎŐƠǑǪǬȌȎȬȮȰṌṎṐṒỌỎỐỒỔỖỘỚỜỞỠỢØǾòōŏőơǒǫǭȍȏȭȯȱṍṏṑṓọỏốồổỗộớờởỡợøǿ]/u',
-		'p'	=> '/[ṔṖṕṗ]/u',				'r'	=> '/[ŔŖŘȐȒṘṚṜṞŕŗřȑȓṙṛṝṟ]/u',
-		's'	=> '/[ŚŜŞŠȘṠṢṤṦṨſśŝşšșṡṣṥṧṩ]/u',	'ss'	=> '/[ß]/u',
-		't'	=> '/[ŢŤȚṪṬṮṰţťțṫṭṯṱẗ]/u',		'th'	=> '/[Þþ]/u',
-		'u'	=> '/[ÙŨŪŬŮŰŲƯǓȔȖṲṴṶṸṺỤỦỨỪỬỮỰùũūŭůűųưǔȕȗṳṵṷṹṻụủứừửữựµ]/u',
-		'v'	=> '/[ṼṾṽṿ]/u',				'w'	=> '/[ŴẀẂẄẆẈŵẁẃẅẇẉẘ]/u',
-		'x'	=> '/[ẊẌẋẍ×]/u',			'y'	=> '/[ÝŶŸȲẎỲỴỶỸýÿŷȳẏẙỳỵỷỹ]/u',
-		'z'	=> '/[ŹŻŽẐẒẔźżžẑẓẕ]/u',				
-		//combined letters and ligatures:
-		'ae'	=> '/[ÄǞÆǼǢäǟæǽǣ]/u',			'oe'	=> '/[ÖȪŒöȫœ]/u',
-		'dz'	=> '/[ǄǅǱǲǆǳ]/u',
-		'ff'	=> '/[ﬀ]/u',	'fi'	=> '/[ﬃﬁ]/u',	'ffl'	=> '/[ﬄﬂ]/u',
-		'ij'	=> '/[Ĳĳ]/u',	'lj'	=> '/[Ǉǈǉ]/u',	'nj'	=> '/[Ǌǋǌ]/u',
-		'st'	=> '/[ﬅﬆ]/u',	'ue'	=> '/[ÜǕǗǙǛüǖǘǚǜ]/u',
-		//currencies:
-		'eur'   => '/[€]/u',	'cents'	=> '/[¢]/u',	'lira'	=> '/[₤]/u',	'dollars' => '/[$]/u',
-		'won'	=> '/[₩]/u',	'rs'	=> '/[₨]/u',	'yen'	=> '/[¥]/u',	'pounds'  => '/[£]/u',
-		'pts'	=> '/[₧]/u',
-		//misc:
-		'degc'	=> '/[℃]/u',	'degf'  => '/[℉]/u',
-		'no'	=> '/[№]/u',	'-tm'	=> '/[™]/u'
-	);
-	//do the manual transliteration first
-	$text = preg_replace (array_values ($translit), array_keys ($translit), $text);
-	
-	//flatten the text down to just a-z0-9 underscore and dash for spaces
-	//(<www.mattcutts.com/blog/dashes-vs-underscores/>)
-	$text = preg_replace (
-		//replace non a-z		//deduplicate	//trim from start & end
-		array ('/[^_a-z0-9-]/i',	'/-{2,}/',	'/^-|-$/'),
-		array ('-',			'-',		''       ),
-		
-		//attempt transliteration with PHP5.4's transliteration engine (best):
-		//(this method can handle near anything, including converting chinese and arabic letters to ASCII.
-		// requires the 'intl' extension to be enabled)
-		function_exists ('transliterator_transliterate') ? transliterator_transliterate (
-			//split unicode accents and symbols, e.g. "Å" > "A°":
-			'NFKD; '.
-			//convert everything to the Latin charset e.g. "ま" > "ma":
-			//(splitting the unicode before transliterating catches some complex cases,
-			// such as: "㏳" >NFKD> "20日" >Latin> "20ri")
-			'Latin; '.
-			//because the Latin unicode table still contains a large number of non-pure-A-Z glyphs (e.g. "œ"),
-			//convert what remains to an even stricter set of characters, the US-ASCII set:
-			//(we must do this because "Latin/US-ASCII" alone is not able to transliterate non-Latin characters
-			// such as "ま". this two-stage method also means we catch awkward characters such as:
-			// "㏀" >Latin> "kΩ" >Latin/US-ASCII> "kO")
-			'Latin/US-ASCII; '.
-			//remove the now stand-alone diacritics from the string
-			'[:Nonspacing Mark:] Remove; '.
-			//change everything to lowercase; anything non A-Z 0-9 that remains will be removed by
-			//the letter stripping above
-			'Lower',
-		$text)
-		
-		//attempt transliteration with iconv: <php.net/manual/en/function.iconv.php>
-		: strtolower (function_exists ('iconv') ? str_replace (array ("'", '"', '`', '^', '~'), '', strtolower (
-			//note: results of this are different depending on iconv version,
-			//      sometimes the diacritics are written to the side e.g. "ñ" = "~n", which are removed
-			iconv ('UTF-8', 'US-ASCII//IGNORE//TRANSLIT', $text)
-		)) : $text)
-	);
-	
-	//old iconv versions and certain inputs may cause a nullstring. don't allow a blank response
-	return !$text ? '_' : $text;
-}
-
 //take the author's message, process markup, and encode it safely for the RSS feed
 function formatText (
 	$text,		//the text to process into HTML
@@ -486,7 +363,7 @@ function formatText (
 	/* finalise:
 	   -------------------------------------------------------------------------------------------------------------- */
 	//add paragraph tags between blank lines
-	foreach (preg_split ('/\n{2,}/', trim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
+	foreach (preg_split ('/\n{2,}/', safeTrim ($text), -1, PREG_SPLIT_NO_EMPTY) as $chunk) {
 		//if not a blockquote, title, hr or pre-block, wrap in a paragraph
 		if (!preg_match ('/^<\/?(?:bl|h2|p)|^&PRE_/', $chunk))
 			$chunk = "<p>\n".str_replace ("\n", "<br />\n", $chunk)."\n</p>"

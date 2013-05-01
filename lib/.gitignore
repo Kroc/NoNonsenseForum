@@ -8,6 +8,7 @@
 
 # code
 !functions.php
+!websafe.php
 
 # error messages
 !error_htaccess.php

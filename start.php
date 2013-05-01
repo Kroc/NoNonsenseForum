@@ -86,8 +86,9 @@ define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR)
 //correct PHP version?
 if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.php';
 
-require_once FORUM_LIB.'functions.php';				//import shared functions
+require_once FORUM_LIB.'websafe.php';				//import the websafe (sanitised I/O) functions
 require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
+require_once FORUM_LIB.'functions.php';				//import NNF's shared functions
 
 //location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
 //we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that
@@ -109,7 +110,7 @@ define ('FORUM_PATH', safeURL (str_replace (
 date_default_timezone_set (FORUM_TIMEZONE);
 
 //the full URL of the site is dependent on HTTPS configuration, so we wait until now to define it
-define ('FORUM_URL',		'http'.				//base URL to produce hyperlinks throughout:
+define ('FORUM_URL', 'http'.					//base URL to produce hyperlinks throughout:
 	(FORUM_HTTPS || @$_SERVER['HTTPS'] == 'on' ? 's' : '').	//- if HTTPS is enforced, links in RSS will use it
 	'://'.$_SERVER['HTTP_HOST']
 );
@@ -194,7 +195,7 @@ if ((	//if HTTP authentication is used, we don’t need to validate the form fie
 	//if the user clicked the sign-in button to authenticate, do a 303 redirect to the same URL to 'eat' the
 	//form-submission so that if they click the back-button, they don't get prompted to "resubmit the form data"
 	if (@$_POST['signin'] && AUTH_HTTP) header (
-		'Location: http'.(FORUM_HTTPS ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], true, 301
+		'Location: '.FORUM_URL.$_SERVER['REQUEST_URI'], true, 301
 	);
 } else {
 	define ('AUTH',      false);
@@ -286,8 +287,6 @@ define ('LANG',
 
 /* send HTTP headers
    ====================================================================================================================== */
-//spell out the obvious, enforcing UTF-8 in the unlikely event of UTF-7 XSS attacks
-header ('Content-Type: text/html; charset=UTF-8');
 //stop browsers caching, so you don’t have to refresh every time to see changes
 header ('Cache-Control: no-cache', true);
 header ('Expires: 0', true);
