@@ -314,8 +314,9 @@ function formatText (
 				foreach ($rss->channel->item as $item) if (safeHTML (strtolower ($item->author)) == $name)
 			{	//replace the reference with the link to the post
 				$text = substr_replace ($text,
-					'<a href="'.$item->link.'"'.(isMod ($name) ? ' class="nnf_mod"' : '').'>'.
-						substr ($m[1][0], 0, strlen ($name)+1).
+					//TODO: `safeHTML` isn't quote safe
+					'<a href="'.safeHTML ($item->link).'"'.(isMod ($name) ? ' class="nnf_mod"' : '').'>'
+						.substr ($m[1][0], 0, strlen ($name)+1).
 					'</a>',
 					$m[1][1], strlen ($name)+1
 				);
@@ -354,7 +355,10 @@ function formatText (
 		//create the replacement HTML, including an anchor link
 		$text = substr_replace ($text, $replace =
 			//(note: code spans in titles don't transliterate since they've been replaced with placeholders)
-			"\n\n<h2 id=\"$post_id::$id\"><a href=\"$permalink#$post_id::$id\">".$m[1][0]."</a></h2>\n",
+			"\n\n<h2 id=\"$post_id::$id\">".
+				//TODO: `safeHTML` isn't quote-safe
+				"<a href=\"".safeHTML ($permalink)."#$post_id::$id\">".$m[1][0]."</a>".
+			"</h2>\n",
 			//where to substitute
 			$m[0][1], strlen ($m[0][0])
 		);

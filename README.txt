@@ -291,6 +291,7 @@ starbeamrainbowlab
 
 Stephen Taylor
 *	Reported bug with appends double-encoding HTML
+*	"@name" not working with no HTAccess
 
 Steve Bir
 *	Pages not working in sub forums
