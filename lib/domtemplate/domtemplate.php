@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v16 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v17 © copyright (cc-by) Kroc Camen 2012
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
@@ -400,7 +400,7 @@ abstract class DOMTemplateNode {
 		//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
 		//this needs to be repeated until none are left as we must anchor each to the opening bracket of
 		//the element, otherwise content text might be hit too
-		while (preg_match ('/(<(?!!)[^>]+)([a-z-]+)=([\'"]?)\2\3/i', $source, $m, PREG_OFFSET_CAPTURE))
+		while (preg_match ('/(<(?!!)[^>]+\s)([a-z-]+)=([\'"]?)\2\3/im', $source, $m, PREG_OFFSET_CAPTURE))
 			$source = substr_replace ($source, $m[1][0].$m[2][0], $m[0][1], strlen ($m[0][0]))
 		;
 		//strip out CDATA sections

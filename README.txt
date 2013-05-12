@@ -201,6 +201,7 @@ Bruno Héridet
 
 David Hund
 *	Code typo in `DOMDocument`
+*	Major DOMTemplate bug munging querystrings
 
 fyra
 *	IDN URLs
@@ -245,6 +246,7 @@ Martijn
 *	Better whitespace trimming
 *	Help fixing missing "?" in no-HTACCESS URLs
 *	Constant support improving the UTF-8 handling
+*	Major DOMTemplate bug munging querystrings
 
 nkrs
 *	Opera speed dial help
