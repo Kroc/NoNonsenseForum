@@ -11,12 +11,13 @@
 !websafe.php
 
 # error messages
-!error_htaccess.php
-!error_phpver.php
+!error_apachever.php
 !error_configdefault.php
-!error_theme.php
 !error_configtheme.php
+!error_htaccess.php
 !error_permissions.php
+!error_phpver.php
+!error_theme.php
 !error_xml.php
 
 # templates

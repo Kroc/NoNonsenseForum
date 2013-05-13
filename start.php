@@ -79,16 +79,25 @@ mb_regex_encoding    ('UTF-8');
 @ini_set ('pcre.backtrack_limit', 1000000);
 
 //full server path for absolute references, this includes the any sub-folders NNF might be in
-define ('FORUM_ROOT',		dirname (__FILE__));
+define ('FORUM_ROOT',	dirname (__FILE__));
 //location of the 'lib' folder, full server path
-define ('FORUM_LIB', 		FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
+define ('FORUM_LIB', 	FORUM_ROOT.DIRECTORY_SEPARATOR.'lib'.DIRECTORY_SEPARATOR);
 
 //correct PHP version?
 if (version_compare (PHP_VERSION, '5.2.3') < 0) require FORUM_LIB.'error_phpver.php';
 
+//if Apache is being used, check Apache version
+if (function_exists ('apache_get_version')) if (!preg_match (
+	//depending on the `ServerTokens` directive, the Apache version string might be nothing more than "Apache",
+	//allow this, but if a version number is present detect v2.1-99+
+	//<php.net/manual/en/function.apache-get-version.php#75591>
+	'/apache(?:\/(?:2(?:\.[1-9]|\.[1-9][0-9]+)?|[3-9]|[1-9][0-9]+)?)?/i', apache_get_version ())
+) require FORUM_LIB.'error_apachever.php';
+
+//shared / library code
 require_once FORUM_LIB.'websafe.php';				//import the websafe (sanitised I/O) functions
 require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
-require_once FORUM_LIB.'functions.php';				//import NNF's shared functions
+require_once FORUM_LIB.'functions.php';			//import NNF's shared functions
 
 //location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
 //we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that

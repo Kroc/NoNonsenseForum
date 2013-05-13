@@ -198,6 +198,7 @@ bh8(dot)vn & zuchto
 
 Bruno Héridet
 *	Duplicate ID in the HTML
+*	Major DOMTemplate bug munging querystrings
 
 David Hund
 *	Code typo in `DOMDocument`
