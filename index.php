@@ -10,8 +10,8 @@ require_once './start.php';
 
 //submitted info for making a new thread
 //(name / password already handled in 'start.php')
-define ('TITLE', safeGet (@$_POST['title'], SIZE_TITLE));
-define ('TEXT',  safeGet (@$_POST['text'],  SIZE_TEXT ));
+define ('TITLE', mb_substr (@$_POST['title'], 0, SIZE_TITLE));
+define ('TEXT',  mb_substr (@$_POST['text'],  0, SIZE_TEXT ));
 
 //can the current user post new threads in the current forum?
 //(posting replies is dependent on the the thread -- if locked -- so tested in 'thread.php')

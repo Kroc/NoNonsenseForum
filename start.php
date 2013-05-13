@@ -162,8 +162,8 @@ if (@$_SERVER['HTTP_AUTHORIZATION']) list ($_SERVER['PHP_AUTH_USER'], $_SERVER['
 
 //all pages can accept a name / password when committing actions (new thread / reply &c.)
 //in the case of HTTP authentication (sign in), these are provided in the request header instead
-define ('NAME', safeGet (@$_SERVER['PHP_AUTH_USER'] ? @$_SERVER['PHP_AUTH_USER'] : @$_POST['username'], SIZE_NAME));
-define ('PASS', safeGet (@$_SERVER['PHP_AUTH_PW']   ? @$_SERVER['PHP_AUTH_PW']   : @$_POST['password'], SIZE_PASS, false));
+define ('NAME', mb_substr (@$_SERVER['PHP_AUTH_USER'] ? @$_SERVER['PHP_AUTH_USER'] : @$_POST['username'], 0, SIZE_NAME));
+define ('PASS', mb_substr (@$_SERVER['PHP_AUTH_PW']   ? @$_SERVER['PHP_AUTH_PW']   : @$_POST['password'], 0, SIZE_PASS));
 
 if ((	//if HTTP authentication is used, we don’t need to validate the form fields
 	@$_SERVER['PHP_AUTH_USER'] && @$_SERVER['PHP_AUTH_PW']

@@ -9,7 +9,7 @@
 require_once './start.php';
 
 //get the post message, the other fields (name / pass) are retrieved automatically in 'start.php'
-define ('TEXT', safeGet (@$_POST['text'], SIZE_TEXT));
+define ('TEXT', mb_substr (@$_POST['text'], 0, SIZE_TEXT));
 
 //which thread to show
 //TODO: an error here should generate a 404, but we can't create a 404 in PHP that will send the server's provided 404 page.

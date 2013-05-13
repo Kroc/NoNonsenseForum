@@ -1,4 +1,4 @@
-<?php
+<?php //WARNING: this is very much under construction, trust no one ¬_¬
 
 /* making strings web safe: a library for PHP 5.2+
    v1 copyright © Kroc Camen <kroc@camendesign.com> 2012, licenced under Creative Commons Attribution 3.0 licence
@@ -33,14 +33,43 @@ header ('Content-Type: text/html; charset=UTF-8');
 
 /* Preprocess the super globals
    ---------------------------------------------------------------------------------------------------------------------- */
-//TODO: preprocess $GLOBALS with safeUTF8 so that all potential input is santisied from the outset
+/* never trust your inputs! to help protect against malicious inputs, we're going to run through the superglobals
+  ($_SERVER, $_COOKIES, $_REQUEST / $_GET / $_POST &c.) through our UTF-8 sanitisation. you'll still need to be wary of the
+  contents of your inputs (SQL/HTML injection, XSS &c.), and always safely combine strings (`safeURL`) and output safely
+  (`safeHTML`), but this process helps against the less-obvious Unicode-based attacks */
+function preprocess_superglobals () {
+	if (get_magic_quotes_gpc ()) {
+		$gpc = array (&$_GET, &$_POST, &$_COOKIE, &$_ENV);
+		foreach ($gpc as &$_) array_walk_recursive ($_, create_function (
+			'&$value, $key',
+			'if (is_string ($value)) $value = stripslashes ($value);'
+		));
+	}
+	
+	$all = array (
+		&$_SERVER,	//server environment, request headers, user agent string &c.
+		&$_REQUEST,	//combined $_GET & $_POST
+		&$_GET,		//sent query string parameters e.g. "?page=2"
+		&$_POST,	//form-submitted parameters
+		&$_FILES,	//uploaded files
+		&$_COOKIE,
+		&$_SESSION,	
+		&$_ENV		//environment variables
+	);
+	foreach ($all as &$_) if (!is_null ($_)) array_walk_recursive ($_, 'safeUTF8');
+	foreach ($all as &$_) if (!is_null ($_)) array_walk_recursive ($_, 'safeTrim');
+}
+preprocess_superglobals ();
 
 
 /* begin web safe functions
    ====================================================================================================================== */
 /* safeUTF8 : ensure any text given comes out as web-safe UTF-8
    ---------------------------------------------------------------------------------------------------------------------- */
-function safeUTF8 ($text) {
+function safeUTF8 (
+	//the source-text has to be by-reference so that when we process the superglobals the change sticks
+	&$text
+) {
 	//what's given could be any imaginable encoding, normalise it into UTF-8 though it may not yet be web-safe
 	//adapted from <php.net/mb_check_encoding#89286>, with thanks to Zegnat. this works by importing the current byte
 	//stream into UTF-32 which has enough scope to contain any other encoding, then downsizing in to UTF-8
@@ -59,6 +88,9 @@ function safeUTF8 ($text) {
 	//see note proceeding: <www.w3.org/TR/REC-xml/#charsets>
 	$text = preg_replace (
 		'/[\x{007f}-\x{0084}\x{0086}-\x{009f}\x{FDD0}-\x{FDEF}'.
+		//bi-directional control
+		  '\x{200E}\x{200F}\x{202A}-\x{202E}'.
+		//the upper two code-points of each block are reserved
 		  '\x{1FFFE}\x{1FFFF}\x{2FFFE}\x{2FFFF}\x{3FFFE}\x{3FFFF}\x{4FFFE}\x{4FFFF}'.
 		  '\x{5FFFE}\x{5FFFF}\x{6FFFE}\x{6FFFF}\x{7FFFE}\x{7FFFF}\x{8FFFE}\x{8FFFF}'.
 		  '\x{9FFFE}\x{9FFFF}\x{AFFFE}\x{AFFFF}\x{BFFFE}\x{BFFFF}\x{CFFFE}\x{CFFFF}'.
@@ -70,28 +102,29 @@ function safeUTF8 ($text) {
 	
 	//Some interesting references:
 	//http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
-	
-}
-
-/* safeGet : sanatise form input
-   ---------------------------------------------------------------------------------------------------------------------- */
-//TODO: this function can pretty much be removed in favour of pre-processing the $_REQUEST with `stripslashes`
-function safeGet ($data, $len=0, $trim=true) {
-	//remove PHP’s auto-escaping of text (depreciated, but still on by default in PHP5.3)
-	if (get_magic_quotes_gpc ()) $data = stripslashes ($data);
-	//remove useless whitespace. can be skipped (i.e for passwords).
-	if ($trim) $data = safeTrim ($data);
-	//clip the length in case of a fake crafted request
-	return $len ? mb_substr ($data, 0, $len) : $data;
 }
 
 /* safeTrim : trim *all* kinds of whitespace, not just the ASCII space / tab / CRLF!
    ---------------------------------------------------------------------------------------------------------------------- */
-function safeTrim ($text) {
+function safeTrim (&$text) {
 	//PHP `trim` doesn't cover a wide variety of Unicode; the private-use area is left, should the Apple logo be used
 	//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
-	return preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
+	$text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
 }
+
+/* safeSpaces: normalise space-like characters
+   ---------------------------------------------------------------------------------------------------------------------- */
+//user names can be spoofed by including invisible space characters, or replacing normal spaces with space-like characters
+//that appear as a space. this function removes invisible characters and replaces space-like characters with regular spaces
+//(there are any other number of characters that can be spoofed, so this is by no means meant to solve all problems)
+/*function safeSpaces ($text) {
+	//1. characters to remove
+	$text = preg_replace (
+		'', '',
+	$text);
+	//2. characters to replace with a regular space
+	return $text;
+}*/
 
 /* safeHTML : encode a string for insertion into an HTML element
    ---------------------------------------------------------------------------------------------------------------------- */
