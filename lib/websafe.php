@@ -102,6 +102,8 @@ function safeUTF8 (
 	
 	//Some interesting references:
 	//http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
+	
+	return $text;
 }
 
 /* safeTrim : trim *all* kinds of whitespace, not just the ASCII space / tab / CRLF!
@@ -109,7 +111,7 @@ function safeUTF8 (
 function safeTrim (&$text) {
 	//PHP `trim` doesn't cover a wide variety of Unicode; the private-use area is left, should the Apple logo be used
 	//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
-	$text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
+	return $text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
 }
 
 /* safeSpaces: normalise space-like characters
