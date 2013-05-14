@@ -31,21 +31,29 @@
 //encoding, which can be exploited: <openmya.hacker.jp/hasegawa/public/20071107/s6/h6.html?file=datae.txt>
 header ('Content-Type: text/html; charset=UTF-8');
 
-/* Preprocess the super globals
+/* preprocess the super globals:
    ---------------------------------------------------------------------------------------------------------------------- */
-/* never trust your inputs! to help protect against malicious inputs, we're going to run through the superglobals
-  ($_SERVER, $_COOKIES, $_REQUEST / $_GET / $_POST &c.) through our UTF-8 sanitisation. you'll still need to be wary of the
-  contents of your inputs (SQL/HTML injection, XSS &c.), and always safely combine strings (`safeURL`) and output safely
-  (`safeHTML`), but this process helps against the less-obvious Unicode-based attacks */
+/* never trust your inputs! to help protect against malicious inputs, we're going to run the superglobals (`$_SERVER`,
+   `$_COOKIES`, `$_REQUEST` / `$_GET` / `$_POST` &c.) through our UTF-8 sanitisation. you'll still need to be wary of the
+   contents of your inputs (SQL/HTML injection, XSS &c.), and always safely combine strings (`safeURL`) and output safely
+   (`safeHTML`), but this process helps against the less-obvious Unicode-based attacks */
 function preprocess_superglobals () {
+	/* "magic quotes" was a rather weak attempt at preventing injection attacks by automatically escaping the inputs
+	   (`$_GET`, `$_POST` & `$_COOKIE`) with slashes (i.e. "won\'t"). this is however only relevant for SQL and not
+	   HTML so introduces more complications in processing and outputting. this feature is removed entirely in PHP5.4.
+	   if magic quotes is on, we strip the extra slashes from the inputs so as to normalise behaviour across different
+	   servers and PHP versions */
 	if (get_magic_quotes_gpc ()) {
+		//great care has to be taken to pass and process the superglobals by reference
 		$gpc = array (&$_GET, &$_POST, &$_COOKIE, &$_ENV);
+		//drill through the selected superglobals, applying `stripslashes`
 		foreach ($gpc as &$_) array_walk_recursive ($_, create_function (
 			'&$value, $key',
 			'if (is_string ($value)) $value = stripslashes ($value);'
 		));
 	}
-	
+	//magic quotes only applies to GET, POST, COOKIE & ENV, but we'll need to run the other sanitising functions
+	//on all the superglobals
 	$all = array (
 		&$_SERVER,	//server environment, request headers, user agent string &c.
 		&$_REQUEST,	//combined $_GET & $_POST
@@ -103,14 +111,18 @@ function safeUTF8 (
 	//Some interesting references:
 	//http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
 	
+	//we still need to return, despite the by-reference parameter because use of anonymous variables and functions
+	//for the call will not be by-reference
 	return $text;
 }
 
 /* safeTrim : trim *all* kinds of whitespace, not just the ASCII space / tab / CRLF!
    ---------------------------------------------------------------------------------------------------------------------- */
+//PHP `trim` doesn't cover a wide variety of Unicode; the private-use area is left, should the Apple logo be used
+//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
 function safeTrim (&$text) {
-	//PHP `trim` doesn't cover a wide variety of Unicode; the private-use area is left, should the Apple logo be used
-	//<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
+	//we have to do this odd return because in order to preprocess the superglobals we have to call by-reference,
+	//but calls that use anonymous variables or function return values will not be by-reference
 	return $text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
 }
 

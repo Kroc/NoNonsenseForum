@@ -239,7 +239,7 @@ article header .ui,
 				         transition: all .2s;}
 
 a.delete			{background: url("img/delete.png") no-repeat right center; background-size: 16px 16px;}
-a.append			{background: url("img/add.png") no-repeat right center; background-size: 16px 16px;}
+a.append			{background: url("img/append.png") no-repeat right center; background-size: 16px 16px;}
 
 article.nnf_op			{}
 article.nnf_op header		{background: #888; color: #eee;}
@@ -536,7 +536,7 @@ section>h1 + nav		{background: none; float: right; margin-top: -50px !important;
 #nnf_threads h1, #nnf_post h1	{background-image: url("img/threads_2x.png");}
 #nnf_replies h1			{background-image: url("img/replies_2x.png");}
 a.delete			{background-image: url("img/delete_2x.png");}
-a.append			{background-image: url("img/add_2x.png");}
+a.append			{background-image: url("img/append_2x.png");}
 #markup h1, #privacy h1		{background-image: url("img/help_2x.png");}
 #nnf_new-form h1,
  #nnf_reply-form h1, #append h1	{background-image: url("img/new_2x.png");}
