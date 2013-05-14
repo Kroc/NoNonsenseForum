@@ -237,10 +237,15 @@ if (isset ($_GET['delete'])) {
 		))
 	//deleting a post?
 	)) if ($ID) {
-		if (	//full delete? (option ticked, is moderator, and post is on the last page)
+		if ((	//full delete? (option ticked, is moderator, and post is on the last page)
 			(IS_MOD && $i <= (count ($xml->channel->item)-2) % FORUM_POSTS) &&
 			//if the post has already been blanked, delete it fully
 			(isset ($_POST['remove']) || $post->xpath ('category[.="deleted"]'))
+		) ||	//if the post is corrupt, remove it entirely instead of blanking it
+			@simplexml_load_string (
+				//most HTML entities are not allowed in XML, we need to convert these to test XML validity
+				'<body>'.DOMTemplate::html_entity_decode ($post->description).'</body>'
+			) === false	 
 		) {
 			//remove the post from the thread entirely
 			unset ($xml->channel->item[$i]);

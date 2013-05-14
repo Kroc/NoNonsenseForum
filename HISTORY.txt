@@ -3,6 +3,9 @@ v26
 *	Updated to DOMTemplate v17, fix for major bug corrupting querystrings and attributes,
 	with thanks to Bruno Héridet for narrowing down and Zegnat for suggesting a fix
 *	Fix for `@name` corrupting posts when HTAccess off, with thanks to Stephen Taylor
+*	Corrupted posts will now be removed entirely when deleted instead of being blanked first
+	(this may break some permalinks if deleting a corrupted post before the last page)
+*	Delete and Append buttons have new icons to look less like voting buttons!
 *	Moved some functions into a new "web safe" library for sanitising input / output
 	-	Declared UTF-8 in the content-type header to prevent UTF-7 attacks
 	-	a `safeTrim` function to trim all kinds of whitespace outside of TAB / SPACE / CRLF
