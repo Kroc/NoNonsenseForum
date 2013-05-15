@@ -9,8 +9,13 @@
    (see '/lib/domtemplate.php' or <camendesign.com/dom_templating> for documentation)
 */
 
-header, nav, section, article,	/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
- footer				{display: block;}
+/* enable 1:1 scaling for snap-view in Windows 8. the media queries will handle the rest
+   <msdn.microsoft.com/en-us/library/ie/hh869615%28v=vs.85%29.aspx> */
+@-ms-viewport 			{width: device-width;}
+
+header, nav, section,		/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
+ article, footer		{display: block;}
+				
 
 html, body			{width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
 html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
@@ -413,7 +418,7 @@ h1				{font-size: 20px !important;}
 				 background: #222;}
 #query				{width: 100%; padding: 4px 0; text-indent: 15px; font-size: 18px;
 				 -webkit-box-sizing: padding-box;
-				    -mox-box-sizing: padding-box;
+				    -moz-box-sizing: padding-box;
 				         box-sizing: padding-box;
 				 -webkit-border-radius: 14px;
 				    -moz-border-radius: 14px;
@@ -522,11 +527,10 @@ section>h1 + nav		{background: none; float: right; margin-top: -50px !important;
 /* ======================================================================================================================
    HiDPI  / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
    ====================================================================================================================== */
-@media	(-webkit-min-device-pixel-ratio: 1.5),
-	(-o-min-device-pixel-ratio: 3/2),
-	(min--moz-device-pixel-ratio: 1.5),
-	(min-device-pixel-ratio: 1.5),
-	(min-resolution: 1.5dppx) {
+@media print,
+       (-o-min-device-pixel-ratio: 5/4),
+       (-webkit-min-device-pixel-ratio: 1.25),
+       (min-resolution: 120dpi) {
 
 #query				{background-image: url("img/search_2x.png");}
 #index				{background-image: url("img/here_2x.png");}
@@ -537,9 +541,9 @@ section>h1 + nav		{background: none; float: right; margin-top: -50px !important;
 #nnf_replies h1			{background-image: url("img/replies_2x.png");}
 a.delete			{background-image: url("img/delete_2x.png");}
 a.append			{background-image: url("img/append_2x.png");}
-#markup h1, #privacy h1		{background-image: url("img/help_2x.png");}
+#markup h1, #privacy h1	{background-image: url("img/help_2x.png");}
 #nnf_new-form h1,
- #nnf_reply-form h1, #append h1	{background-image: url("img/new_2x.png");}
+ #nnf_reply-form h1, #append h1{background-image: url("img/new_2x.png");}
 #delete h1			{background-image: url("img/deletetitle_2x.png");}
 a#nnf_lock			{background-image: url("img/security_closed_32.png");}
 a#nnf_unlock			{background-image: url("img/security_open_32.png");}
