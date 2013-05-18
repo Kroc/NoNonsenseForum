@@ -1,4 +1,7 @@
 v26	
+*	Stick and Unstick thread buttons when logged in as the Admin (the admin is now the first person listed in mods.txt)
+	NOTE: the lock and unlock links have been changed into buttons, make sure to update custom translations / CSS!
+*	Windows 8 snap-view
 *	Apache version is now verified (1&1 are still using v1.3!)
 *	Updated to DOMTemplate v17, fix for major bug corrupting querystrings and attributes,
 	with thanks to Bruno Héridet for narrowing down and Zegnat for suggesting a fix

@@ -143,6 +143,10 @@ function prepareTemplate (
 
 /* ====================================================================================================================== */
 
+//the first mod on the list is the site administrator and has extra privileges such as stickying threads
+function isAdmin ($name) {
+	global $MODS;	 return strtolower ($name) === strtolower ((string) @$MODS['GLOBAL'][0]);
+}
 //check to see if a name is a known moderator
 function isMod ($name) {
 	global $MODS;    return in_array (strtolower ($name), array_map ('strtolower', $MODS['GLOBAL'] + $MODS['LOCAL']));
@@ -150,6 +154,13 @@ function isMod ($name) {
 //a member of a locked forum?
 function isMember ($name) {
 	global $MEMBERS; return in_array (strtolower ($name), array_map ('strtolower', $MEMBERS));
+}
+
+//get the list of sticky threads in the current forum / sub-forum
+function getStickies () {
+	//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
+	//then `array_filter` removes blank items. this way saves having to check if the file exists first
+	return array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES));
 }
 
 /* ====================================================================================================================== */

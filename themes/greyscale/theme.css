@@ -365,12 +365,17 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-#nnf_admin			{float: right;}
-a#nnf_lock, a#nnf_unlock	{margin-left: 20px; padding-left: 25px; text-transform: uppercase;}
+form#nnf_admin			{float: right; border: none;}
+form#nnf_admin input		{margin-left: 20px; padding-left: 20px; border: none;
+				 text-transform: uppercase; cursor: pointer;
+				 /* TODO: webkit-appearance: none */}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
    <creativecommons.org/licenses/by-sa/3.0/> */
-a#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%; background-size: 16px 16px;}
-a#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%; background-size: 16px 16px;}
+				/* to-do: 1x & 2x */
+#nnf_stick			{background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_unstick			{background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%; background-size: 16px 16px;}
 
 footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
 				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
@@ -545,6 +550,8 @@ a.append			{background-image: url("img/append_2x.png");}
 #nnf_new-form h1,
  #nnf_reply-form h1, #append h1{background-image: url("img/new_2x.png");}
 #delete h1			{background-image: url("img/deletetitle_2x.png");}
+a#nnf_stick			{background-image: url("img/sticky_x2.png");}
+a#nnf_unstick			{background-image: url("img/sticky_x2.png");}
 a#nnf_lock			{background-image: url("img/security_closed_32.png");}
 a#nnf_unlock			{background-image: url("img/security_open_32.png");}
 

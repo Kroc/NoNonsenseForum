@@ -76,18 +76,13 @@ if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
 	//order by last modified date
 	array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
 	
-	//get sticky list, trimming any files that no longer exist
+	//get sticky list (see 'lib/functions.php')
 	//(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
-	if ($stickies = array_intersect (
-		//`file` returns NULL on failure, so we can cast it to an array to get an array with one blank item,
-		//then `array_filter` removes blank items. this way saves having to check if the file exists first
-		array_filter ((array) @file ('sticky.txt', FILE_IGNORE_NEW_LINES)), $threads
-	)) {
-		//order the stickies by reverse date order
-		array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
-		//remove the stickies from the thread list
-		$threads = array_diff ($threads, $stickies);
-	}
+	$stickies = array_intersect (getStickies (), $threads);
+	//order the stickies by reverse date order
+	array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
+	//remove the stickies from the thread list
+	$threads = array_diff ($threads, $stickies);
 	
 	//handle a rounding problem with working out the number of pages (PHP 5.3 has a fix for this)
 	$PAGES = count ($threads) % FORUM_THREADS == 1	? floor (count ($threads) / FORUM_THREADS)

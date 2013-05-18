@@ -498,8 +498,10 @@ HTML
 
 /* site footer
    ---------------------------------------------------------------------------------------------------------------------- */
-,'#nnf_lock'				=> 'Lock'				//Lock link in 'thread.html'
-,'#nnf_unlock'				=> 'Unlock'				//Unlock link in 'thread.html'
+,'#nnf_stick@value'			=> 'Stick'				//Stick button in 'thread.html'
+,'#nnf_unstick@value'			=> 'Unstick'				//Unstick button in 'thread.html'
+,'#nnf_lock@value'			=> 'Lock'				//Lock button in 'thread.html'
+,'#nnf_unlock@value'			=> 'Unlock'				//Unlock button in 'thread.html'
 
 ,'#nnf_mods-local'			=> <<<HTML
 	Moderators for this sub-forum:

@@ -41,6 +41,7 @@
 				see section 5 in the README file
 	$MODS			array of the names of moderators for the whole forum, and the current sub-forum
 	$MEMBERS		array of the names of members for the current sub-forum
+	IS_ADMIN	b	if the current viewer is the site admin (first name in 'mods.txt')
 	IS_MOD		b	if the current viewer is a moderator for the current forum
 	IS_MEMBER	b	if the current viewer is a member of the current forum
 	
@@ -232,6 +233,8 @@ $MODS = array (
 //get the list (if any) of users allowed to access this current forum
 $MEMBERS = array_filter ((array) @file ('members.txt', FILE_IGNORE_NEW_LINES));
 
+//is the current user the site admin? (first name in the root 'mods.txt')
+define ('IS_ADMIN',  AUTH && isAdmin (NAME));
 //is the current user a moderator in this forum?
 define ('IS_MOD',    AUTH && isMod (NAME));
 //is the current user a member of this forum?

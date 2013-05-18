@@ -37,11 +37,28 @@ define ('CAN_REPLY', FORUM_ENABLED && (
 	(!(bool) $xml->channel->xpath ('category[.="locked"]') && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
 ));
 
+/* ======================================================================================================================
+   thread stick / unstick action
+   ====================================================================================================================== */
+if (	(isset ($_POST['stick']) || isset ($_POST['unstick'])) &&
+	//the site admin, or the first mod of the sub-forum have stick / unstick rights
+	(IS_ADMIN || strtolower (NAME) === strtolower ((string) @$MODS['LOCAL'][0]))
+) {
+	if (in_array ("$FILE.rss", $stickies = getStickies ())) {
+		$stickies = array_diff ($stickies, array ("$FILE.rss"));
+	} else {
+		$stickies[] = "$FILE.rss";
+	};
+	
+	file_put_contents ('sticky.txt', implode ("\r\n", $stickies), LOCK_EX);
+	
+	//TODO: redirect to eat the form submission
+}
 
 /* ======================================================================================================================
    thread lock / unlock action
    ====================================================================================================================== */
-if ((isset ($_GET['lock']) || isset ($_GET['unlock'])) && IS_MOD && AUTH) {
+if ((isset ($_POST['lock']) || isset ($_POST['unlock'])) && IS_MOD) {
 	//get a read/write lock on the file so that between now and saving, no other posts could slip in
 	//normally we could use a write-only lock 'c', but on Windows you can't read the file when write-locked!
 	$f   = fopen ("$FILE.rss", 'r+'); flock ($f, LOCK_EX);
@@ -442,7 +459,11 @@ if (CAN_REPLY && AUTH && TEXT) {
 /* ======================================================================================================================
    template thread
    ====================================================================================================================== */
-//load the template into DOM where we can manipulate it:
+//is this thread stickied?
+define ('IS_STICKY', in_array ("$FILE.rss", $stickies = getStickies ()));
+
+/* load the template into DOM where we can manipulate it:
+   --------------------------------------------------------------------------------------------------------------------- */
 //(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
 	THEME_ROOT.'thread.html',
@@ -458,21 +479,21 @@ $template = prepareTemplate (
 )->set (array (
 	//the thread itself is the RSS feed :)
 	'//link[@rel="alternate"]/@href, '.
-	'a#nnf_rss@href'		=> FORUM_PATH.PATH_URL."$FILE.rss",
-	//set the hyperlinks for lock / unlock actions (append current URL with 'lock' / 'unlock' querystrings)
-	'a#nnf_lock@href'		=> url (PATH_URL, $FILE, $PAGE, 'lock'),
-	'a#nnf_unlock@href'		=> url (PATH_URL, $FILE, $PAGE, 'unlock')
+	'a#nnf_rss@href'		=> FORUM_PATH.PATH_URL."$FILE.rss"
 ))->remove (array (
 	//if replies can't be added (forum or thread is locked, user is not moderator / member),
 	//remove the "add reply" link and anything else (like the input form) related to posting
 	'#nnf_reply, #nnf_reply-form'	=> !CAN_REPLY,
 	//if the forum is not post-locked (only mods can post / reply) then remove the warning message
 	'.nnf_forum-locked'		=> FORUM_LOCK != 'posts',
-	//is the user a mod and can lock / unlock the thread?
+	//is the user a mod and can lock / unlock / stick / unstick the thread?
 	'#nnf_admin'			=> !IS_MOD,
 	//is the thread already locked?
 	'#nnf_lock'			=>  $xml->channel->xpath ('category[.="locked"]'),
-	'#nnf_unlock'			=> !$xml->channel->xpath ('category[.="locked"]')
+	'#nnf_unlock'			=> !$xml->channel->xpath ('category[.="locked"]'),
+	//is the thread already stickied?
+	'#nnf_stick'			=>  IS_STICKY,
+	'#nnf_unstick'			=> !IS_STICKY
 ));
 
 /* post
