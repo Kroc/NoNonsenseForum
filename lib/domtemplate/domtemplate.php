@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v17 © copyright (cc-by) Kroc Camen 2012
+//DOM Templating classes v18 © copyright (cc-by) Kroc Camen 2013
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
@@ -334,7 +334,7 @@ abstract class DOMTemplateNode {
 	private function setClassNode ($DOMNode, $class) {
 		//check if the class node already has the className (don't add twice)
 		if (!in_array ($class, explode (' ', $DOMNode->nodeValue)))
-			@$node->nodeValue = $DOMNode->nodeValue." $class"
+			@$DOMNode->nodeValue = $DOMNode->nodeValue." $class"
 		;
 	}
 	
@@ -388,7 +388,7 @@ abstract class DOMTemplateNode {
 		);
 		
 		//XML is already used for the internal representation; if outputting XML no filtering is needed
-		if ($this->type == $this::XML) return $source;
+		if ($this->type == $this->XML) return $source;
 		
 		//fix and clean DOM's XML into HTML:
 		//----------------------------------
@@ -396,7 +396,7 @@ abstract class DOMTemplateNode {
 		$source = preg_replace ('/<([^<]*[^ ])\/>/', '<$1 />', $source);
 		//fix broken self-closed tags; e.g. `<script ...></script>` will automatically be converted to
 		//`<script ... />` on loading the document, this breaks in browsers so we have to fix it on output
-		$source = preg_replace ('/<(div|[ou]l|script|textarea|title)([^>]*) ?\/>/i', '<$1$2></$1>', $source);
+		$source = preg_replace ('/<(div|iframe|[ou]l|script|textarea|title)([^>]*) ?\/>/i', '<$1$2></$1>', $source);
 		//convert XML style attributes (`<a attr="attr">`) to HTML style attributes (`<a attr>`),
 		//this needs to be repeated until none are left as we must anchor each to the opening bracket of
 		//the element, otherwise content text might be hit too
