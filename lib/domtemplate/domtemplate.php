@@ -388,7 +388,8 @@ abstract class DOMTemplateNode {
 		);
 		
 		//XML is already used for the internal representation; if outputting XML no filtering is needed
-		if ($this->type == $this->XML) return $source;
+		//(`$this->XML` and `$this::XML` don't work consistently between PHP versions, so I'm cheeping out)
+		if ($this->type == 1) return $source;
 		
 		//fix and clean DOM's XML into HTML:
 		//----------------------------------
