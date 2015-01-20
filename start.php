@@ -1,6 +1,6 @@
 <?php //bootstraps the forum
 /* ====================================================================================================================== */
-/* NoNonsense Forum v26 © Copyright (CC-BY) Kroc Camen 2010-2013
+/* NoNonsense Forum v26 © Copyright (CC-BY) Kroc Camen 2010-2015
    licenced under Creative Commons Attribution 3.0 <creativecommons.org/licenses/by/3.0/deed.en_GB>
    you may do whatever you want to this code as long as you give credit to Kroc Camen, <camendesign.com>
 *//*
@@ -66,10 +66,10 @@
 	THEME_DEL_USER		the HTML message used when a user deletes their own post, in the forum's default language
 	THEME_DEL_MOD		the HTML message used when a mod deletes a post, in the forum's default langugae
 	THEME_HTML_ERROR	the HTML message used when a post is corrupt (malformed HTML), in the forum's default lang.
-*/	
+*/
 
 
-/* server configutation
+/* server configuration
    ====================================================================================================================== */
 //default UTF-8 throughout
 mb_internal_encoding ('UTF-8');
@@ -96,9 +96,9 @@ if (function_exists ('apache_get_version')) if (!preg_match (
 ) require FORUM_LIB.'error_apachever.php';
 
 //shared / library code
-require_once FORUM_LIB.'websafe.php';				//import the websafe (sanitised I/O) functions
+require_once FORUM_LIB.'utf8safe.php';				//import the websafe (sanitised I/O) functions
 require_once FORUM_LIB.'domtemplate/domtemplate.php';		//import the templating engine
-require_once FORUM_LIB.'functions.php';			//import NNF's shared functions
+require_once FORUM_LIB.'functions.php';                         //import NNF's shared functions
 
 //location of NNF relative to the webroot, i.e. if NNF is in a sub-folder or not
 //we URL-encode this as it’s never used for server-side paths, `FORUM_ROOT` / `FORUM_LIB` are for that

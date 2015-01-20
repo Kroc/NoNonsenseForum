@@ -1,23 +1,23 @@
 <?php //WARNING: this is very much under construction, trust no one ¬_¬
 
-/* making strings web safe: a library for PHP 5.2+
-   v1 copyright © Kroc Camen <kroc@camendesign.com> 2012, licenced under Creative Commons Attribution 3.0 licence
+/* utf8safe.php : a library for PHP 5.2+
+   v1 copyright © Kroc Camen <kroc@camendesign.com> 2012-2015, licenced under Creative Commons Attribution 3.0 licence
    you may do whatever you want with this code as long as you give credit
    special thanks to Zegnat for help and support with UTF-8
 *//* 
-   who / what is the web safe library for?
+   who / what is the utf8safe library for?
    ====================================================================================================================== */
 /* this set of functions applies to all developers of all skill levels, but especially those new to PHP
 
    in an ideal world there would be a programming language that had separate String types for HTML strings and SQL strings
    and plain-text strings and therefore any time the programmer joined or manipulated strings, the proper escaping would
    happen behind the scenes and no matter how uneducated on safety the programmer was, the output would, without fail, be
-   safe -- but, since we live in 2013 and nobody has yet thought that it would be a good idea to make a programming
+   safe -- but, since we live in 2014 and nobody has yet thought that it would be a good idea to make a programming
    language that actually understood that there was this thing out there called the World Wide Web and that it's actually
    quite popular and that, if you don't escape things properly, bad things happen -- we must instead fret over every input
    and output just like the days before buffer overflow protections in C/C++
    
-   the web safe library therefore provides *help* (but only where the developer is wise enough to use it) in making sure
+   the utf8safe library therefore provides *help* (but only where the developer is wise enough to use it) in making sure
    your inputs are safe to begin with and that when you output to HTML, some nasty won't manage to flow through your code,
    tucked away in a string, and land on the page intact & dangerous
 */
@@ -25,6 +25,10 @@
 
 /* pre-emptive measures
    ====================================================================================================================== */
+//default to UTF-8 in multi-byte functions throughout PHP
+mb_internal_encoding ('UTF-8');
+mb_regex_encoding    ('UTF-8');
+   
 /* UTF-7 XSS protection
    ---------------------------------------------------------------------------------------------------------------------- */
 //failure to explicitly define a character set, either by HTTP header or meta tag, can result in IE defaulting to UTF-7
@@ -70,7 +74,7 @@ function preprocess_superglobals () {
 preprocess_superglobals ();
 
 
-/* begin web safe functions
+/* begin utf8 safe functions
    ====================================================================================================================== */
 /* safeUTF8 : ensure any text given comes out as web-safe UTF-8
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -78,7 +82,7 @@ function safeUTF8 (
 	//the source-text has to be by-reference so that when we process the superglobals the change sticks
 	&$text
 ) {
-	//what's given could be any imaginable encoding, normalise it into UTF-8 though it may not yet be web-safe
+	//what's given could be any imaginable encoding, normalise it into UTF-8 though it may not yet be web-safe.
 	//adapted from <php.net/mb_check_encoding#89286>, with thanks to Zegnat. this works by importing the current byte
 	//stream into UTF-32 which has enough scope to contain any other encoding, then downsizing in to UTF-8
 	$text = mb_convert_encoding (mb_convert_encoding ($text, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32');
@@ -126,19 +130,12 @@ function safeTrim (&$text) {
 	return $text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
 }
 
-/* safeSpaces: normalise space-like characters
+/* normaliseText : reduce unnecessary oddities in the text, such as converting special spaces to regular spaces
    ---------------------------------------------------------------------------------------------------------------------- */
-//user names can be spoofed by including invisible space characters, or replacing normal spaces with space-like characters
-//that appear as a space. this function removes invisible characters and replaces space-like characters with regular spaces
-//(there are any other number of characters that can be spoofed, so this is by no means meant to solve all problems)
-/*function safeSpaces ($text) {
-	//1. characters to remove
-	$text = preg_replace (
-		'', '',
-	$text);
-	//2. characters to replace with a regular space
-	return $text;
-}*/
+/* when is a space not a space? when it's the hundreds of space-like characters available in unicode! */
+/*function normaliseText ($text) {
+}
+*/
 
 /* safeHTML : encode a string for insertion into an HTML element
    ---------------------------------------------------------------------------------------------------------------------- */
@@ -157,10 +154,10 @@ function safeURL ($text) {
 /* safeTransliterate : generate a safe (a-z0-9_) string, for use as filenames or URLs, from an arbitrary string
    ---------------------------------------------------------------------------------------------------------------------- */
 function safeTransliterate ($text) {
-	//if available, this function uses PHP5.4's transliterater, which is capable of converting arabic, hebrew, greek,
-	//chinese, japanese and more into ASCII! however, we use our manual (and crude) fallback *first* instead because
-	//we will take the liberty of transliterating some things into more readable ASCII-friendly forms,
-	//e.g. "100℃" > "100degc" instead of "100oc"
+	/* if available, this function uses PHP5.4's transliterater, which is capable of converting Arabic, Hebrew, Greek,
+	   Chinese, Japanese and more into ASCII! however, we use our manual (and crude) fallback *first* instead because
+	   we will take the liberty of transliterating some things into more readable ASCII-friendly forms,
+	   e.g. "100℃" > "100degc" instead of "100oc" */
 	
 	/* manual transliteration list:
 	   -------------------------------------------------------------------------------------------------------------- */
@@ -218,10 +215,19 @@ function safeTransliterate ($text) {
 		array ('/[^_a-z0-9-]/i',	'/-{2,}/',	'/^-|-$/'),
 		array ('-',			'-',		''       ),
 		
-		//attempt transliteration with PHP5.4's transliteration engine (best):
-		//(this method can handle near anything, including converting chinese and arabic letters to ASCII.
-		// requires the 'intl' extension to be enabled)
-		function_exists ('transliterator_transliterate') ? transliterator_transliterate (
+		/* attempt transliteration with PHP5.4's transliteration engine (best):
+		  (this method can handle near anything, including converting Chinese and Arabic letters to ASCII.
+		   requires the 'intl' extension to be enabled) */
+		
+                //check if the transliterator is present (PHP 5.4+)
+                function_exists ('transliterator_transliterate')
+                /* even though the server might be on PHP5.4+ the server might not have the transliteration libraries
+                   installed (happens on free / shared hosts). check to see if the transliteration we want is even
+                   possible and */
+                && count (array_intersect (
+                        array ('Any-NFKD', 'Any-Latin', 'Latin-ASCII', 'Any-Remove', 'Any-Lower'),
+                        transliterator_list_ids ()
+                )) === 5 ? transliterator_transliterate (
 			//split unicode accents and symbols, e.g. "Å" > "A°":
 			'NFKD; '.
 			//convert everything to the Latin charset e.g. "ま" > "ma":

@@ -1,5 +1,5 @@
-DOMTemplate © Copyright (CC-BY) Kroc Camen 2012
-===============================================
+DOMTemplate © Copyright (CC-BY) Kroc Camen 2012-2015
+====================================================
 The code and other resources of this project are licensed under a
 Creative Commons 3.0 Attribution Unported licence (unless otherwise
 stated), viewable here:

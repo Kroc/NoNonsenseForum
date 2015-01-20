@@ -1,6 +1,6 @@
 <?php
 
-//DOM Templating classes v18 © copyright (cc-by) Kroc Camen 2013
+//DOM Templating classes v18 © copyright (cc-by) Kroc Camen 2012-2015
 //you may do whatever you want with this code as long as you give credit
 //documentation at <camendesign.com/dom_templating>
 
