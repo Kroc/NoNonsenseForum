@@ -365,7 +365,10 @@ input[type=text],
 
 /* site footer
    ====================================================================================================================== */
-form#nnf_admin			{float: right; border: none;}
+form#nnf_admin			{float: right; border: none;
+                                 /* this padding is so that on a very narrow screen, the mods list can flow underneath
+                                     the admin buttons, but not be too close to them */
+                                 padding-bottom: 20px;}
 form#nnf_admin input		{margin-left: 20px; padding-left: 20px; border: none;
 				 text-transform: uppercase; cursor: pointer;
 				 /* TODO: webkit-appearance: none */}
@@ -384,8 +387,8 @@ footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left:
 footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
 footer p a			{color: #888;}
 
-#signin				{position: static; /* override default on form, this interferes with z-ordering in the footer */
-				 margin: -60px 10% 0 auto; text-align: right; border: none;}
+#signin				{/* override default on form, this interferes with z-ordering in the footer */
+                                 position: static; margin: -60px 10% 0 auto; text-align: right; border: none;}
 #signin input			{margin: 0; padding: 0; border: none;
 				 color: #f7f6f7; text-transform: uppercase;
 				 background: none; cursor: pointer;}
@@ -496,7 +499,7 @@ input[type="text"], textarea,	/* remove the field styling in iOS */
 /* footer */
 #mods p				{padding-left: 0; padding-right: 0;
 				 font-size: 13px;}
-
+                                
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
@@ -518,6 +521,8 @@ footer p			{margin-left: 0 !important; padding-left: 0 !important; padding-right
 				 text-align: center !important;}
 #signin				{margin: -100px 0 0 0; text-align: center;}
 
+#nnf_mods                       {/* on a narrow screen, place the mods list underneath the admin buttons) */
+                                 clear: right;}
 }
 
 @media screen and (min-width: 480px) {

@@ -24,8 +24,8 @@ function url (
 	return HTACCESS
 	//if htaccess is on, then use pretty URLs:
 	?	$filepath.($page ? "+$page" : '').rtrim ('?'.implode ('&', array_filter (array (
-		//single actions without any ID
-		!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
+		//single actions without any ID (only delete, un/lock use form buttons)
+		!$action_id && ($action == 'delete') ? $action : '',
 		//otherwise, actions with an ID?
 		$action_id ? "$action=$action_id" : ''
 	))), '?')
@@ -35,8 +35,8 @@ function url (
 		($file ? 'thread.php' : 'index.php').rtrim ('?'.
 		//concatenate a query string
 		implode ('&', array_filter (array (
-			//actions without an ID
-			!$action_id && in_array ($action, array ('delete', 'lock', 'unlock')) ? $action : '',
+			//actions without an ID (only delete, un/lock use form buttons)
+			!$action_id && ($action == 'delete') ? $action : '',
 			//append or delete post
 			$action_id ? "$action=$action_id" : '',
 			//sub-forum? for no-htaccess, all links must be made relative from the NNF folder root

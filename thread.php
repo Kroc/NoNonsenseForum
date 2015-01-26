@@ -44,6 +44,7 @@ if (	(isset ($_POST['stick']) || isset ($_POST['unstick'])) &&
 	//the site admin, or the first mod of the sub-forum have stick / unstick rights
 	(IS_ADMIN || strtolower (NAME) === strtolower ((string) @$MODS['LOCAL'][0]))
 ) {
+        //add or remove the filename from "sticky.txt"
 	if (in_array ("$FILE.rss", $stickies = getStickies ())) {
 		$stickies = array_diff ($stickies, array ("$FILE.rss"));
 	} else {
@@ -52,7 +53,12 @@ if (	(isset ($_POST['stick']) || isset ($_POST['unstick'])) &&
 	
 	file_put_contents ('sticky.txt', implode ("\r\n", $stickies), LOCK_EX);
 	
-	//TODO: redirect to eat the form submission
+        //regenerate the folder's RSS file
+	indexRSS ();
+        
+	//redirect to eat the form submission
+        header ("Location: $url", true, 303);
+	exit;
 }
 
 /* ======================================================================================================================
@@ -94,6 +100,7 @@ if ((isset ($_POST['lock']) || isset ($_POST['unlock'])) && IS_MOD) {
 	//regenerate the folder's RSS file
 	indexRSS ();
 	
+        //redirect to eat the form submission
 	header ("Location: $url", true, 303);
 	exit;
 }
@@ -464,7 +471,7 @@ define ('IS_STICKY', in_array ("$FILE.rss", $stickies = getStickies ()));
 
 /* load the template into DOM where we can manipulate it:
    --------------------------------------------------------------------------------------------------------------------- */
-//(see 'lib/domtemplate.php' or <camendesign.com/dom_templating> for more details)
+//(see 'lib/domtemplate/domtemplate.php' or <camendesign.com/dom_templating> for more details)
 $template = prepareTemplate (
 	THEME_ROOT.'thread.html',
 	//canonical URL of this thread

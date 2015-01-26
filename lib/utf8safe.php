@@ -106,8 +106,8 @@ function safeUTF8 (
 		  '\x{1FFFE}\x{1FFFF}\x{2FFFE}\x{2FFFF}\x{3FFFE}\x{3FFFF}\x{4FFFE}\x{4FFFF}'.
 		  '\x{5FFFE}\x{5FFFF}\x{6FFFE}\x{6FFFF}\x{7FFFE}\x{7FFFF}\x{8FFFE}\x{8FFFF}'.
 		  '\x{9FFFE}\x{9FFFF}\x{AFFFE}\x{AFFFF}\x{BFFFE}\x{BFFFF}\x{CFFFE}\x{CFFFF}'.
-		  '\x{DFFFE}\x{DFFFF}\x{EFFFE}\x{EFFFF}\x{FFFFE}\x{FFFFF}\x{10FFFE}\x{10FFFF}]+/u', '',
-	$text);
+		  '\x{DFFFE}\x{DFFFF}\x{EFFFE}\x{EFFFF}\x{FFFFE}\x{FFFFF}\x{10FFFE}\x{10FFFF}]+/u',
+        '', $text);
 	
 	//TODO: strip invalid byte-sequences
 	//see: http://stackoverflow.com/questions/8215050/replacing-invalid-utf-8-characters-by-question-marks-mbstring-substitute-charac/13695364#13695364
@@ -221,9 +221,9 @@ function safeTransliterate ($text) {
 		
                 //check if the transliterator is present (PHP 5.4+)
                 function_exists ('transliterator_transliterate')
-                /* even though the server might be on PHP5.4+ the server might not have the transliteration libraries
-                   installed (happens on free / shared hosts). check to see if the transliteration we want is even
-                   possible and */
+                /* even though the server might be on PHP5.4+ it might not have the transliteration libraries installed
+                  (happens on free / shared hosts). check to see if the transliteration we want is even possible.
+                   with thanks to Zegnat for the specific fix, and numerous others for reporting & testing */
                 && count (array_intersect (
                         array ('Any-NFKD', 'Any-Latin', 'Latin-ASCII', 'Any-Remove', 'Any-Lower'),
                         transliterator_list_ids ()

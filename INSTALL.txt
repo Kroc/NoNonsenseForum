@@ -10,7 +10,7 @@ Contents:
 [1.2]   Install using GIT
 [1.3]   Installation (continued)
 [1.4]   Updating NoNonsense Forum
-[1.5]	Running without HTAccess
+[1.5]   Running without HTAccess
 [2]     Customising
 [2.1]   'config.php'
 [2.2]   'theme.config.php'
@@ -24,8 +24,8 @@ Contents:
 ========================================================================
 *       PHP 5.2.3 or above
 *       Apache 2.1 or above, preferably with ".htaccess" files enabled
-	(though optional), or any other webserver, whereby NNF will
-	operate in "no-htaccess" mode
+        (though optional), or any other webserver, whereby NNF will
+        operate in "no-htaccess" mode
 
 Browser support: (default 'greyscale' theme)
 *       IE6, 7, 8, 9, 10+
@@ -40,7 +40,7 @@ Browser support: (default 'greyscale' theme)
 *       Firefox Mobile
 *       Opera Mobile & Mini
 *       Amazon Kindle (e-ink) & Fire
-*	IE9/Mobile (untested)
+*       IE9/Mobile (untested)
 
 Unsupported:
 *       Firefox 2 or earlier, Camino 1
@@ -134,7 +134,7 @@ aware of the impact of some new feature.
 
 <github.com/Kroc/NoNonsenseForum/commits/master>
 
-[1.5]	Running without HTAccess:
+[1.5]   Running without HTAccess:
 ------------------------------------------------------------------------
 NoNonsense Forum will automatically detect if the ".htaccess" file is
 missing or disabled and automatically switch to running without.

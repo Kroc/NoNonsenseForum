@@ -51,7 +51,7 @@ editing the RSS file. Instead, text can be appended to the end of posts.
 
 [1.2]   Post deleting:
 ------------------------------------------------------------------------
-To avoid abuse, users cannot permenantly delete their own posts.
+To avoid abuse, users cannot permanently delete their own posts.
 
 *       When a user deletes their post, the text is removed and
         replaced with a message like "This post was deleted by its
@@ -59,7 +59,7 @@ To avoid abuse, users cannot permenantly delete their own posts.
 
 *       A moderator can delete any post, likewise
 
-*       A blanked-out deleted post can be removed permenantly from the
+*       A blanked-out deleted post can be removed permanently from the
         thread by a moderator by deleting it again, but only if the
         post is on the last page of replies -- so as to not break any
         permalinks by rearranging page boundaries
@@ -127,10 +127,10 @@ Some moderator actions require the user to sign-in.
         close the tab or window), or clear your browser's cache to
         sign out
 
-*	Unfortunately, due to a flaw in HTTP authentication, users with
-	accented / unicode letters in their name will not be able to
-	sign-in. Moderators and members must limit their chosen names
-	to basic letters, numbers and punctuation
+*       Unfortunately, due to a flaw in HTTP authentication, users with
+        accented / unicode letters in their name will not be able to
+        sign-in. Moderators and members must limit their chosen names
+        to basic letters, numbers and punctuation
 
 
 [5]     Forum Locking:
@@ -190,120 +190,123 @@ contributing directly to NoNonsense Forum.
 I'd like to also thank the users of Camen Design Forum
 <forum.camendesign.com> for testing and support.
 
-Name	Issue
+Name    Issue
 ------------------------------------------------------------------------
 bh8(dot)vn & zuchto
-*	Suggestion to improve transliteration further
-*	Fallback if "iconv" is missing
+*       Suggestion to improve transliteration further
+*       Fallback if "iconv" is missing
 
 Bruno Héridet
-*	Duplicate ID in the HTML
-*	Major DOMTemplate bug munging querystrings
+*       Duplicate ID in the HTML
+*       Major DOMTemplate bug munging querystrings
 
 David Hund
-*	Code typo in `DOMDocument`
-*	Major DOMTemplate bug munging querystrings
+*       Code typo in `DOMDocument`
+*       Major DOMTemplate bug munging querystrings
 
+folderol
+*       Reporting of Apache "NOYB" identifier
+        
 fyra
-*	IDN URLs
-*	UTF-8 characters no longer hex-encoded in the output
+*       IDN URLs
+*       UTF-8 characters no longer hex-encoded in the output
 
 gardener
-*	Critical typo in "lang.example.php"
+*       Critical typo in "lang.example.php"
 
 JBark
-*	Use `clearstatcache` to ensure index ordering is right
-*	Accidental double-`<link>` to favicon
+*       Use `clearstatcache` to ensure index ordering is right
+*       Accidental double-`<link>` to favicon
 
 JJ
-*	Wrong usage of PHP header function
-*	Add "noindex, nofollow" to delete page
-*	Blockquote syntax idea
+*       Wrong usage of PHP header function
+*       Add "noindex, nofollow" to delete page
+*       Blockquote syntax idea
 
 Jon Gjengset / Jonhoo
-*	Original "Grayscale" theme
-*	Original mobile theme
-*	`$` alternative syntax for code blocks
-*	Read-locking of threads during writes
-*	Help with HTTPS support
-*	Raised issue with PHP short tags
-*	Delete message the same when deleting thread and post
-*	Many HTML & CSS fixes
+*       Original "Grayscale" theme
+*       Original mobile theme
+*       `$` alternative syntax for code blocks
+*       Read-locking of threads during writes
+*       Help with HTTPS support
+*       Raised issue with PHP short tags
+*       Delete message the same when deleting thread and post
+*       Many HTML & CSS fixes
 
 Jose Pedro Arvela / jparvela
-*	Changing `static::` to `self::`
-*	Suggestion for "@user" syntax
+*       Changing `static::` to `self::`
+*       Suggestion for "@user" syntax
 
 macsupport.gr
-*	Regex backtrace limit
+*       Regex backtrace limit
 
-Martijn
-*	Lynx support
-*	Use `rel="nofollow external"` on external links
-*	Improved ".htaccess" compatibility with Mac OS
-*	Title-line self links (this was quite complex)
-*	Duplicate appends
-*	Help with various transliteration aspects
-*	Better whitespace trimming
-*	Help fixing missing "?" in no-HTACCESS URLs
-*	Constant support improving the UTF-8 handling
-*	Major DOMTemplate bug munging querystrings
+Martijn/Zegnat
+*       Lynx support
+*       Use `rel="nofollow external"` on external links
+*       Improved ".htaccess" compatibility with Mac OS
+*       Title-line self links (this was quite complex)
+*       Duplicate appends
+*       Help with various transliteration aspects
+*       Better whitespace trimming
+*       Help fixing missing "?" in no-HTACCESS URLs
+*       Constant support improving the UTF-8 handling
+*       Major DOMTemplate bug munging querystrings
 
 nkrs
-*	Opera speed dial help
+*       Opera speed dial help
 
 Nicolai
-*	Unecessary ChromeFrame header in ".htaccess"
+*       Unecessary ChromeFrame header in ".htaccess"
 
 Nikolai
-*	Changing `static::` to `self::`
-*	Opera speed dial help
+*       Changing `static::` to `self::`
+*       Opera speed dial help
 
 oldtimes
-*	Original suggestion to transliterate thread titles
+*       Original suggestion to transliterate thread titles
 
 Paul M
-*	Lock button sometimes showing by accident
+*       Lock button sometimes showing by accident
 
 Philip Butkiewicz
-*	Fix up `<script>` outputting in DOMTemplate
+*       Fix up `<script>` outputting in DOMTemplate
 
 Richard van Velzen / rvanvelzen
-*	Running in a sub-folder
-*	HTTPS support
-*	Remove "/users/" from "robots.txt"
-*	CSS fixes
-*	Inline code, heading and divider markup implementation
-*	Fault with adding new threads
-*	URL parsing with subdomains containing a dash
-*	`$1` being stripped from code spans / blocks
-*	Suggestion to improve error messages
-*	Closing bracket in URL when URL is last text in a quote
-*	Block quote regex fixes
-*	Post starting with code block doesn't show that block
+*       Running in a sub-folder
+*       HTTPS support
+*       Remove "/users/" from "robots.txt"
+*       CSS fixes
+*       Inline code, heading and divider markup implementation
+*       Fault with adding new threads
+*       URL parsing with subdomains containing a dash
+*       `$1` being stripped from code spans / blocks
+*       Suggestion to improve error messages
+*       Closing bracket in URL when URL is last text in a quote
+*       Block quote regex fixes
+*       Post starting with code block doesn't show that block
 
 Sani
-*	Better tag matching when repairing output HTML
-*	Stickies not showing if no other threads
-*	Add leading '0' to "Expires" header to comply with spec
-*	Debugging DOMTemplate speed
-*	Suggestion for HiDPI graphics
+*       Better tag matching when repairing output HTML
+*       Stickies not showing if no other threads
+*       Add leading '0' to "Expires" header to comply with spec
+*       Debugging DOMTemplate speed
+*       Suggestion for HiDPI graphics
 
 starbeamrainbowlab
-*	Discovering missing "?" in no-HTACCESS URLs
+*       Discovering missing "?" in no-HTACCESS URLs
 
 Stephen Taylor
-*	Reported bug with appends double-encoding HTML
-*	"@name" not working with no HTAccess
+*       Reported bug with appends double-encoding HTML
+*       "@name" not working with no HTAccess
 
 Steve Bir
-*	Pages not working in sub forums
+*       Pages not working in sub forums
 
 TCB
-*	iOS testing for the rotation / zooming bug
+*       iOS testing for the rotation / zooming bug
 
 Temukki
-*	Delete page missing
-*	Timezone option
+*       Delete page missing
+*       Timezone option
 
 Anybody else forgotten along the way, get in touch.

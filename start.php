@@ -92,7 +92,9 @@ if (function_exists ('apache_get_version')) if (!preg_match (
 	//depending on the `ServerTokens` directive, the Apache version string might be nothing more than "Apache",
 	//allow this, but if a version number is present detect v2.1-99+
 	//<php.net/manual/en/function.apache-get-version.php#75591>
-	'/apache(?:\/(?:2(?:\.[1-9]|\.[1-9][0-9]+)?|[3-9]|[1-9][0-9]+)?)?/i', apache_get_version ())
+        //also note that the string "NOYB" (None Of Your Business) is surprisingly common and we need to allow this through
+        //(with thanks to folderol and Zegnat for reporting)
+	'/noyb|apache(?:\/(?:2(?:\.[1-9]|\.[1-9][0-9]+)?|[3-9]|[1-9][0-9]+)?)?/i', apache_get_version ())
 ) require FORUM_LIB.'error_apachever.php';
 
 //shared / library code
