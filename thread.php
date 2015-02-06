@@ -32,9 +32,10 @@ define ('CAN_REPLY', FORUM_ENABLED && (
         IS_MOD ||
         //- if you are a member, the forum lock doesn’t matter, but you can’t reply to locked threads (only mods can)
         (!(bool) $xml->channel->xpath ('category[.="locked"]') && IS_MEMBER) ||
-        //- if you are neither a mod nor a member, then as long as: 1. the thread is not locked, and
-        //  2. the forum is such that anybody can reply (unlocked or thread-locked), then you can reply
-        (!(bool) $xml->channel->xpath ('category[.="locked"]') && (!FORUM_LOCK || FORUM_LOCK == 'threads'))
+        //- if you are neither a mod nor a member, then as long as:
+        //  1. the *thread* is not locked, and
+        //  2. the *forum* is such that anybody can reply (unlocked or news/thread-locked), then you can reply
+        (!(bool) $xml->channel->xpath ('category[.="locked"]') && (FORUM_LOCK != 'posts'))
 ));
 
 /* ======================================================================================================================
@@ -126,7 +127,7 @@ if ($ID = (preg_match ('/^[A-Z0-9]+$/i', @$_GET['append']) ? $_GET['append'] : f
                 //the owner of a post can append
                 (strtolower (NAME) == strtolower ($post->author) && (
                         //if the forum is post-locked, they must be a member to append to their own posts
-                        (!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
+                        (FORUM_LOCK != 'posts') || IS_MEMBER
                 ))
         )) {
                 //check for duplicate append:
@@ -257,7 +258,7 @@ if (isset ($_GET['delete'])) {
                 //the owner of a post can delete
                 (strtolower (NAME) == strtolower ($post->author) && (
                         //if the forum is post-locked, they must be a member to delete their own posts
-                        (!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
+                        (FORUM_LOCK != 'posts') || IS_MEMBER
                 ))
         //deleting a post?
         )) if ($ID) {
@@ -493,7 +494,7 @@ $template = prepareTemplate (
         '#nnf_reply, #nnf_reply-form'   => !CAN_REPLY,
         //if the forum is not post-locked (only mods can post / reply) then remove the warning message
         '.nnf_forum-locked'             => FORUM_LOCK != 'posts',
-        //is the user a mod and can lock / unlock / stick / unstick the thread?
+        //is the user a mod and can un/lock or un/stick the thread?
         '#nnf_admin'                    => !IS_MOD,
         //is the thread already locked?
         '#nnf_lock'                     =>  $xml->channel->xpath ('category[.="locked"]'),
@@ -592,7 +593,7 @@ if (!count ($thread)) {
                                 //if this reply is the by the owner (they can append/delete to their own replies)
                                 (strtolower (NAME) == strtolower ($reply->author) && (
                                         //if the forum is post-locked, they must be a member to append/delete their own replies
-                                        (!FORUM_LOCK || FORUM_LOCK == 'threads') || IS_MEMBER
+                                        (FORUM_LOCK != 'posts') || IS_MEMBER
                                 ))
                         )),
                         //append link not available when the reply has been deleted

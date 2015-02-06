@@ -218,6 +218,7 @@ if ((   //if HTTP authentication is used, we don’t need to validate the form f
    ---------------------------------------------------------------------------------------------------------------------- */
 //get the lock status of the current forum we’re in:
 //"threads"     - only users in "mods.txt" / "members.txt" can start threads, but anybody can reply
+//"news"        - as above, but the forum is listed by original posting date (descending), not last-reply date
 //"posts"       - only users in "mods.txt" / "members.txt" can start threads or reply
 define ('FORUM_LOCK', trim (@file_get_contents ('locked.txt')));
 
@@ -270,15 +271,21 @@ define ('LANG',
         "lang", $_POST['lang'], time ()+60*60*24*365, FORUM_PATH, $_SERVER['HTTP_HOST'], FORUM_HTTPS
 )       ? $_POST['lang']
         //otherwise, does a cookie already exist to set the language?
-        : (@$_COOKIE['lang'] ? $_COOKIE['lang'] : (
-        //otherwise, try detect the language sent by the browser:
-        $lang = @array_shift (array_intersect (
-                //- find language codes in the HTTP header and compare with the theme provided languages
-                preg_replace ('/^([a-z0-9-]+).*/i', '$1', explode (',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])),
-                explode (' ', THEME_LANGS)
-        )) ? $lang
-        //all else failing, use the default language
-        : THEME_LANG))
+        : (     //validate that the language in the cookie actually exists!
+                array_key_exists (@$_COOKIE['lang'], $LANG)
+                ? @$_COOKIE['lang']
+                : (
+                        //otherwise, try detect the language sent by the browser:
+                        $lang = @array_shift (array_intersect (
+                                //- find language codes in the HTTP header and compare with the theme provided languages
+                                preg_replace ('/^([a-z0-9-]+).*/i', '$1', explode (',', $_SERVER['HTTP_ACCEPT_LANGUAGE'])),
+                                explode (' ', THEME_LANGS)
+                        ))
+                        ? $lang
+                        //all else failing, use the default language
+                        : THEME_LANG
+                )
+        )
 );
 
 //for curtness, and straight-forward compatibility with older versions of NNF, we shorthand these translations;

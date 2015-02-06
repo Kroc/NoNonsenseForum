@@ -73,14 +73,20 @@ if (CAN_POST && AUTH && TITLE && TEXT) {
 //first load the list of threads in the forum so that we can determine the number of pages and validate the page number,
 //the thread list won't be used until further down after templating begins
 if ($threads = preg_grep ('/\.rss$/', scandir ('.'))) {
-        //order by last modified date
-        array_multisort (array_map ('filemtime', $threads), SORT_DESC, $threads);
+        //sort the list of threads in the forum
+        array_multisort (array_map (
+                //if the forum is set to "news" lock, we will order the threads by their original date
+                (FORUM_LOCK == 'news') ? 'filectime' : 'filemtime',
+        $threads), SORT_DESC, $threads);
         
         //get sticky list (see 'lib/functions.php')
         //(the use of `array_intersect` will only return filenames in `sticky.txt` that were also in the directory)
         $stickies = array_intersect (getStickies (), $threads);
-        //order the stickies by reverse date order
-        array_multisort (array_map ('filemtime', $stickies), SORT_DESC, $stickies);
+        //order the stickies
+        array_multisort (array_map (
+                //if the forum is set to "news" lock, we will order the threads by their original date
+                (FORUM_LOCK == 'news') ? 'filectime' : 'filemtime',
+        $stickies), SORT_DESC, $stickies);
         //remove the stickies from the thread list
         $threads = array_diff ($threads, $stickies);
         
@@ -117,7 +123,7 @@ $template = prepareTemplate (
         //remove the "add thread" link and anything else (like the input form) related to posting
         '#nnf_add, #nnf_new-form'       => !CAN_POST,
         //if the forum is not thread-locked (only mods can post, anybody can reply) then remove the warning message
-        '#nnf_forum-lock-threads'       => FORUM_LOCK != 'threads' || IS_MOD,
+        '#nnf_forum-lock-threads'       => !FORUM_LOCK || FORUM_LOCK == 'posts' || IS_MOD,
         //if the forum is not post-locked (only mods can post / reply) then remove the warning message
         '#nnf_forum-lock-posts'         => FORUM_LOCK != 'posts'   || IS_MOD || IS_MEMBER
 ));
@@ -155,8 +161,10 @@ if ($folders = array_filter (
                 
                 //get a list of files in the folder to determine which one is newest
                 $files = preg_grep ('/\.rss$/', scandir ('.'));
-                //order by last modified date
-                array_multisort (array_map ('filemtime', $files), SORT_DESC, $files);
+                //order by last modified date / created date ("news" forum)
+                array_multisort (array_map (
+                        ($lock == 'news') ? 'filectime' : 'filemtime',
+                $files), SORT_DESC, $files);
                 
                 //read the newest thread (folder could be empty though)
                 $last = ($xml = @simplexml_load_file ($files[0])) ? $xml->channel->item[0] : '';

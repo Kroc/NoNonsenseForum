@@ -23,82 +23,31 @@ How NoNonsense differs from other forums:
 
 Contents:
 ========================================================================
-[1]     Things to note
-[1.1]   Post appending
-[1.2]   Post deleting
-[2]     Sub-forums
-[3]     Sticky threads
-[4]     Moderators
-[4.1]   Sign-in
-[5]     Forum locking
+[1]     Admin & Moderators
+[1.1]   Set Up
+[1.2]   Sign-in
+[2]     Things to Note
+[2.1]   Post Appending
+[2.2]   Post Deleting
+[3]     Sub-forums
+[4]     Lock & Sticky Threads
+[5]     Forum Locking
 [5.1]   Members
-[5.2]   A note on private forums
+[5.2]   A Note on Private Forums
 [6]     Acknowledgements
 ------------------------------------------------------------------------
 
 
-[1]     Things to note:
+[1]     Admin & Moderators
 ========================================================================
-[1.1]   Post appending:
+[1.1]   Set Up:
 ------------------------------------------------------------------------
-Because threads are RSS feeds, the text to HTML conversion that happens
-when you post is one-way. You cannot edit posts, other than manually
-editing the RSS file. Instead, text can be appended to the end of posts.
-
-*       Users can append to their own posts
-
-*       Moderators can append to any posts
-
-[1.2]   Post deleting:
-------------------------------------------------------------------------
-To avoid abuse, users cannot permanently delete their own posts.
-
-*       When a user deletes their post, the text is removed and
-        replaced with a message like "This post was deleted by its
-        owner" (or "a moderator"), the name and time remains
-
-*       A moderator can delete any post, likewise
-
-*       A blanked-out deleted post can be removed permanently from the
-        thread by a moderator by deleting it again, but only if the
-        post is on the last page of replies -- so as to not break any
-        permalinks by rearranging page boundaries
-
-
-[2]     Sub-forums:
-========================================================================
-Sub-forums are simply folders.
-
-*       The name of the folder is the name of the sub-forum, it can
-        contain any letters allowed by your server's OS except for
-        ".", "<", ">" and "&"
-
-*       Make sure the folder has write-permissions
-
-*       Nested sub-folders are supported, to any reasonable depth
-        (E.g. '/Music/Techno/')
-
-
-[3]     Sticky threads:
-========================================================================
-Sticky threads remain at the top of a forum, regardless of page.
-
-*       Create a "sticky.txt" file in the forum / sub-forum
-
-*       Add the filename of each thread you would like to sticky on
-        separate lines, including the ".rss" file extension.
-        For example:
-
-the_rules.rss
-f_a_q_.rss
-
-
-[4]     Moderators:
-========================================================================
-Moderators can delete / append to any posts and delete / lock / unlock
-threads.
+The first thing you need to do is provide a username for the admin, 
+and any moderators you would like
 
 *       Create a "mods.txt" file in the forum / sub-forum
+
+*       The user name on the first line will be the forum's admin
 
 *       Add the user name of each mod on a separate line.
         e.g.
@@ -112,8 +61,11 @@ SpeedoJoe
 
 *       Mods in sub-forums ("/news/mods.txt") can only moderate in that
         sub-forum
+        
+NOTE:   Make sure that admin and mod accounts are created (by posting
+        once), otherwise anybody could steal the name and take control!
 
-[4.1]   Sign-in:
+[1.2]   Sign-in:
 ------------------------------------------------------------------------
 Some moderator actions require the user to sign-in.
 
@@ -131,6 +83,58 @@ Some moderator actions require the user to sign-in.
         accented / unicode letters in their name will not be able to
         sign-in. Moderators and members must limit their chosen names
         to basic letters, numbers and punctuation
+
+
+[2]     Things to Note:
+========================================================================
+[2.1]   Post Appending:
+------------------------------------------------------------------------
+Because threads are RSS feeds, the text to HTML conversion that happens
+when you post is one-way. You cannot edit posts, other than manually
+editing the RSS file. Instead, text can be appended to the end of posts.
+
+*       Users can append to their own posts
+
+*       Moderators can append to any posts
+
+[2.2]   Post Deleting:
+------------------------------------------------------------------------
+To avoid abuse, users cannot permanently delete their own posts.
+
+*       When a user deletes their post, the text is removed and
+        replaced with a message like "This post was deleted by its
+        owner" (or "a moderator"), the name and time remains
+
+*       A moderator can delete any post, likewise
+
+*       A blanked-out deleted post can be removed permanently from the
+        thread by a moderator by deleting it again, but only if the
+        post is on the last page of replies -- so as to not break any
+        permalinks by rearranging page boundaries
+
+
+[3]     Sub-forums:
+========================================================================
+Sub-forums are simply folders.
+
+*       The name of the folder is the name of the sub-forum, it can
+        contain any letters allowed by your server's OS except for
+        ".", "<", ">" and "&"
+
+*       Make sure the folder has write-permissions
+
+*       Nested sub-folders are supported, to any reasonable depth
+        (E.g. '/Music/Techno/')
+
+
+[4]     Lock & Sticky Threads:
+========================================================================
+Locked threads cannot be replied to. Sticky threads remain at the top
+of a forum, regardless of page.
+
+*       To un/lock or un/sticky a thread, first sign-in as the admin
+
+*       Click the Un/Lock or Un/Sticky thread button 
 
 
 [5]     Forum Locking:
@@ -164,7 +168,7 @@ have moderator powers; they are your participants in restricted forums.
         
 *       Members must sign-in to be able to post in locked forums
 
-[5.2]   A note on private forums:
+[5.2]   A Note on Private Forums:
 ------------------------------------------------------------------------
 NoNonsense Forum does not provide an option for private forums (can
 only be accessed by members) because the index RSS feed (which includes
