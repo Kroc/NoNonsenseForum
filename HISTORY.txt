@@ -1,241 +1,241 @@
-v26	
+v26     
 *       Fixed problems with transliteration when on PHP5.4 without all the necessary libs in place
-*	Stick and Unstick thread buttons when logged in as the Admin (the Admin is now the first person listed in mods.txt)
-	NOTE: the lock and unlock links have been changed into buttons, make sure to update custom translations / CSS!
-*	Windows 8 snap-view
-*	Apache version is now verified (1&1 are still using v1.3!),
+*       Stick and Unstick thread buttons when logged in as the Admin (the Admin is now the first person listed in mods.txt)
+        NOTE: the lock and unlock links have been changed into buttons, make sure to update custom translations / CSS!
+*       Windows 8 snap-view
+*       Apache version is now verified (1&1 are still using v1.3!),
         also the Apache identifier "NOYB" (None Of Your Business) is skipped
-*	Updated to DOMTemplate v17, fix for major bug corrupting querystrings and attributes,
-	with thanks to Bruno Héridet for narrowing down and Zegnat for suggesting a fix
-*	Fix for `@name` corrupting posts when HTAccess off, with thanks to Stephen Taylor
-*	Corrupted posts will now be removed entirely when deleted instead of being blanked first
-	(this may break some permalinks if deleting a corrupted post before the last page)
-*	Delete and Append buttons have new icons to look less like voting buttons!
-*	Moved some functions into a new "utf-8 safe" library for sanitising input / output
-	-	NOTE: Very incomplete. Will improve over multiple releases
-	-	Declared UTF-8 in the content-type header to prevent UTF-7 attacks
-	-	a `safeTrim` function to trim all kinds of whitespace outside of TAB / SPACE / CRLF
-	-	the superglobals (`$_GET` / `$_POST` &c.) are preprocessed with `stripslashes`, `safeTrim` & UTF-8 safety
-	-	`safeGet` was removed in favour of `mb_substr` use as superglobal preprocessing covers the rest
+*       Updated to DOMTemplate v17, fix for major bug corrupting querystrings and attributes,
+        with thanks to Bruno Héridet for narrowing down and Zegnat for suggesting a fix
+*       Fix for `@name` corrupting posts when HTAccess off, with thanks to Stephen Taylor
+*       Corrupted posts will now be removed entirely when deleted instead of being blanked first
+        (this may break some permalinks if deleting a corrupted post before the last page)
+*       Delete and Append buttons have new icons to look less like voting buttons!
+*       Moved some functions into a new "utf-8 safe" library for sanitising input / output
+        -       NOTE: Very incomplete. Will improve over multiple releases
+        -       Declared UTF-8 in the content-type header to prevent UTF-7 attacks
+        -       a `safeTrim` function to trim all kinds of whitespace outside of TAB / SPACE / CRLF
+        -       the superglobals (`$_GET` / `$_POST` &c.) are preprocessed with `stripslashes`, `safeTrim` & UTF-8 safety
+        -       `safeGet` was removed in favour of `mb_substr` use as superglobal preprocessing covers the rest
 
-v25	26.02.13
-*	Fixed iOS rotation / zooming with the help of TCB
-*	Fixed appends double-encoding HTML, with thanks to Stephen Taylor
-*	Fixed unable to delete corrupted posts unless signed in
-	NOTE: the class `nnf_error` was added to `<article class="nnf_post nnf_op">` in "delete.html"
-*	Updated to DOMTemplate v16, much better handling of HTML / XML
+v25     26.02.13
+*       Fixed iOS rotation / zooming with the help of TCB
+*       Fixed appends double-encoding HTML, with thanks to Stephen Taylor
+*       Fixed unable to delete corrupted posts unless signed in
+        NOTE: the class `nnf_error` was added to `<article class="nnf_post nnf_op">` in "delete.html"
+*       Updated to DOMTemplate v16, much better handling of HTML / XML
 
-v24	10.01.13
-*	Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
-	not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:
-	-	These strings are now stored in `$LANG['']` (the default language) in 'theme.php' instead of, as before,
-		as constants in 'theme.config.default.php', therefore it is advised that you make a new 'theme.config.php'
-		file by making a copy of the updated 'theme.config.default.php' file
-	-	If you've modified the 'theme.php' file at all, you should update to the new version
-	-	If you've written any translations, you will need to update those with the new set of strings at the top
-		of 'lang.example.php'
-*	Fixed duplicate ID `nnf_post`, with thanks to Bruno Héridet
-	NOTE: `<article id="nnf_post" class="...` was changed to `<article class="nnf_post ...` in "append.html",
-	"delete.html" and "thread.html". No changes required in the CSS.
-*	Fixed critical typo in "lang.example.php" with thanks to "gardener"
-*	Pages were not working on sub-forums, with thanks to Steve Bir
-*	Removed extra space that was being added around code blocks
+v24     10.01.13
+*       Dynamic HTML titles (index / thread pages), the date format ('dd/mm/yyyy') and other strings that were previously
+        not translatable (since v19) are now translatable. This causes a number of changes in theme configuration:
+        -       These strings are now stored in `$LANG['']` (the default language) in 'theme.php' instead of, as before,
+                as constants in 'theme.config.default.php', therefore it is advised that you make a new 'theme.config.php'
+                file by making a copy of the updated 'theme.config.default.php' file
+        -       If you've modified the 'theme.php' file at all, you should update to the new version
+        -       If you've written any translations, you will need to update those with the new set of strings at the top
+                of 'lang.example.php'
+*       Fixed duplicate ID `nnf_post`, with thanks to Bruno Héridet
+        NOTE: `<article id="nnf_post" class="...` was changed to `<article class="nnf_post ...` in "append.html",
+        "delete.html" and "thread.html". No changes required in the CSS.
+*       Fixed critical typo in "lang.example.php" with thanks to "gardener"
+*       Pages were not working on sub-forums, with thanks to Steve Bir
+*       Removed extra space that was being added around code blocks
 
-v23	24.DEC.12
-*	Duplicate appends are now ignored
-*	Title lines (":: ...") within posts now link to themselves, allowing external links directly to title lines
-*	Fixed mods not being able to reply to locked threads
-*	Improved denying access to NNF's folders and a "cgi-bin" folder no longer shows as a sub-forum
-*	`$1` no longer being stripped from code spans / blocks, with thanks to Zegnat
-*	`THEME_APPEND` has been removed, `THEME_APPENDED` is a plain-text (but markup allowed) replacement.
-	This is necessary to ensure that title links are always unique when appending text to a post.
-	This also means that the class `nnf_appended` is gone, old appended dividers won't be styled
-*	"@user" names in posts are now classed ("nnf_mod") if the user is a moderator
-*	Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
-*	Canonical URL `<link>` added to "index.html" / "thread.html" / "markup.html" and "privacy.html"
-*	Sign-in is now a button instead of a link, this mostly paves the way for future improvements
-*	Page numbers now shown at the top when on portrait mobile display
-*	External links now use `rel="nofollow external"`, internal links do not use `nofollow`, with thanks to Zegnat
-*	Title field is now spellchecked
-*	Simplified the `url` function, note that this will affect your 'theme.php', just drop the first parameter
+v23     24.DEC.12
+*       Duplicate appends are now ignored
+*       Title lines (":: ...") within posts now link to themselves, allowing external links directly to title lines
+*       Fixed mods not being able to reply to locked threads
+*       Improved denying access to NNF's folders and a "cgi-bin" folder no longer shows as a sub-forum
+*       `$1` no longer being stripped from code spans / blocks, with thanks to Zegnat
+*       `THEME_APPEND` has been removed, `THEME_APPENDED` is a plain-text (but markup allowed) replacement.
+        This is necessary to ensure that title links are always unique when appending text to a post.
+        This also means that the class `nnf_appended` is gone, old appended dividers won't be styled
+*       "@user" names in posts are now classed ("nnf_mod") if the user is a moderator
+*       Fixed inconsistencies with 'nnf_mod' and changed class 'sticky' to 'nnf_sticky'
+*       Canonical URL `<link>` added to "index.html" / "thread.html" / "markup.html" and "privacy.html"
+*       Sign-in is now a button instead of a link, this mostly paves the way for future improvements
+*       Page numbers now shown at the top when on portrait mobile display
+*       External links now use `rel="nofollow external"`, internal links do not use `nofollow`, with thanks to Zegnat
+*       Title field is now spellchecked
+*       Simplified the `url` function, note that this will affect your 'theme.php', just drop the first parameter
 
-v22	13.OCT.12
-*	Posts with invalid HTML now display a message, rather than dumping PHP errors
-*	RSS URL in the HTML meta was wrong and had been for some time!
-*	Massively improved transliteration from thread title to filename / URL; if using PHP5.4 with the 'intl' extension
-	enabled, even Greek / Hebrew / Arabic / Japanese / Chinese (and more) will be transliterated into ASCII! 
-*	Fixed italics appearing in the middle of URLs
-*	Fixed bug with URL parsing with subdomains
-*	Improved code markup "`...`" parsing
-*	Improved templating speed, with thanks to Sani
-*	Improved .htaccess compatibility with Mac OS, with thanks to Zegnat
-*	Fixed lock button accidentally showing sometimes, with thanks to Paul M.
+v22     13.OCT.12
+*       Posts with invalid HTML now display a message, rather than dumping PHP errors
+*       RSS URL in the HTML meta was wrong and had been for some time!
+*       Massively improved transliteration from thread title to filename / URL; if using PHP5.4 with the 'intl' extension
+        enabled, even Greek / Hebrew / Arabic / Japanese / Chinese (and more) will be transliterated into ASCII! 
+*       Fixed italics appearing in the middle of URLs
+*       Fixed bug with URL parsing with subdomains
+*       Improved code markup "`...`" parsing
+*       Improved templating speed, with thanks to Sani
+*       Improved .htaccess compatibility with Mac OS, with thanks to Zegnat
+*       Fixed lock button accidentally showing sometimes, with thanks to Paul M.
 
-v21	08.JUL.12
-*	Support for running without HTAccess:
-	NoNonsenseForum will now auto-detect if '.htaccess' is missing or disabled and fall back to running without,
-	automatically rewriting URLs to full form. Note that to be able to use NNF without HTAccess,
-	you will have to move the "users" folder to a private location, using the feature below
-*	Added `FORUM_USERS` option to 'config.default.php' to set the location where the passwords are saved. you will need
-	to change this option to run NoNonsense Forum without HTAccess. It can also be used to share the same users between
-	multiple forums or even other compatible software
-*	Added Windows 8 Metro pinned-site tile "metro-tile.default.png",
-	you can override it by providing your own "metro-tile.png"
-*	`METRO_COLOUR` theme option to set the Metro tile colour on Windows 8 and the pinned-site colour on Desktop IE
+v21     08.JUL.12
+*       Support for running without HTAccess:
+        NoNonsenseForum will now auto-detect if '.htaccess' is missing or disabled and fall back to running without,
+        automatically rewriting URLs to full form. Note that to be able to use NNF without HTAccess,
+        you will have to move the "users" folder to a private location, using the feature below
+*       Added `FORUM_USERS` option to 'config.default.php' to set the location where the passwords are saved. you will need
+        to change this option to run NoNonsense Forum without HTAccess. It can also be used to share the same users between
+        multiple forums or even other compatible software
+*       Added Windows 8 Metro pinned-site tile "metro-tile.default.png",
+        you can override it by providing your own "metro-tile.png"
+*       `METRO_COLOUR` theme option to set the Metro tile colour on Windows 8 and the pinned-site colour on Desktop IE
 
-v20	19.JUN.12
-*	HiDPI / Retina display graphics
-*	Massively improved error messages
-*	Using a blockquote directly within blockquote fixed
-*	Forum title truncated "…" if too long for screen size
-*	Google search and IE9 metadata was moved out of core and into 'theme.php'
-*	Typo in 'lang.example.php' that was causing errors when making translations
-*	Custom logo option had been broken for a long time, sorry!
+v20     19.JUN.12
+*       HiDPI / Retina display graphics
+*       Massively improved error messages
+*       Using a blockquote directly within blockquote fixed
+*       Forum title truncated "…" if too long for screen size
+*       Google search and IE9 metadata was moved out of core and into 'theme.php'
+*       Typo in 'lang.example.php' that was causing errors when making translations
+*       Custom logo option had been broken for a long time, sorry!
 
-v19	03.MAY.12
-*	Translation support
-	-	Themes can provide their own translations and admins can add more themselves easily
-		(no translations are provided with NNF, yet, this release just adds support)
-	-	Browser language is auto-detected, user can select one, and a default can be set by the admin
-	-	Markup.txt removed, moved to a themed / translatable page
-	-	Privacy policy added (also translatable)
-	-	Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
-	-	Page titles on index / thread / append & delete cannot be translated just yet,
-		support for this will be added in a later release
-*	Fixed a long-standing bug that caused page boundaries (i.e. posts per page) to be incorrectly calculated
-*	Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
-*	Fixed bug with stickies not showing if no non-sticky threads exist (with thanks to "Sani")
-*	Moved `theme_pageList` from 'theme.config.default.php' and into a new 'theme.php' for storing the theme functions;
-	this allows each theme to use different types of lists without 'theme.config.php' having to be updated all the time
-*	Page numbers are now validated / bounded
-*	Current page number more visible
-*	Added INSTALL.txt
-*	If a mod / member, threads in locked forums no longer show warning message
-	(similar to the change in v18 that removed the same warning from index pages)
+v19     03.MAY.12
+*       Translation support
+        -       Themes can provide their own translations and admins can add more themselves easily
+                (no translations are provided with NNF, yet, this release just adds support)
+        -       Browser language is auto-detected, user can select one, and a default can be set by the admin
+        -       Markup.txt removed, moved to a themed / translatable page
+        -       Privacy policy added (also translatable)
+        -       Translations for 'about.html' can be provided with 'about_en.html' where 'en' is the language code
+        -       Page titles on index / thread / append & delete cannot be translated just yet,
+                support for this will be added in a later release
+*       Fixed a long-standing bug that caused page boundaries (i.e. posts per page) to be incorrectly calculated
+*       Fixed incompaitbility with Windows servers involving page numbers in URLs. '+' is now used instead of ':'
+*       Fixed bug with stickies not showing if no non-sticky threads exist (with thanks to "Sani")
+*       Moved `theme_pageList` from 'theme.config.default.php' and into a new 'theme.php' for storing the theme functions;
+        this allows each theme to use different types of lists without 'theme.config.php' having to be updated all the time
+*       Page numbers are now validated / bounded
+*       Current page number more visible
+*       Added INSTALL.txt
+*       If a mod / member, threads in locked forums no longer show warning message
+        (similar to the change in v18 that removed the same warning from index pages)
 
-v18	05.MAR.12
-*	'delete.html' had been missing for some time!
-*	The sticky-thread icon had been missing for an equally long time
-*	Mods and member's list not showing in the footer
-*	Sub-forum lock icon positioning fixed
-*	Improved URL parsing involving speech marks
-*	IDN (unicode) URLs
-*	Error message if inadequate PHP version
-*	If a mod / member of a locked forum, the warning message is no longer shown
+v18     05.MAR.12
+*       'delete.html' had been missing for some time!
+*       The sticky-thread icon had been missing for an equally long time
+*       Mods and member's list not showing in the footer
+*       Sub-forum lock icon positioning fixed
+*       Improved URL parsing involving speech marks
+*       IDN (unicode) URLs
+*       Error message if inadequate PHP version
+*       If a mod / member of a locked forum, the warning message is no longer shown
 
-v17	05.FEB.12
-*	Referring to people with '@name' will now link to the latest reply in the thread by that person
-*	Fixed issue with replying to a locked thread removing the lock
-*	UTF-8 characters in templates are no longer hex encoded in the output, with thanks to Fyra
+v17     05.FEB.12
+*       Referring to people with '@name' will now link to the latest reply in the thread by that person
+*       Fixed issue with replying to a locked thread removing the lock
+*       UTF-8 characters in templates are no longer hex encoded in the output, with thanks to Fyra
 
-v16	30.JAN.12
-*	Integrated the page number into the URL scheme
-	(threads now default to the last page if no page number given)
-*	Opera Speed Dial support (shows the latest non-sticky thread / reply)
-*	CSS fixes for IE6/7/8, iOS and Kindle
+v16     30.JAN.12
+*       Integrated the page number into the URL scheme
+        (threads now default to the last page if no page number given)
+*       Opera Speed Dial support (shows the latest non-sticky thread / reply)
+*       CSS fixes for IE6/7/8, iOS and Kindle
 
-v15	25.JAN.12
-*	The greyscale theme's logo was being templated in the wrong file,
-	since it's theme-specific, it has been moved to 'theme.config.default.php'
-*	Added page next / previous links
-	NOTE: if you have already created a 'theme.config.php' file, it is recommended to
-	create a fresh copy from 'theme.config.default.php' for the above two changes
-*	"User X added on date Y" text won't copy/paste so quotes can be cleaner
-*	Fixed bug in v14 that stopped replies from working
+v15     25.JAN.12
+*       The greyscale theme's logo was being templated in the wrong file,
+        since it's theme-specific, it has been moved to 'theme.config.default.php'
+*       Added page next / previous links
+        NOTE: if you have already created a 'theme.config.php' file, it is recommended to
+        create a fresh copy from 'theme.config.default.php' for the above two changes
+*       "User X added on date Y" text won't copy/paste so quotes can be cleaner
+*       Fixed bug in v14 that stopped replies from working
 
-v14	23.JAN.12
-*	Added the thread un/lock button back which had been missing since v12!!!
-*	Titles in RSS feeds were incorrect
-*	Moved RSS & sitemap to DOM templating (look in lib folder)
-*	Added XML namespace support to `DOMTemplate`
-*	Modified `DOMTemplateRepeater` to append items after the previous,
-	rather than as the last-child of the parent (no need for a superfluous wrapper)
+v14     23.JAN.12
+*       Added the thread un/lock button back which had been missing since v12!!!
+*       Titles in RSS feeds were incorrect
+*       Moved RSS & sitemap to DOM templating (look in lib folder)
+*       Added XML namespace support to `DOMTemplate`
+*       Modified `DOMTemplateRepeater` to append items after the previous,
+        rather than as the last-child of the parent (no need for a superfluous wrapper)
 
-v13	22.JAN.12
-*	Nested sub-folders
-*	Un/locking a thread will no longer bump it to the top of the index
-*	Fixed bug with closing parenthesis being included in a URL at the end of a quote
-*	Fixed small bug with user name case-sensitivity
-*	Small fix to `DOMTemplate` to reduce PHP requirement to at least 5.2.17, possibly 5.1.0
+v13     22.JAN.12
+*       Nested sub-folders
+*       Un/locking a thread will no longer bump it to the top of the index
+*       Fixed bug with closing parenthesis being included in a URL at the end of a quote
+*       Fixed small bug with user name case-sensitivity
+*       Small fix to `DOMTemplate` to reduce PHP requirement to at least 5.2.17, possibly 5.1.0
 
-v12	08.JAN.12
-*	Complete theming overhaul. The PHP logic and HTML are now separated using this methodology:
-	http://camendesign.com/dom_templating allowing admins to modify the HTML easily.
-	- WARNING: a bug since v9 of NNF caused dividers to be inserted with invalid HTML, these posts
-	  will appear blank unless you search your threads for `"hr"/` and replace with `"hr"`
-*	Fixed major bug with code blocks/spans restoring in the wrong order
-*	Changed dividers to use three or more dashes instead of four
-*	Fixed bug with dividers "---" using faulty HTML
-*	Added `theme_custom` function to 'theme.config.default.php' to add your own custom templating
-*	Moved templating of HTML titles to `THEME_TITLE*` consts in 'theme.config.default.php'
-*	Removed 'action.php' by integrating append/delete actions into 'thread.php'
-*	Renamed 'shared.php' to 'start.php' and created 'lib' folder for shared code
-*	Reorganised greyscale theme images
+v12     08.JAN.12
+*       Complete theming overhaul. The PHP logic and HTML are now separated using this methodology:
+        http://camendesign.com/dom_templating allowing admins to modify the HTML easily.
+        - WARNING: a bug since v9 of NNF caused dividers to be inserted with invalid HTML, these posts
+          will appear blank unless you search your threads for `"hr"/` and replace with `"hr"`
+*       Fixed major bug with code blocks/spans restoring in the wrong order
+*       Changed dividers to use three or more dashes instead of four
+*       Fixed bug with dividers "---" using faulty HTML
+*       Added `theme_custom` function to 'theme.config.default.php' to add your own custom templating
+*       Moved templating of HTML titles to `THEME_TITLE*` consts in 'theme.config.default.php'
+*       Removed 'action.php' by integrating append/delete actions into 'thread.php'
+*       Renamed 'shared.php' to 'start.php' and created 'lib' folder for shared code
+*       Reorganised greyscale theme images
 
-v11	24.DEC.11
-*	WARNING: Removed "private" forum lock-type due to basic lack of privacy without htpasswd
-	(anybody can just access the "index.xml" file to view posts); will leave this feature
-	up to admins to implement with htpasswd. If you have any existing private forums,
-	please implement htpasswd protection before upgrading!
+v11     24.DEC.11
+*       WARNING: Removed "private" forum lock-type due to basic lack of privacy without htpasswd
+        (anybody can just access the "index.xml" file to view posts); will leave this feature
+        up to admins to implement with htpasswd. If you have any existing private forums,
+        please implement htpasswd protection before upgrading!
 
-v10	24.DEC.11
-*	Theme configuration moved to '/themes/*/theme.config.default.php'
-*	Forum description / custom HTML via 'about.html'
-*	Custom CSS support via 'custom.css' file
-*	Custom favicon support
-*	Custom logo support in greyscale theme
+v10     24.DEC.11
+*       Theme configuration moved to '/themes/*/theme.config.default.php'
+*       Forum description / custom HTML via 'about.html'
+*       Custom CSS support via 'custom.css' file
+*       Custom favicon support
+*       Custom logo support in greyscale theme
 
-v9	21.DEC.11
-*	More markup syntax supported: (with thanks to Richard Van Velzen)
-	`:: title`, `---` (divider), `*bold*` & `_italic_`
-*	Please note that 'config.example.php' has been renamed to 'config.default.php'
-*	`rel="nofollow"` added to URLs in user text
-*	Fixed file-locking issue on Windows servers
-*	Fixes to RSS links
-*	Lowered server requirement from PHP v5.2.6 to v5.2.4 (theoretically 5.0)
+v9      21.DEC.11
+*       More markup syntax supported: (with thanks to Richard Van Velzen)
+        `:: title`, `---` (divider), `*bold*` & `_italic_`
+*       Please note that 'config.example.php' has been renamed to 'config.default.php'
+*       `rel="nofollow"` added to URLs in user text
+*       Fixed file-locking issue on Windows servers
+*       Fixes to RSS links
+*       Lowered server requirement from PHP v5.2.6 to v5.2.4 (theoretically 5.0)
 
-v8	06.DEC.11
-*	Access control: Major new feature! You can lock forums and limit posting / access to certain users:
-	(Members can be specified in a 'members.txt' file)
-	- 'threads':	Only moderators / members can start threads, but anybody can reply
-	- 'posts':	Only moderators / members can start threads or reply
-	- 'private':	Only moderators / members can access and participate in the forum (no access for the public)
-*	Moderators can sign-in to do moderator actions
-*	Moderators can now reply to and append / delete in locked threads
-*	Moderators can now fully remove previously deleted (blanked-out) comments
-*	Config option to disable new user registrations site-wide (`FORUM_NEWBIES`)
-*	HTTPS support. Enable `FORUM_HTTPS` in your config to force HTTPS
-*	Fix for Windows servers (forward slashes breaking `FORUM_PATH`)
+v8      06.DEC.11
+*       Access control: Major new feature! You can lock forums and limit posting / access to certain users:
+        (Members can be specified in a 'members.txt' file)
+        - 'threads':    Only moderators / members can start threads, but anybody can reply
+        - 'posts':      Only moderators / members can start threads or reply
+        - 'private':    Only moderators / members can access and participate in the forum (no access for the public)
+*       Moderators can sign-in to do moderator actions
+*       Moderators can now reply to and append / delete in locked threads
+*       Moderators can now fully remove previously deleted (blanked-out) comments
+*       Config option to disable new user registrations site-wide (`FORUM_NEWBIES`)
+*       HTTPS support. Enable `FORUM_HTTPS` in your config to force HTTPS
+*       Fix for Windows servers (forward slashes breaking `FORUM_PATH`)
 
-v7	05.NOV.11
-*	NNF can now be run from a folder, with thanks to Richard van Velzen
-	(this requires theme changes: URLs must be prepended with `FORUM_PATH`)
-*	Sub-folders within sub-folders are not shown (not supported yet)
+v7      05.NOV.11
+*       NNF can now be run from a folder, with thanks to Richard van Velzen
+        (this requires theme changes: URLs must be prepended with `FORUM_PATH`)
+*       Sub-folders within sub-folders are not shown (not supported yet)
 
-v6	08.OCT.11
-*	Thread locking / Unlocking
-*	Copying a code block inside a quote and posting now correctly indents the code block
+v6      08.OCT.11
+*       Thread locking / Unlocking
+*       Copying a code block inside a quote and posting now correctly indents the code block
 
-v5	22.AUG.11
-*	Fully remove post option on delete page -- now deletes the post completely rather than blanking it
-	(can only be used by moderators, and only on the last page of a thread)
-*	IE6 & iOS CSS fixes
-	
-v4	19.AUG.11
-*	Last post date now links to the post
-*	Index page count was incorrect
-*	CSS fix for IE 6 & 7
+v5      22.AUG.11
+*       Fully remove post option on delete page -- now deletes the post completely rather than blanking it
+        (can only be used by moderators, and only on the last page of a thread)
+*       IE6 & iOS CSS fixes
+        
+v4      19.AUG.11
+*       Last post date now links to the post
+*       Index page count was incorrect
+*       CSS fix for IE 6 & 7
 
-v3	30.JUL.11
-*	Links to threads now use "page=last"
-*	"Users" folder now included in the download for simpler setup
+v3      30.JUL.11
+*       Links to threads now use "page=last"
+*       "Users" folder now included in the download for simpler setup
 
-v2	18.JUN.11
-*	Ignore invalid XML files when generating index page / RSS
-*	Prevent null filenames for threads with only non-ASCII titles
-*	Better compatibility with PHP 5.3 (still works with 5.2)
+v2      18.JUN.11
+*       Ignore invalid XML files when generating index page / RSS
+*       Prevent null filenames for threads with only non-ASCII titles
+*       Better compatibility with PHP 5.3 (still works with 5.2)
 
-v1	01.JUN.11
-*	Initial release
+v1      01.JUN.11
+*       Initial release
 
 For full change list and changes prior to v1, see the GitHub project page <github.com/Kroc/NoNonsenseForum/commits/master>

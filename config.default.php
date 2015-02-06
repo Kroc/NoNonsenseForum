@@ -16,42 +16,42 @@
 //path, relative to this file, where the private data should be stored. e.g. "../users" to go above webroot.
 //note that this is a server path, so use "/" on UNIX servers and "\" on Windows ones. don't provide an end slash.
 //if you wish to run without HTAccess, you will need to change this to point to a private location
-@define ('FORUM_USERS',		'users');
+@define ('FORUM_USERS',         'users');
 
 //forum’s title. used in theme, and in RSS feeds
 //WARNING: changing this won’t update the index RSS feed containing this name; post/delete a thread to regenerate the
 //         'index.xml' file so as to see the change
-@define ('FORUM_NAME',		'NoNonsense Forum');
+@define ('FORUM_NAME',          'NoNonsense Forum');
 
 //timezone to use for all datetimes
 //this must be a string from this list: <php.net/manual/en/timezones.php>, e.g. "Europe/London"
-@define ('FORUM_TIMEZONE',	'UTC');
+@define ('FORUM_TIMEZONE',      'UTC');
 
 //if the forum should use--and force--HTTPS connections and URLs:
 //if set to true, RSS feeds will be saved with HTTPS URLs, and HTTP connections will automatically be redirected to HTTPS.
 //"HSTS" <en.wikipedia.org/wiki/HTTP_Strict_Transport_Security> will be used to tell clients to use HTTPS by default
 //NOTE: If you change this setting, old RSS feeds will still contain HTTP URLs, but this won’t pose a problem as the HSTS
 //      header will tell browsers to automatically redirect these to HTTPS
-@define ('FORUM_HTTPS',		false);
+@define ('FORUM_HTTPS',         false);
 
 //folder name of the theme to use, in "/themes/*"
-@define ('FORUM_THEME',		'greyscale');
+@define ('FORUM_THEME',         'greyscale');
 
 //if posting is allowed. change to false and nobody will be able to post new threads or reply
-@define ('FORUM_ENABLED',	true);
+@define ('FORUM_ENABLED',       true);
 //if new users are allowed to register. set to false and only existing registered users will be allowed to post
-@define ('FORUM_NEWBIES',	true);
+@define ('FORUM_NEWBIES',       true);
 
 //number of threads and posts to show per page
 //WARNING: changing these will inadvertadely invalidate post permalinks, decide on these numbers in the beginning
-@define ('FORUM_THREADS',	50);
-@define ('FORUM_POSTS',		25);
+@define ('FORUM_THREADS',       50);
+@define ('FORUM_POSTS',         25);
 
 //maximum allowed size (number of characters) of input fields
-@define ('SIZE_NAME',		20);		//user name
-@define ('SIZE_PASS',		20);		//password
-@define ('SIZE_TITLE',		100);		//post title
-@define ('SIZE_TEXT',		50000);		//post message
+@define ('SIZE_NAME',           20);            //user name
+@define ('SIZE_PASS',           20);            //password
+@define ('SIZE_TITLE',          100);           //post title
+@define ('SIZE_TEXT',           50000);         //post message
 
 
 ?>

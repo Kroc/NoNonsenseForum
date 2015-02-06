@@ -11,387 +11,387 @@
 
 /* enable 1:1 scaling for snap-view in Windows 8. the media queries will handle the rest
    <msdn.microsoft.com/en-us/library/ie/hh869615%28v=vs.85%29.aspx> */
-@-ms-viewport 			{width: device-width;}
+@-ms-viewport                   {width: device-width;}
 
-header, nav, section,		/* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
- article, footer		{display: block;}
-				
+header, nav, section,           /* this doesn’t get set on browsers without an HTML5 parser (e.g. Firefox 3.6) */
+ article, footer                {display: block;}
+                                
 
-html, body			{width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
-html				{font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
-				 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
-				 /* CSS3 gradients for browsers that support it: */
-	/* Chrome / Safari */	 background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
-	/* Chrome10+ Saf5+ */	 background-image: -webkit-linear-gradient(white, #ddd);
-	/* FF3.6+ */		 background-image:    -moz-linear-gradient(white, #ddd);
-	/* IE10 */		 background-image:     -ms-linear-gradient(white, #ddd);
-	/* Opera 11.10+ */	 background-image:      -o-linear-gradient(white, #ddd);
-	/* future! */		 background-image:         linear-gradient(white, #ddd);
-				 /* fix iPad stretching the gradient the height of the whole page, rather than the screen */
-				 background-size: 1024px 768px;
-				 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
-				    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
-				    manually insert a background colour for IE6 into the 32-bit PNGs) */
-				_background: #eee;}
-body, #mast h1 a		{/* page centering / width */
-				 width: 80%; max-width: 1024px; margin: 0 auto;}
+html, body                      {width: 100%; overflow-x: hidden; margin: 0; padding: 0; border: 0; color: #888;}
+html                            {font: 16px/20px Corbel, "URW Gothic L", "Liberation Sans", "Trebuchet MS", sans-serif;
+                                 background: #ddd url("img/bg.png") fixed repeat-x top center; word-wrap: break-word;
+                                 /* CSS3 gradients for browsers that support it: */
+        /* Chrome / Safari */    background-image: -webkit-gradient(linear, left top, left bottom, from(white), to(#ddd));
+        /* Chrome10+ Saf5+ */    background-image: -webkit-linear-gradient(white, #ddd);
+        /* FF3.6+ */             background-image:    -moz-linear-gradient(white, #ddd);
+        /* IE10 */               background-image:     -ms-linear-gradient(white, #ddd);
+        /* Opera 11.10+ */       background-image:      -o-linear-gradient(white, #ddd);
+        /* future! */            background-image:         linear-gradient(white, #ddd);
+                                 /* fix iPad stretching the gradient the height of the whole page, rather than the screen */
+                                 background-size: 1024px 768px;
+                                 /* for IE6, which doesn't support PNG transparency, we won’t use a gradient background so
+                                    that the fallback background colours in the PNG files compensate. (I used TweakPNG to
+                                    manually insert a background colour for IE6 into the 32-bit PNGs) */
+                                _background: #eee;}
+body, #mast h1 a                {/* page centering / width */
+                                 width: 80%; max-width: 1024px; margin: 0 auto;}
 
-h1				{margin: 0; padding: 20px 0 20px 60px;
-				 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
-				 background: #222;}
+h1                              {margin: 0; padding: 20px 0 20px 60px;
+                                 font-weight: bold; font-size: 22px; line-height: 20px; color: #f7f6f7;
+                                 background: #222;}
 
-p				{margin: 0; padding: 0 20px 20px;
-				 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
-				    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
-				 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
+p                               {margin: 0; padding: 0 20px 20px;
+                                 /* fonts in Linux are pretty awful, so we go for a "centruy gothic" like font for titles
+                                    and other UI ("URW Gothic L"), but a normal-looking Arial-like for the post text */
+                                 font-family: Corbel, "Liberation Sans", "Trebuchet MS", sans-serif}
 
-a				{color: #222; text-decoration: none; font-weight: bold;}
-a:hover				{color: #666; text-decoration: underline;}
+a                               {color: #222; text-decoration: none; font-weight: bold;}
+a:hover                         {color: #666; text-decoration: underline;}
 
-b.nnf_mod			{/* all moderators have underlined names */
-				 /*text-decoration: underline;*/}
+b.nnf_mod                       {/* all moderators have underlined names */
+                                 /*text-decoration: underline;*/}
 
-time				{font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-transform: uppercase;}
+time                            {font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-transform: uppercase;}
 
-blockquote			{position: relative; margin: 20px 0 0; padding: 0 20px 0 19px;
-				 border-left: 1px dotted #222; font-style: italic;}
-blockquote p:first-child	{padding-top: 0;}
+blockquote                      {position: relative; margin: 20px 0 0; padding: 0 20px 0 19px;
+                                 border-left: 1px dotted #222; font-style: italic;}
+blockquote p:first-child        {padding-top: 0;}
 
 /* added quote marks within blockquotes */
-.ql, .qr			{padding-right: 5px;
-				 font: normal 40px/0px "Liberation Sans", sans-serif; vertical-align: bottom;}
-.qr				{position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
+.ql, .qr                        {padding-right: 5px;
+                                 font: normal 40px/0px "Liberation Sans", sans-serif; vertical-align: bottom;}
+.qr                             {position: absolute; right: 0; bottom: 0; height: 0; overflow: hidden; padding-top: 20px;}
 
-pre				{overflow: auto; margin: 20px 0 0;}
-pre, code, samp			{font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, monospace;}
+pre                             {overflow: auto; margin: 20px 0 0;}
+pre, code, samp                 {font: 12.5px/20px Monaco, Consolas, "Liberation Mono", monospace, monospace;}
 
 /* code delimiters., top and bottom */
-.ct, .cb			{display: block; line-height: 19px;}
-.ct				{border-bottom: 1px dotted #222;}
-.cb				{margin-top: 20px; border-top: 1px dotted #222;}
+.ct, .cb                        {display: block; line-height: 19px;}
+.ct                             {border-bottom: 1px dotted #222;}
+.cb                             {margin-top: 20px; border-top: 1px dotted #222;}
 
 
 /* site header
    ====================================================================================================================== */
-#mast h1			{position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
-				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
-				 font-size: 32px; line-height: 40px; background: #222;}
-#mast h1 a			{display: block; overflow: hidden; padding: 10px 0; color: #f7f6f7;}
-#mast h1 a img			{display: block; float: left; margin: 4px 13px 0 15px; border: none;}
-#mast .nnf_forum-name		{/* truncate the forum title if it overflows (not working in IE6) */
-				 display: block; height: 40px; overflow: hidden; margin-right: 220px;
-				 white-space: nowrap; text-overflow: ellipsis;}
+#mast h1                        {position: absolute; left: 0; right: 0; height: 60px; margin: 0; padding: 0;
+                                 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
+                                 font-size: 32px; line-height: 40px; background: #222;}
+#mast h1 a                      {display: block; overflow: hidden; padding: 10px 0; color: #f7f6f7;}
+#mast h1 a img                  {display: block; float: left; margin: 4px 13px 0 15px; border: none;}
+#mast .nnf_forum-name           {/* truncate the forum title if it overflows (not working in IE6) */
+                                 display: block; height: 40px; overflow: hidden; margin-right: 220px;
+                                 white-space: nowrap; text-overflow: ellipsis;}
 
-#mast nav			{padding-top: 80px;}
+#mast nav                       {padding-top: 80px;}
 
 /* search box: */
-#search				{float: right; width: 210px; overflow: hidden; margin: 0; padding: 20px 10px 0;
-				*position: absolute; *right: 10%; /* IE6/7 have float issues with the language selector */
-				 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
-				 text-align: right; background: none;}
-#query				{display: block; /*< removes magic-spacing / height on input box */
-				 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
-				 -webkit-border-radius: 10px;
-				    -moz-border-radius: 10px;
-				         border-radius: 10px;
-				 font-size: 12px !important;
-				 line-height: 20px; /*< equalises vertical position of search box in IE8 */
-				 background: white url("img/search.png") no-repeat 5px 50%;
-				 background-size: 13px 17px;}
-::-webkit-search-decoration,	/* reset Safari custom search-box design */
- ::-webkit-search-cancel-button	{display: none;}
-input[type=search]		{-webkit-appearance: textfield;
-				 -webkit-box-sizing: content-box;}
-input[type=search]:focus	{outline: none;}
+#search                         {float: right; width: 210px; overflow: hidden; margin: 0; padding: 20px 10px 0;
+                                *position: absolute; *right: 10%; /* IE6/7 have float issues with the language selector */
+                                 border: none; /* very bizarely, the positioning magically adds a border in Firefox! */
+                                 text-align: right; background: none;}
+#query                          {display: block; /*< removes magic-spacing / height on input box */
+                                 width: 180px; height: 20px; margin: 0; padding: 0 5px 0 25px; border: none;
+                                 -webkit-border-radius: 10px;
+                                    -moz-border-radius: 10px;
+                                         border-radius: 10px;
+                                 font-size: 12px !important;
+                                 line-height: 20px; /*< equalises vertical position of search box in IE8 */
+                                 background: white url("img/search.png") no-repeat 5px 50%;
+                                 background-size: 13px 17px;}
+::-webkit-search-decoration,    /* reset Safari custom search-box design */
+ ::-webkit-search-cancel-button {display: none;}
+input[type=search]              {-webkit-appearance: textfield;
+                                 -webkit-box-sizing: content-box;}
+input[type=search]:focus        {outline: none;}
 
-#go				{position: relative; margin-left: -20px; top: -20px;}
+#go                             {position: relative; margin-left: -20px; top: -20px;}
 
 /* the breadcrumb for sub-forums */
-#index				{margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
-				 background: url("img/here.png") no-repeat 24px 0;
-				 background-size: 16px 20px;}
-#index li			{display: inline; padding-right: 0.4em;}
+#index                          {margin: 0 0 20px; padding: 0 0 0 60px; text-transform: uppercase;
+                                 background: url("img/here.png") no-repeat 24px 0;
+                                 background-size: 16px 20px;}
+#index li                       {display: inline; padding-right: 0.4em;}
 
 /* language selector: */
-#nnf_lang			{float: right; height: 20px; margin-bottom: 20px; padding-right: 10px; border: none;}
-#nnf_lang img			{vertical-align: middle;}
-#nnf_lang input			{vertical-align: bottom;}
+#nnf_lang                       {float: right; height: 20px; margin-bottom: 20px; padding-right: 10px; border: none;}
+#nnf_lang img                   {vertical-align: middle;}
+#nnf_lang input                 {vertical-align: bottom;}
 
 /* the admin's custom header message, 'about.html' */
-#nnf_about			{margin-bottom: 0; background: none;}
+#nnf_about                      {margin-bottom: 0; background: none;}
 
 /* the access warning message that appears on locked forums / threads */
-#info a				{color: #666;}
+#info a                         {color: #666;}
 
 /* 'Add' / 'Reply' and 'RSS' buttons */
-#nnf_add, #nnf_reply, #nnf_rss	{float: right; margin-left: 20px; padding-left: 25px;
-				 text-align: right; text-transform: uppercase; color: #222 !important;}
-#nnf_add, #nnf_reply		{background: url("img/add.png") no-repeat 0 50%; background-size: 16px 16px;}
-#nnf_rss			{background: url("img/rss.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_add, #nnf_reply, #nnf_rss  {float: right; margin-left: 20px; padding-left: 25px;
+                                 text-align: right; text-transform: uppercase; color: #222 !important;}
+#nnf_add, #nnf_reply            {background: url("img/add.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_rss                        {background: url("img/rss.png") no-repeat 0 50%; background-size: 16px 16px;}
 
 /* what follows is a phenomenally complex system of floats that just somehow allows for an elegant collapsing of elements
    under certain conditions, primarily so that if there is no language selector present, no 'about.html' and no sub-forums
    then the RSS/ADD links will fit themselves into the blank space where the language selector would be */
 
-#index, #index li		{/* allow either the language selector or the RSS/ADD links to fit to the right of the
-				    breadcrumb. each breadcrumb item is allowed to wrap, so the whole block doesn’t clear */
-				 float: left;}
-#nnf_about			{/* if the admin's custom header is present the RSS/ADD links won’t be able to fit into
-				    the top if the language selector is missing */
-				 clear: left;}
-#info				{/* if the language selector and the RSS/ADD links are present, the won’t collide */
-				 clear: right;
-				 /* this solves a missing bottom-padding when the language selector and RSS/ADD links are
-				    above each other, but where `overflow: auto` causes the access warning message to
-				    not clear when it's visible. IE6 does not understand `min-height` */
-				 _height: 20px; min-height: 20px;}
-#nnf_forum-lock-threads,	 /* prevent the access warning message from trying to squeeze in */
- #nnf_forum-lock-posts		{display: block; clear: left;}
+#index, #index li               {/* allow either the language selector or the RSS/ADD links to fit to the right of the
+                                    breadcrumb. each breadcrumb item is allowed to wrap, so the whole block doesn’t clear */
+                                 float: left;}
+#nnf_about                      {/* if the admin's custom header is present the RSS/ADD links won’t be able to fit into
+                                    the top if the language selector is missing */
+                                 clear: left;}
+#info                           {/* if the language selector and the RSS/ADD links are present, the won’t collide */
+                                 clear: right;
+                                 /* this solves a missing bottom-padding when the language selector and RSS/ADD links are
+                                    above each other, but where `overflow: auto` causes the access warning message to
+                                    not clear when it's visible. IE6 does not understand `min-height` */
+                                 _height: 20px; min-height: 20px;}
+#nnf_forum-lock-threads,         /* prevent the access warning message from trying to squeeze in */
+ #nnf_forum-lock-posts          {display: block; clear: left;}
 
 
 /* index page
    ====================================================================================================================== */
-section				{clear: both; margin: 0 0 20px; color: #222;
-				 background: #f7f6f7;}
-section h1			{background: #222 none no-repeat 15px 15px;}
+section                         {clear: both; margin: 0 0 20px; color: #222;
+                                 background: #f7f6f7;}
+section h1                      {background: #222 none no-repeat 15px 15px;}
 
 /* page list */
-section nav			{position: relative; height: 40px; overflow: hidden; padding: 0 1px;
-				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; line-height: 40px;
-				 text-align: right; text-transform: uppercase; color: #aaa;
-				 background-color: #444;}
+section nav                     {position: relative; height: 40px; overflow: hidden; padding: 0 1px;
+                                 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; line-height: 40px;
+                                 text-align: right; text-transform: uppercase; color: #aaa;
+                                 background-color: #444;}
 
 /* cover over the dotted line at the bottom */
-#nnf_threads nav		{margin-top: -1px;}
+#nnf_threads nav                {margin-top: -1px;}
 
 /* move the page list into the title for browsers that support the adjacent selector (IE7+) */
 /* (spaces are required between '+' here for WebKit!?) */
-/*section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}*/
+/*section>h1 + nav              {background: none; float: right; margin-top: -50px !important; padding-right: 10px;}*/
 
-ol.nnf_pages			{display: block; float: right; margin: 0 0 0 10px; padding: 0;}
-ol.nnf_pages li			{display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
-				 text-align: center;}
-ol.nnf_pages a			{display: block; width: 40px; height: 39px;
-				 color: #aaa; text-decoration: none;}
-ol.nnf_pages a:hover		{color: white; font-style: normal; background-color: #888;}
-ol.nnf_pages em			{display: block; height: 39px; font-style: normal; color: white; background: #888;}
+ol.nnf_pages                    {display: block; float: right; margin: 0 0 0 10px; padding: 0;}
+ol.nnf_pages li                 {display: block; float: left; margin: 0; padding: 0; width: 40px; height: 39px;
+                                 text-align: center;}
+ol.nnf_pages a                  {display: block; width: 40px; height: 39px;
+                                 color: #aaa; text-decoration: none;}
+ol.nnf_pages a:hover            {color: white; font-style: normal; background-color: #888;}
+ol.nnf_pages em                 {display: block; height: 39px; font-style: normal; color: white; background: #888;}
 
 /* item list (folders / threads) */
-ol.ui				{margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
-ol.ui li			{margin: 0; border-bottom: 1px dotted #444;
-				 list-style-type: none; color: #888;
-				 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
-				    line of text is 20px so that the bottom border never shifts out of place
-				    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
-				 padding: 9.999px 20px 9px 60px; line-height: 20px;}
+ol.ui                           {margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
+ol.ui li                        {margin: 0; border-bottom: 1px dotted #444;
+                                 list-style-type: none; color: #888;
+                                 /* this trick ensures that one line of text is 19px+border (20px), but that each additonal
+                                    line of text is 20px so that the bottom border never shifts out of place
+                                    (round up occurs at 2 decimal digits for Firefox and Chrome, 3 for Opera) */
+                                 padding: 9.999px 20px 9px 60px; line-height: 20px;}
 
-ol.ui li.nnf_sticky		{background: #eee;}
+ol.ui li.nnf_sticky             {background: #eee;}
 
-ol.ui li i			{float: left; width: 25px; margin: 0 10px 0 -50px;
-				 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
+ol.ui li i                      {float: left; width: 25px; margin: 0 10px 0 -50px;
+                                 font-family: Calibri, "Liberation Sans", Tahoma, sans-serif; text-align: right;}
 
-ol.ui li b			{float: right; padding-left: 10px; text-align: right;}	/* author */
-ol.ui li time			{float: right; width: 9.1em;				/* timestamp */
-				 font-weight: normal; text-align: right; color: #888;}
-ol.ui li a:hover time		{text-decoration: underline;}
+ol.ui li b                      {float: right; padding-left: 10px; text-align: right;}  /* author */
+ol.ui li time                   {float: right; width: 9.1em;                            /* timestamp */
+                                 font-weight: normal; text-align: right; color: #888;}
+ol.ui li a:hover time           {text-decoration: underline;}
 
 /* ---------------------------------------------------------------------------------------------------------------------- */
 
 /* titles */
-#nnf_folders h1			{background-image: url("img/folders.png"); background-size: 32px 32px;}
-#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads.png"); background-size: 32px 32px;}
+#nnf_folders h1                 {background-image: url("img/folders.png"); background-size: 32px 32px;}
+#nnf_threads h1, #nnf_post h1   {background-image: url("img/threads.png"); background-size: 32px 32px;}
 
 /* the last post name / date for sub-forums */
-#nnf_folders ol.ui li		{position: relative; border-bottom: 1px solid #444;}
-.nnf_subforum-post		{*position: absolute; *right: 20px; /* IE<8 fix */}
+#nnf_folders ol.ui li           {position: relative; border-bottom: 1px solid #444;}
+.nnf_subforum-post              {*position: absolute; *right: 20px; /* IE<8 fix */}
 
 /* the lock/sticky icon positioning */
-ol.ui li img			{position: absolute; margin-left: -20px; margin-top: 2px;}
-#nnf_folders ol.ui li img	{margin-left: -38px;}
+ol.ui li img                    {position: absolute; margin-left: -20px; margin-top: 2px;}
+#nnf_folders ol.ui li img       {margin-left: -38px;}
 
 
 /* thread page
    ====================================================================================================================== */
-article				{padding: 0 20px 19px; border: 1px solid #444;
-				 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
-				 border-width: 0 1px 1px;}
-article p			{padding: 20px 0 0 0;}
+article                         {padding: 0 20px 19px; border: 1px solid #444;
+                                 /* surreal, surreal IE6 bug. *without* a bottom-border, the layout goes out of sync */
+                                 border-width: 0 1px 1px;}
+article p                       {padding: 20px 0 0 0;}
 
 /* close the border within the 20px rhythm on the initial post */
-#nnf_post article		{padding-bottom: 19px !important; border-bottom-width: 1px;}
+#nnf_post article               {padding-bottom: 19px !important; border-bottom-width: 1px;}
 
-#nnf_replies h1			{background-image: url("img/replies.png"); background-size: 32px 32px;}
+#nnf_replies h1                 {background-image: url("img/replies.png"); background-size: 32px 32px;}
 
-article header			{line-height: 20px; margin: -1px -20px 0; padding: 10px 20px 9px;
-				 border-bottom: 1px dotted #444;
-				 color: #888; background: #ccc;}
+article header                  {line-height: 20px; margin: -1px -20px 0; padding: 10px 20px 9px;
+                                 border-bottom: 1px dotted #444;
+                                 color: #888; background: #ccc;}
 
-article header b		{margin-left: 10px;}
-#nnf_post article header b	{/* the first post doesn’t have a number, only replies */
-				 margin-left: 0;}
+article header b                {margin-left: 10px;}
+#nnf_post article header b      {/* the first post doesn’t have a number, only replies */
+                                 margin-left: 0;}
 article header time,
- article header .ui		{float: right;}
+ article header .ui             {float: right;}
 
 /* the delete / append buttons */
-article header .ui		{/* ie6 makes these invisible, has to have width toggled */
-				 _width: 0; overflow: hidden; padding: 0 25px 0 10px;
-				 text-indent: -6em; color: #ccc;}
-article header .ui:hover	{_width: auto; text-indent: 0; text-decoration: none; color: #222;}
+article header .ui              {/* ie6 makes these invisible, has to have width toggled */
+                                 _width: 0; overflow: hidden; padding: 0 25px 0 10px;
+                                 text-indent: -6em; color: #ccc;}
+article header .ui:hover        {_width: auto; text-indent: 0; text-decoration: none; color: #222;}
 article header .ui,
- article header .ui:hover	{-webkit-transition: all .2s;
-				    -moz-transition: all .2s;
-				      -o-transition: all .2s;
-				         transition: all .2s;}
+ article header .ui:hover       {-webkit-transition: all .2s;
+                                    -moz-transition: all .2s;
+                                      -o-transition: all .2s;
+                                         transition: all .2s;}
 
-a.delete			{background: url("img/delete.png") no-repeat right center; background-size: 16px 16px;}
-a.append			{background: url("img/append.png") no-repeat right center; background-size: 16px 16px;}
+a.delete                        {background: url("img/delete.png") no-repeat right center; background-size: 16px 16px;}
+a.append                        {background: url("img/append.png") no-repeat right center; background-size: 16px 16px;}
 
-article.nnf_op			{}
-article.nnf_op header		{background: #888; color: #eee;}
+article.nnf_op                  {}
+article.nnf_op header           {background: #888; color: #eee;}
 
-article.nnf_deleted		{color: #aaa;}
+article.nnf_deleted             {color: #aaa;}
 article.nnf_deleted header,
- article.nnf_error header	{background: #f7f6f7; color: #aaa;}
+ article.nnf_error header       {background: #f7f6f7; color: #aaa;}
 article.nnf_error .nnf_reply-text,
  article.nnf_error #nnf_post-text
-				{color: #d11; font-style: italic}
+                                {color: #d11; font-style: italic}
 
-article h2			{margin: 20px 0 0; border-bottom: 1px dotted #222;
-				 font-size: 16px; line-height: 19px; font-weight: bold; font-style: normal;}
-article .hr			{height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
-				 border-bottom: 1px dotted #222; text-indent: -999em;}
+article h2                      {margin: 20px 0 0; border-bottom: 1px dotted #222;
+                                 font-size: 16px; line-height: 19px; font-weight: bold; font-style: normal;}
+article .hr                     {height: 1px; margin: 19px 0 0; padding: 0; overflow: hidden;
+                                 border-bottom: 1px dotted #222; text-indent: -999em;}
 
 
 /* markup / privacy page
    ====================================================================================================================== */
-#markup h1,			/* title icon */
- #privacy h1			{background-image: url("img/help.png"); background-size: 32px 32px;}
+#markup h1,                     /* title icon */
+ #privacy h1                    {background-image: url("img/help.png"); background-size: 32px 32px;}
 
-#markup header ol,		/* table of contents */
- #privacy header ol		{margin: 0; padding: 0;}
+#markup header ol,              /* table of contents */
+ #privacy header ol             {margin: 0; padding: 0;}
 #markup header li,
- #privacy header li		{display: inline; padding: 0 20px 0 0;
-				 /* do not line-break in the middle of a link on small screens, like mobiles */
-				 white-space: nowrap; }
+ #privacy header li             {display: inline; padding: 0 20px 0 0;
+                                 /* do not line-break in the middle of a link on small screens, like mobiles */
+                                 white-space: nowrap; }
 
 
 /* input forms
    ====================================================================================================================== */
 /* truncate placeholder text with ".." in input fields if too short, e.g. mobile
    taken shamelessly from: <davidwalsh.name/placeholder-overflow> */
-input[placeholder]		{text-overflow: ellipsis;}
-::-moz-placeholder		{text-overflow: ellipsis;} /* firefox 19+ */
-input:-moz-placeholder		{text-overflow: ellipsis;}
+input[placeholder]              {text-overflow: ellipsis;}
+::-moz-placeholder              {text-overflow: ellipsis;} /* firefox 19+ */
+input:-moz-placeholder          {text-overflow: ellipsis;}
 
-#nnf_new-form h1,		/* title icon */
- #nnf_reply-form h1, #append h1	{background-image: url("img/new.png"); background-size: 32px 32px;}
+#nnf_new-form h1,               /* title icon */
+ #nnf_reply-form h1, #append h1 {background-image: url("img/new.png"); background-size: 32px 32px;}
 
-form				{position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
-				 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
+form                            {position: relative; /*< for the benefit of IE6/7 whom do not have box-sizing */
+                                 margin: 0; padding: 0; border: 1px solid #444; border-width: 0 1px;}
 
-input, textarea			{font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sans-serif;}
+input, textarea                 {font: 16px/20px Corbel, "Liberation Sans", "Trebuchet MS", sans-serif;}
 
-label				{display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;
-				 cursor: pointer;}
+label                           {display: block; height: 40px; padding: 0 20px; line-height: 40px; color: #222;
+                                 cursor: pointer;}
 
-form p				{padding: 0; color: #888;}
-.ok, .error, #protip		{padding: 20px 20px 0 !important;}
-.error				{color: #d11;}
+form p                          {padding: 0; color: #888;}
+.ok, .error, #protip            {padding: 20px 20px 0 !important;}
+.error                          {color: #d11;}
 
 
 input[type=text],
- input[type=password], textarea	{-webkit-box-shadow: inset 0 5px 5px -6px black;
-				    -moz-box-shadow: inset 0 5px 5px -6px black;
-				         box-shadow: inset 0 5px 5px -6px black;}
+ input[type=password], textarea {-webkit-box-shadow: inset 0 5px 5px -6px black;
+                                    -moz-box-shadow: inset 0 5px 5px -6px black;
+                                         box-shadow: inset 0 5px 5px -6px black;}
 
-#leftcol			{width: 65%;}
-#rightcol			{position: absolute; width: 35%; right: 0;}
+#leftcol                        {width: 65%;}
+#rightcol                       {position: absolute; width: 35%; right: 0;}
 
 #nnf_name-field,
  #nnf_name-field-http,
- #nnf_pass-field		{display: block; width: 100%;}
+ #nnf_pass-field                {display: block; width: 100%;}
 #nnf_title-field,
  #nnf_name-field,
  #nnf_name-field-http,
- #nnf_pass-field		{height: 39px; line-height: 39px;
-				 /* since IE 6/7 don't support box-sizing, we can't use padding in the text-box,
-				    we'll just indent instead */
-				 padding: 0; text-indent: 20px;
-				 border: none; border-bottom: 1px dotted #444;}
+ #nnf_pass-field                {height: 39px; line-height: 39px;
+                                 /* since IE 6/7 don't support box-sizing, we can't use padding in the text-box,
+                                    we'll just indent instead */
+                                 padding: 0; text-indent: 20px;
+                                 border: none; border-bottom: 1px dotted #444;}
 
 /* the "title" field, only present on the new thread form, index page */
-#ptitle				{display: table; width: 100%;}
-#ptitle label			{display: block; float: left; width: 20%; height: 39px; padding: 0; text-indent: 20px;
-				 line-height: 38.999px; /*< Chrome gets this a pixel out, use imprecision to fix */
-				 border-bottom: 1px dotted #444;}
-#nnf_title-field		{display: block; position: absolute; left: 20%; right: 1px; width: 80%;
-				 -webkit-box-shadow: inset 5px 0 5px -6px black;
-				    -moz-box-shadow: inset 5px 0 5px -6px black;
-				         box-shadow: inset 5px 0 5px -6px black;}
+#ptitle                         {display: table; width: 100%;}
+#ptitle label                   {display: block; float: left; width: 20%; height: 39px; padding: 0; text-indent: 20px;
+                                 line-height: 38.999px; /*< Chrome gets this a pixel out, use imprecision to fix */
+                                 border-bottom: 1px dotted #444;}
+#nnf_title-field                {display: block; position: absolute; left: 20%; right: 1px; width: 80%;
+                                 -webkit-box-shadow: inset 5px 0 5px -6px black;
+                                    -moz-box-shadow: inset 5px 0 5px -6px black;
+                                         box-shadow: inset 5px 0 5px -6px black;}
 
 /* the message box, present in new thread and reply forms */
-#ptext label			{display: block; line-height: 40px;
-				 border-right: 1px solid #f7f6f7; background: #f7f6f7;}
+#ptext label                    {display: block; line-height: 40px;
+                                 border-right: 1px solid #f7f6f7; background: #f7f6f7;}
 
 /* we have to use a wrapper because box-sizing is not consistently supported across browsers and missing in IE<8 */
-#wtext				{display: block; padding: 0 40px 0 0;
-				 position: relative; /*< force dotted line above rightcol in Firefox */
-				 _position: static;  /*< that then breaks IE6 :P */}
-#nnf_text-field			{display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
-				 border: none; border-right: 1px dotted #444;
-				 /* fix width for browsers that allow resizable text-areas */
-				 min-width: 100%; max-width: 100%; min-height: 300px; max-height: 700px;}
+#wtext                          {display: block; padding: 0 40px 0 0;
+                                 position: relative; /*< force dotted line above rightcol in Firefox */
+                                 _position: static;  /*< that then breaks IE6 :P */}
+#nnf_text-field                 {display: block; width: 100%; padding: 20px; margin: 0 -41px 0 0;
+                                 border: none; border-right: 1px dotted #444;
+                                 /* fix width for browsers that allow resizable text-areas */
+                                 min-width: 100%; max-width: 100%; min-height: 300px; max-height: 700px;}
 
 /* the e-mail field is an anti-spam feature and not used by the user */
-#nnf_email			{display: none;}
+#nnf_email                      {display: none;}
 
 /* submit button at bottom of form */
-#psubmit			{clear: both; height: 40px;
-				 margin: 0 !important; padding: 0; text-align: right;
-				 background: #444;}
-#psubmit label			{display: inline-block; padding: 0 0 0 20px;
-				 color: #f7f6f7; text-transform: uppercase;}
-#submit				{vertical-align: middle;}
+#psubmit                        {clear: both; height: 40px;
+                                 margin: 0 !important; padding: 0; text-align: right;
+                                 background: #444;}
+#psubmit label                  {display: inline-block; padding: 0 0 0 20px;
+                                 color: #f7f6f7; text-transform: uppercase;}
+#submit                         {vertical-align: middle;}
 
 /* delete form
    ---------------------------------------------------------------------------------------------------------------------- */
-#delete h1			{background-image: url("img/deletetitle.png"); background-size: 32px 32px;}
-#delete #psubmit		{margin-top: 20px !important;}
+#delete h1                      {background-image: url("img/deletetitle.png"); background-size: 32px 32px;}
+#delete #psubmit                {margin-top: 20px !important;}
 
 /* put the name / password fields side by side since there's no message box taking up the space */
-#delete #leftcol		{width: 50%;}
-#delete #rightcol		{width: 50%; top: 0; border-left: 1px dotted #222;}
+#delete #leftcol                {width: 50%;}
+#delete #rightcol               {width: 50%; top: 0; border-left: 1px dotted #222;}
 
 
 /* site footer
    ====================================================================================================================== */
-form#nnf_admin			{float: right; border: none;
+form#nnf_admin                  {float: right; border: none;
                                  /* this padding is so that on a very narrow screen, the mods list can flow underneath
                                      the admin buttons, but not be too close to them */
                                  padding-bottom: 20px;}
-form#nnf_admin input		{margin-left: 20px; padding-left: 20px; border: none;
-				 text-transform: uppercase; cursor: pointer;
-				 /* TODO: webkit-appearance: none */}
+form#nnf_admin input            {margin-left: 20px; padding-left: 20px; border: none;
+                                 text-transform: uppercase; cursor: pointer;
+                                 /* TODO: webkit-appearance: none */}
 /* lock / unlock icons courtesy of <picol.org>, under a Creative Commons Share-Alike 3.0 licence
    <creativecommons.org/licenses/by-sa/3.0/> */
-				/* to-do: 1x & 2x */
-#nnf_stick			{background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
-#nnf_unstick			{background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
-#nnf_lock			{background: url("img/security_closed_16.png") no-repeat 0 50%; background-size: 16px 16px;}
-#nnf_unlock			{background: url("img/security_open_16.png") no-repeat 0 50%; background-size: 16px 16px;}
+                                /* to-do: 1x & 2x */
+#nnf_stick                      {background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_unstick                    {background: url("img/sticky.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_lock                       {background: url("img/security_closed_16.png") no-repeat 0 50%; background-size: 16px 16px;}
+#nnf_unlock                     {background: url("img/security_open_16.png") no-repeat 0 50%; background-size: 16px 16px;}
 
-footer				{position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
-				 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
-				 background: #222;}
+footer                          {position: absolute; height: 60px; margin: 0; padding: 20px 0 0; left: 0; right: 0;
+                                 _width: 125%; /*< IE6 has to override the 80% with a reverse %'age gain */
+                                 background: #222;}
 
-footer p			{margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
-footer p a			{color: #888;}
+footer p                        {margin: 0 auto 0 10%; font-size: .9em; color: #f7f6f7;}
+footer p a                      {color: #888;}
 
-#signin				{/* override default on form, this interferes with z-ordering in the footer */
+#signin                         {/* override default on form, this interferes with z-ordering in the footer */
                                  position: static; margin: -60px 10% 0 auto; text-align: right; border: none;}
-#signin input			{margin: 0; padding: 0; border: none;
-				 color: #f7f6f7; text-transform: uppercase;
-				 background: none; cursor: pointer;}
+#signin input                   {margin: 0; padding: 0; border: none;
+                                 color: #f7f6f7; text-transform: uppercase;
+                                 background: none; cursor: pointer;}
 
 
 /* ======================================================================================================================
@@ -399,127 +399,127 @@ footer p a			{color: #888;}
    ====================================================================================================================== */
 @media screen and (max-width: 800px) {
 
-html				{font-size: 14px; background: #ddd; /* mobile devices don't like fixed backgrounds */}
+html                            {font-size: 14px; background: #ddd; /* mobile devices don't like fixed backgrounds */}
 
 /* prevent iPhone from zooming in when rotating */
-html, body			{width: 100%; -webkit-text-size-adjust: none;}
+html, body                      {width: 100%; -webkit-text-size-adjust: none;}
 
 /* page width */
-body, #mast h1 a		{width: 95%;}
+body, #mast h1 a                {width: 95%;}
 
 /* header
    ---------------------------------------------------------------------------------------------------------------------- */
 /* reduce the title size */
-h1				{font-size: 20px !important;}
-#mast h1			{height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
-#mast h1 a			{/* fit the logo in tighter */
-				 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
-#mast h1 a img			{margin-left: -45px; margin-top: -6px;}
-#mast .nnf_forum-name		{margin-right: 0; /*min-height: 40px;*/}
+h1                              {font-size: 20px !important;}
+#mast h1                        {height: 80px; padding: 0; line-height: 20px; min-height: 40px;}
+#mast h1 a                      {/* fit the logo in tighter */
+                                 width: auto; margin: 0; padding: 10px 0 0 55px; text-indent: 0;}
+#mast h1 a img                  {margin-left: -45px; margin-top: -6px;}
+#mast .nnf_forum-name           {margin-right: 0; /*min-height: 40px;*/}
 
 /* re-position the search field below the title */
-#search				{float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;
-				 -webkit-box-sizing: border-box;
-				    -moz-box-sizing: border-box;
-				         box-sizing: border-box;
-				 border: none; text-align: right;
-				 background: #222;}
-#query				{width: 100%; padding: 4px 0; text-indent: 15px; font-size: 18px;
-				 -webkit-box-sizing: padding-box;
-				    -moz-box-sizing: padding-box;
-				         box-sizing: padding-box;
-				 -webkit-border-radius: 14px;
-				    -moz-border-radius: 14px;
-				         border-radius: 14px;}
-#go				{left: -5px; top: -23px;}
+#search                         {float: left;  height: 35px; margin: 45px 0 0 0; padding: 0 20px 10px 40px;
+                                 -webkit-box-sizing: border-box;
+                                    -moz-box-sizing: border-box;
+                                         box-sizing: border-box;
+                                 border: none; text-align: right;
+                                 background: #222;}
+#query                          {width: 100%; padding: 4px 0; text-indent: 15px; font-size: 18px;
+                                 -webkit-box-sizing: padding-box;
+                                    -moz-box-sizing: padding-box;
+                                         box-sizing: padding-box;
+                                 -webkit-border-radius: 14px;
+                                    -moz-border-radius: 14px;
+                                         border-radius: 14px;}
+#go                             {left: -5px; top: -23px;}
 
-#nnf_lang			{float: right; margin-top: -55px; padding-right: 0; text-align: right;}
-#nnf_lang>img, #nnf_lang>input	{display: none;}
+#nnf_lang                       {float: right; margin-top: -55px; padding-right: 0; text-align: right;}
+#nnf_lang>img, #nnf_lang>input  {display: none;}
 
 
 
-#mast nav			{padding-top: 100px;}
-#mast nav p:last-child		{/* hide location marker */
-				 display: none;}
-#nnf_add, #nnf_reply		{margin-right: 0;}
-#index				{display: none;}
+#mast nav                       {padding-top: 100px;}
+#mast nav p:last-child          {/* hide location marker */
+                                 display: none;}
+#nnf_add, #nnf_reply            {margin-right: 0;}
+#index                          {display: none;}
 
 /* index page
    ---------------------------------------------------------------------------------------------------------------------- */
 /* the meta items can’t fit in one line. add them below the titles */
-ol.ui li			{position: relative; padding-bottom: 30px; padding-left: 40px !important;}
-ol.ui li b, ol.ui li time	{float: none; position: absolute; bottom: 5px;}
-ol.ui li b			{right: 10px;}
-ol.ui li time			{left: 40px !important; text-align: left;}
+ol.ui li                        {position: relative; padding-bottom: 30px; padding-left: 40px !important;}
+ol.ui li b, ol.ui li time       {float: none; position: absolute; bottom: 5px;}
+ol.ui li b                      {right: 10px;}
+ol.ui li time                   {left: 40px !important; text-align: left;}
 
-ol.ui li i			{/* position the post-count closer */
-				 width: 20px !important; margin: 0 10px 0 -30px !important;
-				 font-size: 14px;}
-#nnf_folders ol.ui li img	{margin-left: -30px;}
-#nnf_threads ol.ui li img	{/* put the sticky icon underneath the post count instead of next to it */
-				 position: absolute; top: 35px;}
+ol.ui li i                      {/* position the post-count closer */
+                                 width: 20px !important; margin: 0 10px 0 -30px !important;
+                                 font-size: 14px;}
+#nnf_folders ol.ui li img       {margin-left: -30px;}
+#nnf_threads ol.ui li img       {/* put the sticky icon underneath the post count instead of next to it */
+                                 position: absolute; top: 35px;}
 
 
-footer p			{margin-left: 5% !important; padding-left: 0 !important;}
+footer p                        {margin-left: 5% !important; padding-left: 0 !important;}
 
 /* thread page */
-article header time		{/* don’t show the post time in portrait */
-				 display: none;}
+article header time             {/* don’t show the post time in portrait */
+                                 display: none;}
 
 /* input forms
    ---------------------------------------------------------------------------------------------------------------------- */
-input[type="text"], textarea,	/* remove the field styling in iOS */
- input[type="password"]		{-webkit-appearance: none; -moz-appearance: none;
-				 -webkit-border-radius: 0;}
+input[type="text"], textarea,   /* remove the field styling in iOS */
+ input[type="password"]         {-webkit-appearance: none; -moz-appearance: none;
+                                 -webkit-border-radius: 0;}
 
 /* set text-indent of the placeholder text, except for the textarea, which has padding
    (interesting note: iOS 4 can't cope with this selector being split, iOS5 can) */
 :not(#nnf_text-field)::-webkit-input-placeholder
-				{text-indent: 20px;}
+                                {text-indent: 20px;}
 
 /* single column */
-#rightcol, #leftcol		{position: static; width: 100%;}
+#rightcol, #leftcol             {position: static; width: 100%;}
 
 #ptitle, #nnf_name, #nnf_name-http, #nnf_pass,
- #delete > form > p		{display: table; width: 100%;}
+ #delete > form > p             {display: table; width: 100%;}
 
 #ptitle label, #nnf_name label, #nnf_pass label,
- #delete > form > p > label	{float: none; display: table-cell; width: 75px; height: 39px; padding: 0 0 0 20px;
-				 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0; vertical-align: middle}
+ #delete > form > p > label     {float: none; display: table-cell; width: 75px; height: 39px; padding: 0 0 0 20px;
+                                 border-bottom: 1px dotted #444; line-height: 37px; text-indent: 0; vertical-align: middle}
 #nnf_title-field, #nnf_name-field,
- #nnf_pass-field		{position: static; display: table-cell; width: 100%; height: 43px;
-				 -webkit-box-shadow: inset 5px 0 5px -6px black;
-				    -moz-box-shadow: inset 5px 0 5px -6px black;
-				         box-shadow: inset 5px 0 5px -6px black;}
-#nnf_text-field			{border: none;}
+ #nnf_pass-field                {position: static; display: table-cell; width: 100%; height: 43px;
+                                 -webkit-box-shadow: inset 5px 0 5px -6px black;
+                                    -moz-box-shadow: inset 5px 0 5px -6px black;
+                                         box-shadow: inset 5px 0 5px -6px black;}
+#nnf_text-field                 {border: none;}
 
-#delete #leftcol,		/* side-by-side of delete form doesn’t apply to iOS */
- #delete #rightcol		{width: 100%;}
+#delete #leftcol,               /* side-by-side of delete form doesn’t apply to iOS */
+ #delete #rightcol              {width: 100%;}
 
 /* footer */
-#mods p				{padding-left: 0; padding-right: 0;
-				 font-size: 13px;}
+#mods p                         {padding-left: 0; padding-right: 0;
+                                 font-size: 13px;}
                                 
 }
 
 @media screen and (max-width: 800px) and (orientation: landscape) {
 
 /* show the post time when in landscape */
-article header time		{display: inline;}
+article header time             {display: inline;}
 
 }
 
 @media screen and (max-width: 800px) and (orientation: portrait) {
 
 /* ensure the language selector doesn’t overflow into the search box */
-#lang				{max-width: 100px; max-height: 20px; white-space: nowrap;}
+#lang                           {max-width: 100px; max-height: 20px; white-space: nowrap;}
 
 /* when in portrait, there’s not enough width to fit the powered-by message as well as the sign-in link / status;
    this makes the footer taller and stacks the two */
-footer				{padding-top: 60px;}
-footer p			{margin-left: 0 !important; padding-left: 0 !important; padding-right: 0 !important;
-				 text-align: center !important;}
-#signin				{margin: -100px 0 0 0; text-align: center;}
+footer                          {padding-top: 60px;}
+footer p                        {margin-left: 0 !important; padding-left: 0 !important; padding-right: 0 !important;
+                                 text-align: center !important;}
+#signin                         {margin: -100px 0 0 0; text-align: center;}
 
 #nnf_mods                       {/* on a narrow screen, place the mods list underneath the admin buttons) */
                                  clear: right;}
@@ -530,7 +530,7 @@ footer p			{margin-left: 0 !important; padding-left: 0 !important; padding-right
 /* move the page list into the title for browsers that support the adjacent selector (IE7+);
    this is not done for thin screens (portrait) because there's not enough width
   (spaces are required between '+' here for WebKit!?) */
-section>h1 + nav		{background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
+section>h1 + nav                {background: none; float: right; margin-top: -50px !important; padding-right: 10px;}
 
 }
 
@@ -542,23 +542,23 @@ section>h1 + nav		{background: none; float: right; margin-top: -50px !important;
        (-webkit-min-device-pixel-ratio: 1.25),
        (min-resolution: 120dpi) {
 
-#query				{background-image: url("img/search_2x.png");}
-#index				{background-image: url("img/here_2x.png");}
-#nnf_add, #nnf_reply		{background-image: url("img/add_2x.png");}
-#nnf_rss			{background-image: url("img/rss_2x.png");}
-#nnf_folders h1			{background-image: url("img/folders_2x.png");}
-#nnf_threads h1, #nnf_post h1	{background-image: url("img/threads_2x.png");}
-#nnf_replies h1			{background-image: url("img/replies_2x.png");}
-a.delete			{background-image: url("img/delete_2x.png");}
-a.append			{background-image: url("img/append_2x.png");}
-#markup h1, #privacy h1	{background-image: url("img/help_2x.png");}
+#query                          {background-image: url("img/search_2x.png");}
+#index                          {background-image: url("img/here_2x.png");}
+#nnf_add, #nnf_reply            {background-image: url("img/add_2x.png");}
+#nnf_rss                        {background-image: url("img/rss_2x.png");}
+#nnf_folders h1                 {background-image: url("img/folders_2x.png");}
+#nnf_threads h1, #nnf_post h1   {background-image: url("img/threads_2x.png");}
+#nnf_replies h1                 {background-image: url("img/replies_2x.png");}
+a.delete                        {background-image: url("img/delete_2x.png");}
+a.append                        {background-image: url("img/append_2x.png");}
+#markup h1, #privacy h1 {background-image: url("img/help_2x.png");}
 #nnf_new-form h1,
  #nnf_reply-form h1, #append h1{background-image: url("img/new_2x.png");}
-#delete h1			{background-image: url("img/deletetitle_2x.png");}
-a#nnf_stick			{background-image: url("img/sticky_x2.png");}
-a#nnf_unstick			{background-image: url("img/sticky_x2.png");}
-a#nnf_lock			{background-image: url("img/security_closed_32.png");}
-a#nnf_unlock			{background-image: url("img/security_open_32.png");}
+#delete h1                      {background-image: url("img/deletetitle_2x.png");}
+a#nnf_stick                     {background-image: url("img/sticky_x2.png");}
+a#nnf_unstick                   {background-image: url("img/sticky_x2.png");}
+a#nnf_lock                      {background-image: url("img/security_closed_32.png");}
+a#nnf_unlock                    {background-image: url("img/security_open_32.png");}
 
 }
 
@@ -567,7 +567,7 @@ a#nnf_unlock			{background-image: url("img/security_open_32.png");}
   ====================================================================================================================== */
 @media screen and (view-mode: minimized) {
 
-#mast h1			{height: 30px;}
+#mast h1                        {height: 30px;}
 
 /* hide the search box, breadcrumb and rss / add links */
 #mast form, #mast nav,
@@ -578,19 +578,19 @@ a#nnf_unlock			{background-image: url("img/security_open_32.png");}
  /* reply stuff */
  .nnf_reply-append, .nnf_reply-delete,
  /* footer stuff */
- #nnf_admin, #mods, footer	{display: none;}
+ #nnf_admin, #mods, footer      {display: none;}
 
 /* for index page, all threads are shown except stickies */
-#nnf_threads			{margin-top: 10px; border-top: 1px solid #444;}
-.nnf_thread			{display: block; border-bottom-style: solid !important;}
+#nnf_threads                    {margin-top: 10px; border-top: 1px solid #444;}
+.nnf_thread                     {display: block; border-bottom-style: solid !important;}
 
 /* for thread pages, show only the last reply */
-#nnf_replies			{margin-top: 10px;}
-.nnf_reply			{padding: 0 10px 9px;}
-.nnf_reply>header		{height: 29px; overflow: hidden; margin: -1px -10px 0; padding: 0 10px;
-				 border-top: 1px solid #444; line-height: 30px;}
-.nnf_reply-text			{margin-top: -10px;}
-article.nnf_reply:last-of-type	{display: block;}
+#nnf_replies                    {margin-top: 10px;}
+.nnf_reply                      {padding: 0 10px 9px;}
+.nnf_reply>header               {height: 29px; overflow: hidden; margin: -1px -10px 0; padding: 0 10px;
+                                 border-top: 1px solid #444; line-height: 30px;}
+.nnf_reply-text                 {margin-top: -10px;}
+article.nnf_reply:last-of-type  {display: block;}
 
 }
 
@@ -600,46 +600,46 @@ article.nnf_reply:last-of-type	{display: block;}
 @media print {
 
 /* fix page width */
-body, #mast h1 a		{width: 100% !important;}
+body, #mast h1 a                {width: 100% !important;}
 
-#mast h1			{position: static;}
-#mast h1 a			{text-indent: 0;}
-#mast h1 a img			{display: none;}
+#mast h1                        {position: static;}
+#mast h1 a                      {text-indent: 0;}
+#mast h1 a img                  {display: none;}
 
 /* things to hide from printer: */
-#mast nav, #search, #info,	/* - nav */
- #nnf_folders,			/* - subfolders list */
+#mast nav, #search, #info,      /* - nav */
+ #nnf_folders,                  /* - subfolders list */
  #nnf_new-form, #nnf_reply-form,/* - input forms */
- #delete,			
- a.ui,				/* - delete / append buttons */
- #mods, footer			{display: none;}
+ #delete,                       
+ a.ui,                          /* - delete / append buttons */
+ #mods, footer                  {display: none;}
 
 /* remove background colours, set text-colour */
 html, h1, h1 a, section,
  nav, li.nnf_sticky, header,
- ol.nnf_pages em		{color: black !important; background: none !important;}
+ ol.nnf_pages em                {color: black !important; background: none !important;}
 
 /* remove padding added to hold background images */
-h1, h1 a			{padding-left: 0 !important;}
-h1 a				{margin-left: 0 !important;}
+h1, h1 a                        {padding-left: 0 !important;}
+h1 a                            {margin-left: 0 !important;}
 
 /* remove left and right borders */
-ol.ui, article			{border: none;}
+ol.ui, article                  {border: none;}
 
 /* remove left/right padding from page egde */
-article, ol.ui li		{padding-left: 0; padding-right: 0;}
-section>h1 + nav		{padding-right: 0;}
+article, ol.ui li               {padding-left: 0; padding-right: 0;}
+section>h1 + nav                {padding-right: 0;}
 
 /* page links */
-ol.nnf_pages li			{text-align: right;}
-ol.nnf_pages a			{font-weight: normal; font-style: italic;}
-ol.nnf_pages em			{font-weight: bold; text-decoration: underline;}
+ol.nnf_pages li                 {text-align: right;}
+ol.nnf_pages a                  {font-weight: normal; font-style: italic;}
+ol.nnf_pages em                 {font-weight: bold; text-decoration: underline;}
 
 }
 
 
 /* debugging */
-body>#grid			{position: absolute; width: 100%; height: 6000px; top: 0; left: 0; opacity: 0.25;
-				 background: transparent url("img/grid.png") top left;
-				 pointer-events: none;
-				 display: block;}
+body>#grid                      {position: absolute; width: 100%; height: 6000px; top: 0; left: 0; opacity: 0.25;
+                                 background: transparent url("img/grid.png") top left;
+                                 pointer-events: none;
+                                 display: block;}
