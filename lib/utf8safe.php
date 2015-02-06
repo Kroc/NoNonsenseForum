@@ -35,7 +35,7 @@ mb_regex_encoding    ('UTF-8');
 //encoding, which can be exploited: <openmya.hacker.jp/hasegawa/public/20071107/s6/h6.html?file=datae.txt>
 header ('Content-Type: text/html; charset=UTF-8');
 
-/* preprocess the super globals:
+/* pre-process the super globals:
    ---------------------------------------------------------------------------------------------------------------------- */
 /* never trust your inputs! to help protect against malicious inputs, we're going to run the superglobals (`$_SERVER`,
    `$_COOKIES`, `$_REQUEST` / `$_GET` / `$_POST` &c.) through our UTF-8 sanitisation. you'll still need to be wary of the
@@ -82,6 +82,10 @@ function safeUTF8 (
         //the source-text has to be by-reference so that when we process the superglobals the change sticks
         &$text
 ) {
+        //when `mb_convert_encoding` is used below, we want it to use the recommended Unicode replacement character
+        //rather than just "?" <stackoverflow.com/a/13695364>
+        mb_substitute_character(0xFFFD);
+        
         //what's given could be any imaginable encoding, normalise it into UTF-8 though it may not yet be web-safe.
         //adapted from <php.net/mb_check_encoding#89286>, with thanks to Zegnat. this works by importing the current byte
         //stream into UTF-32 which has enough scope to contain any other encoding, then downsizing in to UTF-8
@@ -96,7 +100,7 @@ function safeUTF8 (
                 '/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}]+/u', '',
         $text);
         
-        //remove "compatibility characters" and "permenantly undefined Unicode characters",
+        //remove "compatibility characters" and "permanently undefined Unicode characters",
         //see note proceeding: <www.w3.org/TR/REC-xml/#charsets>
         $text = preg_replace (
                 '/[\x{007f}-\x{0084}\x{0086}-\x{009f}\x{FDD0}-\x{FDEF}'.
@@ -110,7 +114,7 @@ function safeUTF8 (
         '', $text);
         
         //TODO: strip invalid byte-sequences
-        //see: http://stackoverflow.com/questions/8215050/replacing-invalid-utf-8-characters-by-question-marks-mbstring-substitute-charac/13695364#13695364
+        //see: http://stackoverflow.com/a/13695364
         
         //Some interesting references:
         //http://www.php.net/manual/en/reference.pcre.pattern.modifiers.php#54805
@@ -125,7 +129,7 @@ function safeUTF8 (
 //PHP `trim` doesn't cover a wide variety of Unicode; the private-use area is left, should the Apple logo be used
 //<nadeausoftware.com/articles/2007/9/php_tip_how_strip_punctuation_characters_web_page#Unicodecharactercategories>
 function safeTrim (&$text) {
-        //we have to do this odd return because in order to preprocess the superglobals we have to call by-reference,
+        //we have to do this odd return because in order to pre-process the superglobals we have to call by-reference,
         //but calls that use anonymous variables or function return values will not be by-reference
         return $text = preg_replace ('/^[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+|[\pZ\p{Cc}\p{Cf}\p{Cn}\p{Cs}]+$/u', '', $text);
 }
@@ -151,7 +155,7 @@ function safeURL ($text) {
         return str_replace ('%2F', '/', rawurlencode ($text));
 }
 
-/* safeTransliterate : generate a safe (a-z0-9_) string, for use as filenames or URLs, from an arbitrary string
+/* safeTransliterate : generate a safe (a-z0-9_) string, for use as file names or URLs, from an arbitrary string
    ---------------------------------------------------------------------------------------------------------------------- */
 function safeTransliterate ($text) {
         /* if available, this function uses PHP5.4's transliterater, which is capable of converting Arabic, Hebrew, Greek,
@@ -211,7 +215,7 @@ function safeTransliterate ($text) {
         //flatten the text down to just a-z0-9 underscore and dash for spaces
         //(<www.mattcutts.com/blog/dashes-vs-underscores/>)
         $text = preg_replace (
-                //replace non a-z               //deduplicate   //trim from start & end
+                //replace non a-z               //de-duplicate   //trim from start & end
                 array ('/[^_a-z0-9-]/i',        '/-{2,}/',      '/^-|-$/'),
                 array ('-',                     '-',            ''       ),
                 
@@ -228,7 +232,7 @@ function safeTransliterate ($text) {
                         array ('Any-NFKD', 'Any-Latin', 'Latin-ASCII', 'Any-Remove', 'Any-Lower'),
                         transliterator_list_ids ()
                 )) === 5 ? transliterator_transliterate (
-                        //split unicode accents and symbols, e.g. "Å" > "A°":
+                        //split Unicode accents and symbols, e.g. "Å" > "A°":
                         'NFKD; '.
                         //convert everything to the Latin charset e.g. "ま" > "ma":
                         //(splitting the unicode before transliterating catches some complex cases,
@@ -242,7 +246,7 @@ function safeTransliterate ($text) {
                         'Latin/US-ASCII; '.
                         //remove the now stand-alone diacritics from the string
                         '[:Nonspacing Mark:] Remove; '.
-                        //change everything to lowercase; anything non A-Z 0-9 that remains will be removed by
+                        //change everything to lower-case; anything non A-Z 0-9 that remains will be removed by
                         //the letter stripping above
                         'Lower',
                 $text)
@@ -255,7 +259,7 @@ function safeTransliterate ($text) {
                 )) : $text)
         );
         
-        //old iconv versions and certain inputs may cause a nullstring. don't allow a blank response
+        //old iconv versions and certain inputs may cause a null-string. don't allow a blank response
         return !$text ? '_' : $text;
 }
 

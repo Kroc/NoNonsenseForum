@@ -66,7 +66,7 @@ $LANG['en']['re']               = 'RE[%1$u]: %2$s';
 //"%2$s" - human-readable time, as per `DATE_FORMAT`
 $LANG['en']['appended']         = ':: @%1$s added on %2$s';
 
-//HTML that replaces a post when it's deleted (this is not rectroactive)
+//HTML that replaces a post when it's deleted (this is not retroactive)
 $LANG['en']['delete_user']      = '<p>This post was deleted by its owner</p>';
 $LANG['en']['delete_mod']       = '<p>This post was deleted by a moderator</p>';
 
