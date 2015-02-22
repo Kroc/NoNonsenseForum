@@ -1,6 +1,7 @@
 *
 !.gitignore
 
+!delegates.xml
 !generate_imgs.sh
 !generate_imgs.bat
 

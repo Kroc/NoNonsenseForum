@@ -144,17 +144,17 @@ FileETag None
 	
 	# custom favicon?
 	RewriteCond %{DOCUMENT_ROOT}/favicon\.ico !-f
-	RewriteRule ^favicon\.ico$ /favicon.default.ico [NC,L]
+	RewriteRule ^favicon\.ico$ favicon.default.ico [NC,L]
 	
 	# custom apple-touch-icon?
 	RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon\.png !-f
-	RewriteRule ^apple-touch-icon\.png$ /apple-touch-icon.default.png [NC,L]
+	RewriteRule ^apple-touch-icon\.png$ apple-touch-icon.default.png [NC,L]
 	RewriteCond %{DOCUMENT_ROOT}/apple-touch-icon-precomposed\.png !-f
-	RewriteRule ^apple-touch-icon-precomposed\.png$ /apple-touch-icon.default.png [NC,L]
+	RewriteRule ^apple-touch-icon-precomposed\.png$ apple-touch-icon.default.png [NC,L]
 	
 	# custom windows tile icon?
 	RewriteCond %{DOCUMENT_ROOT}/metro-tile\.png !-f
-	RewriteRule ^metro-tile\.png$ /metro-tile.default.png [NC,L]
+	RewriteRule ^metro-tile\.png$ metro-tile.default.png [NC,L]
 	
 	# don’t allow any access to '/users' (this is accessed purely from the PHP)
 	RewriteRule ^users/.*$ - [NC,F]
