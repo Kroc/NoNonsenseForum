@@ -461,7 +461,7 @@ function indexRSS () {
                 ))
                 //if you delete the last thread in a folder, there won’t be anything in the RSS index file!
                 if (@$rss->channel->item[0]) $sitemap->set (array (
-                        './x:loc'       => FORUM_URL.($folder ? safeURL ("/$folder", false) : '').'/index.xml',
+                        './x:loc'       => FORUM_URL.FORUM_PATH.($folder ? safeURL ("$folder/", false) : '').'index.xml',
                         './x:lastmod'   => gmdate ('r', strtotime ($rss->channel->item[0]->pubDate))
                 ))->next ()
         ;

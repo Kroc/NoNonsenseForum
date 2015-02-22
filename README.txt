@@ -196,6 +196,9 @@ I'd like to also thank the users of Camen Design Forum
 
 Name    Issue
 ------------------------------------------------------------------------
+1seann [github]
+*       Discovering path error in sitemap.xml
+        
 bh8(dot)vn & zuchto
 *       Suggestion to improve transliteration further
 *       Fallback if "iconv" is missing
